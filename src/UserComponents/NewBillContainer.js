@@ -51,6 +51,13 @@ const NewBillContainer = ({ itemList }) => {
     searchInputRef.current.focus(); // Focus back on the search input after selecting an item
   };
 
+  // Remove item from selectedItems
+  const removeItemFromBill = (index) => {
+    const updatedItems = [...selectedItems];
+    updatedItems.splice(index, 1);
+    setSelectedItems(updatedItems);
+  };
+
   // Handle quantity change
   const handleQuantityChange = (index, quantity) => {
     const updatedItems = [...selectedItems];
@@ -155,6 +162,7 @@ const NewBillContainer = ({ itemList }) => {
             <th>Quantity</th>
             <th>Rate</th>
             <th>Amount</th>
+            <th>Action</th>
           </tr>
         </thead>
         <tbody>
@@ -172,6 +180,9 @@ const NewBillContainer = ({ itemList }) => {
               </td>
               <td>{item.price}</td>
               <td>{item.amount}</td>
+              <td>
+                <button onClick={() => removeItemFromBill(index)}>Delete</button>
+              </td>
             </tr>
           ))}
         </tbody>
