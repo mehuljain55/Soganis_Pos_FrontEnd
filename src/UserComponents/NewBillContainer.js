@@ -17,6 +17,14 @@ const NewBillContainer = ({ itemList }) => {
     setSearchResults(results);
   }, [itemList, searchTerm]);
 
+  const handleQuantityChange = (itemId, newQuantity) => {
+    const updatedItems = selectedItems.map(item =>
+      item.id === itemId ? { ...item, quantity: newQuantity } : item
+    );
+    setSelectedItems(updatedItems);
+  };
+  
+
   // Close dropdown when clicking outside
   const handleClickOutside = (event) => {
     if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
@@ -45,6 +53,7 @@ const NewBillContainer = ({ itemList }) => {
       addItemToBill(item);
     }
   };
+
 
   // Handle key events for dropdown navigation
   const handleDropdownKeyEvents = (event) => {
@@ -109,15 +118,29 @@ const NewBillContainer = ({ itemList }) => {
       <table>
         <thead>
           <tr>
+            <th> Barcode ID</th>
             <th>Item Code</th>
-            <th>Item Name</th>
+            <th>Description</th>
+            <th>Quantity</th>
+            <th>Price</th>
+             <th> Amount </th>       
           </tr>
         </thead>
         <tbody>
           {selectedItems.map(item => (
-            <tr key={item.id}>
+              <tr key={item.id}>
+              <td>{item.itemBarcodeID}</td>
               <td>{item.itemCode}</td>
-              <td>{item.itemName}</td>
+              <td>{`${item.itemCategory} ${item.itemType} ${item.itemSize}`}</td>
+              <td>
+                <input
+                  type="number"
+                  value={item.quantity}
+                  onChange={(e) => handleQuantityChange(item.id, parseInt(e.target.value))}
+                />
+              </td>
+              <td>{item.price}</td>
+              <td>{item.quantity * item.price}</td>
             </tr>
           ))}
         </tbody>
