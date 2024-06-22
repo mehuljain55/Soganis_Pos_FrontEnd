@@ -17,12 +17,12 @@ const NewBillContainer = ({ itemList }) => {
     setSearchResults(results);
   }, [itemList, searchTerm]);
 
-    // Handle keyboard navigation within dropdown
-    const handleKeyDown = (event, item) => {
-        if (event.key === 'Enter') {
-          addItemToBill(item);
-        }
-      };
+  // Handle keyboard navigation within dropdown
+  const handleKeyDown = (event, item) => {
+    if (event.key === 'Enter') {
+      addItemToBill(item);
+    }
+  };
 
   // Close dropdown when clicking outside
   const handleClickOutside = (event) => {
@@ -64,7 +64,7 @@ const NewBillContainer = ({ itemList }) => {
 
   // Handle key events for dropdown navigation
   const handleDropdownKeyEvents = (event) => {
-    const items = dropdownRef.current.querySelectorAll('li');
+    const items = dropdownRef.current.querySelectorAll('tr');
 
     if (event.key === 'ArrowDown' && items.length > 0) {
       event.preventDefault(); // Prevent page scrolling
@@ -114,18 +114,33 @@ const NewBillContainer = ({ itemList }) => {
         />
         {dropdownOpen && (
           <div className="dropdown" ref={dropdownRef}>
-            <ul>
-              {searchResults.map(item => (
-                <li
-                  key={item.id}
-                  onClick={() => addItemToBill(item)}
-                  onKeyDown={(e) => handleKeyDown(e, item)}
-                  tabIndex="0" // Enable focus for keyboard navigation
-                >
-                  {item.itemCode} - {item.itemName}
-                </li>
-              ))}
-            </ul>
+            <table>
+              <thead>
+                <tr>
+                  <th>Item Code</th>
+                  <th>Category</th>
+                  <th>Type</th>
+                  <th>Color</th>
+                  <th>Size</th>
+                </tr>
+              </thead>
+              <tbody>
+                {searchResults.map(item => (
+                  <tr
+                    key={item.id}
+                    onClick={() => addItemToBill(item)}
+                    onKeyDown={(e) => handleKeyDown(e, item)}
+                    tabIndex="0" // Enable focus for keyboard navigation
+                  >
+                    <td>{item.itemCode}</td>
+                    <td>{item.itemCategory}</td>
+                    <td>{item.itemType}</td>
+                    <td>{item.itemColor}</td>
+                    <td>{item.itemSize}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
           </div>
         )}
       </div>
