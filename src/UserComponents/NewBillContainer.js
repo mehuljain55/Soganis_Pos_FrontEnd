@@ -17,13 +17,12 @@ const NewBillContainer = ({ itemList }) => {
     setSearchResults(results);
   }, [itemList, searchTerm]);
 
-  const handleQuantityChange = (itemId, newQuantity) => {
-    const updatedItems = selectedItems.map(item =>
-      item.id === itemId ? { ...item, quantity: newQuantity } : item
-    );
-    setSelectedItems(updatedItems);
-  };
-  
+    // Handle keyboard navigation within dropdown
+    const handleKeyDown = (event, item) => {
+        if (event.key === 'Enter') {
+          addItemToBill(item);
+        }
+      };
 
   // Close dropdown when clicking outside
   const handleClickOutside = (event) => {
@@ -41,19 +40,27 @@ const NewBillContainer = ({ itemList }) => {
 
   // Add item to selectedItems
   const addItemToBill = (item) => {
-    setSelectedItems([...selectedItems, item]);
+    const newItem = {
+      ...item,
+      quantity: 1, // Initial quantity set to 1
+      amount: item.price * 1 // Initial amount based on price and quantity
+    };
+    setSelectedItems([...selectedItems, newItem]);
     setSearchTerm('');
     setDropdownOpen(false);
     searchInputRef.current.focus(); // Focus back on the search input after selecting an item
   };
 
-  // Handle keyboard navigation within dropdown
-  const handleKeyDown = (event, item) => {
-    if (event.key === 'Enter') {
-      addItemToBill(item);
-    }
+  // Handle quantity change
+  const handleQuantityChange = (index, quantity) => {
+    const updatedItems = [...selectedItems];
+    updatedItems[index] = {
+      ...updatedItems[index],
+      quantity: quantity,
+      amount: quantity * updatedItems[index].price // Calculate amount based on quantity and price
+    };
+    setSelectedItems(updatedItems);
   };
-
 
   // Handle key events for dropdown navigation
   const handleDropdownKeyEvents = (event) => {
@@ -74,6 +81,15 @@ const NewBillContainer = ({ itemList }) => {
       dropdownRef.current.firstChild.focus();
     }
   }, [dropdownOpen, searchResults]);
+
+  // Calculate total amount
+  const calculateTotalAmount = () => {
+    let total = 0;
+    selectedItems.forEach(item => {
+      total += item.amount;
+    });
+    return total;
+  };
 
   // Submit button handler
   const handleSubmit = () => {
@@ -118,32 +134,38 @@ const NewBillContainer = ({ itemList }) => {
       <table>
         <thead>
           <tr>
-            <th> Barcode ID</th>
+            <th>Barcode ID</th>
             <th>Item Code</th>
             <th>Description</th>
             <th>Quantity</th>
-            <th>Price</th>
-             <th> Amount </th>       
+            <th>Rate</th>
+            <th>Amount</th>
           </tr>
         </thead>
         <tbody>
-          {selectedItems.map(item => (
-              <tr key={item.id}>
+          {selectedItems.map((item, index) => (
+            <tr key={item.sno}>
               <td>{item.itemBarcodeID}</td>
               <td>{item.itemCode}</td>
-              <td>{`${item.itemCategory} ${item.itemType} ${item.itemSize}`}</td>
+              <td>{item.itemCategory} {item.itemType} {item.itemSize}</td>
               <td>
                 <input
                   type="number"
                   value={item.quantity}
-                  onChange={(e) => handleQuantityChange(item.id, parseInt(e.target.value))}
+                  onChange={(e) => handleQuantityChange(index, parseInt(e.target.value))}
                 />
               </td>
               <td>{item.price}</td>
-              <td>{item.quantity * item.price}</td>
+              <td>{item.amount}</td>
             </tr>
           ))}
         </tbody>
+        <tfoot>
+          <tr>
+            <td colSpan="5" style={{ textAlign: 'right' }}>Total:</td>
+            <td>{calculateTotalAmount()}</td>
+          </tr>
+        </tfoot>
       </table>
 
       {/* Submit button */}
