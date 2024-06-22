@@ -64,7 +64,7 @@ const NewBillContainer = ({ itemList }) => {
 
   // Handle key events for dropdown navigation
   const handleDropdownKeyEvents = (event) => {
-    const items = dropdownRef.current.querySelectorAll('tr');
+    const items = dropdownRef.current.querySelectorAll('li');
 
     if (event.key === 'ArrowDown' && items.length > 0) {
       event.preventDefault(); // Prevent page scrolling
@@ -122,21 +122,20 @@ const NewBillContainer = ({ itemList }) => {
                   <th>Type</th>
                   <th>Color</th>
                   <th>Size</th>
+                  <th>Add</th>
                 </tr>
               </thead>
               <tbody>
                 {searchResults.map(item => (
-                  <tr
-                    key={item.id}
-                    onClick={() => addItemToBill(item)}
-                    onKeyDown={(e) => handleKeyDown(e, item)}
-                    tabIndex="0" // Enable focus for keyboard navigation
-                  >
+                  <tr key={item.id}>
                     <td>{item.itemCode}</td>
                     <td>{item.itemCategory}</td>
                     <td>{item.itemType}</td>
                     <td>{item.itemColor}</td>
                     <td>{item.itemSize}</td>
+                    <td>
+                      <button onClick={() => addItemToBill(item)}>Add</button>
+                    </td>
                   </tr>
                 ))}
               </tbody>
