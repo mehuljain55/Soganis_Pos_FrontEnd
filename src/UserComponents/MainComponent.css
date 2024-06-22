@@ -1,0 +1,32 @@
+/* MainComponent.css */
+.sidebar {
+    position: fixed;
+    left: -250px; /* Adjust as needed */
+    top: 0;
+    bottom: 0;
+    width: 250px; /* Adjust as needed */
+    background-color: #f0f0f0;
+    transition: left 0.3s ease;
+    padding-top: 20px;
+  }
+  
+  .sidebar.open {
+    left: 0;
+  }
+  
+  .hamburger {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    font-size: 20px;
+    cursor: pointer;
+    border: none;
+    background: none;
+  }
+  
+  .content {
+    margin-left: 250px; /* Adjust to accommodate sidebar width */
+    transition: margin-left 0.3s ease;
+    padding: 20px;
+  }
+  

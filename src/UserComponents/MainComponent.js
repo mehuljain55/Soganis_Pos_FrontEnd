@@ -4,6 +4,7 @@ import NewBillContainer from './NewBillContainer'; // Import NewBillContainer
 
 const MainComponent = ({ userData }) => {
   const [itemList, setItemList] = useState([]);
+  const [selectedMenuItem, setSelectedMenuItem] = useState(''); // State to manage selected menu item
 
   useEffect(() => {
     if (userData && itemList.length === 0) {
@@ -22,19 +23,35 @@ const MainComponent = ({ userData }) => {
     }
   };
 
+  const handleMenuItemClick = (menuItem) => {
+    setSelectedMenuItem(menuItem);
+  };
+
   return (
     <div className="container">
-      <h2>Main Component</h2>
-      {userData && (
-        <div>
-          <p>User ID: {userData.userId}</p>
-          <p>Name: {userData.name}</p> {/* Corrected to userData.name */}
-          <p>Mobile Number: {userData.mobile_no}</p>
-        </div>
-      )}
+      <div className="sidebar">
+        <button onClick={() => handleMenuItemClick('New Bill')}>New Bill</button>
+        <button onClick={() => handleMenuItemClick('View Stock')}>View Stock</button>
+        <button onClick={() => handleMenuItemClick('Cash Collection')}>Cash Collection</button>
+        <button onClick={() => handleMenuItemClick('Today\'s Sale')}>Today's Sale</button>
+      </div>
+      
+      <div className="content">
+        <h2>Main Component</h2>
+        {userData && (
+          <div>
+            <p>User ID: {userData.userId}</p>
+            <p>Name: {userData.name}</p> {/* Corrected to userData.name */}
+            <p>Mobile Number: {userData.mobile_no}</p>
+          </div>
+        )}
 
-      {/* Pass itemList to NewBillContainer */}
-      <NewBillContainer itemList={itemList} />
+        {/* Conditionally render components based on selectedMenuItem */}
+        {selectedMenuItem === 'New Bill' && <NewBillContainer itemList={itemList} />}
+        {selectedMenuItem === 'View Stock' && <p>View Stock Component</p>}
+        {selectedMenuItem === 'Cash Collection' && <p>Cash Collection Component</p>}
+        {selectedMenuItem === 'Today\'s Sale' && <p>Today's Sale Component</p>}
+      </div>
     </div>
   );
 };
