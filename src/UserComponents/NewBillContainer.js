@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import axios from 'axios';
 import './NewBillContainer.css'; // Import your CSS file
 
-const NewBillContainer = ({ itemList, userData }) => {
+const NewBillContainer = ({ userData }) => {
   const [selectedItems, setSelectedItems] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [searchResults, setSearchResults] = useState([]);
@@ -13,13 +13,19 @@ const NewBillContainer = ({ itemList, userData }) => {
   const dropdownRef = useRef(null);
   const modalRef = useRef(null);
 
-  // Update searchResults based on searchTerm
+  // Fetch items from backend on component mount
   useEffect(() => {
-    const results = itemList.filter(item =>
-      item.itemCode.toLowerCase().includes(searchTerm.toLowerCase())
-    );
-    setSearchResults(results);
-  }, [itemList, searchTerm]);
+    const fetchItems = async () => {
+      try {
+        const response = await axios.get(`http://localhost:8080/getAllItems?searchTerm=${searchTerm}`);
+        setSearchResults(response.data);
+      } catch (error) {
+        console.error('Error fetching items:', error);
+      }
+    };
+
+    fetchItems();
+  }, [searchTerm]);
 
   // Handle keyboard navigation within dropdown
   const handleKeyDown = (event, item) => {
