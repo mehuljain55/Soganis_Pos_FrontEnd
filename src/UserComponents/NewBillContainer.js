@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import axios from 'axios';
-import './NewBillContainer.css'; // Import your CSS file
+import './NewBillContainer.css'; 
 
 const NewBillContainer = ({ userData }) => {
   const [selectedItems, setSelectedItems] = useState([]);
