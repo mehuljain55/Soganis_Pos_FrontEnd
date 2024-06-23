@@ -195,7 +195,7 @@ const NewBillContainer = ({ itemList }) => {
       </table>
 
       {/* Submit button */}
-      <button onClick={handleSubmit}>Submit Bill</button>
+      <button onClick={handleSubmit}>Bill</button>
     </div>
   );
 };

@@ -37,11 +37,11 @@ const MainComponent = ({ userData }) => {
       </div>
       
       <div className="content">
-        <h2>Main Component</h2>
+        <h2>Soganis Billing</h2>
         {userData && (
           <div>
             <p>User ID: {userData.userId}</p>
-            <p>Name: {userData.name}</p> {/* Corrected to userData.name */}
+            <p>Name: {userData.sname}</p> {/* Corrected to userData.name */}
             <p>Mobile Number: {userData.mobile_no}</p>
           </div>
         )}
