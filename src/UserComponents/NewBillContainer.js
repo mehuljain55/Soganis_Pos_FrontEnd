@@ -13,7 +13,6 @@ const NewBillContainer = ({ userData }) => {
   const dropdownRef = useRef(null);
   const modalRef = useRef(null);
 
-  // Fetch items from backend on component mount
   useEffect(() => {
     const fetchItems = async () => {
       try {
