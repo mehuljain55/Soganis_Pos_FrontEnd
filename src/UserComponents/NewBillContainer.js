@@ -1,13 +1,17 @@
 import React, { useState, useRef, useEffect } from 'react';
+import axios from 'axios';
 import './NewBillContainer.css'; // Import your CSS file
 
-const NewBillContainer = ({ itemList }) => {
+const NewBillContainer = ({ itemList, userData }) => {
   const [selectedItems, setSelectedItems] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [searchResults, setSearchResults] = useState([]);
   const [dropdownOpen, setDropdownOpen] = useState(false);
+  const [customerName, setCustomerName] = useState('');
+  const [customerMobileNo, setCustomerMobileNo] = useState('');
   const searchInputRef = useRef(null);
   const dropdownRef = useRef(null);
+  const modalRef = useRef(null);
 
   // Update searchResults based on searchTerm
   useEffect(() => {
@@ -99,16 +103,62 @@ const NewBillContainer = ({ itemList }) => {
   };
 
   // Submit button handler
-  const handleSubmit = () => {
-    // Handle submission logic (e.g., send selectedItems to backend)
-    console.log('Submitting items:', selectedItems);
-    // Reset selectedItems or perform other actions as needed
+  const handleSubmit = async () => {
+    // Prepare bill data
+    const billData = {
+      userId: userData.userId,
+      customerName: customerName,
+      customerMobileNo: customerMobileNo,
+      item_count: selectedItems.length,
+      bill: selectedItems.map(item => ({
+        itemBarcodeID: item.itemBarcodeID,
+        itemType: item.itemType,
+        itemColor: item.itemColor,
+        itemSize: item.itemSize,
+        itemCategory: item.itemCategory,
+        sellPrice: item.price,
+        quantity: item.quantity,
+        total_amount: item.amount
+      }))
+    };
+
+    try {
+      // Send bill data to backend
+      const response = await axios.post('http://localhost:8080/billRequest', billData);
+      console.log('Bill generated:', response.data);
+      // Reset selectedItems or perform other actions as needed
+      setSelectedItems([]);
+      closeModal();
+    } catch (error) {
+      console.error('Error generating bill:', error);
+      // Handle error if needed
+    }
+  };
+
+  // Modal functions
+  const openModal = () => {
+    modalRef.current.style.display = 'block';
+  };
+
+  const closeModal = () => {
+    modalRef.current.style.display = 'none';
+    setCustomerName('');
+    setCustomerMobileNo('');
+  };
+
+  // Handle input changes for customer details
+  const handleNameChange = (e) => {
+    setCustomerName(e.target.value);
+  };
+
+  const handleMobileNoChange = (e) => {
+    setCustomerMobileNo(e.target.value);
   };
 
   return (
     <div>
       <h2>New Bill Container</h2>
-      
+
       {/* Search bar */}
       <div className="search-bar" ref={searchInputRef} tabIndex="0">
         <input
@@ -151,7 +201,7 @@ const NewBillContainer = ({ itemList }) => {
           </div>
         )}
       </div>
-      
+
       {/* Billing items table */}
       <table>
         <thead>
@@ -167,10 +217,10 @@ const NewBillContainer = ({ itemList }) => {
         </thead>
         <tbody>
           {selectedItems.map((item, index) => (
-            <tr key={item.sno}>
+            <tr key={index}>
               <td>{item.itemBarcodeID}</td>
               <td>{item.itemCode}</td>
-              <td>{item.itemCategory} {item.itemType} {item.itemSize}</td>
+              <td>{`${item.itemCategory} ${item.itemType} ${item.itemSize}`}</td>
               <td>
                 <input
                   type="number"
@@ -190,12 +240,34 @@ const NewBillContainer = ({ itemList }) => {
           <tr>
             <td colSpan="5" style={{ textAlign: 'right' }}>Total:</td>
             <td>{calculateTotalAmount()}</td>
+            <td></td>
           </tr>
         </tfoot>
       </table>
 
-      {/* Submit button */}
-      <button onClick={handleSubmit}>Bill</button>
+      {/* Modal for customer details */}
+      <div ref={modalRef} className="modal">
+        <div className="modal-content">
+          <span className="close" onClick={closeModal}>&times;</span>
+          <h2>Enter Customer Details</h2>
+          <input
+            type="text"
+            placeholder="Customer Name"
+            value={customerName}
+            onChange={handleNameChange}
+          />
+          <input
+            type="text"
+            placeholder="Customer Mobile No"
+            value={customerMobileNo}
+            onChange={handleMobileNoChange}
+          />
+          <button onClick={handleSubmit}>Generate Bill</button>
+        </div>
+      </div>
+
+      {/* Button to open modal */}
+      <button onClick={openModal}>Bill</button>
     </div>
   );
 };

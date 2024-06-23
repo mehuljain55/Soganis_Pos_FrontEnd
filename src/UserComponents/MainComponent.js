@@ -47,7 +47,7 @@ const MainComponent = ({ userData }) => {
         )}
 
         {/* Conditionally render components based on selectedMenuItem */}
-        {selectedMenuItem === 'New Bill' && <NewBillContainer itemList={itemList} />}
+        {selectedMenuItem === 'New Bill' && <NewBillContainer itemList={itemList} userData={userData} />}
         {selectedMenuItem === 'View Stock' && <p>View Stock Component</p>}
         {selectedMenuItem === 'Cash Collection' && <p>Cash Collection Component</p>}
         {selectedMenuItem === 'Today\'s Sale' && <p>Today's Sale Component</p>}

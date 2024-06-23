@@ -1,62 +1,97 @@
 /* NewBillContainer.css */
 
 .search-bar {
-    position: relative;
-    margin-bottom: 10px;
-  }
-  
-  .dropdown {
-    position: absolute;
-    width: 100%;
-    max-height: 200px; /* Example fixed height */
-    overflow-y: auto;
-    border: 1px solid #ccc;
-    background-color: #fff;
-    z-index: 1000; /* Ensure dropdown is above other elements */
-  }
-  
-  .dropdown ul {
-    list-style-type: none;
-    padding: 0;
-    margin: 0;
-  }
-  
-  .dropdown ul li {
-    padding: 8px 16px;
-    cursor: pointer;
-  }
-  
-  .dropdown ul li:hover {
-    background-color: #f0f0f0;
-  }
-  
-  .dropdown ul li:focus {
-    outline: none;
-    background-color: #f0f0f0;
-  }
-  
-  table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-bottom: 20px;
-  }
-  
-  table th, table td {
-    border: 1px solid #ddd;
-    padding: 8px;
-    text-align: left;
-  }
-  
-  button {
-    padding: 10px 20px;
-    background-color: #007bff;
-    color: #fff;
-    border: none;
-    cursor: pointer;
-    font-size: 16px;
-  }
-  
-  button:hover {
-    background-color: #0056b3;
-  }
-  
+  position: relative;
+  margin-bottom: 10px;
+}
+
+.dropdown {
+  position: absolute;
+  width: 100%;
+  max-height: 200px; /* Example fixed height */
+  overflow-y: auto;
+  border: 1px solid #ccc;
+  background-color: #fff;
+  z-index: 1000; /* Ensure dropdown is above other elements */
+}
+
+.dropdown ul {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+}
+
+.dropdown ul li {
+  padding: 8px 16px;
+  cursor: pointer;
+}
+
+.dropdown ul li:hover {
+  background-color: #f0f0f0;
+}
+
+.dropdown ul li:focus {
+  outline: none;
+  background-color: #f0f0f0;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 20px;
+}
+
+table th,
+table td {
+  border: 1px solid #ddd;
+  padding: 8px;
+  text-align: left;
+}
+
+button {
+  padding: 10px 20px;
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+button:hover {
+  background-color: #0056b3;
+}
+
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 999;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.modal-content {
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 5px;
+  width: 300px;
+  height: 300px; /* Square shape */
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between; /* Ensure button stays at the bottom */
+}
+
+.close {
+  align-self: flex-end; /* Align to the end of the modal content */
+  cursor: pointer;
+  font-size: 24px;
+}
+
+.close:hover {
+  color: red;
+}
