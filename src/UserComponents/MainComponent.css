@@ -30,3 +30,17 @@
     padding: 20px;
   }
   
+ /* Increase specificity to override Bootstrap */
+button.refresh-button {
+  background-color: transparent !important;
+  border: white !important;
+  cursor: pointer !important;
+}
+
+button.refresh-button:hover {
+  opacity: 0.8 !important;
+}
+
+button.refresh-button .fa-sync-alt {
+  color: black !important;
+}

@@ -1,40 +1,61 @@
 /* NewBillContainer.css */
 
+/* General styles */
+body {
+  font-family: Arial, sans-serif;
+  background-color: #f5f5f5; /* Light grey background */
+  padding: 20px;
+}
+
+h2 {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+/* Search bar */
 .search-bar {
   position: relative;
   margin-bottom: 10px;
 }
 
+.search-bar input[type="text"] {
+  width: 100%;
+  padding: 10px;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+}
+
+/* Dropdown */
 .dropdown {
   position: absolute;
   width: 100%;
   max-height: 200px; /* Example fixed height */
   overflow-y: auto;
   border: 1px solid #ccc;
-  background-color: #fff;
+  background-color: #f0f0f0; /* Grey background color */
   z-index: 1000; /* Ensure dropdown is above other elements */
 }
 
-.dropdown ul {
-  list-style-type: none;
-  padding: 0;
-  margin: 0;
+.dropdown table {
+  width: 100%;
+  border-collapse: collapse;
 }
 
-.dropdown ul li {
-  padding: 8px 16px;
+.dropdown th,
+.dropdown td {
+  border: 1px solid #ddd;
+  padding: 8px;
+  text-align: left;
+}
+
+.dropdown tbody tr:hover {
+  background-color: #dcdcdc; /* Hover background color */
   cursor: pointer;
 }
 
-.dropdown ul li:hover {
-  background-color: #f0f0f0;
-}
-
-.dropdown ul li:focus {
-  outline: none;
-  background-color: #f0f0f0;
-}
-
+/* Billing items table */
 table {
   width: 100%;
   border-collapse: collapse;
@@ -48,9 +69,14 @@ table td {
   text-align: left;
 }
 
+tfoot {
+  font-weight: bold;
+}
+
+/* Buttons */
 button {
   padding: 10px 20px;
-  background-color: #007bff;
+  background-color: #007bff; /* Blue button */
   color: #fff;
   border: none;
   cursor: pointer;
@@ -58,16 +84,12 @@ button {
 }
 
 button:hover {
-  background-color: #0056b3;
+  background-color: #0056b3; /* Darker blue on hover */
 }
 
+/* Modal */
 .modal {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: rgba(0, 0, 0, 0.5);
+  background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent background */
   z-index: 999;
   display: flex;
   justify-content: center;
@@ -76,12 +98,12 @@ button:hover {
 
 .modal-content {
   background-color: #fff;
+  margin: 25% auto !important;
   padding: 20px;
   border-radius: 5px;
-  width: 300px;
-  height: 300px; /* Square shape */
+  width: 300px !important;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
-  display: flex;
+  display: flex !important;
   flex-direction: column;
   justify-content: space-between; /* Ensure button stays at the bottom */
 }
@@ -93,5 +115,5 @@ button:hover {
 }
 
 .close:hover {
-  color: red;
+  color: red; /* Red color on hover */
 }

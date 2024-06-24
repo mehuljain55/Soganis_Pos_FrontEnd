@@ -1,27 +1,27 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import NewBillContainer from './NewBillContainer'; // Import NewBillContainer
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faSyncAlt } from '@fortawesome/free-solid-svg-icons';
+
 
 const MainComponent = ({ userData }) => {
-  const [itemList, setItemList] = useState([]);
   const [selectedMenuItem, setSelectedMenuItem] = useState(''); // State to manage selected menu item
+  const [todayCashCollection, setTodayCashCollection] = useState(null); // State to store today's cash collection
 
-  useEffect(() => {
-    if (userData && itemList.length === 0) {
-      fetchItems();
-    }
-  }, [userData, itemList]);
 
-  const fetchItems = async () => {
+  const fetchTodayCashCollection = async () => {
     try {
-      const response = await axios.get('http://localhost:8080/getAllItems');
-      console.log('Items fetched:', response.data);
-      setItemList(response.data);
+        const response = await axios.get('http://localhost:8080/getTodayUserCashCollection', {
+            params: { userId: userData.userId }
+        });
+        console.log('Today\'s cash collection:', response.data);
+        setTodayCashCollection(response.data);
     } catch (error) {
-      console.error('Error fetching items:', error);
-      // Handle error if needed
+        console.error('Error fetching today\'s cash collection:', error);
+        setTodayCashCollection(null); // Reset today's cash collection on error
     }
-  };
+};
 
   const handleMenuItemClick = (menuItem) => {
     setSelectedMenuItem(menuItem);
@@ -40,9 +40,14 @@ const MainComponent = ({ userData }) => {
         <h2>Soganis Billing</h2>
         {userData && (
           <div>
-            <p>User ID: {userData.userId}</p>
-            <p>Name: {userData.sname}</p> {/* Corrected to userData.name */}
-            <p>Mobile Number: {userData.mobile_no}</p>
+            <p>User: {userData.sname}</p> {/* Corrected to userData.name */}
+            <p> Today Cash Collection: {todayCashCollection} 
+            <button className="btn btn-outline-secondary refresh-button" onClick={fetchTodayCashCollection}>
+            <FontAwesomeIcon icon={faSyncAlt} className="text-black" />  
+            </button>
+            </p>
+            
+
           </div>
         )}
 

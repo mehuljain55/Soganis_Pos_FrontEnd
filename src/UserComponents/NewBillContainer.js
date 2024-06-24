@@ -26,14 +26,14 @@ const NewBillContainer = ({ userData }) => {
     fetchItems();
   }, [searchTerm]);
 
-  // Handle keyboard navigation within dropdown
+
   const handleKeyDown = (event, item) => {
     if (event.key === 'Enter') {
       addItemToBill(item);
     }
   };
 
-  // Close dropdown when clicking outside
+
   const handleClickOutside = (event) => {
     if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
       setDropdownOpen(false);
@@ -47,7 +47,7 @@ const NewBillContainer = ({ userData }) => {
     };
   }, []);
 
-  // Add item to selectedItems
+
   const addItemToBill = (item) => {
     const newItem = {
       ...item,
@@ -81,17 +81,22 @@ const NewBillContainer = ({ userData }) => {
   // Handle key events for dropdown navigation
   const handleDropdownKeyEvents = (event) => {
     const items = dropdownRef.current.querySelectorAll('tr');
-
-    if (event.key === 'ArrowDown' && items.length > 0) {
+    const currentIndex = Array.from(items).findIndex(item => item === document.activeElement);
+  
+    if (event.key === 'ArrowDown' && currentIndex < items.length - 1) {
       event.preventDefault(); // Prevent page scrolling
-      items[0].focus();
+      items[currentIndex + 1].focus();
+    } else if (event.key === 'ArrowUp' && currentIndex > 0) {
+      event.preventDefault(); // Prevent page scrolling
+      items[currentIndex - 1].focus();
     } else if (event.key === 'Escape') {
       setDropdownOpen(false);
       searchInputRef.current.focus(); // Focus back on the search input on escape
+    } else if (event.key === 'Enter' && currentIndex >= 0) {
+      addItemToBill(searchResults[currentIndex]); 
     }
   };
 
-  // Focus on the first item in the dropdown when it opens
   useEffect(() => {
     if (dropdownOpen && searchResults.length > 0 && dropdownRef.current) {
       dropdownRef.current.firstChild.focus();
@@ -107,9 +112,7 @@ const NewBillContainer = ({ userData }) => {
     return total;
   };
 
-  // Submit button handler
   const handleSubmit = async () => {
-    // Prepare bill data
     const billData = {
       userId: userData.userId,
       customerName: customerName,
@@ -128,19 +131,17 @@ const NewBillContainer = ({ userData }) => {
     };
 
     try {
-      // Send bill data to backend
       const response = await axios.post('http://localhost:8080/billRequest', billData);
       console.log('Bill generated:', response.data);
-      // Reset selectedItems or perform other actions as needed
+
       setSelectedItems([]);
       closeModal();
     } catch (error) {
       console.error('Error generating bill:', error);
-      // Handle error if needed
     }
   };
 
-  // Modal functions
+  
   const openModal = () => {
     modalRef.current.style.display = 'block';
   };
@@ -151,7 +152,7 @@ const NewBillContainer = ({ userData }) => {
     setCustomerMobileNo('');
   };
 
-  // Handle input changes for customer details
+ 
   const handleNameChange = (e) => {
     setCustomerName(e.target.value);
   };
@@ -192,7 +193,7 @@ const NewBillContainer = ({ userData }) => {
                     key={item.id}
                     onClick={() => addItemToBill(item)}
                     onKeyDown={(e) => handleKeyDown(e, item)}
-                    tabIndex="0" // Enable focus for keyboard navigation
+                    tabIndex="0"
                   >
                     <td>{item.itemCode}</td>
                     <td>{item.itemCategory}</td>

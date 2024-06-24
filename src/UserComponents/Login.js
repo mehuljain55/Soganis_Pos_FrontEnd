@@ -2,6 +2,8 @@
 
 import React, { useState } from 'react';
 import axios from 'axios';
+import './login.css'; 
+
 
 const Login = ({ setUserData }) => {
   const [userId, setUserId] = useState('');
@@ -23,14 +25,14 @@ const Login = ({ setUserData }) => {
   };
 
   return (
-    <div className="container">
-      <div className="row justify-content-center">
+    <><div className="Nav">Shop</div><div className=" container">
+      <div className="align-self-center row justify-content-center">
         <div className="col-md-6">
           <div className="card">
             <div className="card-body">
               <h2 className="card-title text-center">Login</h2>
               {error && <p className="text-danger text-center">{error}</p>}
-              <form onSubmit={(e) => { e.preventDefault(); handleLogin(); }}>
+              <form onSubmit={(e) => { e.preventDefault(); handleLogin(); } }>
                 <div className="mb-3">
                   <label htmlFor="userId" className="form-label">User ID:</label>
                   <input type="text" className="form-control" id="userId" value={userId} onChange={(e) => setUserId(e.target.value)} />
@@ -47,7 +49,7 @@ const Login = ({ setUserData }) => {
           </div>
         </div>
       </div>
-    </div>
+    </div></>
   );
 };
 
