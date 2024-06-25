@@ -1,0 +1,46 @@
+.sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 250px; /* Adjust width as needed */
+    background-color: #f8f9fa; /* Light background color */
+    padding: 20px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  }
+  
+  .sidebar-header {
+    padding-bottom: 20px;
+    border-bottom: 1px solid #ddd;
+  }
+  
+  .sidebar-header h3 {
+    margin-top: 0;
+    font-size: 1.5rem;
+    font-weight: bold;
+  }
+  
+  .list-unstyled {
+    padding-left: 0;
+    list-style: none;
+  }
+  
+  .list-unstyled li {
+    margin-bottom: 10px;
+  }
+  
+  .list-unstyled li button {
+    width: 100%;
+    text-align: left;
+    padding: 10px;
+    background-color: transparent;
+    border: none;
+    outline: none;
+    font-size: 1rem;
+    color: #333;
+  }
+  
+  .list-unstyled li button:hover {
+    background-color: #e9ecef;
+  }
+  

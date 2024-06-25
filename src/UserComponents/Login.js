@@ -3,6 +3,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import './login.css'; 
+import { API_BASE_URL } from './Config.js';
 
 
 const Login = ({ setUserData }) => {
@@ -12,7 +13,7 @@ const Login = ({ setUserData }) => {
 
   const handleLogin = async () => {
     try {
-      const response = await axios.post('http://localhost:8080/login', {
+      const response = await axios.post(`${API_BASE_URL}/login`, {
         userId: userId,
         password: password
       });

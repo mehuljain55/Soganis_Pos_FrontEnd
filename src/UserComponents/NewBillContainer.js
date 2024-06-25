@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import axios from 'axios';
 import './NewBillContainer.css'; 
+import { API_BASE_URL } from './Config.js';
 
 const NewBillContainer = ({ userData }) => {
   const [selectedItems, setSelectedItems] = useState([]);
@@ -16,7 +17,7 @@ const NewBillContainer = ({ userData }) => {
   useEffect(() => {
     const fetchItems = async () => {
       try {
-        const response = await axios.get(`http://localhost:8080/getAllItems?searchTerm=${searchTerm}`);
+        const response = await axios.get(`${API_BASE_URL}/getAllItems?searchTerm=${searchTerm}`);
         setSearchResults(response.data);
       } catch (error) {
         console.error('Error fetching items:', error);
@@ -131,7 +132,7 @@ const NewBillContainer = ({ userData }) => {
     };
 
     try {
-      const response = await axios.post('http://localhost:8080/billRequest', billData);
+      const response = await axios.post(`${API_BASE_URL}/billRequest`, billData);
       console.log('Bill generated:', response.data);
 
       setSelectedItems([]);
