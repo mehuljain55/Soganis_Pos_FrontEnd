@@ -98,7 +98,7 @@ button:hover {
 
 .modal-content {
   background-color: #fff;
-  margin: 25% auto !important;
+  margin: 14% auto !important;
   padding: 20px;
   border-radius: 5px;
   width: 300px !important;
@@ -107,6 +107,9 @@ button:hover {
   flex-direction: column;
   justify-content: space-between; /* Ensure button stays at the bottom */
 }
+/* #input_2{
+  padding-top: 10px;
+} */
 
 .close {
   align-self: flex-end; /* Align to the end of the modal content */

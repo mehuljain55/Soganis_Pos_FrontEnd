@@ -1,46 +1,43 @@
 /* MainComponent.css */
+
+/* Ensure the sidebar remains fixed and does not overlap */
 .sidebar {
-    position: fixed;
-    left: -250px; /* Adjust as needed */
-    top: 0;
-    bottom: 0;
-    width: 250px; /* Adjust as needed */
-    background-color: #f0f0f0;
-    transition: left 0.3s ease;
-    padding-top: 20px;
-  }
-  
-  .sidebar.open {
-    left: 0;
-  }
-  
-  .hamburger {
-    position: absolute;
-    top: 10px;
-    left: 10px;
-    font-size: 20px;
-    cursor: pointer;
-    border: none;
-    background: none;
-  }
-  
-  .content {
-    margin-left: 250px; /* Adjust to accommodate sidebar width */
-    transition: margin-left 0.3s ease;
-    padding: 20px;
-  }
-  
- /* Increase specificity to override Bootstrap */
-button.refresh-button {
-  background-color: transparent !important;
-  border: white !important;
-  cursor: pointer !important;
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100%; /* Full height of viewport */
+  width: 15%; /* Adjust based on your design */
+  padding-top: 20px;
+  background-color: #f8f9fa; /* Light background color */
+  border-right: 1px solid #dee2e6; /* Border to separate from main content */
+  overflow-y: auto; /* Enable scrolling if content exceeds height */
 }
 
-button.refresh-button:hover {
-  opacity: 0.8 !important;
+.sidebar-sticky {
+  position: relative; /* Ensure content scrolls within sidebar */
 }
 
-button.refresh-button .fa-sync-alt {
-  color: black !important;
+/* Adjust main content to start after the sidebar */
+.main-content {
+  margin-left: 15%; /* Same as sidebar width */
+  padding: 20px;
+}
+
+/* Optional: Style for menu items in the sidebar */
+.nav-link {
+  font-size: 1.1rem;
+  padding: 10px 15px;
+  color: #343a40; /* Text color */
+  border-bottom: 1px solid #dee2e6; /* Separator between menu items */
+}
+
+.nav-link:hover {
+  background-color: #e9ecef; /* Hover background color */
+}
+
+/* Ensure main content stays below the fixed navbar */
+@media (min-width: 768px) {
+  .main-content {
+    padding-top: 56px; /* Height of fixed top navbar */
+  }
 }

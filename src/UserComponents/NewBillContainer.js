@@ -268,7 +268,7 @@ const NewBillContainer = ({ userData }) => {
             value={customerMobileNo}
             onChange={handleMobileNoChange}
           />
-          <button onClick={handleSubmit}>Generate Bill</button>
+          <button onClick={handleSubmit}>Generate and Print</button>
         </div>
       </div>
 
