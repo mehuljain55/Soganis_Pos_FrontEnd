@@ -60,6 +60,7 @@ table {
   width: 100%;
   border-collapse: collapse;
   margin-bottom: 20px;
+  table-layout: fixed; /* Fixed table layout */
 }
 
 table th,
@@ -67,6 +68,50 @@ table td {
   border: 1px solid #ddd;
   padding: 8px;
   text-align: left;
+  word-wrap: break-word; /* Ensure text wraps */
+  white-space: normal; /* Ensure text wraps */
+}
+
+/* Fixed column widths */
+table th:nth-child(1),
+table td:nth-child(1) {
+  width: 120px; /* Adjust as needed */
+}
+
+table th:nth-child(2),
+table td:nth-child(2) {
+  width: 150px; /* Adjust as needed */
+}
+
+table th:nth-child(3),
+table td:nth-child(3) {
+  width: 200px; /* Adjust as needed */
+}
+
+table th:nth-child(4),
+table td:nth-child(4) {
+  width: 100px; /* Adjust as needed */
+}
+
+table th:nth-child(5),
+table td:nth-child(5) {
+  width: 80px; /* Adjust as needed */
+}
+
+table th:nth-child(6),
+table td:nth-child(6) {
+  width: 100px; /* Adjust as needed */
+}
+
+table th:nth-child(7),
+table td:nth-child(7) {
+  width: 100px; /* Adjust as needed */
+}
+
+/* Input field within the quantity column */
+table td input[type="number"] {
+  width: 100%; /* Adjust width as needed */
+  box-sizing: border-box; /* Ensure padding is included in the width */
 }
 
 tfoot {
@@ -107,9 +152,6 @@ button:hover {
   flex-direction: column;
   justify-content: space-between; /* Ensure button stays at the bottom */
 }
-/* #input_2{
-  padding-top: 10px;
-} */
 
 .close {
   align-self: flex-end; /* Align to the end of the modal content */

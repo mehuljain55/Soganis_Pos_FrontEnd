@@ -42,7 +42,7 @@ const Sidebar = ({ handleMenuItemClick }) => {
           <button style={menuItemStyle} onClick={() => handleMenuItemClick('New Bill')}>New Bill</button>
         </li>
         <li>
-          <button style={menuItemStyle} onClick={() => handleMenuItemClick('View Stock')}>View Stock</button>
+          <button style={menuItemStyle} onClick={() => handleMenuItemClick('Salary Register')}>Salary Register</button>
         </li>
         <li>
           <button style={menuItemStyle} onClick={() => handleMenuItemClick('Cash Collection')}>Cash Collection</button>

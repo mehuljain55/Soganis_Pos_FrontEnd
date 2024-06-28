@@ -1,6 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import NewBillContainer from './NewBillContainer'; // Import NewBillContainer
+import SalaryRegister from './SalaryRegister';
+import UserCashCollection from './UserCashCollection'; // Import NewBillContainer
+
+
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSyncAlt } from '@fortawesome/free-solid-svg-icons';
 import './MainComponent.css'; // Import MainComponent specific CSS
@@ -54,8 +58,8 @@ const MainComponent = ({ userData }) => {
 
           {/* Render different components based on selected menu item */}
           {selectedMenuItem === 'New Bill' && <NewBillContainer userData={userData} />}
-          {selectedMenuItem === 'View Stock' && <p>View Stock Component</p>}
-          {selectedMenuItem === 'Cash Collection' && <p>Cash Collection Component</p>}
+          {selectedMenuItem === 'Salary Register' && <SalaryRegister />}
+          {selectedMenuItem === 'Cash Collection' && <UserCashCollection />}
           {selectedMenuItem === 'Today\'s Sale' && <p>Today's Sale Component</p>}
         </main>
       </div>
