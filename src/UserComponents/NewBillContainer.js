@@ -23,7 +23,6 @@ const NewBillContainer = ({ userData }) => {
         console.error('Error fetching items:', error);
       }
     };
-
     fetchItems();
   }, [searchTerm]);
 
