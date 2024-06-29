@@ -1,14 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import NewBillContainer from './NewBillContainer'; // Import NewBillContainer
-import SalaryRegister from './SalaryRegister';
-import UserCashCollection from './UserCashCollection'; // Import NewBillContainer
+import NewBillContainer from './NewBillContainer'; 
 
+import SalaryRegister from './SalaryRegister';
+import UserCashCollection from './UserCashCollection'; 
+import Salary from './Salary';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSyncAlt } from '@fortawesome/free-solid-svg-icons';
-import './MainComponent.css'; // Import MainComponent specific CSS
-import Sidebar from './Sidebar'; // Import Sidebar component
+import './MainComponent.css'; 
+import Sidebar from './Sidebar'; 
 import { API_BASE_URL } from './Config.js';
 
 const MainComponent = ({ userData }) => {
@@ -58,7 +59,7 @@ const MainComponent = ({ userData }) => {
 
           {/* Render different components based on selected menu item */}
           {selectedMenuItem === 'New Bill' && <NewBillContainer userData={userData} />}
-          {selectedMenuItem === 'Salary Register' && <SalaryRegister />}
+          {selectedMenuItem === 'Salary Register' && <Salary />}
           {selectedMenuItem === 'Cash Collection' && <UserCashCollection />}
           {selectedMenuItem === 'Today\'s Sale' && <p>Today's Sale Component</p>}
         </main>
