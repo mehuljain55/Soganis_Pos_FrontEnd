@@ -17,7 +17,10 @@ const Salary = () => {
       {view === 'register' && <SalaryRegister />}
       {view === 'generator' && <SalaryGenerator />}
     </div>
-  );
+  
+
+
+);
 };
 
 export default Salary;
