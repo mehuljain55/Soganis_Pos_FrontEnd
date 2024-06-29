@@ -1,0 +1,82 @@
+/* .salary-generator-container {
+    max-width: 100%;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: #ffffff;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  } */
+  
+  .salary-generator-container h5 {
+    font-size: 20px;
+    margin-bottom: 10px;
+  }
+  
+  .input-section {
+    margin-bottom: 20px;
+  }
+  
+  .input-section label {
+    display: block;
+    margin-bottom: 10px;
+  }
+  
+  .input-section select {
+    width: 150px;
+    padding: 8px;
+    font-size: 14px;
+  }
+  
+  .button-section {
+    margin-bottom: 20px;
+  }
+  
+  .button-section button {
+    padding: 10px 20px;
+    font-size: 16px;
+    background-color: #007bff;
+    color: #ffffff;
+    border: none;
+    cursor: pointer;
+    border-radius: 4px;
+  }
+  
+  .button-section button:disabled {
+    background-color: #ced4da;
+    cursor: not-allowed;
+  }
+  
+  .result-section {
+    margin-top: 20px;
+  }
+  
+  .result-section p {
+    margin-bottom: 10px;
+  }
+  
+  .result-section .error-message {
+    color: #dc3545;
+  }
+  
+  .result-section table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  
+  .result-section table th,
+  .result-section table td {
+    padding: 8px;
+    border: 1px solid #e0e0e0;
+    text-align: center;
+  }
+  
+  .result-section table th {
+    background-color: #f8f9fa;
+    font-weight: bold;
+  }
+  
+  .result-section table tbody tr:nth-child(even) {
+    background-color: #f0f0f0;
+  }
+  
