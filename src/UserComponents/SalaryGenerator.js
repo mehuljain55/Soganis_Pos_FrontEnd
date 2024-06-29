@@ -43,6 +43,21 @@ const SalaryGenerator = () => {
     }
   };
 
+  const updateSalaryStatus = async (salary) => {
+    try {
+      const response = await axios.post(`${API_BASE_URL}/salary/paid`, salary);
+      if (response.status === 200) {
+        alert(`Status Update: ${response.data}`);
+        fetchSalaries(); // Refresh the data
+      } else {
+        alert('Failed to update salary status');
+      }
+    } catch (error) {
+      console.error('Error updating salary status:', error);
+      alert('Error updating salary status');
+    }
+  };
+
   const years = Array.from({ length: 10 }, (v, k) => new Date().getFullYear() - k);
   const months = [
     { name: "JANUARY", value: "01" },
@@ -63,17 +78,13 @@ const SalaryGenerator = () => {
     <div className="salary-generator-container">
       <h5>Generate User Monthly Salary</h5>
       <div className="input-section">
-
-    
-          <select value={month} onChange={handleMonthChange}>
-            {months.map(m => <option key={m.value} value={m.value}>{m.name}</option>)}
-          </select>
-          <select value={year} onChange={handleYearChange}>
-            {years.map(y => <option key={y} value={y}>{y}</option>)}
-          </select>
-        
-
-            </div>
+        <select value={month} onChange={handleMonthChange}>
+          {months.map(m => <option key={m.value} value={m.value}>{m.name}</option>)}
+        </select>
+        <select value={year} onChange={handleYearChange}>
+          {years.map(y => <option key={y} value={y}>{y}</option>)}
+        </select>
+      </div>
       <div className="button-section">
         <button onClick={fetchSalaries} disabled={loading}>Generate</button>
       </div>
@@ -92,6 +103,7 @@ const SalaryGenerator = () => {
                 <th>Advance Salary</th>
                 <th>Final Amount</th>
                 <th>Status</th>
+                <th>Action</th>
               </tr>
             </thead>
             <tbody>
@@ -105,6 +117,11 @@ const SalaryGenerator = () => {
                   <td>{salary.advanceSalary}</td>
                   <td>{salary.finalAmount}</td>
                   <td>{salary.status}</td>
+                  <td>
+                    {salary.status === 'PENDING' && (
+                      <button onClick={() => updateSalaryStatus(salary)}>Mark as Paid</button>
+                    )}
+                  </td>
                 </tr>
               ))}
             </tbody>
