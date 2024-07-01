@@ -84,24 +84,29 @@ const SalaryRegister = () => {
     setRows(updatedRows);
     setErrorRows(errorRows.filter((errIndex) => errIndex !== index)); // Remove error if row is deleted
   };
-
   const handleUpdate = async () => {
+    // Filter out rows with empty userId or type set to 'SELECT' to prevent sending incomplete data
+    const filteredRows = rows.filter(row => row.userId !== '' && row.type !== 'SELECT');
+    if (filteredRows.length !== rows.length) {
+      setPopupStatus('failed');
+      setShowPopup(true);
+      return;
+    }
+  
     try {
-      // Filter out rows with empty userId to prevent sending incomplete data
-      const filteredRows = rows.filter(row => row.userId !== '');
-
       // Make the POST request to your backend endpoint
       const response = await axios.post(`${API_BASE_URL}/salary/update`, filteredRows);
-
+  
       console.log('Update response:', response.data); // Log response from the server
-
+  
       if (response.data === 'Success') {
         setPopupStatus('success');
+        setRows([]); // Clear table upon successful update
       } else {
         setPopupStatus('failed');
       }
       setShowPopup(true);
-
+  
     } catch (error) {
       console.error('Error updating salaries:', error);
       // Handle error gracefully, e.g., show error message to the user
@@ -109,6 +114,7 @@ const SalaryRegister = () => {
       setShowPopup(true);
     }
   };
+  
 
   const closePopup = () => {
     setShowPopup(false);
@@ -148,7 +154,7 @@ const SalaryRegister = () => {
               </td>
               <td>
                 <select value={row.type} onChange={(e) => handleRowChange(index, 'type', e.target.value)} disabled={!row.userId}>
-                  <option value="SELECT">SELECT</option>
+                  <option value="">SELECT</option>
                   <option value="ABSENT">ABSENT</option>
                   <option value="HALF_DAY">HALF DAY</option>
                   <option value="ADVANCE">ADVANCE</option>
@@ -192,7 +198,7 @@ const SalaryRegister = () => {
             ) : (
               <div>
                 <span style={{ fontSize: '60px', color: 'red' }}>&#10008;</span>
-                <p>Update failed. Please try again.</p>
+                <p>Update failed. Please check your entries and try again.</p>
               </div>
             )}
             <button className="close" onClick={closePopup}>Close</button>

@@ -1,82 +1,161 @@
-/* .salary-generator-container {
-    max-width: 100%;
-    margin: 0 auto;
-    padding: 20px;
-    background-color: #ffffff;
-    border: 1px solid #e0e0e0;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  } */
-  
-  .salary-generator-container h5 {
-    font-size: 20px;
-    margin-bottom: 10px;
-  }
-  
-  .input-section {
-    margin-bottom: 20px;
-  }
-  
-  .input-section label {
-    display: block;
-    margin-bottom: 10px;
-  }
-  
-  .input-section select {
-    width: 150px;
-    padding: 8px;
-    font-size: 14px;
-  }
-  
-  .button-section {
-    margin-bottom: 20px;
-  }
-  
-  .button-section button {
-    padding: 10px 20px;
-    font-size: 16px;
-    background-color: #007bff;
-    color: #ffffff;
-    border: none;
-    cursor: pointer;
-    border-radius: 4px;
-  }
-  
-  .button-section button:disabled {
-    background-color: #ced4da;
-    cursor: not-allowed;
-  }
-  
-  .result-section {
-    margin-top: 20px;
-  }
-  
-  .result-section p {
-    margin-bottom: 10px;
-  }
-  
-  .result-section .error-message {
-    color: #dc3545;
-  }
-  
-  .result-section table {
-    width: 100%;
-    border-collapse: collapse;
-  }
-  
-  .result-section table th,
-  .result-section table td {
-    padding: 8px;
-    border: 1px solid #e0e0e0;
-    text-align: center;
-  }
-  
-  .result-section table th {
-    background-color: #f8f9fa;
-    font-weight: bold;
-  }
-  
-  .result-section table tbody tr:nth-child(even) {
-    background-color: #f0f0f0;
-  }
-  
+.salary-generator-container {
+  padding: 20px;
+  max-width: 100%;
+  margin: 0 auto;
+  background-color: #ffffff;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.salary-generator-container h5 {
+  font-size: 20px;
+  margin-bottom: 10px;
+}
+
+.input-section {
+  margin-bottom: 20px;
+}
+
+.input-section label {
+  display: block;
+  margin-bottom: 10px;
+}
+
+.input-section select {
+  width: 150px;
+  padding: 8px;
+  font-size: 14px;
+}
+
+.button-section {
+  margin-bottom: 20px;
+}
+
+.button-section button {
+  padding: 10px 20px;
+  font-size: 16px;
+  background-color: #007bff;
+  color: #ffffff;
+  border: none;
+  cursor: pointer;
+  border-radius: 4px;
+}
+
+.button-section button:disabled {
+  background-color: #ced4da;
+  cursor: not-allowed;
+}
+
+.result-section {
+  margin-top: 20px;
+}
+
+.result-section p {
+  margin-bottom: 10px;
+}
+
+.result-section .error-message {
+  color: #dc3545;
+}
+
+.result-section table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 20px;
+}
+
+.result-section table th,
+.result-section table td {
+  padding: 12px; 
+  border: 1px solid #e0e0e0;
+  text-align: center;
+}
+
+.result-section table th {
+  background-color: #f8f9fa;
+  font-weight: bold;
+}
+
+.result-section table tbody tr:nth-child(even) {
+  background-color: #f0f0f0;
+}
+
+/* Manually setting padding and width for each column */
+.result-section table th:nth-child(1),
+.result-section table td:nth-child(1) {
+  width: 10%; 
+}
+
+.result-section table th:nth-child(2),
+.result-section table td:nth-child(2) {
+  width: 10%; 
+}
+
+.result-section table th:nth-child(3),
+.result-section table td:nth-child(3) {
+  width: 10%; 
+}
+
+.result-section table th:nth-child(4),
+.result-section table td:nth-child(4) {
+  width: 10%; 
+}
+
+.result-section table th:nth-child(5),
+.result-section table td:nth-child(5) {
+  width: 10%;  
+}
+
+.result-section table th:nth-child(6),
+.result-section table td:nth-child(6) {
+  width: 10%; 
+}
+
+.result-section table th:nth-child(7),
+.result-section table td:nth-child(7) { 
+  width: 10%; 
+}
+
+
+
+.salary-pop-up .modal-content {
+  background-color: #f7f7f7;
+  border-radius: 10px;
+  width: 150% !important;  /* Example width */
+  height: 30% !important; /* Example height */
+  margin: auto; /* Center the modal */
+  padding: 20px; /* Example padding */
+}
+
+.salary-pop-up .modal-body {
+  max-height: calc(100% - 80px); /* Adjust max height for modal body */
+  overflow-y: auto;
+}
+
+.salary-pop-up table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 20px;
+}
+
+.salary-pop-up th,
+.salary-pop-up td {
+  padding: 8px;
+  text-align: left;
+  border: 1px solid #dee2e6;
+}
+
+.salary-pop-up th {
+  background-color: #f8f9fa;
+  font-weight: bold;
+}
+
+.salary-pop-up tbody tr:nth-child(even) {
+  background-color: #f0f0f0;
+}
+
+.wrap-text {
+  white-space: normal;
+  word-wrap: break-word;
+}
