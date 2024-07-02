@@ -1,5 +1,3 @@
-/* NewBillContainer.css */
-
 /* General styles */
 body {
   font-family: Arial, sans-serif;
@@ -153,10 +151,20 @@ button:hover {
   justify-content: space-between; /* Ensure button stays at the bottom */
 }
 
+/* Customer Details Container */
+.customer-detail {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 5px;
+}
+
 .close {
-  align-self: flex-end; /* Align to the end of the modal content */
   cursor: pointer;
   font-size: 24px;
+  border: none; /* Remove border */
+  border-radius: 0% ;
+  background: none; /* Remove default button styles */
 }
 
 .close:hover {

@@ -254,18 +254,22 @@ const NewBillContainer = ({ userData }) => {
       {/* Modal for customer details */}
       <div ref={modalRef} className="modal">
         <div className="modal-content">
-          <span className="close" onClick={closeModal}>&times;</span>
-          <h2>Enter Customer Details</h2>
+          <div className="customer-detail">
+            <h5>Customer Details</h5>
+            <span className="close" onClick={closeModal}>&times;</span>
+          </div>
           <input
             type="text"
             placeholder="Customer Name"
             value={customerName}
+            className='customer-detail'
             onChange={handleNameChange}
           />
           <input
             type="text"
             placeholder="Customer Mobile No"
             value={customerMobileNo}
+            className='customer-detail'
             onChange={handleMobileNoChange}
           />
           <button onClick={handleSubmit}>Generate and Print</button>

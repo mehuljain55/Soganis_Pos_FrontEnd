@@ -159,3 +159,10 @@
   white-space: normal;
   word-wrap: break-word;
 }
+
+th small {
+  display: block;
+  font-size: 0.5em;
+  color: #666;
+  margin-top: 5px; /* Adjust margin as needed */
+}

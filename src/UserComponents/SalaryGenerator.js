@@ -132,10 +132,16 @@ const SalaryGenerator = () => {
                 <th>User Name</th>
                 <th>Monthly Salary</th>
                 <th>Salary Deducted</th>
-                <th>Advance Salary</th>
-                <th>Final Amount</th>
+                <th>Advance Salary Paid</th>
+                <th>
+    Final Amount
+    <br />
+    <small> Amount = MS - AP - SD</small>
+  </th>
                 <th>Month FY</th>
                 <th>Status</th>
+                <th>View</th>
+      
                 <th>Action</th>
               </tr>
             </thead>
@@ -150,18 +156,13 @@ const SalaryGenerator = () => {
                   <td>{salary.month_fy}</td>
                   <td>{salary.status}</td>
                   <td>
-                    <div>
-                   <div>
-                    {salary.status === 'PENDING' && (
-                      <button onClick={() => updateSalaryStatus(salary)}>Mark as Paid</button>
-                    )}
-                    </div>
-                    <div>
-                    <button onClick={() => viewSalaryStatement(salary.userId, salary.month_fy)} >View</button>
-                   </div>
-                   
-                    </div>
+                  <button onClick={() => viewSalaryStatement(salary.userId, salary.month_fy)} >View</button>
                   </td>
+                 <td>
+                    {salary.status === 'PENDING' && (
+                      <button  onClick={() => updateSalaryStatus(salary)}>Mark as Paid</button>
+                    )}
+                 </td>
                 </tr>
               ))}
             </tbody>
