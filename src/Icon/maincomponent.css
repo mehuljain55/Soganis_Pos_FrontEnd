@@ -1,0 +1,149 @@
+/* styles.css */
+
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    display: flex;
+    flex-direction: column;
+    min-height: 120vh;
+    background-image: url('/Soganis/mainbg.jpg');
+    background-color: #e7e7e7;
+    background-size: cover;
+    background-position: center;
+}
+
+.site-header {
+    display: flex;
+    justify-content: center;
+    /* Center contents horizontally */
+    align-items: center;
+    /* Center contents vertically */
+    /* padding: 10px 20px; */
+    background-color: rgba(200, 207, 223, 0.539);
+    color: white;
+    height: 100px;
+}
+
+.logo {
+    height: 90px;
+    margin-right: 15px;
+    /* Space between logo and company name */
+}
+
+
+.display-data img {
+    width: 10px;
+    height: 10px;
+    cursor: pointer;
+
+}
+
+.display-data button {
+    background-color: rgba(255, 255, 255, 0.8);
+    border-radius: 5px;
+}
+
+.mainheading {
+    margin-bottom: 5px;
+}
+
+#Mainheading {
+    color: rgb(0, 0, 0);
+    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+    font-size: 40px;
+    /* margin-right: 20px; */
+    /* float: left; */
+    /* margin: 10px; */
+}
+
+.display-data {
+    margin-left: 10px;
+    font-weight: bold;
+    font-size: 15px;
+    padding: 9px;
+    border-radius: 10px;
+    background-color: rgba(255, 255, 255, 0.8);
+}
+#billingheading
+{
+    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+}
+.main-content {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    /* Center horizontally */
+    align-items: center;
+    /* Center vertically */
+    padding: 20px;
+}
+
+.content-container {
+    background-color: rgba(255, 255, 255, 0.8);
+    /* Semi-transparent background */
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
+    /* Box shadow for content */
+    max-width: 800px;
+    width: 100%;
+    text-align: center;
+    /* Center text inside container */
+    margin: 0 20px;
+    /* Margin for horizontal centering */
+    box-sizing: border-box;
+}
+
+.section-links {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 20px;
+    margin-top: 20px;
+}
+
+.redirectbox {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 200px;
+    /* Set width */
+    height: 100px;
+    /* Set height */
+    background-color:rgb(113, 142, 159);
+    /* Blue background with 80% opacity */
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    /* Add box shadow */
+    transition: background-color 0.3s, box-shadow 0.3s;
+}
+
+.redirectbox:hover {
+    background-color: rgba(33, 59, 86, 0.8);
+    /* Darker blue on hover */
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+    /* Stronger shadow on hover */
+}
+
+.section-link {
+    color: rgb(0, 0, 0);
+    text-decoration: none;
+    font-size: 18px;
+    font-weight: bold;
+}
+
+
+
+.site-footer {
+    background-color: rgba(255, 255, 255, 0.9);
+    padding: 20px;
+    text-align: center;
+    background-color: rgba(245, 244, 244, 0.7);
+    border-top: 1px solid #e7e7e7;
+}
+
+
+.site-footer p {
+    margin: 5px 0;
+    color: #333;
+}

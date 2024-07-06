@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Company Login Page</title>
+    <link rel="stylesheet" href="login.css">
+</head>
+<body>
+    <header class="site-header">
+        <img src="../Icon/Logo.png" alt="Company Logo" class="logo">
+    </header>
+
+    <div class="login-background">
+        <div class="login-container">
+            <h2>Login</h2>
+            <form action="/login" method="post">
+                <label for="user-id">User ID:</label>
+                <input type="text" id="user-id" name="user-id" required>
+                
+                <label for="password">Password:</label>
+                <input type="password" id="password" name="password" required>
+                
+                <button type="submit">Login</button>
+            </form>
+            <a href="/forgot-password" class="forgot-password">Forgot Password?</a>
+        </div>
+    </div>
+
+    <footer class="site-footer">
+        <p> <b>Contact Us:</b>0731 495 7094</p>
+        <p> <b>Email:</b>info@company.com</p>
+        <p><b>Address:</b>  UG 17, Hotel Crown Place, Opposite Jain Samvsharan Mandir <br>  18, Road, Trade Centre, South Tukoganj<br> Indore, Madhya Pradesh 452001<br/>
+        </p>
+    </footer>
+</body>
+</html>
