@@ -3,6 +3,7 @@ import axios from 'axios';
 import NewBillContainer from './NewBillContainer'; 
 import Salary from './Salary';
 import UserCashCollection from './UserCashCollection'; 
+import FilterPage from './FilterPage'; 
 import Sidebar from './Sidebar'; 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSyncAlt } from '@fortawesome/free-solid-svg-icons';
@@ -58,6 +59,9 @@ const MainComponent = ({ userData }) => {
           {selectedMenuItem === 'New Bill' && <NewBillContainer userData={userData} />}
           {selectedMenuItem === 'Salary Register' && <Salary />}
           {selectedMenuItem === 'Cash Collection' && <UserCashCollection />}
+          {selectedMenuItem === 'Cash Collection' && <UserCashCollection />}
+          {selectedMenuItem === 'View Stock' && <FilterPage />}
+          
           {selectedMenuItem === 'Today\'s Sale' && <p>Today's Sale Component</p>}
         </main>
       </div>

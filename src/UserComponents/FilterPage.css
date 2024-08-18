@@ -1,0 +1,43 @@
+.table-container {
+    max-height: 400px; /* Adjust as needed */
+    overflow: auto;
+    margin-top: 20px;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    table-layout: fixed; /* Ensures columns are of fixed width */
+}
+
+th, td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: left;
+    white-space: nowrap; /* Prevents text from wrapping */
+}
+
+th {
+    background-color: #f4f4f4;
+    position: -webkit-sticky; /* For Safari */
+    position: sticky;
+    top: 0; /* Keeps the header on top while scrolling */
+    z-index: 1; /* Ensures header is above the rows */
+}
+
+tbody {
+    display: block;
+    height: 300px; /* Adjust as needed */
+    overflow-y: auto;
+    width: 100%;
+}
+
+thead, tbody tr {
+    display: table;
+    width: calc(100% - 1em); /* Adjust for padding */
+    table-layout: fixed;
+}
+
+thead {
+    display: table-header-group; /* Keeps the header visible */
+}

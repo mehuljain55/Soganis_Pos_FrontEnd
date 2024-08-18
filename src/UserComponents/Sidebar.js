@@ -13,9 +13,17 @@ const Sidebar = ({ handleMenuItemClick }) => {
       <button onClick={() => handleMenuItemClick('Cash Collection')}>
         Cash Collection
       </button>
+      
+      <button onClick={() => handleMenuItemClick('View Stock')}>
+       View Stock
+      </button>
+
+      
       <button onClick={() => handleMenuItemClick('Today\'s Sale')}>
         Today's Sale
       </button>
+
+
     </nav>
   );
 };

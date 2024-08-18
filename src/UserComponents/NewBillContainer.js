@@ -276,7 +276,7 @@ const NewBillContainer = ({ userData }) => {
         </div>
       </div>
 
-      {/* Button to open modal */}
+  
       <button onClick={openModal}>Bill</button>
     </div>
   );
