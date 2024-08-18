@@ -1,40 +1,66 @@
+/* MainComponent.css */
+
+/* Adjust container to take full viewport height */
 .container-fluid {
   display: flex;
-  min-height: 100vh; /* Ensures full height of viewport */
+  flex-direction: column;
+  height: 100vh;
+  overflow: hidden; /* Prevents overflow issues */
+}
+
+.top-bar {
+  width: 100%;
+  background-color: #343a40;
+  color: #fff;
+  padding: 10px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: fixed; /* Keeps the top bar fixed */
+  top: 0;
+  left: 0;
+  z-index: 1000; /* Ensures it's above other elements */
+  height: 60px; /* Adjust if needed */
+}
+
+.main-content-wrapper {
+  display: flex;
+  flex-direction: row;
+  flex-grow: 1;
+  margin-top: 60px; /* Matches the height of the top bar */
+  height: calc(100vh - 60px); /* Ensures the content fits in the remaining space */
 }
 
 .sidebar {
-  position: fixed;
-  top: 0;
-  left: 0;
-  height: 100%;
-  width: 250px; /* Adjust width as needed */
-  background-color: #f8f9fa; /* Light background color */
+  width: 250px;
+  background-color: #007bff;
   padding: 20px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  height: 100%;
+  position: fixed; /* Keeps the sidebar fixed */
+  top: 60px; /* Position it below the top bar */
+  left: 0;
+  z-index: 100; /* Ensure it's above the main content */
 }
 
 .main-content {
-  margin-left: 250px; /* Ensure content doesn't overlap with sidebar */
+  margin-left: 250px; /* Push the content to the right to make space for the sidebar */
   padding: 20px;
+  background-color: #fff;
+  overflow-y: auto; /* Allows scrolling if content exceeds the viewport */
+  flex-grow: 1;
+  height: 100%; /* Ensures it takes the full height of the container */
 }
 
-.main-content h1 {
-  font-size: 2.5rem;
-  font-weight: bold;
-  margin-bottom: 20px;
+button.refresh-button {
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  padding: 5px 10px;
+  cursor: pointer;
+  border-radius: 4px;
 }
 
-.main-content h4 {
-  font-size: 1.5rem;
-  font-weight: bold;
-}
-
-.main-content p {
-  font-size: 1.1rem;
-  margin-top: 10px;
-}
-
-.main-content .btn-outline-secondary {
-  font-size: 1rem;
+button.refresh-button:hover {
+  background-color: #0056b3;
 }

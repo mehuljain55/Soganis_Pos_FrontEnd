@@ -124,6 +124,7 @@ button {
   border: none;
   cursor: pointer;
   font-size: 16px;
+  border-radius: 4px; /* Rounded corners */
 }
 
 button:hover {
@@ -156,7 +157,7 @@ button:hover {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin: 5px;
+  margin: 5px 0;
 }
 
 .close {
