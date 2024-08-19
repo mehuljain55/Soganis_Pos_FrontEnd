@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import './FilterPage.css'; // Import custom CSS for styling
+import './FilterSalesPage.css'; // Import custom CSS for styling
 
-const FilterPage = () => {
+const FilterSalesPage = () => {
   const [filters, setFilters] = useState({
     dateRange: false,
     item: false,
@@ -87,10 +87,6 @@ const FilterPage = () => {
         </label>
       </div>
 
-   
-
-
-
       {/* Dropdowns for each filter */}
       {filters.dateRange && (
         <div className="dropdown-group">
@@ -114,23 +110,7 @@ const FilterPage = () => {
         </div>
       )}
 
-      {filters.item && (
-        <div className="dropdown-group">
-          <label htmlFor="itemDropdown">Select Item Code:</label>
-          <select
-            id="itemDropdown"
-            name="item"
-            value={selectedFilters.item}
-            onChange={handleDropdownChange}
-          >
-            <option value="">--Select--</option>
-            <option value="item1">Item 1</option>
-            <option value="item2">Item 2</option>
-            <option value="item3">Item 3</option>
-          </select>
-        </div>
-      )}
-
+      {/* Conditionally render school dropdown before item dropdown */}
       {filters.school && (
         <div className="dropdown-group">
           <label htmlFor="schoolDropdown">Select School Code:</label>
@@ -147,8 +127,25 @@ const FilterPage = () => {
           </select>
         </div>
       )}
+
+      {filters.item && (
+        <div className="dropdown-group">
+          <label htmlFor="itemDropdown">Select Item Code:</label>
+          <select
+            id="itemDropdown"
+            name="item"
+            value={selectedFilters.item}
+            onChange={handleDropdownChange}
+          >
+            <option value="">--Select--</option>
+            <option value="item1">Item 1</option>
+            <option value="item2">Item 2</option>
+            <option value="item3">Item 3</option>
+          </select>
+        </div>
+      )}
     </div>
   );
 };
 
-export default FilterPage;
+export default FilterSalesPage;
