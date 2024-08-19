@@ -107,6 +107,7 @@ const FilterSalesPage = () => {
             value={selectedFilters.dateRange.endDate}
             onChange={handleDateChange}
           />
+          
         </div>
       )}
 
