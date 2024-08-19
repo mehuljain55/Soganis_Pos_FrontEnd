@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import './FilterSalesPage.css'; // Import custom CSS for styling
 import axios from 'axios';
 import { API_BASE_URL } from './Config.js';
+import SalesReport from './SalesReport'; // Import the SalesReport component
 
 const FilterSalesPage = () => {
   const [filters, setFilters] = useState({
@@ -19,6 +20,7 @@ const FilterSalesPage = () => {
   const [schools, setSchools] = useState([]);
   const [items, setItems] = useState([]);
   const [filteredItems, setFilteredItems] = useState([]);
+  const [salesData, setSalesData] = useState([]);
   const [errorMessage, setErrorMessage] = useState('');
 
   const handleCheckboxChange = (event) => {
@@ -102,6 +104,64 @@ const FilterSalesPage = () => {
       }
     }
   }, [filters.item, selectedFilters.school]);
+
+  const fetchSalesData = () => {
+    let url = `${API_BASE_URL}/report/findReportAll`; // Default URL for all reports
+    const params = {};
+  
+    // Check if Date Range filter is selected
+    if (filters.dateRange) {
+      params.startDate = selectedFilters.dateRange.startDate;
+      params.endDate = selectedFilters.dateRange.endDate;
+    }
+  
+    // Check if School filter is selected
+    if (filters.school && selectedFilters.school) {
+      params.schoolCode = selectedFilters.school;
+    }
+  
+    // Check if Item filter is selected
+    if (filters.item && selectedFilters.item) {
+      params.itemCode = selectedFilters.item;
+    }
+  
+    // Determine the URL based on the filters
+    if (filters.dateRange && filters.school && filters.item) {
+      url = `${API_BASE_URL}/report/school_item_type_date`;
+    } else if (filters.dateRange && filters.school) {
+      url = `${API_BASE_URL}/report/school_code_and_date`;
+    } else if (filters.dateRange && filters.item) {
+      url = `${API_BASE_URL}/report/item_code_and_date`;
+    } else if (filters.school && filters.item) {
+      url = `${API_BASE_URL}/report/school_and_item_type`;
+    } else if (filters.dateRange) {
+      url = `${API_BASE_URL}/report/sales_date`;
+    } else if (filters.school) {
+      url = `${API_BASE_URL}/report/school_code`;
+    } else if (filters.item) {
+      url = `${API_BASE_URL}/report/item_code`;
+    }
+  
+    // Make the API call
+    if (Object.keys(params).length > 0) {
+      axios.get(url, { params })
+        .then(response => {
+          setSalesData(response.data);
+        })
+        .catch(error => {
+          console.error('Error fetching sales data:', error);
+        });
+    } else {
+      // If no filters are applied, fetch all sales data
+      axios.get(url)
+        .then(response => {
+          setSalesData(response.data);
+        })
+        .catch(error => {
+          console.error('Error fetching sales data:', error);
+        });
+    }
+  };
 
   return (
     <div className="filter-container">
@@ -206,6 +266,14 @@ const FilterSalesPage = () => {
           {errorMessage}
         </div>
       )}
+
+      {/* Search Button */}
+      <button onClick={fetchSalesData} className="search-button">
+        Search
+      </button>
+
+      {/* Render SalesReport component with fetched data */}
+      <SalesReport data={salesData} />
     </div>
   );
 };
