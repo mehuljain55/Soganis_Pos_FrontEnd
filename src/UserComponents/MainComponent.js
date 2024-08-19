@@ -4,7 +4,6 @@ import NewBillContainer from './NewBillContainer';
 import Salary from './Salary';
 import UserCashCollection from './UserCashCollection'; 
 import FilterPage from './FilterPage'; 
-import Sidebar from './Sidebar'; 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSyncAlt } from '@fortawesome/free-solid-svg-icons';
 import './MainComponent.css'; 
@@ -52,17 +51,21 @@ const MainComponent = ({ userData }) => {
         )}
       </div>
       
-      {/* Sidebar and Main Content in Horizontal Layout */}
+      {/* Button Navigation and Main Content */}
       <div className="main-content-wrapper">
-        <Sidebar handleMenuItemClick={handleMenuItemClick} />
+        <div className="button-group">
+          <button onClick={() => handleMenuItemClick('New Bill')}>New Bill</button>
+          <button onClick={() => handleMenuItemClick('Salary Register')}>Salary Register</button>
+          <button onClick={() => handleMenuItemClick('Cash Collection')}>Cash Collection</button>
+          <button onClick={() => handleMenuItemClick('View Stock')}>View Stock</button>
+          <button onClick={() => handleMenuItemClick("Today's Sale")}>Today's Sale</button>
+        </div>
         <main className="main-content">
           {selectedMenuItem === 'New Bill' && <NewBillContainer userData={userData} />}
           {selectedMenuItem === 'Salary Register' && <Salary />}
           {selectedMenuItem === 'Cash Collection' && <UserCashCollection />}
-          {selectedMenuItem === 'Cash Collection' && <UserCashCollection />}
           {selectedMenuItem === 'View Stock' && <FilterPage />}
-          
-          {selectedMenuItem === 'Today\'s Sale' && <p>Today's Sale Component</p>}
+          {selectedMenuItem === "Today's Sale" && <p>Today's Sale Component</p>}
         </main>
       </div>
     </div>
