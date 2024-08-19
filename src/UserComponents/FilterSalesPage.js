@@ -1,5 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './FilterSalesPage.css'; // Import custom CSS for styling
+import axios from 'axios';
+import { API_BASE_URL } from './Config.js';
 
 const FilterSalesPage = () => {
   const [filters, setFilters] = useState({
@@ -14,12 +16,31 @@ const FilterSalesPage = () => {
     school: '',
   });
 
+  const [schools, setSchools] = useState([]);
+  const [items, setItems] = useState([]);
+  const [filteredItems, setFilteredItems] = useState([]);
+  const [errorMessage, setErrorMessage] = useState('');
+
   const handleCheckboxChange = (event) => {
     const { name, checked } = event.target;
     setFilters((prevFilters) => ({
       ...prevFilters,
       [name]: checked,
     }));
+    
+    // Reset the selections when filters are changed
+    if (name === 'school' && !checked) {
+      setSelectedFilters((prevSelected) => ({
+        ...prevSelected,
+        school: '',
+      }));
+    }
+    if (name === 'item' && !checked) {
+      setSelectedFilters((prevSelected) => ({
+        ...prevSelected,
+        item: '',
+      }));
+    }
   };
 
   const handleDropdownChange = (event) => {
@@ -28,6 +49,9 @@ const FilterSalesPage = () => {
       ...prevSelected,
       [name]: value,
     }));
+    if (name === 'school') {
+      setErrorMessage(''); // Clear error when a school is selected
+    }
   };
 
   const handleDateChange = (event) => {
@@ -41,22 +65,47 @@ const FilterSalesPage = () => {
     }));
   };
 
-  const identifyFilter = () => {
-    const { dateRange, item, school } = filters;
+  // Fetch schools when the school filter is selected
+  useEffect(() => {
+    if (filters.school) {
+      axios.get(`${API_BASE_URL}/filter/getSchool`)
+        .then(response => {
+          setSchools(response.data);
+        })
+        .catch(error => {
+          console.error('Error fetching schools:', error);
+        });
+    }
+  }, [filters.school]);
 
-    if (dateRange && item && school) return 'Filter 7 - Item, School, Date Range';
-    if (dateRange && item) return 'Filter 4 - Date Range, Item';
-    if (dateRange && school) return 'Filter 5 - Date Range, School';
-    if (item && school) return 'Filter 6 - Item, School';
-    if (dateRange) return 'Filter 1 - Date Range';
-    if (item) return 'Filter 2 - Item';
-    if (school) return 'Filter 3 - School';
-    return 'No Filter Selected';
-  };
+  // Fetch items when the item filter is selected and populate based on school code
+  useEffect(() => {
+    if (filters.item) {
+      if (selectedFilters.school) {
+        axios.get(`${API_BASE_URL}/filter/school/item_type`, { params: { schoolCode: selectedFilters.school } })
+          .then(response => {
+            setFilteredItems(response.data);
+          })
+          .catch(error => {
+            console.error('Error fetching filtered items:', error);
+          });
+      } else if (filters.item && filters.school && !selectedFilters.school) {
+        setErrorMessage('Please select a school first.');
+      } else {
+        axios.get(`${API_BASE_URL}/filter/item_type`)
+          .then(response => {
+            setItems(response.data);
+          })
+          .catch(error => {
+            console.error('Error fetching items:', error);
+          });
+      }
+    }
+  }, [filters.item, selectedFilters.school]);
 
   return (
     <div className="filter-container">
-      <h1>Select Filters</h1>
+      <h1>View Sales</h1>
       <div className="checkbox-group">
         <label>
           <input
@@ -107,11 +156,10 @@ const FilterSalesPage = () => {
             value={selectedFilters.dateRange.endDate}
             onChange={handleDateChange}
           />
-          
         </div>
       )}
 
-      {/* Conditionally render school dropdown before item dropdown */}
+      {/* Conditionally render school dropdown */}
       {filters.school && (
         <div className="dropdown-group">
           <label htmlFor="schoolDropdown">Select School Code:</label>
@@ -122,13 +170,16 @@ const FilterSalesPage = () => {
             onChange={handleDropdownChange}
           >
             <option value="">--Select--</option>
-            <option value="school1">School 1</option>
-            <option value="school2">School 2</option>
-            <option value="school3">School 3</option>
+            {schools.map((school, index) => (
+              <option key={index} value={school}>
+                {school}
+              </option>
+            ))}
           </select>
         </div>
       )}
 
+      {/* Conditionally render item dropdown */}
       {filters.item && (
         <div className="dropdown-group">
           <label htmlFor="itemDropdown">Select Item Code:</label>
@@ -137,12 +188,22 @@ const FilterSalesPage = () => {
             name="item"
             value={selectedFilters.item}
             onChange={handleDropdownChange}
+            disabled={!selectedFilters.school && filters.school && filters.item}
           >
             <option value="">--Select--</option>
-            <option value="item1">Item 1</option>
-            <option value="item2">Item 2</option>
-            <option value="item3">Item 3</option>
+            {(selectedFilters.school ? filteredItems : items).map((item, index) => (
+              <option key={index} value={item}>
+                {item}
+              </option>
+            ))}
           </select>
+        </div>
+      )}
+
+      {/* Display error message if applicable */}
+      {errorMessage && (
+        <div className="error-message">
+          {errorMessage}
         </div>
       )}
     </div>
