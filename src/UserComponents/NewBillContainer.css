@@ -1,172 +1,219 @@
-/* General styles */
-body {
-  font-family: Arial, sans-serif;
-  background-color: #f5f5f5; /* Light grey background */
+.new-bill-container {
   padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
 }
 
-h2 {
-  text-align: center;
+.new-bill-container h2 {
   margin-bottom: 20px;
 }
 
-/* Search bar */
 .search-bar {
   position: relative;
-  margin-bottom: 10px;
+  margin-bottom: 20px;
 }
 
-.search-bar input[type="text"] {
+.search-bar input {
   width: 100%;
   padding: 10px;
-  font-size: 16px;
   border: 1px solid #ccc;
   border-radius: 4px;
-  box-sizing: border-box;
 }
 
-/* Dropdown */
 .dropdown {
   position: absolute;
-  width: 100%;
-  max-height: 200px; /* Example fixed height */
-  overflow-y: auto;
+  top: 100%;
+  left: 0;
+  right: 0;
   border: 1px solid #ccc;
-  background-color: #f0f0f0; /* Grey background color */
-  z-index: 1000; /* Ensure dropdown is above other elements */
+  border-radius: 4px;
+  background-color: #fff;
+  max-height: 200px;
+  overflow-y: auto;
 }
 
+/* Dropdown Table Column Sizes */
 .dropdown table {
   width: 100%;
   border-collapse: collapse;
 }
 
-.dropdown th,
-.dropdown td {
-  border: 1px solid #ddd;
+.dropdown th, .dropdown td {
   padding: 8px;
-  text-align: left;
+  border-bottom: 1px solid #ddd;
 }
 
-.dropdown tbody tr:hover {
-  background-color: #dcdcdc; /* Hover background color */
-  cursor: pointer;
+/* Set specific column widths */
+.dropdown th:nth-child(1), .dropdown td:nth-child(1) {
+  width: 150px; /* Adjust width as needed */
 }
 
-/* Billing items table */
-table {
+.dropdown th:nth-child(2), .dropdown td:nth-child(2) {
+  width: 200px; /* Adjust width as needed */
+}
+
+.dropdown th:nth-child(3), .dropdown td:nth-child(3) {
+  width: 100px; /* Adjust width as needed */
+}
+
+.dropdown th:nth-child(4), .dropdown td:nth-child(3) {
+  width: 100px; /* Adjust width as needed */
+}
+
+.dropdown th:nth-child(5), .dropdown td:nth-child(3) {
+  width: 100px; /* Adjust width as needed */
+}
+
+.dropdown th:nth-child(6), .dropdown td:nth-child(3) {
+  width: 100px; /* Adjust width as needed */
+}
+
+/* Additional styles */
+.dropdown th {
+  background-color: #f4f4f4;
+}
+
+.dropdown td {
+  white-space: nowrap; /* Prevent text wrapping */
+}
+
+
+/* Additional styles */
+.dropdown th {
+  background-color: #f4f4f4;
+}
+
+.dropdown td {
+  white-space: nowrap; /* Prevent text wrapping */
+}
+
+/* Ensure cursor shows as a hand when hovering over dropdown items */
+.dropdown td {
+  cursor: pointer; /* Changes cursor to a hand on hover */
+}
+
+
+.billing-table-container {
+  overflow: auto;
+  max-height: 400px; /* Adjust based on your requirements */
+}
+
+.billing-table {
   width: 100%;
   border-collapse: collapse;
-  margin-bottom: 20px;
-  table-layout: fixed; /* Fixed table layout */
+  table-layout: fixed; /* Ensure fixed column widths */
 }
 
-table th,
-table td {
+.billing-table th, .billing-table td {
+  padding: 10px;
   border: 1px solid #ddd;
-  padding: 8px;
   text-align: left;
-  word-wrap: break-word; /* Ensure text wraps */
-  white-space: normal; /* Ensure text wraps */
+  white-space: nowrap; /* Prevent text wrapping */
 }
 
-/* Fixed column widths */
-table th:nth-child(1),
-table td:nth-child(1) {
-  width: 120px; /* Adjust as needed */
-}
-
-table th:nth-child(2),
-table td:nth-child(2) {
-  width: 150px; /* Adjust as needed */
-}
-
-table th:nth-child(3),
-table td:nth-child(3) {
-  width: 200px; /* Adjust as needed */
-}
-
-table th:nth-child(4),
-table td:nth-child(4) {
-  width: 100px; /* Adjust as needed */
-}
-
-table th:nth-child(5),
-table td:nth-child(5) {
-  width: 80px; /* Adjust as needed */
-}
-
-table th:nth-child(6),
-table td:nth-child(6) {
-  width: 100px; /* Adjust as needed */
-}
-
-table th:nth-child(7),
-table td:nth-child(7) {
-  width: 100px; /* Adjust as needed */
-}
-
-/* Input field within the quantity column */
-table td input[type="number"] {
-  width: 100%; /* Adjust width as needed */
-  box-sizing: border-box; /* Ensure padding is included in the width */
-}
-
-tfoot {
+.billing-table tfoot tr td {
   font-weight: bold;
 }
 
-/* Buttons */
+.bill-summary {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.total-amount, .item-count {
+  display: flex;
+  justify-content: space-between;
+  font-size: 1.2em; /* Increase font size */
+  font-weight: bold; /* Make text bold */
+}
+
+
+
+.customer-detail {
+  margin-bottom: 10px;
+}
+
+.customer-detail input {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
 button {
   padding: 10px 20px;
-  background-color: #007bff; /* Blue button */
-  color: #fff;
   border: none;
+  border-radius: 4px;
+  background-color: #007bff;
+  color: #fff;
   cursor: pointer;
-  font-size: 16px;
 }
 
 button:hover {
-  background-color: #0056b3; /* Darker blue on hover */
+  background-color: #0056b3;
 }
 
-/* Modal */
+
+/* NewBillContainer.css */
+.new-bill-container {
+  padding: 20px;
+}
+
+.search-bar {
+  margin-bottom: 20px;
+}
+
+.items-table {
+  margin-bottom: 20px;
+}
+
+.total-amount {
+  margin-bottom: 20px;
+}
+
+.customer-info {
+  margin-bottom: 20px;
+}
+
+button {
+  margin-right: 10px;
+}
+
 .modal {
-  background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent background */
-  z-index: 999;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  display: none;
+  position: fixed;
+  z-index: 1;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgb(0,0,0);
+  background-color: rgba(0,0,0,0.4);
+  padding-top: 60px;
 }
 
 .modal-content {
-  background-color: #fff;
-  margin: 14% auto !important;
+  background-color: #fefefe;
+  margin: 5% auto;
   padding: 20px;
-  border-radius: 5px;
-  width: 300px !important;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
-  display: flex !important;
-  flex-direction: column;
-  justify-content: space-between; /* Ensure button stays at the bottom */
-}
-
-/* Customer Details Container */
-.customer-detail {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin: 5px;
+  border: 1px solid #888;
+  width: 80%;
 }
 
 .close {
-  cursor: pointer;
-  font-size: 24px;
-  border: none; /* Remove border */
-  border-radius: 0% ;
-  background: none; /* Remove default button styles */
+  color: #aaa;
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
 }
 
-.close:hover {
-  color: red; /* Red color on hover */
+.close:hover,
+.close:focus {
+  color: black;
+  text-decoration: none;
+  cursor: pointer;
 }

@@ -1,40 +1,48 @@
 .container-fluid {
   display: flex;
-  min-height: 100vh; /* Ensures full height of viewport */
+  flex-direction: column;
+  height: 100vh;
+}
+
+.top-bar {
+  background-color: #343a40;
+  color: white;
+  padding: 10px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.main-content-wrapper {
+  display: flex;
+  flex: 1;
 }
 
 .sidebar {
-  position: fixed;
-  top: 0;
-  left: 0;
-  height: 100%;
-  width: 250px; /* Adjust width as needed */
-  background-color: #f8f9fa; /* Light background color */
+  width: 200px;
+  background-color: #f8f9fa;
   padding: 20px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+}
+
+.sidebar button {
+  margin-bottom: 10px;
+  padding: 10px;
+  width: 100%;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  cursor: pointer;
+  text-align: left;
+}
+
+.sidebar button:hover {
+  background-color: #0056b3;
 }
 
 .main-content {
-  margin-left: 250px; /* Ensure content doesn't overlap with sidebar */
+  flex: 1;
   padding: 20px;
-}
-
-.main-content h1 {
-  font-size: 2.5rem;
-  font-weight: bold;
-  margin-bottom: 20px;
-}
-
-.main-content h4 {
-  font-size: 1.5rem;
-  font-weight: bold;
-}
-
-.main-content p {
-  font-size: 1.1rem;
-  margin-top: 10px;
-}
-
-.main-content .btn-outline-secondary {
-  font-size: 1rem;
+  background-color: #e9ecef;
 }

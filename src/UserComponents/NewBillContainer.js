@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import axios from 'axios';
-import './NewBillContainer.css'; 
+import './NewBillContainer.css';
 import { API_BASE_URL } from './Config.js';
 
 const NewBillContainer = ({ userData }) => {
@@ -10,6 +10,7 @@ const NewBillContainer = ({ userData }) => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [customerName, setCustomerName] = useState('');
   const [customerMobileNo, setCustomerMobileNo] = useState('');
+  const [paymentMode, setPaymentMode] = useState('Cash'); // Added payment mode state
   const searchInputRef = useRef(null);
   const dropdownRef = useRef(null);
   const modalRef = useRef(null);
@@ -26,13 +27,11 @@ const NewBillContainer = ({ userData }) => {
     fetchItems();
   }, [searchTerm]);
 
-
   const handleKeyDown = (event, item) => {
     if (event.key === 'Enter') {
       addItemToBill(item);
     }
   };
-
 
   const handleClickOutside = (event) => {
     if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
@@ -47,53 +46,62 @@ const NewBillContainer = ({ userData }) => {
     };
   }, []);
 
-
   const addItemToBill = (item) => {
-    const newItem = {
-      ...item,
-      quantity: 1, // Initial quantity set to 1
-      amount: item.price * 1 // Initial amount based on price and quantity
-    };
-    setSelectedItems([...selectedItems, newItem]);
+    const existingItemIndex = selectedItems.findIndex(
+      (selectedItem) => selectedItem.itemBarcodeID === item.itemBarcodeID
+    );
+
+    if (existingItemIndex > -1) {
+      const updatedItems = [...selectedItems];
+      const existingItem = updatedItems[existingItemIndex];
+      existingItem.quantity += 1;
+      existingItem.amount = existingItem.quantity * existingItem.price;
+      setSelectedItems(updatedItems);
+    } else {
+      const newItem = {
+        ...item,
+        quantity: 1,
+        amount: item.price * 1
+      };
+      setSelectedItems([...selectedItems, newItem]);
+    }
+
     setSearchTerm('');
     setDropdownOpen(false);
-    searchInputRef.current.focus(); // Focus back on the search input after selecting an item
+    searchInputRef.current.focus();
   };
 
-  // Remove item from selectedItems
   const removeItemFromBill = (index) => {
     const updatedItems = [...selectedItems];
     updatedItems.splice(index, 1);
     setSelectedItems(updatedItems);
   };
 
-  // Handle quantity change
   const handleQuantityChange = (index, quantity) => {
     const updatedItems = [...selectedItems];
     updatedItems[index] = {
       ...updatedItems[index],
       quantity: quantity,
-      amount: quantity * updatedItems[index].price // Calculate amount based on quantity and price
+      amount: quantity * updatedItems[index].price
     };
     setSelectedItems(updatedItems);
   };
 
-  // Handle key events for dropdown navigation
   const handleDropdownKeyEvents = (event) => {
     const items = dropdownRef.current.querySelectorAll('tr');
     const currentIndex = Array.from(items).findIndex(item => item === document.activeElement);
-  
+
     if (event.key === 'ArrowDown' && currentIndex < items.length - 1) {
-      event.preventDefault(); // Prevent page scrolling
+      event.preventDefault();
       items[currentIndex + 1].focus();
     } else if (event.key === 'ArrowUp' && currentIndex > 0) {
-      event.preventDefault(); // Prevent page scrolling
+      event.preventDefault();
       items[currentIndex - 1].focus();
     } else if (event.key === 'Escape') {
       setDropdownOpen(false);
-      searchInputRef.current.focus(); // Focus back on the search input on escape
+      searchInputRef.current.focus();
     } else if (event.key === 'Enter' && currentIndex >= 0) {
-      addItemToBill(searchResults[currentIndex]); 
+      addItemToBill(searchResults[currentIndex]);
     }
   };
 
@@ -103,7 +111,6 @@ const NewBillContainer = ({ userData }) => {
     }
   }, [dropdownOpen, searchResults]);
 
-  // Calculate total amount
   const calculateTotalAmount = () => {
     let total = 0;
     selectedItems.forEach(item => {
@@ -117,6 +124,7 @@ const NewBillContainer = ({ userData }) => {
       userId: userData.userId,
       customerName: customerName,
       customerMobileNo: customerMobileNo,
+      paymentMode: paymentMode, // Include payment mode
       item_count: selectedItems.length,
       bill: selectedItems.map(item => ({
         itemBarcodeID: item.itemBarcodeID,
@@ -141,7 +149,6 @@ const NewBillContainer = ({ userData }) => {
     }
   };
 
-  
   const openModal = () => {
     modalRef.current.style.display = 'block';
   };
@@ -150,9 +157,9 @@ const NewBillContainer = ({ userData }) => {
     modalRef.current.style.display = 'none';
     setCustomerName('');
     setCustomerMobileNo('');
+    setPaymentMode('Cash'); // Reset payment mode
   };
 
- 
   const handleNameChange = (e) => {
     setCustomerName(e.target.value);
   };
@@ -161,9 +168,13 @@ const NewBillContainer = ({ userData }) => {
     setCustomerMobileNo(e.target.value);
   };
 
+  const handlePaymentModeChange = (e) => {
+    setPaymentMode(e.target.value);
+  };
+
   return (
-    <div>
-      <h2>New Bill Container</h2>
+    <div className="new-bill-container">
+      <h2>Billing</h2>
 
       {/* Search bar */}
       <div className="search-bar" ref={searchInputRef} tabIndex="0">
@@ -181,10 +192,12 @@ const NewBillContainer = ({ userData }) => {
               <thead>
                 <tr>
                   <th>Item Code</th>
+                  <th>Item Name</th>
                   <th>Category</th>
                   <th>Type</th>
                   <th>Color</th>
                   <th>Size</th>
+                  <th>Price</th>
                 </tr>
               </thead>
               <tbody>
@@ -196,10 +209,12 @@ const NewBillContainer = ({ userData }) => {
                     tabIndex="0"
                   >
                     <td>{item.itemCode}</td>
+                    <td>{item.itemName}</td>
                     <td>{item.itemCategory}</td>
                     <td>{item.itemType}</td>
                     <td>{item.itemColor}</td>
                     <td>{item.itemSize}</td>
+                    <td>{item.price}</td>
                   </tr>
                 ))}
               </tbody>
@@ -209,75 +224,93 @@ const NewBillContainer = ({ userData }) => {
       </div>
 
       {/* Billing items table */}
-      <table>
-        <thead>
-          <tr>
-            <th>Barcode ID</th>
-            <th>Item Code</th>
-            <th>Description</th>
-            <th>Quantity</th>
-            <th>Rate</th>
-            <th>Amount</th>
-            <th>Action</th>
-          </tr>
-        </thead>
-        <tbody>
-          {selectedItems.map((item, index) => (
-            <tr key={index}>
-              <td>{item.itemBarcodeID}</td>
-              <td>{item.itemCode}</td>
-              <td>{`${item.itemCategory} ${item.itemType} ${item.itemSize}`}</td>
-              <td>
-                <input
-                  type="number"
-                  value={item.quantity}
-                  onChange={(e) => handleQuantityChange(index, parseInt(e.target.value))}
-                />
-              </td>
-              <td>{item.price}</td>
-              <td>{item.amount}</td>
-              <td>
-                <button onClick={() => removeItemFromBill(index)}>Delete</button>
-              </td>
+      <div className="items-table">
+        <table>
+          <thead>
+            <tr>
+              <th>Item Code</th>
+              <th>Type</th>
+              <th>Color</th>
+              <th>Size</th>
+              <th>Quantity</th>
+              <th>Amount</th>
+              <th>Actions</th>
             </tr>
-          ))}
-        </tbody>
-        <tfoot>
-          <tr>
-            <td colSpan="5" style={{ textAlign: 'right' }}>Total:</td>
-            <td>{calculateTotalAmount()}</td>
-            <td></td>
-          </tr>
-        </tfoot>
-      </table>
-
-      {/* Modal for customer details */}
-      <div ref={modalRef} className="modal">
-        <div className="modal-content">
-          <div className="customer-detail">
-            <h5>Customer Details</h5>
-            <span className="close" onClick={closeModal}>&times;</span>
-          </div>
-          <input
-            type="text"
-            placeholder="Customer Name"
-            value={customerName}
-            className='customer-detail'
-            onChange={handleNameChange}
-          />
-          <input
-            type="text"
-            placeholder="Customer Mobile No"
-            value={customerMobileNo}
-            className='customer-detail'
-            onChange={handleMobileNoChange}
-          />
-          <button onClick={handleSubmit}>Generate and Print</button>
-        </div>
+          </thead>
+          <tbody>
+            {selectedItems.map((item, index) => (
+              <tr key={index}>
+                <td>{item.itemBarcodeID}</td>
+                <td>{item.itemType}</td>
+                <td>{item.itemColor}</td>
+                <td>{item.itemSize}</td>
+                <td>
+                  <input
+                    type="number"
+                    value={item.quantity}
+                    onChange={(e) => handleQuantityChange(index, parseInt(e.target.value, 10))}
+                    min="1"
+                  />
+                </td>
+                <td>{item.amount.toFixed(2)}</td>
+                <td>
+                  <button onClick={() => removeItemFromBill(index)}>Remove</button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
       </div>
 
-      {/* Button to open modal */}
-      <button onClick={openModal}>Bill</button>
+      {/* Total amount */}
+      <div className="summary">
+        <h3>Total Amount: ${calculateTotalAmount().toFixed(2)}</h3>
+        <h4>Item Count: {selectedItems.length}</h4>
+      </div>
+
+      {/* Customer info */}
+      <div className="customer-info">
+        <label>
+          Customer Name:
+          <input
+            type="text"
+            value={customerName}
+            onChange={handleNameChange}
+          />
+        </label>
+        <label>
+          Customer Mobile No:
+          <input
+            type="text"
+            value={customerMobileNo}
+            onChange={handleMobileNoChange}
+          />
+        </label>
+        <label>
+          Payment Mode:
+          <select value={paymentMode} onChange={handlePaymentModeChange}>
+            <option value="Cash">Cash</option>
+            <option value="Card">Card</option>
+            <option value="Online">Online</option>
+          </select>
+        </label>
+      </div>
+
+      {/* Buttons */}
+      <div className="buttons">
+        <button onClick={openModal}>Generate Bill</button>
+        <button onClick={() => setSelectedItems([])}>Clear Items</button>
+      </div>
+
+      {/* Modal */}
+      <div className="modal" ref={modalRef}>
+        <div className="modal-content">
+          <h3>Confirm Bill Generation</h3>
+          <p>Total Amount: ${calculateTotalAmount().toFixed(2)}</p>
+          <button onClick={handleSubmit}>Confirm</button>
+          <button onClick={closeModal}>Cancel</button>
+        </div>
+      </div>
     </div>
   );
 };

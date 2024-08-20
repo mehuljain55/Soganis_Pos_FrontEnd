@@ -4,7 +4,7 @@ html, body {
     height: 100%;
     margin: 0;
     font-family: Arial, sans-serif;
-    background-image: url('../Icon/bg1.jpg');
+    /* background-image: url('../Icon/bg1.jpg');  */
     background-size: cover;
     background-position: center;
     overflow: hidden; /* Prevent scrolling */
