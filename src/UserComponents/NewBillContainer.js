@@ -10,7 +10,7 @@ const NewBillContainer = ({ userData }) => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [customerName, setCustomerName] = useState('');
   const [customerMobileNo, setCustomerMobileNo] = useState('');
-  const [paymentMode, setPaymentMode] = useState('Cash'); // Added payment mode state
+  const [paymentMode, setPaymentMode] = useState('Cash');
   const searchInputRef = useRef(null);
   const dropdownRef = useRef(null);
   const modalRef = useRef(null);
@@ -124,7 +124,7 @@ const NewBillContainer = ({ userData }) => {
       userId: userData.userId,
       customerName: customerName,
       customerMobileNo: customerMobileNo,
-      paymentMode: paymentMode, // Include payment mode
+      paymentMode: paymentMode,
       item_count: selectedItems.length,
       bill: selectedItems.map(item => ({
         itemBarcodeID: item.itemBarcodeID,
@@ -150,15 +150,15 @@ const NewBillContainer = ({ userData }) => {
   };
 
   const openModal = () => {
-    modalRef.current.style.display = 'block';
-  };
+    modalRef.current.style.display = 'flex';  // Ensure flex is used to center the modal
+};
 
-  const closeModal = () => {
-    modalRef.current.style.display = 'none';
+const closeModal = () => {
+    modalRef.current.style.display = 'none';  // Hide the modal
     setCustomerName('');
     setCustomerMobileNo('');
-    setPaymentMode('Cash'); // Reset payment mode
-  };
+    setPaymentMode('Cash');
+};
 
   const handleNameChange = (e) => {
     setCustomerName(e.target.value);
@@ -224,76 +224,50 @@ const NewBillContainer = ({ userData }) => {
       </div>
 
       {/* Billing items table */}
-      <div className="items-table">
-        <table>
-          <thead>
-            <tr>
-              <th>Item Code</th>
-              <th>Type</th>
-              <th>Color</th>
-              <th>Size</th>
-              <th>Quantity</th>
-              <th>Amount</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {selectedItems.map((item, index) => (
-              <tr key={index}>
-                <td>{item.itemBarcodeID}</td>
-                <td>{item.itemType}</td>
-                <td>{item.itemColor}</td>
-                <td>{item.itemSize}</td>
-                <td>
-                  <input
-                    type="number"
-                    value={item.quantity}
-                    onChange={(e) => handleQuantityChange(index, parseInt(e.target.value, 10))}
-                    min="1"
-                  />
-                </td>
-                <td>{item.amount.toFixed(2)}</td>
-                <td>
-                  <button onClick={() => removeItemFromBill(index)}>Remove</button>
-                </td>
+      <div className="items-table-container">
+        <div className="items-table">
+          <table>
+            <thead>
+              <tr>
+                <th>Item Code</th>
+                <th>Type</th>
+                <th>Color</th>
+                <th>Size</th>
+                <th>Quantity</th>
+                <th>Amount</th>
+                <th>Actions</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {selectedItems.map((item, index) => (
+                <tr key={index}>
+                  <td>{item.itemBarcodeID}</td>
+                  <td>{item.itemType}</td>
+                  <td>{item.itemColor}</td>
+                  <td>{item.itemSize}</td>
+                  <td>
+                    <input
+                      type="number"
+                      value={item.quantity}
+                      onChange={(e) => handleQuantityChange(index, parseInt(e.target.value, 10))}
+                      min="1"
+                    />
+                  </td>
+                  <td>{item.amount.toFixed(2)}</td>
+                  <td>
+                    <button onClick={() => removeItemFromBill(index)}>Remove</button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       </div>
 
       {/* Total amount */}
       <div className="summary">
         <h3>Total Amount: ${calculateTotalAmount().toFixed(2)}</h3>
         <h4>Item Count: {selectedItems.length}</h4>
-      </div>
-
-      {/* Customer info */}
-      <div className="customer-info">
-        <label>
-          Customer Name:
-          <input
-            type="text"
-            value={customerName}
-            onChange={handleNameChange}
-          />
-        </label>
-        <label>
-          Customer Mobile No:
-          <input
-            type="text"
-            value={customerMobileNo}
-            onChange={handleMobileNoChange}
-          />
-        </label>
-        <label>
-          Payment Mode:
-          <select value={paymentMode} onChange={handlePaymentModeChange}>
-            <option value="Cash">Cash</option>
-            <option value="Card">Card</option>
-            <option value="Online">Online</option>
-          </select>
-        </label>
       </div>
 
       {/* Buttons */}
@@ -305,10 +279,37 @@ const NewBillContainer = ({ userData }) => {
       {/* Modal */}
       <div className="modal" ref={modalRef}>
         <div className="modal-content">
-          <h3>Confirm Bill Generation</h3>
-          <p>Total Amount: ${calculateTotalAmount().toFixed(2)}</p>
-          <button onClick={handleSubmit}>Confirm</button>
-          <button onClick={closeModal}>Cancel</button>
+          <h2>Customer Details</h2>
+          <label>
+            Customer Name:
+            <input
+              type="text"
+              value={customerName}
+              onChange={handleNameChange}
+              placeholder="Enter customer name"
+            />
+          </label>
+          <label>
+            Customer Mobile No:
+            <input
+              type="text"
+              value={customerMobileNo}
+              onChange={handleMobileNoChange}
+              placeholder="Enter customer mobile no"
+            />
+          </label>
+          <label>
+            Payment Mode:
+            <select value={paymentMode} onChange={handlePaymentModeChange}>
+              <option value="Cash">Cash</option>
+              <option value="Card">Card</option>
+              <option value="UPI">UPI</option>
+            </select>
+          </label>
+          <div className="modal-buttons">
+            <button onClick={handleSubmit}>Generate Bill</button>
+            <button onClick={closeModal}>Cancel</button>
+          </div>
         </div>
       </div>
     </div>
