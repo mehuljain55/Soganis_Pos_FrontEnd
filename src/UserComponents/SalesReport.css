@@ -1,0 +1,33 @@
+.sales-report {
+    max-width: 100%;
+  }
+  
+  .table-container {
+    max-height: 300px; /* Set the fixed height for the table container */
+    overflow-y: auto; /* Enables vertical scroll for the table */
+    overflow-x: auto; /* Enables horizontal scroll for the table */
+    border: 1px solid #ddd; /* Optional: add a border to the scrollable container */
+  }
+  
+  .sales-report table {
+    width: 100%;
+    border-collapse: collapse;
+    table-layout: fixed; /* Ensures that the table columns have fixed widths */
+  }
+  
+  .sales-report thead {
+    background-color: #f8f9fa;
+  }
+  
+  .sales-report th, .sales-report td {
+    padding: 10px;
+    text-align: left;
+    border: 1px solid #ddd;
+    word-wrap: break-word; /* Ensures long content wraps within the cell */
+  }
+  
+  .total-amount-sum {
+    margin-top: 10px;
+    font-size: 16px;
+  }
+  

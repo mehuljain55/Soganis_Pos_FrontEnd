@@ -7,6 +7,8 @@ import FilterPage from './FilterPage';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSyncAlt } from '@fortawesome/free-solid-svg-icons';
 import './MainComponent.css'; 
+import FilterSalesPage from './FilterSalesPage'; 
+
 import { API_BASE_URL } from './Config.js';
 
 const MainComponent = ({ userData }) => {
@@ -51,13 +53,14 @@ const MainComponent = ({ userData }) => {
         )}
       </div>
       
-      {/* Button Navigation and Main Content */}
+      {/* Sidebar Navigation and Main Content */}
       <div className="main-content-wrapper">
-        <div className="button-group">
+        <div className="sidebar">
           <button onClick={() => handleMenuItemClick('New Bill')}>New Bill</button>
           <button onClick={() => handleMenuItemClick('Salary Register')}>Salary Register</button>
           <button onClick={() => handleMenuItemClick('Cash Collection')}>Cash Collection</button>
           <button onClick={() => handleMenuItemClick('View Stock')}>View Stock</button>
+          <button onClick={() => handleMenuItemClick('View Sales Report')}>Sale Report</button>
           <button onClick={() => handleMenuItemClick("Today's Sale")}>Today's Sale</button>
         </div>
         <main className="main-content">
@@ -65,7 +68,10 @@ const MainComponent = ({ userData }) => {
           {selectedMenuItem === 'Salary Register' && <Salary />}
           {selectedMenuItem === 'Cash Collection' && <UserCashCollection />}
           {selectedMenuItem === 'View Stock' && <FilterPage />}
+          {selectedMenuItem === 'View Sales Report' && <FilterSalesPage />}
+        
           {selectedMenuItem === "Today's Sale" && <p>Today's Sale Component</p>}
+        
         </main>
       </div>
     </div>

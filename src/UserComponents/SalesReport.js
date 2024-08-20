@@ -1,14 +1,15 @@
 import React from 'react';
+import './SalesReport.css';
 
 const SalesReport = ({ data }) => {
-  // Calculate the sum of totalAmount
-  const totalAmountSum = data.reduce((sum, item) => sum + item.totalAmount, 0);
+  // Calculate the sum of totalAmount, set to 0 if no data
+  const totalAmountSum = data.length > 0 ? data.reduce((sum, item) => sum + item.totalAmount, 0) : 0;
 
   return (
     <div className="sales-report">
-      <h2>Sales Report</h2>
-      {data.length > 0 ? (
-        <>
+      <h5>Sales Report </h5>
+      <div className="table-container">
+        {data.length > 0 ? (
           <table>
             <thead>
               <tr>
@@ -17,8 +18,8 @@ const SalesReport = ({ data }) => {
                 <th>Item Type</th>
                 <th>Item Color</th>
                 <th>Sell Price</th>
-                <th>Total Quantity</th>
-                <th>Total Amount</th>
+                <th>Quantity</th>
+                <th>Amount</th>
               </tr>
             </thead>
             <tbody>
@@ -35,14 +36,14 @@ const SalesReport = ({ data }) => {
               ))}
             </tbody>
           </table>
-          {/* Display the sum of totalAmount */}
-          <div className="total-amount-sum">
-            <strong>Total Amount Sum: </strong> {totalAmountSum}
-          </div>
-        </>
-      ) : (
-        <p>No data available.</p>
-      )}
+        ) : (
+          <p>No data available.</p>
+        )}
+      </div>
+      {/* Display the sum of totalAmount outside of the scrollable container */}
+      <div className="total-amount-sum">
+        <strong>Total Amount : </strong> {totalAmountSum}
+      </div>
     </div>
   );
 };

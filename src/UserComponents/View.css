@@ -1,4 +1,3 @@
-/* View.css */
 .view-container {
     margin: 20px;
     padding: 10px; /* Add padding for better spacing */
@@ -33,6 +32,7 @@ th, td {
 
 th {
     background-color: #f4f4f4; /* Header background color */
+    font-weight: bold; /* Bold header text */
 }
 
 td {
