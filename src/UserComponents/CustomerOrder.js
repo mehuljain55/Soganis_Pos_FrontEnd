@@ -62,7 +62,6 @@ const CustomerOrder = () => {
             .then(response => {
                 if (response.ok) {
                     alert('Order submitted successfully');
-                    // Reset the form after submission
                     setOrder({
                         customerName: '',
                         mobileNo: '',
@@ -100,43 +99,46 @@ const CustomerOrder = () => {
         <div className="order-container">
             <div className="form-container">
                 <form onSubmit={handleSubmit} className="order-form">
-                    <div className="form-group">
-                        <label>Customer Name:</label>
-                        <input
-                            type="text"
-                            value={order.customerName}
-                            onChange={e => setOrder({ ...order, customerName: e.target.value })}
-                        />
+                    <div className="form-row">
+                        <div className="form-group">
+                            <label>Customer Name:</label>
+                            <input
+                                type="text"
+                                value={order.customerName}
+                                onChange={e => setOrder({ ...order, customerName: e.target.value })}
+                            />
+                        </div>
+                        <div className="form-group">
+                            <label>Mobile Number:</label>
+                            <input
+                                type="text"
+                                value={order.mobileNo}
+                                onChange={e => setOrder({ ...order, mobileNo: e.target.value })}
+                            />
+                        </div>
                     </div>
-                    <div className="form-group">
-                        <label>Mobile Number:</label>
-                        <input
-                            type="text"
-                            value={order.mobileNo}
-                            onChange={e => setOrder({ ...order, mobileNo: e.target.value })}
-                        />
-                    </div>
-                    <div className="form-group">
-                        <label>Delivery Date:</label>
-                        <input
-                            type="date"
-                            value={order.deliveryDate}
-                            onChange={e => setOrder({ ...order, deliveryDate: e.target.value })}
-                        />
-                    </div>
-
-                    <div className="form-group">
-                        <label>Advance Payment:</label>
-                        <input
-                            type="number"
-                            value={order.advancePayment}
-                            onChange={e => setOrder({ ...order, advancePayment: Number(e.target.value) })}
-                        />
+                    <div className="form-row">
+                        <div className="form-group">
+                            <label>Advance Payment:</label>
+                            <input
+                                type="number"
+                                value={order.advancePayment}
+                                onChange={e => setOrder({ ...order, advancePayment: Number(e.target.value) })}
+                            />
+                        </div>
+                        <div className="form-group">
+                            <label>Delivery Date:</label>
+                            <input
+                                type="date"
+                                value={order.deliveryDate}
+                                onChange={e => setOrder({ ...order, deliveryDate: e.target.value })}
+                            />
+                        </div>
                     </div>
                 </form>
             </div>
 
-            <div className="table-container">
+            <div className="order-table-container">
                 <table className="order-table">
                     <thead>
                         <tr>
@@ -233,11 +235,10 @@ const CustomerOrder = () => {
                     </tbody>
                 </table>
             </div>
-            
-            <button type="button" className="add-order-btn" onClick={addOrder}>Add Order</button>
-            
-            <button type="submit" className="submit-btn" onClick={handleSubmit}>Submit Order</button>
-
+            <div>
+                <button type="button" className="add-order-btn" onClick={addOrder}>Add Order</button>
+                <button type="submit" className="submit-btn" onClick={handleSubmit}>Submit Order</button>
+            </div>
             {showModal && (
                 <div className="modal-overlay">
                     <div className="modal-content">

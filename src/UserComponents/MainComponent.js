@@ -8,6 +8,9 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSyncAlt } from '@fortawesome/free-solid-svg-icons';
 import './MainComponent.css'; 
 import FilterSalesPage from './FilterSalesPage'; 
+import CustomerOrder from './CustomerOrder'; 
+import OrderView from './OrderView'; 
+
 
 import { API_BASE_URL } from './Config.js';
 
@@ -58,6 +61,9 @@ const MainComponent = ({ userData }) => {
         <div className="sidebar">
           <button onClick={() => handleMenuItemClick('New Bill')}>New Bill</button>
           <button onClick={() => handleMenuItemClick('Salary Register')}>Salary Register</button>
+          <button onClick={() => handleMenuItemClick('Add Order')}>Add Order</button>
+          <button onClick={() => handleMenuItemClick('View Order')}>View Order</button>
+          
           <button onClick={() => handleMenuItemClick('Cash Collection')}>Cash Collection</button>
           <button onClick={() => handleMenuItemClick('View Stock')}>View Stock</button>
           <button onClick={() => handleMenuItemClick('View Sales Report')}>Sale Report</button>
@@ -66,6 +72,9 @@ const MainComponent = ({ userData }) => {
         <main className="main-content">
           {selectedMenuItem === 'New Bill' && <NewBillContainer userData={userData} />}
           {selectedMenuItem === 'Salary Register' && <Salary />}
+          {selectedMenuItem === 'Add Order' && <CustomerOrder />}
+          {selectedMenuItem === 'View Order' && <OrderView />}
+       
           {selectedMenuItem === 'Cash Collection' && <UserCashCollection />}
           {selectedMenuItem === 'View Stock' && <FilterPage />}
           {selectedMenuItem === 'View Sales Report' && <FilterSalesPage />}
