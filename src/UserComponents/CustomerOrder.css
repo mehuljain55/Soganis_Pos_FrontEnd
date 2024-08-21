@@ -1,0 +1,213 @@
+/* Container for the entire order form */
+.order-container {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+/* Styling for the order form */
+.order-form {
+  width: 100%;
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  background-color: #f9f9f9;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Styling for form groups */
+.form-group {
+  margin-bottom: 15px;
+}
+
+/* Label styling */
+.form-group label {
+  display: block;
+  margin-bottom: 5px;
+  font-weight: bold;
+}
+
+/* Input and select styling */
+.form-group input,
+.form-group select {
+  width: 100%;
+  padding: 10px;
+  box-sizing: border-box;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 16px;
+}
+
+/* Styling for the order table */
+.order-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 20px;
+  border: 1px solid #ddd;
+}
+
+/* Styling for table headers and cells */
+.order-table th,
+.order-table td {
+  border: 1px solid #ddd;
+  padding: 12px;
+  text-align: left;
+  font-size: 16px;
+}
+
+/* Header styling */
+.order-table th {
+  background-color: #f4f4f4;
+  font-weight: bold;
+}
+
+/* Column width settings */
+.order-table th:nth-child(1),
+.order-table td:nth-child(1) {
+  width: 15%;
+}
+
+.order-table th:nth-child(2),
+.order-table td:nth-child(2) {
+  width: 15%;
+}
+
+.order-table th:nth-child(3),
+.order-table td:nth-child(3) {
+  width: 20%;
+}
+
+.order-table th:nth-child(4),
+.order-table td:nth-child(4) {
+  width: 10%;
+}
+
+.order-table th:nth-child(5),
+.order-table td:nth-child(5) {
+  width: 10%;
+}
+
+.order-table th:nth-child(6),
+.order-table td:nth-child(6) {
+  width: 10%;
+}
+
+.order-table th:nth-child(7),
+.order-table td:nth-child(7) {
+  width: 10%;
+}
+
+.order-table th:nth-child(8),
+.order-table td:nth-child(8) {
+  width: 10%;
+}
+
+/* Styling for input fields within the table */
+.order-table input[type="number"],
+.order-table input[type="text"] {
+  width: 100%;
+  padding: 10px;
+  box-sizing: border-box;
+}
+
+/* Button styling */
+.add-order-btn,
+.submit-btn,
+.delete-btn,
+.confirm-btn,
+.cancel-btn {
+  padding: 10px 15px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+/* Add Order Button */
+.add-order-btn {
+  display: block;
+  margin: 10px 0;
+  background-color: #007bff;
+  color: white;
+}
+
+.add-order-btn:hover {
+  background-color: #0056b3;
+}
+
+/* Submit Button */
+.submit-btn {
+  background-color: #28a745;
+  color: white;
+}
+
+.submit-btn:hover {
+  background-color: #218838;
+}
+
+/* Delete Button */
+.delete-btn {
+  background-color: #dc3545;
+  color: white;
+}
+
+.delete-btn:hover {
+  background-color: #c82333;
+}
+
+/* Modal Overlay */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Modal Content */
+.modal-content {
+  background: #fff;
+  padding: 20px;
+  border-radius: 8px;
+  max-width: 500px;
+  width: 100%;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  text-align: center;
+}
+
+/* Modal Header and Paragraphs */
+.modal-content h2 {
+  margin-bottom: 15px;
+  font-size: 20px;
+}
+
+.modal-content p {
+  margin: 10px 0;
+  font-size: 16px;
+}
+
+/* Confirm and Cancel Buttons in Modal */
+.confirm-btn {
+  background-color: #007bff;
+  color: white;
+}
+
+.confirm-btn:hover {
+  background-color: #0056b3;
+}
+
+.cancel-btn {
+  background-color: #dc3545;
+  color: white;
+}
+
+.cancel-btn:hover {
+  background-color: #c82333;
+}
