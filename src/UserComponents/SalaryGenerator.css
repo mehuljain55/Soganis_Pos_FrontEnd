@@ -1,50 +1,113 @@
+/* General container styling */
 .salary-generator-container {
   padding: 20px;
-  max-width: 100%;
-  margin: 0 auto;
-  background-color: #ffffff;
-  border: 1px solid #e0e0e0;
-  border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  max-width: 800px;
+  margin: auto;
 }
 
-.salary-generator-container h5 {
-  font-size: 20px;
-  margin-bottom: 10px;
-}
-
+/* Input section styling */
 .input-section {
+  display: flex;
+  gap: 10px;
   margin-bottom: 20px;
 }
 
-.input-section label {
-  display: block;
-  margin-bottom: 10px;
-}
-
 .input-section select {
-  width: 150px;
   padding: 8px;
   font-size: 14px;
 }
 
-.button-section {
-  margin-bottom: 20px;
-}
-
+/* Button styling */
 .button-section button {
   padding: 10px 20px;
-  font-size: 16px;
   background-color: #007bff;
-  color: #ffffff;
+  color: white;
   border: none;
-  cursor: pointer;
   border-radius: 4px;
+  cursor: pointer;
 }
 
 .button-section button:disabled {
-  background-color: #ced4da;
+  background-color: #6c757d;
   cursor: not-allowed;
+}
+
+/* Result table styling */
+.result-section table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.result-section th, .result-section td {
+  border: 1px solid #ddd;
+  padding: 8px;
+  text-align: left;
+}
+
+.result-section th {
+  background-color: #f2f2f2;
+}
+
+/* Modal overlay styling */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+/* Modal content styling */
+.modal-content {
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 8px;
+  max-width: 600px;
+  width: 100%;
+  max-height: 80vh;
+  overflow-y: auto;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* Modal header styling */
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid #ddd;
+  margin-bottom: 15px;
+}
+
+.modal-header h5 {
+  margin: 0;
+}
+
+.close-button {
+  background: none;
+  border: none;
+  font-size: 20px;
+  cursor: pointer;
+}
+
+/* Modal footer styling */
+.modal-footer {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 15px;
+}
+
+.modal-footer button {
+  padding: 8px 16px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
 }
 
 .result-section {
@@ -118,51 +181,3 @@
 }
 
 
-
-.salary-pop-up .modal-content {
-  background-color: #f7f7f7;
-  border-radius: 10px;
-  width: 150% !important;  /* Example width */
-  height: 30% !important; /* Example height */
-  margin: auto; /* Center the modal */
-  padding: 20px; /* Example padding */
-}
-
-.salary-pop-up .modal-body {
-  max-height: calc(100% - 80px); /* Adjust max height for modal body */
-  overflow-y: auto;
-}
-
-.salary-pop-up table {
-  width: 100%;
-  border-collapse: collapse;
-  margin-bottom: 20px;
-}
-
-.salary-pop-up th,
-.salary-pop-up td {
-  padding: 8px;
-  text-align: left;
-  border: 1px solid #dee2e6;
-}
-
-.salary-pop-up th {
-  background-color: #f8f9fa;
-  font-weight: bold;
-}
-
-.salary-pop-up tbody tr:nth-child(even) {
-  background-color: #f0f0f0;
-}
-
-.wrap-text {
-  white-space: normal;
-  word-wrap: break-word;
-}
-
-th small {
-  display: block;
-  font-size: 0.5em;
-  color: #666;
-  margin-top: 5px; /* Adjust margin as needed */
-}

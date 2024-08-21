@@ -4,6 +4,9 @@ import Login from './UserComponents/Login';
 import MainComponent from './UserComponents/MainComponent';
 import FilterPage from './UserComponents/FilterPage';
 import FilterSalesPage from './UserComponents/FilterSalesPage';
+import CustomerOrder from './UserComponents/CustomerOrder';
+import OrderView from './UserComponents/OrderView';
+
 
 import './App.css'; // Custom CSS for styling
 
@@ -20,6 +23,9 @@ function App() {
             <Route path="/" element={<MainComponent userData={userData} />} />
             <Route path="/filter" element={<FilterPage />} />
             <Route path="/filter-sales" element={<FilterSalesPage />} />
+            <Route path="/customer-order" element={<CustomerOrder />} />
+            <Route path="/view_customer_order" element={<OrderView />} />
+      
           </Routes>
         )}
       </div>

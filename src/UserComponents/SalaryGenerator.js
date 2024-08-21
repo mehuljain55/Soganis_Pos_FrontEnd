@@ -1,9 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-import { Modal, Button } from 'react-bootstrap';
 import { API_BASE_URL } from './Config'; // Assuming you have a Config file for API base URL
 import './SalaryGenerator.css'; // Import your CSS file for styling
-import 'bootstrap/dist/css/bootstrap.min.css';
 
 const SalaryGenerator = () => {
   const [year, setYear] = useState(new Date().getFullYear());
@@ -29,9 +27,7 @@ const SalaryGenerator = () => {
     const month_fy = `${month}_${year}`;
     try {
       const response = await axios.get(`${API_BASE_URL}/salary/generate`, {
-        params: {
-          month_fy: month_fy
-        }
+        params: { month_fy }
       });
 
       if (response.status === 200) {
@@ -69,10 +65,7 @@ const SalaryGenerator = () => {
     setSelectedMonthFy(monthFy);
     try {
       const response = await axios.get(`${API_BASE_URL}/salary/user_salary_statement`, {
-        params: {
-          userId: userId,
-          month_fy: monthFy
-        }
+        params: { userId, month_fy: monthFy }
       });
 
       if (response.status === 200) {
@@ -133,15 +126,10 @@ const SalaryGenerator = () => {
                 <th>Monthly Salary</th>
                 <th>Salary Deducted</th>
                 <th>Advance Salary Paid</th>
-                <th>
-    Final Amount
-    <br />
-    <small> Amount = MS - AP - SD</small>
-  </th>
+                <th>Final Amount</th>
                 <th>Month FY</th>
                 <th>Status</th>
                 <th>View</th>
-      
                 <th>Action</th>
               </tr>
             </thead>
@@ -156,13 +144,13 @@ const SalaryGenerator = () => {
                   <td>{salary.month_fy}</td>
                   <td>{salary.status}</td>
                   <td>
-                  <button onClick={() => viewSalaryStatement(salary.userId, salary.month_fy)} >View</button>
+                    <button onClick={() => viewSalaryStatement(salary.userId, salary.month_fy)}>View</button>
                   </td>
-                 <td>
+                  <td>
                     {salary.status === 'PENDING' && (
-                      <button  onClick={() => updateSalaryStatus(salary)}>Mark as Paid</button>
+                      <button onClick={() => updateSalaryStatus(salary)}>Mark as Paid</button>
                     )}
-                 </td>
+                  </td>
                 </tr>
               ))}
             </tbody>
@@ -171,42 +159,45 @@ const SalaryGenerator = () => {
           <p>Generate Salaries to view</p>
         )}
       </div>
-      <Modal className="salary-pop-up" show={showModal} onHide={handleCloseModal}>
-        <Modal.Header closeButton>
-          <Modal.Title>User Salary Statement</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          {userSalaryStatement.length > 0 ? (
-            <table>
-              <thead>
-                <tr>
-                  <th>Description</th>
-                  <th>Type</th>
-                  <th>Date</th>
-                  <th>Amount</th>
-                </tr>
-              </thead>
-              <tbody>
-                {userSalaryStatement.map((item, index) => (
-                  <tr key={index}>
-                    <td className="wrap-text">{item.description}</td>
-                    <td>{item.type}</td>
-                    <td>{new Date(item.date).toLocaleDateString('en-GB')}</td>
-                    <td>{item.amount}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          ) : (
-            <p>No salary statement available for this user.</p>
-          )}
-        </Modal.Body>
-        <Modal.Footer>
-          <Button variant="secondary" onClick={handleCloseModal}>
-            Close
-          </Button>
-        </Modal.Footer>
-      </Modal>
+      {showModal && (
+        <div className="modal-overlay">
+          <div className="modal-content">
+            <div className="modal-header">
+              <h5>User Salary Statement</h5>
+              <button className="close-button" onClick={handleCloseModal}>×</button>
+            </div>
+            <div className="modal-body">
+              {userSalaryStatement.length > 0 ? (
+                <table>
+                  <thead>
+                    <tr>
+                      <th>Description</th>
+                      <th>Type</th>
+                      <th>Date</th>
+                      <th>Amount</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {userSalaryStatement.map((item, index) => (
+                      <tr key={index}>
+                        <td className="wrap-text">{item.description}</td>
+                        <td>{item.type}</td>
+                        <td>{new Date(item.date).toLocaleDateString('en-GB')}</td>
+                        <td>{item.amount}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              ) : (
+                <p>No salary statement available for this user.</p>
+              )}
+            </div>
+            <div className="modal-footer">
+              <button onClick={handleCloseModal}>Close</button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
