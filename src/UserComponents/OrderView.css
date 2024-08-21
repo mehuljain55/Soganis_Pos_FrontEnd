@@ -23,14 +23,22 @@
     border: 1px solid #ddd;
 }
 
+.order-view-table {
+    max-height: 400px; /* Fixed height for the table container */
+    overflow-y: auto;  /* Enable vertical scrolling if needed */
+    overflow-x: auto;  /* Enable horizontal scrolling if needed */
+    background-color: #fff;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    border-radius: 8px;
+    padding: 10px;
+}
+
 .order-table {
     width: 100%;
     border-collapse: separate;
     border-spacing: 0;
     background-color: #fff;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-    border-radius: 8px;
-    overflow: hidden;
+    border: 1px solid #ddd; /* Add border to the table for better visibility */
 }
 
 .order-table th, 

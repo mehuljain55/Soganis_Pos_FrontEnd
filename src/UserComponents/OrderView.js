@@ -19,7 +19,6 @@ const OrderView = () => {
             .catch(error => console.error('Error fetching orders:', error));
     };
 
-    // Fetch orders when the status changes
     useEffect(() => {
         fetchOrders();
     }, [status]);
@@ -43,7 +42,6 @@ const OrderView = () => {
         })
         .then(response => {
             if (response.ok) {
-                // Remove the updated order from the orders list
                 setOrders(prevOrders => prevOrders.filter(order => order.orderId !== orderId));
             } else {
                 console.error('Failed to update order status');
@@ -67,91 +65,91 @@ const OrderView = () => {
                 </select>
             </div>
 
-            <table className="order-table">
-                <thead>
-                    <tr>
-                        <th>Order ID</th>
-                        <th>Customer Name</th>
-                        <th>Mobile No</th>
-                        <th>Delivery Date</th>
-                        <th>Total Amount</th>
-                        <th>Advance Payment</th>
-                        <th>Amount Due</th>
-                        <th>Status</th>
-                        <th>Action</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {orders.map(order => (
-                        <React.Fragment key={order.orderId}>
-                            <tr>
-                                <td>{order.orderId}</td>
-                                <td>{formatValue(order.customerName)}</td>
-                                <td>{formatValue(order.mobileNo)}</td>
-                                <td>{new Date(order.deliveryDate).toLocaleDateString()}</td>
-                                <td>{order.totalAmount}</td>
-                              
-                                <td>{order.advancePayment}</td>
-                                <td>{order.amount_due}</td>
-                                
-                                <td>{formatValue(order.status)}</td>
-                                <td>
-                                    <button
-                                        className="btn delivered"
-                                        onClick={() => updateOrderStatus(order.orderId, 'DELIVERED')}
-                                    >
-                                        Delivered
-                                    </button>
-                                    <button
-                                        className="btn cancelled"
-                                        onClick={() => updateOrderStatus(order.orderId, 'CANCELED')}
-                                    >
-                                        Cancelled
-                                    </button>
-                                    <button
-                                        className="btn"
-                                        onClick={() => toggleExpandOrder(order.orderId)}
-                                    >
-                                        {expandedOrders[order.orderId] ? 'Collapse' : 'View'}
-                                    </button>
-                                </td>
-                            </tr>
-                            {expandedOrders[order.orderId] && (
+            <div className="order-view-table">
+                <table className="order-table">
+                    <thead>
+                        <tr>
+                            <th>Order ID</th>
+                            <th>Customer Name</th>
+                            <th>Mobile No</th>
+                            <th>Delivery Date</th>
+                            <th>Total Amount</th>
+                            <th>Advance Payment</th>
+                            <th>Amount Due</th>
+                            <th>Status</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {orders.map(order => (
+                            <React.Fragment key={order.orderId}>
                                 <tr>
-                                    <td colSpan="8">
-                                        <table className="sub-table">
-                                            <thead>
-                                                <tr>
-                                                    <th>School Name</th>
-                                                    <th>Item Type</th>
-                                                    <th>Description</th>
-                                                    <th>Size</th>
-                                                    <th>Quantity</th>
-                                                    <th>Price</th>
-                                                    <th>Amount</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                {order.orders.map((orderItem, index) => (
-                                                    <tr key={index}>
-                                                        <td>{formatValue(orderItem.schoolName)}</td>
-                                                        <td>{formatValue(orderItem.itemType)}</td>
-                                                        <td>{formatValue(orderItem.description)}</td>
-                                                        <td>{formatValue(orderItem.size)}</td>
-                                                        <td>{orderItem.quantity}</td>
-                                                        <td>{orderItem.price}</td>
-                                                        <td>{orderItem.amount}</td>
-                                                    </tr>
-                                                ))}
-                                            </tbody>
-                                        </table>
+                                    <td>{order.orderId}</td>
+                                    <td>{formatValue(order.customerName)}</td>
+                                    <td>{formatValue(order.mobileNo)}</td>
+                                    <td>{new Date(order.deliveryDate).toLocaleDateString()}</td>
+                                    <td>{order.totalAmount}</td>
+                                    <td>{order.advancePayment}</td>
+                                    <td>{order.amount_due}</td>
+                                    <td>{formatValue(order.status)}</td>
+                                    <td>
+                                        <button
+                                            className="btn delivered"
+                                            onClick={() => updateOrderStatus(order.orderId, 'DELIVERED')}
+                                        >
+                                            Delivered
+                                        </button>
+                                        <button
+                                            className="btn cancelled"
+                                            onClick={() => updateOrderStatus(order.orderId, 'CANCELLED')}
+                                        >
+                                            Cancelled
+                                        </button>
+                                        <button
+                                            className="btn"
+                                            onClick={() => toggleExpandOrder(order.orderId)}
+                                        >
+                                            {expandedOrders[order.orderId] ? 'Collapse' : 'View'}
+                                        </button>
                                     </td>
                                 </tr>
-                            )}
-                        </React.Fragment>
-                    ))}
-                </tbody>
-            </table>
+                                {expandedOrders[order.orderId] && (
+                                    <tr>
+                                        <td colSpan="8">
+                                            <table className="sub-table">
+                                                <thead>
+                                                    <tr>
+                                                        <th>School Name</th>
+                                                        <th>Item Type</th>
+                                                        <th>Description</th>
+                                                        <th>Size</th>
+                                                        <th>Quantity</th>
+                                                        <th>Price</th>
+                                                        <th>Amount</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    {order.orders.map((orderItem, index) => (
+                                                        <tr key={index}>
+                                                            <td>{formatValue(orderItem.schoolName)}</td>
+                                                            <td>{formatValue(orderItem.itemType)}</td>
+                                                            <td>{formatValue(orderItem.description)}</td>
+                                                            <td>{formatValue(orderItem.size)}</td>
+                                                            <td>{orderItem.quantity}</td>
+                                                            <td>{orderItem.price}</td>
+                                                            <td>{orderItem.amount}</td>
+                                                        </tr>
+                                                    ))}
+                                                </tbody>
+                                            </table>
+                                        </td>
+                                    </tr>
+                                )}
+                            </React.Fragment>
+                        ))}
+                    </tbody>
+                </table>
+            </div>
         </div>
     );
 };
