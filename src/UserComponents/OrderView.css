@@ -8,7 +8,8 @@
     margin-bottom: 20px;
     display: flex;
     align-items: center;
-    justify-content: space-between;
+    justify-content: end;
+    gap: 10px;
 }
 
 .filter-section label {
@@ -24,15 +25,14 @@
 }
 
 .order-view-table {
-    max-height: 400px;
+    max-height: 550px;
     overflow-y: auto;
     overflow-x: auto;
     background-color: #fff;
     box-shadow: 0 2px 5px rgba(0,0,0,0.1);
     border-radius: 8px;
-    padding: 10px;
+    padding: 0 10px;
 }
-
 .order-table {
     width: 100%;
     border-collapse: separate;
@@ -49,7 +49,7 @@
 }
 
 .order-table th {
-    background-color: #4CAF50;
+    background-color: #707070;
     color: white;
     font-weight: bold;
 }

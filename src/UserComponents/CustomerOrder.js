@@ -235,7 +235,7 @@ const CustomerOrder = () => {
                     </tbody>
                 </table>
             </div>
-            <div>
+            <div className='customer-action-btn'>
                 <button type="button" className="add-order-btn" onClick={addOrder}>Add Order</button>
                 <button type="submit" className="submit-btn" onClick={handleSubmit}>Submit Order</button>
             </div>

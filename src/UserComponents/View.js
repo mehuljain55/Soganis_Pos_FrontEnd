@@ -58,7 +58,6 @@ const View = ({ data }) => {
 
     return (
         <div className="view-sales-filter-data-container">
-            <h5>View Data</h5>
             <div className="view-sales-filter-data-search-bar-wrapper">
                 <input 
                     type="text" 

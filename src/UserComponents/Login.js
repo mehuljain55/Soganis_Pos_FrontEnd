@@ -25,7 +25,7 @@ const Login = ({ setUserData }) => {
   };
 
   return (
-    <div>
+    <div className='loginContainer'>
       <header className="site-header">
         <img src={logo} alt="Company Logo" className="logo" />
       </header>

@@ -1,10 +1,13 @@
 /* General styling */
 body {
   font-family: Arial, sans-serif;
-  background-color: #f5f5f5; /* Light grey background */
-  padding: 20px;
-  position: relative; /* Ensure body is relatively positioned */
-  z-index: 1; /* Ensure body has a higher stacking context */
+  background-color: #f5f5f5;
+  /* Light grey background */
+  /* padding: 20px; */
+  position: relative;
+  /* Ensure body is relatively positioned */
+  z-index: 1;
+  /* Ensure body has a higher stacking context */
 }
 
 h2 {
@@ -17,51 +20,61 @@ table {
   width: 100%;
   border-collapse: collapse;
   margin-bottom: 20px;
-  position: relative; /* Ensure table is relatively positioned */
-  z-index: 0; /* Ensure table has a lower stacking context than popup */
+  position: relative;
+  /* Ensure table is relatively positioned */
+  z-index: 0;
+  /* Ensure table has a lower stacking context than popup */
 }
 
 table th,
 table td {
   border: 1px solid #ddd;
   text-align: center;
-  padding: 10px; /* Adjusted padding for better spacing */
+  padding: 10px;
+  /* Adjusted padding for better spacing */
 }
 
 /* Width and padding for each column */
 table th:nth-child(1),
 table td:nth-child(1) {
-  width: 20%; /* Adjust width for User ID column */
+  width: 20%;
+  /* Adjust width for User ID column */
 }
 
 table th:nth-child(2),
 table td:nth-child(2) {
-  width: 30%; /* Adjust width for Description column */
+  width: 30%;
+  /* Adjust width for Description column */
 }
 
 table th:nth-child(3),
 table td:nth-child(3) {
-  width: 20%; /* Adjust width for Type column */
+  width: 20%;
+  /* Adjust width for Type column */
 }
 
 table th:nth-child(4),
 table td:nth-child(4) {
-  width: 10%; /* Adjust width for Hours column */
+  width: 10%;
+  /* Adjust width for Hours column */
 }
 
 table th:nth-child(5),
 table td:nth-child(5) {
-  width: 18%; /* Adjust width for Date column */
+  width: 18%;
+  /* Adjust width for Date column */
 }
 
 table th:nth-child(6),
 table td:nth-child(6) {
-  width: 15%; /* Adjust width for Amount column */
+  width: 15%;
+  /* Adjust width for Amount column */
 }
 
 table th:nth-child(7),
 table td:nth-child(7) {
-  width: 15%; /* Adjust width for Action column */
+  width: 15%;
+  /* Adjust width for Action column */
 }
 
 table td input[type="text"],
@@ -78,95 +91,127 @@ table td select {
 /* Button styling */
 button {
   padding: 10px;
-  background-color: #007bff; /* Blue background */
-  color: #fff; /* White text color */
-  border: 2px solid #007bff; /* Blue border */
+  background-color: #007bff;
+  /* Blue background */
+  color: #fff;
+  /* White text color */
+  border: 2px solid #007bff;
+  /* Blue border */
   cursor: pointer;
-  font-size: 18px; /* Reduced font size for buttons */
-  transition: background-color 0.3s ease; /* Smooth transition for hover effect */
+  font-size: 18px;
+  /* Reduced font size for buttons */
+  transition: background-color 0.3s ease;
+  /* Smooth transition for hover effect */
 }
 
 button:hover {
-  background-color: #0056b3; /* Darker blue on hover */
+  background-color: #0056b3;
+  /* Darker blue on hover */
 }
 
-button:last-child {
-  margin-top: 20px;
-}
+
 
 button.round-transparent {
-  background-color: transparent; /* Transparent background */
-  color: #007bff; /* Blue color for text */
-  border: 2px solid #007bff; /* Blue border */
-  border-radius: 50%; /* Round shape */
-  font-size: 18px; /* Reduced font size for round-transparent button */
-  padding: 10px; /* Adjust padding as needed */
+  background-color: transparent;
+  /* Transparent background */
+  color: #007bff;
+  /* Blue color for text */
+  border: 2px solid #007bff;
+  /* Blue border */
+  border-radius: 50%;
+  /* Round shape */
+  font-size: 18px;
+  /* Reduced font size for round-transparent button */
+  padding: 10px;
+  /* Adjust padding as needed */
   cursor: pointer;
-  transition: background-color 0.3s ease; /* Smooth transition for hover effect */
+  transition: background-color 0.3s ease;
+  /* Smooth transition for hover effect */
 }
 
 button.round-transparent:hover {
-  background-color: rgba(0, 123, 255, 0.1); /* Light blue tint on hover */
+  background-color: rgba(0, 123, 255, 0.1);
+  /* Light blue tint on hover */
 }
 
 /* Error row styling */
 .error-row {
-  background-color: #f8d7da; /* Light red background for error rows */
+  background-color: #f8d7da;
+  /* Light red background for error rows */
 }
 
 /* Popup styling */
 .popup {
-  position: fixed; /* Fixed position for better control */
+  position: fixed;
+  /* Fixed position for better control */
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent black background */
+  background-color: rgba(0, 0, 0, 0.5);
+  /* Semi-transparent black background */
   display: flex;
   justify-content: center;
   align-items: center;
-  z-index: 9999; /* Ensure the popup is on top of other content */
+  z-index: 9999;
+  /* Ensure the popup is on top of other content */
 }
 
 .popup-content {
-  background-color: #fff; /* White background for popup */
+  background-color: #fff;
+  /* White background for popup */
   padding: 50px;
   border-radius: 8px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.3); /* Shadow for the popup */
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+  /* Shadow for the popup */
   position: relative;
   max-width: 80%;
   text-align: center;
-  flex-direction: column; /* Ensure items stack vertically */
-  justify-content: center; /* Center content vertically */
+  flex-direction: column;
+  /* Ensure items stack vertically */
+  justify-content: center;
+  /* Center content vertically */
 }
 
 .close {
-  margin-top: 20px; /* Adjust top margin for close button */
+  margin-top: 20px;
+  /* Adjust top margin for close button */
   font-size: 24px;
   cursor: pointer;
-  color: black; /* Black text color */
-  background-color: transparent; /* Transparent background */
-  border: 2px solid black; /* Black border */
-  padding: 10px 20px; /* Adjust padding as needed */
-  border-radius: 4px; /* Optional: Rounded corners */
+  color: black;
+  /* Black text color */
+  background-color: transparent;
+  /* Transparent background */
+  border: 2px solid black;
+  /* Black border */
+  padding: 10px 20px;
+  /* Adjust padding as needed */
+  border-radius: 4px;
+  /* Optional: Rounded corners */
 }
 
 .close:hover {
-  color: red; /* Red text color on hover */
-  border-color: red; /* Red border color on hover */
+  color: red;
+  /* Red text color on hover */
+  border-color: red;
+  /* Red border color on hover */
 }
 
 .popup-icon {
-  font-size: 60px; /* Adjust icon size */
-  margin-bottom: 20px; /* Space between icon and text */
+  font-size: 60px;
+  /* Adjust icon size */
+  margin-bottom: 20px;
+  /* Space between icon and text */
 }
 
 .popup-success {
-  color: #00ff3c; /* Green color for success text */
+  color: #00ff3c;
+  /* Green color for success text */
 }
 
 .popup-failed {
-  color: #dc3545; /* Red color for failed text */
+  color: #dc3545;
+  /* Red color for failed text */
 }
 
 @media (max-width: 600px) {
@@ -182,30 +227,40 @@ button.round-transparent:hover {
   table th,
   table td {
     padding: 6px;
-    font-size: 14px; /* Adjust font size for table cells */
+    font-size: 14px;
+    /* Adjust font size for table cells */
   }
 
   button {
-    font-size: 16px; /* Adjust button font size */
-    padding: 8px; /* Adjust button padding */
+    font-size: 16px;
+    /* Adjust button font size */
+    padding: 8px;
+    /* Adjust button padding */
   }
 
   button.round-transparent {
-    font-size: 16px; /* Adjust font size for round-transparent button */
-    padding: 8px; /* Adjust padding as needed */
+    font-size: 16px;
+    /* Adjust font size for round-transparent button */
+    padding: 8px;
+    /* Adjust padding as needed */
   }
 
   .popup-content {
-    padding: 40px; /* Reduce padding for smaller screens */
-    max-width: 90%; /* Increase max-width for smaller screens */
+    padding: 40px;
+    /* Reduce padding for smaller screens */
+    max-width: 90%;
+    /* Increase max-width for smaller screens */
   }
 
   .close {
-    font-size: 18px; /* Reduce font size for smaller screens */
-    padding: 8px 16px; /* Adjust padding for smaller screens */
+    font-size: 18px;
+    /* Reduce font size for smaller screens */
+    padding: 8px 16px;
+    /* Adjust padding for smaller screens */
   }
 
   .popup-icon {
-    font-size: 40px; /* Adjust icon size for smaller screens */
+    font-size: 40px;
+    /* Adjust icon size for smaller screens */
   }
 }

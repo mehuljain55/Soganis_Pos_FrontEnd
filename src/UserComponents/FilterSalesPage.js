@@ -168,7 +168,8 @@ const FilterSalesPage = () => {
   <div className="filter-container">
     <h1>View Sales</h1>
     <div className="checkbox-group">
-      <label>
+      <div className="checkbox-group-item">
+<label>
         <input
           type="checkbox"
           name="dateRange"
@@ -177,6 +178,9 @@ const FilterSalesPage = () => {
         />
         Date Range
       </label>
+      </div>
+      <div className="checkbox-group-item">
+      
       <label>
         <input
           type="checkbox"
@@ -185,8 +189,10 @@ const FilterSalesPage = () => {
           onChange={handleCheckboxChange}
         />
         Item
-      </label>
-      <label>
+      </label>  
+      </div>
+      <div className="checkbox-group-item">
+        <label>
         <input
           type="checkbox"
           name="school"
@@ -195,6 +201,7 @@ const FilterSalesPage = () => {
         />
         School
       </label>
+      </div>
     </div>
 
     {/* Combine all dropdowns in a single row */}
