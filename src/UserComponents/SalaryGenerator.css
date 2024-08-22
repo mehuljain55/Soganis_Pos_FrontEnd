@@ -38,7 +38,8 @@
   border-collapse: collapse;
 }
 
-.result-section th, .result-section td {
+.result-section th,
+.result-section td {
   border: 1px solid #ddd;
   padding: 8px;
   text-align: left;
@@ -130,7 +131,7 @@
 
 .result-section table th,
 .result-section table td {
-  padding: 12px; 
+  padding: 12px;
   border: 1px solid #e0e0e0;
   text-align: center;
 }
@@ -147,37 +148,35 @@
 /* Manually setting padding and width for each column */
 .result-section table th:nth-child(1),
 .result-section table td:nth-child(1) {
-  width: 10%; 
+  width: 10%;
 }
 
 .result-section table th:nth-child(2),
 .result-section table td:nth-child(2) {
-  width: 10%; 
+  width: 10%;
 }
 
 .result-section table th:nth-child(3),
 .result-section table td:nth-child(3) {
-  width: 10%; 
+  width: 10%;
 }
 
 .result-section table th:nth-child(4),
 .result-section table td:nth-child(4) {
-  width: 10%; 
+  width: 10%;
 }
 
 .result-section table th:nth-child(5),
 .result-section table td:nth-child(5) {
-  width: 10%;  
+  width: 10%;
 }
 
 .result-section table th:nth-child(6),
 .result-section table td:nth-child(6) {
-  width: 10%; 
+  width: 10%;
 }
 
 .result-section table th:nth-child(7),
-.result-section table td:nth-child(7) { 
-  width: 10%; 
+.result-section table td:nth-child(7) {
+  width: 10%;
 }
-
-

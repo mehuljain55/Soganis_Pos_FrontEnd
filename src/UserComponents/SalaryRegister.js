@@ -183,7 +183,7 @@ const SalaryRegister = () => {
           ))}
         </tbody>
       </table>
-      <button className="round-transparent" onClick={addRow}>+</button>
+      <button onClick={addRow}>Add</button>
       <button onClick={handleUpdate}>Update</button>
 
       {/* Popup */}

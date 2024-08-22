@@ -1,15 +1,25 @@
 /* login.css */
 
-html, body {
+html,
+body {
     height: 100%;
     margin: 0;
     font-family: Arial, sans-serif;
-    /* background-image: url('../Icon/bg1.jpg');  */
-    background-size: cover;
-    background-position: center;
-    overflow: hidden; /* Prevent scrolling */
+    overflow: hidden;
+    /* Prevent scrolling */
     display: flex;
     flex-direction: column;
+}
+
+.loginContainer {
+    height: 100vh;
+    background-image: url('../Icon/bg1.jpg');
+    background-size: cover;
+    background-position: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+
 }
 
 .site-header {
@@ -35,7 +45,8 @@ html, body {
     display: flex;
     justify-content: center;
     align-items: center;
-    flex-grow: 1; /* Allow this section to grow and take available space */
+    flex-grow: 1;
+    /* Allow this section to grow and take available space */
     padding: 20px;
 }
 
@@ -102,12 +113,16 @@ html, body {
 }
 
 .site-footer {
+    /* position: fixed;
+    width: 100vw;
+    bottom: 0;     */
     background-color: rgba(255, 255, 255, 0.9);
     padding: 20px;
     text-align: center;
     background-color: rgba(245, 244, 244, 0.7);
     border-top: 1px solid #e7e7e7;
-    flex-shrink: 0; /* Ensure footer stays at the bottom */
+    flex-shrink: 0;
+    /* Ensure footer stays at the bottom */
 }
 
 .site-footer p {

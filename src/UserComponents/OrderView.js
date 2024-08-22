@@ -115,7 +115,7 @@ const OrderView = () => {
                                 </tr>
                                 {expandedOrders[order.orderId] && (
                                     <tr>
-                                        <td colSpan="8">
+                                        <td colSpan="9">
                                             <table className="sub-table">
                                                 <thead>
                                                     <tr>

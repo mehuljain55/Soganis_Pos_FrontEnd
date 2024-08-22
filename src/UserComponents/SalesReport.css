@@ -5,8 +5,7 @@
   .table-container {
     max-height: 300px; /* Set the fixed height for the table container */
     overflow-y: auto; /* Enables vertical scroll for the table */
-    overflow-x: auto; /* Enables horizontal scroll for the table */
-    border: 1px solid #ddd; /* Optional: add a border to the scrollable container */
+    overflow-x: auto; /* Enables horizontal scroll for the table */ /* Optional: add a border to the scrollable container */
   }
   
   .sales-report table {
@@ -16,13 +15,18 @@
   }
   
   .sales-report thead {
-    background-color: #f8f9fa;
+    background-color: #707070;
+    color: white;
+  }
+
+  .sales-report tr:nth-child(even) {
+    background-color: #cbcbcb;
   }
   
   .sales-report th, .sales-report td {
     padding: 10px;
     text-align: left;
-    border: 1px solid #ddd;
+    border: 1px solid black;
     word-wrap: break-word; /* Ensures long content wraps within the cell */
   }
   
