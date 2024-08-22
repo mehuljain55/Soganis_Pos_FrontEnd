@@ -1,0 +1,36 @@
+.purchase-order-book-container {
+    padding: 20px;
+    max-width: 1200px;
+    margin: auto;
+  }
+  
+  .purchase-order-book-table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  
+  .purchase-order-book-table th,
+  .purchase-order-book-table td {
+    border: 1px solid #ccc;
+    padding: 10px;
+    text-align: left;
+  }
+  
+  .purchase-order-book-table th {
+    background-color: #f5f5f5;
+  }
+  
+  .generate-order-button {
+    margin-top: 20px;
+    padding: 10px 20px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    cursor: pointer;
+    font-size: 16px;
+  }
+  
+  .generate-order-button:hover {
+    background-color: #45a049;
+  }
+  

@@ -10,6 +10,7 @@ import './MainComponent.css';
 import FilterSalesPage from './FilterSalesPage'; 
 import CustomerOrder from './CustomerOrder'; 
 import OrderView from './OrderView'; 
+import PurchaseOrderBook from './PurchaseOrderBook'; 
 
 
 import { API_BASE_URL } from './Config.js';
@@ -60,21 +61,27 @@ const MainComponent = ({ userData }) => {
       <div className="main-content-wrapper">
         <div className="sidebar">
           <button onClick={() => handleMenuItemClick('New Bill')}>New Bill</button>
-          <button onClick={() => handleMenuItemClick('Salary Register')}>Salary Register</button>
-          <button onClick={() => handleMenuItemClick('Add Order')}>Add Order</button>
-          <button onClick={() => handleMenuItemClick('View Order')}>View Order</button>
+          <button onClick={() => handleMenuItemClick('Returns')}>Return</button>
+          <button onClick={() => handleMenuItemClick('Inter Company Transaction')}>Inter Company</button>
+        
+          <button onClick={() => handleMenuItemClick('Add Order')}>Order Book</button>
+          <button onClick={() => handleMenuItemClick('View Order')}>View Order Book</button>
+          <button onClick={() => handleMenuItemClick('View Stock')}>View Stock</button>
+          <button onClick={() => handleMenuItemClick('Purchase Order')}>Purchase Order</button>
           
           <button onClick={() => handleMenuItemClick('Cash Collection')}>Cash Collection</button>
-          <button onClick={() => handleMenuItemClick('View Stock')}>View Stock</button>
           <button onClick={() => handleMenuItemClick('View Sales Report')}>Sale Report</button>
-          <button onClick={() => handleMenuItemClick("Today's Sale")}>Today's Sale</button>
+          <button onClick={() => handleMenuItemClick('Salary Register')}>Salary Register</button>
+    
         </div>
         <main className="main-content">
           {selectedMenuItem === 'New Bill' && <NewBillContainer userData={userData} />}
           {selectedMenuItem === 'Salary Register' && <Salary />}
           {selectedMenuItem === 'Add Order' && <CustomerOrder />}
           {selectedMenuItem === 'View Order' && <OrderView />}
+          {selectedMenuItem === 'Purchase Order' && <PurchaseOrderBook />}
        
+
           {selectedMenuItem === 'Cash Collection' && <UserCashCollection />}
           {selectedMenuItem === 'View Stock' && <FilterPage />}
           {selectedMenuItem === 'View Sales Report' && <FilterSalesPage />}

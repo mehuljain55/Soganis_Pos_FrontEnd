@@ -51,7 +51,7 @@ const OrderView = () => {
     };
 
     return (
-        <div className="order-view">
+        <div className="order-view-data">
             <div className="filter-section">
                 <label htmlFor="status">Order Status:</label>
                 <select
@@ -92,7 +92,7 @@ const OrderView = () => {
                                     <td>{order.advancePayment}</td>
                                     <td>{order.amount_due}</td>
                                     <td>{formatValue(order.status)}</td>
-                                    <td>
+                                    <td className="action-buttons">
                                         <button
                                             className="btn delivered"
                                             onClick={() => updateOrderStatus(order.orderId, 'DELIVERED')}
