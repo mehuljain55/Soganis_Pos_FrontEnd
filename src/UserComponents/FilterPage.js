@@ -94,7 +94,7 @@ const FilterPage = () => {
                     checked={selectedFilter === 'filter1'}
                     onChange={handleFilterChange}
                 />
-                <label htmlFor="filter1">Filter 1 - School and Item</label>
+                <label htmlFor="filter1">School and Item</label>
                 
                 <input
                     type="radio"
@@ -104,7 +104,7 @@ const FilterPage = () => {
                     checked={selectedFilter === 'filter2'}
                     onChange={handleFilterChange}
                 />
-                <label htmlFor="filter2">Filter 2 - Item</label>
+                <label htmlFor="filter2">Item</label>
                 
                 <input
                     type="radio"
@@ -114,7 +114,7 @@ const FilterPage = () => {
                     checked={selectedFilter === 'filter3'}
                     onChange={handleFilterChange}
                 />
-                <label htmlFor="filter3">Filter 3 - School</label>
+                <label htmlFor="filter3">School</label>
             </div>
             
             {selectedFilter === 'filter1' && (

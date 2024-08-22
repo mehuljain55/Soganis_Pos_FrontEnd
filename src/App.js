@@ -6,6 +6,7 @@ import FilterPage from './UserComponents/FilterPage';
 import FilterSalesPage from './UserComponents/FilterSalesPage';
 import CustomerOrder from './UserComponents/CustomerOrder';
 import OrderView from './UserComponents/OrderView';
+import PurchaseOrderBook from './UserComponents/PurchaseOrderBook';
 
 
 import './App.css'; // Custom CSS for styling
@@ -25,6 +26,7 @@ function App() {
             <Route path="/filter-sales" element={<FilterSalesPage />} />
             <Route path="/customer-order" element={<CustomerOrder />} />
             <Route path="/view_customer_order" element={<OrderView />} />
+            <Route path="/purchase-order-book" element={<PurchaseOrderBook />} />
       
           </Routes>
         )}

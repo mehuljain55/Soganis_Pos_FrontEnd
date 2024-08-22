@@ -1,9 +1,9 @@
-.view-container {
+.view-sales-filter-data-container {
     margin: 20px;
     padding: 10px; /* Add padding for better spacing */
 }
 
-.table-wrapper {
+.view-sales-filter-data-table-wrapper {
     max-height: 400px; /* Adjust based on your needs */
     overflow-y: auto; /* Vertical scrolling */
     overflow-x: auto; /* Horizontal scrolling */
@@ -11,42 +11,62 @@
     background-color: #fff; /* Background color for better visibility */
 }
 
-table {
+.view-sales-filter-data-table-wrapper table {
     width: 100%;
     border-collapse: collapse; /* Collapse borders for a unified look */
+    word-wrap: break-word; /* Enable word wrap */
 }
 
-thead {
+.view-sales-filter-data-table-wrapper thead {
     background-color: #f4f4f4; /* Light background for header */
     position: sticky; /* Sticky header */
     top: 0; /* Stick to the top */
     z-index: 1; /* Ensure header is above the body */
 }
 
-th, td {
+.view-sales-filter-data-table-wrapper th,
+.view-sales-filter-data-table-wrapper td {
     padding: 10px;
     border: 1px solid #ddd;
     text-align: left;
-    white-space: nowrap; /* Prevent text from wrapping */
+    white-space: normal; /* Allow text to wrap */
 }
 
-th {
+.view-sales-filter-data-table-wrapper th {
     background-color: #f4f4f4; /* Header background color */
     font-weight: bold; /* Bold header text */
 }
 
-td {
-    background-color: #fff; /* Cell background color */
+.view-sales-filter-data-search-bar-wrapper {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 10px;
 }
 
-/* Adjust column widths to ensure visibility */
-th:nth-child(1), td:nth-child(1) { width: 80px; } /* S.No */
-th:nth-child(2), td:nth-child(2) { width: 120px; } /* Item Code */
-th:nth-child(3), td:nth-child(3) { width: 200px; } /* Item Name */
-th:nth-child(4), td:nth-child(4) { width: 150px; } /* Item Type */
-th:nth-child(5), td:nth-child(5) { width: 100px; } /* Item Color */
-th:nth-child(6), td:nth-child(6) { width: 100px; } /* Item Size */
-th:nth-child(7), td:nth-child(7) { width: 150px; } /* Item Category */
-th:nth-child(8), td:nth-child(8) { width: 100px; } /* Price */
-th:nth-child(9), td:nth-child(9) { width: 80px; } /* Quantity */
-th:nth-child(10), td:nth-child(10) { width: 120px; } /* Group ID */
+.view-sales-filter-data-search-bar,
+.view-sales-filter-data-quantity-filter {
+    padding: 5px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+.view-sales-filter-data-table-wrapper th:nth-child(1), 
+.view-sales-filter-data-table-wrapper td:nth-child(1) { width: 80px; } /* S.No */
+.view-sales-filter-data-table-wrapper th:nth-child(2), 
+.view-sales-filter-data-table-wrapper td:nth-child(2) { width: 120px; } /* Item Code */
+.view-sales-filter-data-table-wrapper th:nth-child(3), 
+.view-sales-filter-data-table-wrapper td:nth-child(3) { width: 200px; } /* Item Name */
+.view-sales-filter-data-table-wrapper th:nth-child(4), 
+.view-sales-filter-data-table-wrapper td:nth-child(4) { width: 150px; } /* Item Type */
+.view-sales-filter-data-table-wrapper th:nth-child(5), 
+.view-sales-filter-data-table-wrapper td:nth-child(5) { width: 300px; } /* Item Color */
+.view-sales-filter-data-table-wrapper th:nth-child(6), 
+.view-sales-filter-data-table-wrapper td:nth-child(6) { width: 100px; } /* Item Size */
+.view-sales-filter-data-table-wrapper th:nth-child(7), 
+.view-sales-filter-data-table-wrapper td:nth-child(7) { width: 150px; } /* Item Category */
+.view-sales-filter-data-table-wrapper th:nth-child(8), 
+.view-sales-filter-data-table-wrapper td:nth-child(8) { width: 100px; } /* Price */
+.view-sales-filter-data-table-wrapper th:nth-child(9), 
+.view-sales-filter-data-table-wrapper td:nth-child(9) { width: 80px; } /* Quantity */
+.view-sales-filter-data-table-wrapper th:nth-child(10), 
+.view-sales-filter-data-table-wrapper td:nth-child(10) { width: 120px; } /* Group ID */

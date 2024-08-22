@@ -1,38 +1,81 @@
 import React, { useState } from 'react';
 import './View.css'; // Import the CSS file for styling
+import { API_BASE_URL } from './Config.js';
 
 const View = ({ data }) => {
     const [searchTerm, setSearchTerm] = useState('');
+    const [maxQuantity, setMaxQuantity] = useState(''); 
+    const [placedOrders, setPlacedOrders] = useState({}); // State to track placed orders
 
-    // Function to handle search input change
     const handleSearch = (event) => {
         setSearchTerm(event.target.value.toLowerCase());
     };
 
-    // Filtered data based on search term
-    const filteredData = data.filter(item =>
-        (item.itemCode && item.itemCode.toLowerCase().includes(searchTerm)) ||
-        (item.itemName && item.itemName.toLowerCase().includes(searchTerm)) ||
-        (item.itemType && item.itemType.toLowerCase().includes(searchTerm)) ||
-        (item.itemColor && item.itemColor.toLowerCase().includes(searchTerm)) ||
-        (item.itemSize && item.itemSize.toLowerCase().includes(searchTerm)) ||
-        (item.itemCategory && item.itemCategory.toLowerCase().includes(searchTerm)) ||
-        (item.group_id && item.group_id.toLowerCase().includes(searchTerm))
-    );
+    const handleQuantityFilter = (event) => {
+        const value = event.target.value;
+        setMaxQuantity(value ? parseInt(value, 10) : '');
+    };
+
+    const handlePlaceOrder = async (barcodedId) => {
+        try {
+            const response = await fetch(`${API_BASE_URL}/create_order`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: new URLSearchParams({ barcodedId }),
+            });
+
+            if (response.ok) {
+                const status = await response.text();
+                alert(`Order placed successfully: ${status}`);
+                setPlacedOrders((prev) => ({
+                    ...prev,
+                    [barcodedId]: true,
+                }));
+            } else {
+                alert('Failed to place order.');
+            }
+        } catch (error) {
+            console.error('Error placing order:', error);
+            alert('An error occurred while placing the order.');
+        }
+    };
+
+    const filteredData = data.filter(item => {
+        const matchesSearchTerm = (item.itemCode && item.itemCode.toLowerCase().includes(searchTerm)) ||
+                                  (item.itemName && item.itemName.toLowerCase().includes(searchTerm)) ||
+                                  (item.itemType && item.itemType.toLowerCase().includes(searchTerm)) ||
+                                  (item.itemColor && item.itemColor.toLowerCase().includes(searchTerm)) ||
+                                  (item.itemSize && item.itemSize.toLowerCase().includes(searchTerm)) ||
+                                  (item.itemCategory && item.itemCategory.toLowerCase().includes(searchTerm)) ||
+                                  (item.group_id && item.group_id.toLowerCase().includes(searchTerm));
+
+        const matchesQuantityFilter = maxQuantity === '' || (item.quantity && item.quantity <= maxQuantity);
+
+        return matchesSearchTerm && matchesQuantityFilter;
+    });
 
     return (
-        <div className="view-container">
+        <div className="view-sales-filter-data-container">
             <h5>View Data</h5>
-            <div className="search-bar-wrapper">
+            <div className="view-sales-filter-data-search-bar-wrapper">
                 <input 
                     type="text" 
                     placeholder="Search..." 
                     value={searchTerm}
                     onChange={handleSearch}
-                    className="search-bar"
+                    className="view-sales-filter-data-search-bar"
+                />
+                <input
+                    type="number"
+                    placeholder="Max Quantity"
+                    value={maxQuantity}
+                    onChange={handleQuantityFilter}
+                    className="view-sales-filter-data-quantity-filter"
                 />
             </div>
-            <div className="table-wrapper">
+            <div className="view-sales-filter-data-table-wrapper">
                 {filteredData.length > 0 ? (
                     <table>
                         <thead>
@@ -47,6 +90,7 @@ const View = ({ data }) => {
                                 <th>Price</th>
                                 <th>Quantity</th>
                                 <th>Group ID</th>
+                                <th>Action</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -62,6 +106,18 @@ const View = ({ data }) => {
                                     <td>{item.price}</td>
                                     <td>{item.quantity}</td>
                                     <td>{item.group_id}</td>
+                                    <td>
+                                        {placedOrders[item.itemBarcodeID] ? (
+                                            <span style={{ color: 'green' }}>Order Placed</span>
+                                        ) : (
+                                            <button
+                                                onClick={() => handlePlaceOrder(item.itemBarcodeID)}
+                                                className="view-sales-filter-data-place-order-btn"
+                                            >
+                                                Place Order
+                                            </button>
+                                        )}
+                                    </td>
                                 </tr>
                             ))}
                         </tbody>

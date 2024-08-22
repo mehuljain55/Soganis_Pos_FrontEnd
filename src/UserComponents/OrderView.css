@@ -1,4 +1,4 @@
-.order-view {
+.order-view-data {
     padding: 20px;
     font-family: 'Roboto', sans-serif;
     background-color: #f4f4f4;
@@ -24,9 +24,9 @@
 }
 
 .order-view-table {
-    max-height: 400px; /* Fixed height for the table container */
-    overflow-y: auto;  /* Enable vertical scrolling if needed */
-    overflow-x: auto;  /* Enable horizontal scrolling if needed */
+    max-height: 400px;
+    overflow-y: auto;
+    overflow-x: auto;
     background-color: #fff;
     box-shadow: 0 2px 5px rgba(0,0,0,0.1);
     border-radius: 8px;
@@ -38,7 +38,7 @@
     border-collapse: separate;
     border-spacing: 0;
     background-color: #fff;
-    border: 1px solid #ddd; /* Add border to the table for better visibility */
+    border: 1px solid #ddd;
 }
 
 .order-table th, 
@@ -62,16 +62,41 @@
     background-color: #f1f1f1;
 }
 
+.action-buttons {
+    display: flex;
+    gap: 10px;
+}
+
+.action-buttons .btn {
+    flex: 1;
+    max-width: 80px; /* Reduced max-width for smaller buttons */
+}
+
+.action-buttons .btn:nth-child(1) {
+    width: 80px; /* Smaller width for first button */
+    height: 30px;
+}
+
+.action-buttons .btn:nth-child(2) {
+    width: 80px; /* Smaller width for first button */
+    height: 30px;
+}
+
+.action-buttons .btn:nth-child(3) {
+    width: 80px; /* Smaller width for first button */
+    height: 30px;
+}
+
 .btn {
     background-color: #007bff;
     color: white;
     border: none;
-    padding: 10px 20px;
+    padding: 6px 12px; /* Reduced padding for smaller buttons */
     text-align: center;
     text-decoration: none;
     display: inline-block;
-    font-size: 14px;
-    margin: 4px 2px;
+    font-size: 12px; /* Slightly smaller font size */
+    margin: 2px 1px;
     cursor: pointer;
     border-radius: 5px;
     transition: background-color 0.3s, transform 0.3s;
