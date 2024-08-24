@@ -51,29 +51,17 @@ const PurchaseOrderBook = () => {
     }
 
     axios.post(`${API_BASE_URL}/generate_order`, orders, {
-      responseType: 'blob' // This tells axios to treat the response as binary data (blob)
+      responseType: 'blob' 
     })
     .then(response => {
-      // Create a URL for the blob
-      const url = window.URL.createObjectURL(new Blob([response.data]));
-      
-      // Create a link element
+      const url = window.URL.createObjectURL(new Blob([response.data])); 
       const link = document.createElement('a');
       link.href = url;
-  
-      // Set the download attribute with a filename
       link.setAttribute('download', 'order.xlsx');
-  
-      // Append the link to the document body
       document.body.appendChild(link);
-  
-      // Programmatically click the link to trigger the download
       link.click();
-  
-      // Clean up by removing the link element and revoking the object URL
       link.parentNode.removeChild(link);
       window.URL.revokeObjectURL(url);
-      
       fetchOrders();
       alert('Order generated and downloaded successfully!');
     })
@@ -81,7 +69,7 @@ const PurchaseOrderBook = () => {
       alert('Failed to generate order: ' + error.message);
     });
   };
-  
+
   if (isLoading) return <p>Loading...</p>;
   if (error) return <p>Error: {error}</p>;
 
