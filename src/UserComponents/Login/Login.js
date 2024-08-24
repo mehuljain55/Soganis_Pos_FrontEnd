@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import './login.css';
-import { API_BASE_URL } from './Config.js';
+import { API_BASE_URL } from '../Config.js';
 import logo from '../Icon/Logo.png';
 
 const Login = ({ setUserData }) => {

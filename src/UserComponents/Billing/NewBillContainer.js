@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import axios from 'axios';
 import './NewBillContainer.css';
-import { API_BASE_URL } from './Config.js';
+import { API_BASE_URL } from '../Config.js';
 
 const NewBillContainer = ({ userData }) => {
   const [selectedItems, setSelectedItems] = useState([]);

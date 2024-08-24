@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
-import './View.css'; // Import the CSS file for styling
-import { API_BASE_URL } from './Config.js';
+import './View.css'; 
+import { API_BASE_URL } from '../Config.js';
 
 const View = ({ data }) => {
     const [searchTerm, setSearchTerm] = useState('');
     const [maxQuantity, setMaxQuantity] = useState(''); 
-    const [placedOrders, setPlacedOrders] = useState({}); // State to track placed orders
+    const [placedOrders, setPlacedOrders] = useState({});
 
     const handleSearch = (event) => {
         setSearchTerm(event.target.value.toLowerCase());

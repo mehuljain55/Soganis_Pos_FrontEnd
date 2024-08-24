@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import './CustomerOrder.css';
-import { API_BASE_URL } from './Config.js';
+import { API_BASE_URL } from '../Config.js';
 
 const CustomerOrder = () => {
     const [order, setOrder] = useState({

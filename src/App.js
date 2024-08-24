@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
-import Login from './UserComponents/Login';
-import MainComponent from './UserComponents/MainComponent';
-import FilterPage from './UserComponents/FilterPage';
-import FilterSalesPage from './UserComponents/FilterSalesPage';
-import CustomerOrder from './UserComponents/CustomerOrder';
-import OrderView from './UserComponents/OrderView';
-import PurchaseOrderBook from './UserComponents/PurchaseOrderBook';
+import Login from './UserComponents/Login/Login';
+import MainComponent from './UserComponents/Dashboard/MainComponent';
+import FilterPage from './UserComponents/Inventory/FilterPage';
+import FilterSalesPage from './UserComponents/SalesReport/FilterSalesPage';
+import CustomerOrder from './UserComponents/OrderBook/CustomerOrder';
+import OrderView from './UserComponents/OrderBook/OrderView';
+import PurchaseOrderBook from './UserComponents/OrderBook/PurchaseOrderBook';
 
 
 import './App.css'; // Custom CSS for styling

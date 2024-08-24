@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import './OrderView.css';
-import { API_BASE_URL } from './Config.js';
+import { API_BASE_URL } from '../Config.js';
 
 const OrderView = () => {
     const [status, setStatus] = useState('PENDING');

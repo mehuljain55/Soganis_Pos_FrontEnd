@@ -1,7 +1,7 @@
 // src/components/UserCashCollection.js
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import { API_BASE_URL } from './Config.js';
+import { API_BASE_URL } from '../../Config.js';
 
 const UserCashCollection = () => {
   const [userCashCollection, setUserCashCollection] = useState([]);

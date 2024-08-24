@@ -1,19 +1,19 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import NewBillContainer from './NewBillContainer'; 
-import Salary from './Salary';
-import UserCashCollection from './UserCashCollection'; 
-import FilterPage from './FilterPage'; 
+import NewBillContainer from '../Billing/NewBillContainer.js'; 
+import Salary from '../Salary/Salary.js';
+import UserCashCollection from '../Login/CashCollectionReport/UserCashCollection.js'; 
+import FilterPage from '../Inventory/FilterPage.js'; 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSyncAlt } from '@fortawesome/free-solid-svg-icons';
 import './MainComponent.css'; 
-import FilterSalesPage from './FilterSalesPage'; 
-import CustomerOrder from './CustomerOrder'; 
-import OrderView from './OrderView'; 
-import PurchaseOrderBook from './PurchaseOrderBook'; 
+import FilterSalesPage from '../SalesReport/FilterSalesPage.js'; 
+import CustomerOrder from '../OrderBook/CustomerOrder.js'; 
+import OrderView from '../OrderBook/OrderView.js'; 
+import PurchaseOrderBook from '../OrderBook/PurchaseOrderBook.js'; 
 
 
-import { API_BASE_URL } from './Config.js';
+import { API_BASE_URL } from '../Config.js';
 
 const MainComponent = ({ userData }) => {
   const [selectedMenuItem, setSelectedMenuItem] = useState('');
