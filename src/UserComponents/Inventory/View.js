@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import './View.css'; 
 import { API_BASE_URL } from '../Config.js';
 
-const View = ({ data }) => {
+const View = ({ data}) => {
     const [searchTerm, setSearchTerm] = useState('');
     const [maxQuantity, setMaxQuantity] = useState(''); 
     const [placedOrders, setPlacedOrders] = useState({});
@@ -57,6 +57,8 @@ const View = ({ data }) => {
     });
 
     return (
+
+
         <div className="view-sales-filter-data-container">
             <div className="view-sales-filter-data-search-bar-wrapper">
                 <input 
@@ -74,6 +76,9 @@ const View = ({ data }) => {
                     className="view-sales-filter-data-quantity-filter"
                 />
             </div>
+
+
+
             <div className="view-sales-filter-data-table-wrapper">
                 {filteredData.length > 0 ? (
                     <table>

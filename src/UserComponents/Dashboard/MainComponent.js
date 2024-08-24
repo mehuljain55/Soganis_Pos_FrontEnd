@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import NewBillContainer from '../Billing/NewBillContainer.js'; 
 import Salary from '../Salary/Salary.js';
-import UserCashCollection from '../../CashCollectionReport/UserCashCollection.js'; 
+import UserCashCollection from '../CashCollectionReport/UserCashCollection.js'; 
 import FilterPage from '../Inventory/FilterPage.js'; 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSyncAlt } from '@fortawesome/free-solid-svg-icons';

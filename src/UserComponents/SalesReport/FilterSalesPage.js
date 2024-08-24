@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import './FilterSalesPage.css'; // Import custom CSS for styling
 import axios from 'axios';
 import { API_BASE_URL } from '../Config.js';
-import SalesReport from './SalesReport.js'; // Import the SalesReport component
+import SalesReport from './SalesReport'; // Import the SalesReport component
 
 const FilterSalesPage = () => {
   const [filters, setFilters] = useState({

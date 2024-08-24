@@ -2,7 +2,6 @@ import React from 'react';
 import './SalesReport.css';
 
 const SalesReport = ({ data }) => {
-  // Calculate the sum of totalAmount, set to 0 if no data
   const totalAmountSum = data.length > 0 ? data.reduce((sum, item) => sum + item.totalAmount, 0) : 0;
 
   return (
