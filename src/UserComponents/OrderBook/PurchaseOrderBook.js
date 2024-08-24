@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { API_BASE_URL } from './Config.js';
+import { API_BASE_URL } from '../Config.js';
 import './PurchaseOrderBook.css'; // Import custom CSS for styling
 
 
@@ -22,6 +22,20 @@ const PurchaseOrderBook = () => {
       });
   }, []);
 
+  const fetchOrders = () => {
+    setIsLoading(true);
+    setError(null);
+    axios.get(`${API_BASE_URL}/view-order`)
+      .then(response => {
+        setOrders(response.data);
+        setIsLoading(false);
+      })
+      .catch(error => {
+        setError(error.message);
+        setIsLoading(false);
+      });
+  };
+
   // Handle quantity change
   const handleQuantityChange = (index, value) => {
     const newOrders = [...orders];
@@ -29,15 +43,31 @@ const PurchaseOrderBook = () => {
     setOrders(newOrders);
   };
 
-  // Handle generate order
+  
   const handleGenerateOrder = () => {
-    axios.post(`${API_BASE_URL}/generate_order`, orders)
-      .then(response => {
-        alert('Order generated successfully!');
-      })
-      .catch(error => {
-        alert('Failed to generate order: ' + error.message);
-      });
+    if (orders.length === 0) {
+      alert('No orders to generate.');
+      return;
+    }
+
+    axios.post(`${API_BASE_URL}/generate_order`, orders, {
+      responseType: 'blob' 
+    })
+    .then(response => {
+      const url = window.URL.createObjectURL(new Blob([response.data])); 
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute('download', 'order.xlsx');
+      document.body.appendChild(link);
+      link.click();
+      link.parentNode.removeChild(link);
+      window.URL.revokeObjectURL(url);
+      fetchOrders();
+      alert('Order generated and downloaded successfully!');
+    })
+    .catch(error => {
+      alert('Failed to generate order: ' + error.message);
+    });
   };
 
   if (isLoading) return <p>Loading...</p>;

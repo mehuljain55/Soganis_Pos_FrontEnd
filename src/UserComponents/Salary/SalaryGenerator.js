@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-import { API_BASE_URL } from './Config'; // Assuming you have a Config file for API base URL
+import { API_BASE_URL } from '../Config'; // Assuming you have a Config file for API base URL
 import './SalaryGenerator.css'; // Import your CSS file for styling
 
 const SalaryGenerator = () => {

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import './SalaryRegister.css'; // CSS file for styling
-import { API_BASE_URL } from './Config.js';
+import { API_BASE_URL } from '../Config.js';
 
 const SalaryRegister = () => {
   const [userList, setUserList] = useState([]);
