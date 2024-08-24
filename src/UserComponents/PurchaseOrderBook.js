@@ -22,6 +22,20 @@ const PurchaseOrderBook = () => {
       });
   }, []);
 
+  const fetchOrders = () => {
+    setIsLoading(true);
+    setError(null);
+    axios.get(`${API_BASE_URL}/view-order`)
+      .then(response => {
+        setOrders(response.data);
+        setIsLoading(false);
+      })
+      .catch(error => {
+        setError(error.message);
+        setIsLoading(false);
+      });
+  };
+
   // Handle quantity change
   const handleQuantityChange = (index, value) => {
     const newOrders = [...orders];
@@ -29,17 +43,45 @@ const PurchaseOrderBook = () => {
     setOrders(newOrders);
   };
 
-  // Handle generate order
+  
   const handleGenerateOrder = () => {
-    axios.post(`${API_BASE_URL}/generate_order`, orders)
-      .then(response => {
-        alert('Order generated successfully!');
-      })
-      .catch(error => {
-        alert('Failed to generate order: ' + error.message);
-      });
-  };
+    if (orders.length === 0) {
+      alert('No orders to generate.');
+      return;
+    }
 
+    axios.post(`${API_BASE_URL}/generate_order`, orders, {
+      responseType: 'blob' // This tells axios to treat the response as binary data (blob)
+    })
+    .then(response => {
+      // Create a URL for the blob
+      const url = window.URL.createObjectURL(new Blob([response.data]));
+      
+      // Create a link element
+      const link = document.createElement('a');
+      link.href = url;
+  
+      // Set the download attribute with a filename
+      link.setAttribute('download', 'order.xlsx');
+  
+      // Append the link to the document body
+      document.body.appendChild(link);
+  
+      // Programmatically click the link to trigger the download
+      link.click();
+  
+      // Clean up by removing the link element and revoking the object URL
+      link.parentNode.removeChild(link);
+      window.URL.revokeObjectURL(url);
+      
+      fetchOrders();
+      alert('Order generated and downloaded successfully!');
+    })
+    .catch(error => {
+      alert('Failed to generate order: ' + error.message);
+    });
+  };
+  
   if (isLoading) return <p>Loading...</p>;
   if (error) return <p>Error: {error}</p>;
 
