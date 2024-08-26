@@ -163,131 +163,162 @@ const FilterSalesPage = () => {
     }
   };
 
+  // Handle Export functionality
+  const handleExport = () => {
+    let url = `${API_BASE_URL}/report/export`; // Default URL for export
+    const params = {};
+  
+    // Check if Date Range filter is selected
+    if (filters.dateRange) {
+      params.startDate = selectedFilters.dateRange.startDate;
+      params.endDate = selectedFilters.dateRange.endDate;
+    }
+  
+    // Check if School filter is selected
+    if (filters.school && selectedFilters.school) {
+      params.schoolCode = selectedFilters.school;
+    }
+  
+    // Check if Item filter is selected
+    if (filters.item && selectedFilters.item) {
+      params.itemCode = selectedFilters.item;
+    }
+  
+    axios.get(url, { params, responseType: 'blob' })
+      .then(response => {
+        const url = window.URL.createObjectURL(new Blob([response.data]));
+        const link = document.createElement('a');
+        link.href = url;
+        link.setAttribute('download', 'sales_report.xlsx'); // Use the desired file name here
+        document.body.appendChild(link);
+        link.click();
+        link.remove();
+      })
+      .catch(error => {
+        console.error('Error exporting data:', error);
+      });
+  };
+
   return (
     <div className="filter-sales-page">
-  <div className="filter-container">
-    <h1>View Sales</h1>
-    <div className="checkbox-group">
-      <div className="checkbox-group-item">
-<label>
-        <input
-          type="checkbox"
-          name="dateRange"
-          checked={filters.dateRange}
-          onChange={handleCheckboxChange}
-        />
-        Date Range
-      </label>
+      <div className="filter-container">
+        <h1>View Sales</h1>
+        <div className="checkbox-group">
+          <div className="checkbox-group-item">
+            <label>
+              <input
+                type="checkbox"
+                name="dateRange"
+                checked={filters.dateRange}
+                onChange={handleCheckboxChange}
+              />
+              Date Range
+            </label>
+          </div>
+          <div className="checkbox-group-item">
+            <label>
+              <input
+                type="checkbox"
+                name="item"
+                checked={filters.item}
+                onChange={handleCheckboxChange}
+              />
+              Item
+            </label>  
+          </div>
+          <div className="checkbox-group-item">
+            <label>
+              <input
+                type="checkbox"
+                name="school"
+                checked={filters.school}
+                onChange={handleCheckboxChange}
+              />
+              School
+            </label>
+          </div>
+        </div>
+
+        {/* Combine all dropdowns in a single row */}
+        <div className="dropdown-group">
+          {filters.dateRange && (
+            <>
+              <label htmlFor="startDate">Start Date:</label>
+              <input
+                type="date"
+                id="startDate"
+                name="startDate"
+                value={selectedFilters.dateRange.startDate}
+                onChange={handleDateChange}
+              />
+
+              <label htmlFor="endDate">End Date:</label>
+              <input
+                type="date"
+                id="endDate"
+                name="endDate"
+                value={selectedFilters.dateRange.endDate}
+                onChange={handleDateChange}
+              />
+            </>
+          )}
+
+          {filters.school && (
+            <>
+              <label htmlFor="schoolDropdown">Select School Code:</label>
+              <select
+                id="schoolDropdown"
+                name="school"
+                value={selectedFilters.school}
+                onChange={handleDropdownChange}
+              >
+                <option value="">--Select--</option>
+                {schools.map((school, index) => (
+                  <option key={index} value={school}>
+                    {school}
+                  </option>
+                ))}
+              </select>
+            </>
+          )}
+
+          {filters.item && (
+            <>
+              <label htmlFor="itemDropdown">Select Item Code:</label>
+              <select
+                id="itemDropdown"
+                name="item"
+                value={selectedFilters.item}
+                onChange={handleDropdownChange}
+              >
+                <option value="">--Select--</option>
+                {selectedFilters.school
+                  ? filteredItems.map((item, index) => (
+                      <option key={index} value={item}>
+                        {item}
+                      </option>
+                    ))
+                  : items.map((item, index) => (
+                      <option key={index} value={item}>
+                        {item}
+                      </option>
+                    ))}
+              </select>
+            </>
+          )}
+        </div>
+
+        <div className="button-group">
+          <button onClick={fetchSalesData}>Submit</button>
+        </div>
+
+        {errorMessage && <p className="error-message">{errorMessage}</p>}
       </div>
-      <div className="checkbox-group-item">
-      
-      <label>
-        <input
-          type="checkbox"
-          name="item"
-          checked={filters.item}
-          onChange={handleCheckboxChange}
-        />
-        Item
-      </label>  
-      </div>
-      <div className="checkbox-group-item">
-        <label>
-        <input
-          type="checkbox"
-          name="school"
-          checked={filters.school}
-          onChange={handleCheckboxChange}
-        />
-        School
-      </label>
+
+      <div className="sales-report">
+        <SalesReport data={salesData} />
       </div>
     </div>
-
-    {/* Combine all dropdowns in a single row */}
-    <div className="dropdown-group">
-      {filters.dateRange && (
-        <>
-          <label htmlFor="startDate">Start Date:</label>
-          <input
-            type="date"
-            id="startDate"
-            name="startDate"
-            value={selectedFilters.dateRange.startDate}
-            onChange={handleDateChange}
-          />
-
-          <label htmlFor="endDate">End Date:</label>
-          <input
-            type="date"
-            id="endDate"
-            name="endDate"
-            value={selectedFilters.dateRange.endDate}
-            onChange={handleDateChange}
-          />
-        </>
-      )}
-
-      {filters.school && (
-        <>
-          <label htmlFor="schoolDropdown">Select School Code:</label>
-          <select
-            id="schoolDropdown"
-            name="school"
-            value={selectedFilters.school}
-            onChange={handleDropdownChange}
-          >
-            <option value="">--Select--</option>
-            {schools.map((school, index) => (
-              <option key={index} value={school}>
-                {school}
-              </option>
-            ))}
-          </select>
-        </>
-      )}
-
-      {filters.item && (
-        <>
-          <label htmlFor="itemDropdown">Select Item Code:</label>
-          <select
-            id="itemDropdown"
-            name="item"
-            value={selectedFilters.item}
-            onChange={handleDropdownChange}
-            disabled={!selectedFilters.school && filters.school && filters.item}
-          >
-            <option value="">--Select--</option>
-            {(selectedFilters.school ? filteredItems : items).map((item, index) => (
-              <option key={index} value={item}>
-                {item}
-              </option>
-            ))}
-          </select>
-        </>
-      )}
-    </div>
-
-    {/* Display error message if applicable */}
-    {errorMessage && (
-      <div className="error-message">
-        {errorMessage}
-      </div>
-    )}
-
-    {/* Search Button */}
-    <button onClick={fetchSalesData} className="search-button">
-      Search
-    </button>
-  </div>
-
-  {/* Render SalesReport component outside the filter box */}
-  <div className="sales-report-container">
-    <SalesReport data={salesData} />
-  </div>
-</div>
-
-  
   );
 };
 

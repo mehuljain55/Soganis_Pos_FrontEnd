@@ -1,37 +1,78 @@
 .sales-report {
-    max-width: 100%;
-  }
-  
-  .table-container {
-    max-height: 300px; /* Set the fixed height for the table container */
-    overflow-y: auto; /* Enables vertical scroll for the table */
-    overflow-x: auto; /* Enables horizontal scroll for the table */ /* Optional: add a border to the scrollable container */
-  }
-  
-  .sales-report table {
-    width: 100%;
-    border-collapse: collapse;
-    table-layout: fixed; /* Ensures that the table columns have fixed widths */
-  }
-  
-  .sales-report thead {
-    background-color: #707070;
-    color: white;
-  }
+  max-width: 100%;
+}
 
-  .sales-report tr:nth-child(even) {
-    background-color: #cbcbcb;
-  }
-  
-  .sales-report th, .sales-report td {
-    padding: 10px;
-    text-align: left;
-    border: 1px solid black;
-    word-wrap: break-word; /* Ensures long content wraps within the cell */
-  }
-  
-  .total-amount-sum {
-    margin-top: 10px;
-    font-size: 16px;
-  }
-  
+.table-container {
+  max-height: 300px; /* Set the fixed height for the table container */
+  overflow-y: auto; /* Enables vertical scroll for the table */
+  overflow-x: auto; /* Enables horizontal scroll for the table */
+  border: 1px solid #ddd; /* Optional: add a border to the scrollable container */
+}
+
+.sales-report table {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed; /* Ensures that the table columns have fixed widths */
+}
+
+.sales-report thead {
+  background-color: #707070;
+  color: white;
+}
+
+.sales-report tr:nth-child(even) {
+  background-color: #cbcbcb;
+}
+
+.sales-report th, .sales-report td {
+  padding: 10px;
+  text-align: left;
+  border: 1px solid black;
+  word-wrap: break-word; /* Ensures long content wraps within the cell */
+}
+
+/* Set fixed widths for each table column */
+.sales-report th:nth-child(1),
+.sales-report td:nth-child(1) {
+  width: 120px; /* Item Barcode ID */
+}
+
+.sales-report th:nth-child(2),
+.sales-report td:nth-child(2) {
+  width: 200px; /* Description */
+}
+
+.sales-report th:nth-child(3),
+.sales-report td:nth-child(3) {
+  width: 120px; /* Item Type */
+}
+
+.sales-report th:nth-child(4),
+.sales-report td:nth-child(4) {
+  width: 120px; /* Item Color */
+}
+
+.sales-report th:nth-child(5),
+.sales-report td:nth-child(5) {
+  width: 80px; /* Size */
+}
+
+.sales-report th:nth-child(6),
+.sales-report td:nth-child(6) {
+  width: 100px; /* Sell Price */
+}
+
+.sales-report th:nth-child(7),
+.sales-report td:nth-child(7) {
+  width: 100px; /* Quantity */
+}
+
+.sales-report th:nth-child(8),
+.sales-report td:nth-child(8) {
+  width: 120px; /* Amount */
+}
+
+.total-amount-sum {
+  margin-top: 10px;
+  font-size: 16px;
+}
