@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import NewBillContainer from '../Billing/NewBillContainer.js'; 
+import InterCompanyTranfer from '../Billing/InterCompanyTranfer.js'; 
+
 import Salary from '../Salary/Salary.js';
 import UserCashCollection from '../CashCollectionReport/UserCashCollection.js'; 
 import FilterPage from '../Inventory/FilterPage.js'; 
@@ -76,6 +78,8 @@ const MainComponent = ({ userData }) => {
         </div>
         <main className="main-content">
           {selectedMenuItem === 'New Bill' && <NewBillContainer userData={userData} />}
+          {selectedMenuItem === 'Inter Company Transaction' && <InterCompanyTranfer userData={userData} />}
+        
           {selectedMenuItem === 'Salary Register' && <Salary />}
           {selectedMenuItem === 'Add Order' && <CustomerOrder />}
           {selectedMenuItem === 'View Order' && <OrderView />}
