@@ -11,6 +11,8 @@ const NewBillContainer = ({ userData }) => {
   const [customerName, setCustomerName] = useState('');
   const [customerMobileNo, setCustomerMobileNo] = useState('');
   const [paymentMode, setPaymentMode] = useState('Cash');
+  const [schoolName, setSchoolName] = useState('');
+  
   const searchInputRef = useRef(null);
   const dropdownRef = useRef(null);
 
@@ -124,6 +126,7 @@ const NewBillContainer = ({ userData }) => {
       customerName: customerName,
       customerMobileNo: customerMobileNo,
       paymentMode: paymentMode,
+      schoolName:schoolName,
       item_count: selectedItems.length,
       bill: selectedItems.map((item) => ({
         itemBarcodeID: item.itemBarcodeID,
@@ -155,6 +158,10 @@ const NewBillContainer = ({ userData }) => {
     setCustomerName(e.target.value);
   };
 
+  const handleSchoolNameChange = (e) => {
+    setSchoolName(e.target.value);
+  };
+
   const handleMobileNoChange = (e) => {
     setCustomerMobileNo(e.target.value);
   };
@@ -162,6 +169,8 @@ const NewBillContainer = ({ userData }) => {
   const handlePaymentModeChange = (e) => {
     setPaymentMode(e.target.value);
   };
+
+
 
   return (
     <div className="new-bill-container">
@@ -231,6 +240,16 @@ const NewBillContainer = ({ userData }) => {
             type="text"
             value={customerMobileNo}
             onChange={handleMobileNoChange}
+            required
+          />
+        </label>
+
+        <label>
+          School Name
+          <input
+            type="text"
+            value={schoolName}
+            onChange={handleSchoolNameChange}
             required
           />
         </label>

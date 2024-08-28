@@ -9,7 +9,8 @@ const InterCompanyTranfer = ({ userData }) => {
   const [searchResults, setSearchResults] = useState([]);
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [customerName, setCustomerName] = useState('');
-  const [customerMobileNo, setCustomerMobileNo] = useState('');
+  const [schoolName, setSchoolName] = useState('');
+  
   const [paymentMode, setPaymentMode] = useState('Cash');
   const searchInputRef = useRef(null);
   const dropdownRef = useRef(null);
@@ -150,12 +151,14 @@ const InterCompanyTranfer = ({ userData }) => {
     setCustomerName(e.target.value);
   };
 
-  const handleMobileNoChange = (e) => {
-    setCustomerMobileNo(e.target.value);
-  };
+
 
   const handlePaymentModeChange = (e) => {
     setPaymentMode(e.target.value);
+  };
+
+  const handleSchoolNameChange = (e) => {
+    setSchoolName(e.target.value);
   };
 
   return (
@@ -221,6 +224,17 @@ const InterCompanyTranfer = ({ userData }) => {
             placeholder="Enter Company name"
           />
         </label>
+
+        <label>
+          School Name
+          <input
+            type="text"
+            value={schoolName}
+            onChange={handleSchoolNameChange}
+            required
+          />
+        </label>
+      
         
       </div>
 
@@ -263,7 +277,14 @@ const InterCompanyTranfer = ({ userData }) => {
             </tbody>
           </table>
         </div>
-        <div><label>
+       
+      
+      </div>
+      <div className="total-amount">
+          <strong>Total Amount:</strong> {calculateTotalAmount().toFixed(2)}
+        </div>
+      <div className='payment-mode'>
+          <label>
           Payment Mode:
           <select value={paymentMode} onChange={handlePaymentModeChange}>
             <option value="Cash">Cash</option>
@@ -271,14 +292,12 @@ const InterCompanyTranfer = ({ userData }) => {
             <option value="UPI">UPI</option>
           </select>
         </label></div>
-        <div className="total-amount">
-          <strong>Total Amount:</strong> {calculateTotalAmount().toFixed(2)}
-        </div>
-      </div>
 
       {/* Submit button */}
       <button onClick={handleSubmit} className="generate-bill-button">Generate Bill</button>
+
     </div>
+    
   );
 };
 
