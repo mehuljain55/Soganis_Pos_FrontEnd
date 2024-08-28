@@ -6,7 +6,11 @@ import './BillDetails.css';
 const BillDetails = ({ userData }) => {
     const [billNo, setBillNo] = useState('');
     const [billData, setBillData] = useState(null);
-    const [returnedItems, setReturnedItems] = useState({}); // Track returned items
+    const [returnedItems, setReturnedItems] = useState({});
+    const [currentDate, setCurrentDate] = useState(new Date().toISOString().split('T')[0]);
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [returnQuantity, setReturnQuantity] = useState(0);
+    const [selectedItem, setSelectedItem] = useState(null); // To keep track of the item being returned
 
     const handleInputChange = (event) => {
         setBillNo(event.target.value);
@@ -22,23 +26,44 @@ const BillDetails = ({ userData }) => {
             });
     };
 
-    const handleReturn = (sno, itemBarcodeID) => {
+    const handleReturn = (item) => {
+        setSelectedItem(item);
+        setReturnQuantity(0); // Reset return quantity when opening modal
+        setIsModalOpen(true);
+    };
+
+    const confirmReturn = () => {
+        if (returnQuantity > selectedItem.quantity) {
+            alert('Return quantity cannot exceed available quantity.');
+            return;
+        }
+
         axios.post(`${API_BASE_URL}/return_stock/bill`, null, {
             params: {
-                sno: sno,
-                barcodeId: itemBarcodeID
+                sno: selectedItem.sno,
+                barcodeId: selectedItem.itemBarcodeID,
+                quantity: returnQuantity
             }
         })
         .then(response => {
             console.log('Item returned:', response.data);
             setReturnedItems(prevState => ({
                 ...prevState,
-                [sno]: true
+                [selectedItem.sno]: true
             }));
+            setIsModalOpen(false);
         })
         .catch(error => {
             console.error('Error returning item:', error);
         });
+    };
+
+    const handleExchange = (sno, itemBarcodeID) => {
+        console.log(`Exchange item with Serial No: ${sno} and Barcode ID: ${itemBarcodeID}`);
+    };
+
+    const isToday = (date) => {
+        return date === currentDate;
     };
 
     return (
@@ -98,7 +123,12 @@ const BillDetails = ({ userData }) => {
                                         {returnedItems[item.sno] ? (
                                             <button disabled>Item Returned</button>
                                         ) : (
-                                            <button onClick={() => handleReturn(item.sno, item.itemBarcodeID)}>Return</button>
+                                            <>
+                                                {isToday(billData.bill_date) && (
+                                                    <button onClick={() => handleReturn(item)}>Return</button>
+                                                )}
+                                                <button onClick={() => handleExchange(item.sno, item.itemBarcodeID)}>Exchange</button>
+                                            </>
                                         )}
                                     </td>
                                 </tr>
@@ -106,6 +136,32 @@ const BillDetails = ({ userData }) => {
                         </tbody>
                     </table>
                 </>
+            )}
+
+            {isModalOpen && (
+                <div className="modal">
+                    <div className="modal-content">
+                        <h2>Return Item</h2>
+                        <p>Barcode Id: {selectedItem.itemBarcodeID}</p>
+                        <p>Name: {selectedItem.itemType}</p>
+                        <p>School: {selectedItem.itemCategory}</p>
+                 
+                        <p>Available Quantity: {selectedItem.quantity}</p>
+                        <label>
+                            Return Quantity:
+                            <input
+                                type="number"
+                                value={returnQuantity}
+                                onChange={(e) => setReturnQuantity(e.target.value)}
+                                max={selectedItem.quantity}
+                            />
+                        </label>
+                        <div className="modal-actions">
+                            <button onClick={confirmReturn}>Confirm Return</button>
+                            <button onClick={() => setIsModalOpen(false)}>Cancel</button>
+                        </div>
+                    </div>
+                </div>
             )}
         </div>
     );
