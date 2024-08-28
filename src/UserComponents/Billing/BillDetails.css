@@ -55,13 +55,17 @@
 }
 
 .bill-detail th {
-    background-color: #f2f2f2;
+    background-color: #707070;
+    color: white;
+}
+.bill-detail-table tr:nth-child(even) {
+    background-color: #cbcbcb;
 }
 
 .bill-detail tbody {
     display: block;
     max-height: 300px; /* Adjust the height as needed */
-    overflow-y: auto;
+    overflow: hidden;
 }
 
 .bill-detail thead, 
@@ -78,7 +82,7 @@
 
 .bill-detail th:nth-child(2),
 .bill-detail td:nth-child(2) {
-    width: 120px; /* Item Barcode ID */
+    width: 100px; /* Item Barcode ID */
 }
 
 .bill-detail th:nth-child(3),
@@ -103,22 +107,26 @@
 
 .bill-detail th:nth-child(7),
 .bill-detail td:nth-child(7) {
-    width: 80px; /* Quantity */
+    width: 70px; /* Quantity */
 }
 
 .bill-detail th:nth-child(8),
 .bill-detail td:nth-child(8) {
-    width: 100px; /* Sell Price */
+    width: 70px; /* Sell Price */
 }
 
 .bill-detail th:nth-child(9),
 .bill-detail td:nth-child(9) {
-    width: 120px; /* Total Amount */
+    width: 80px; /* Total Amount */
 }
 
 .bill-detail th:nth-child(10),
 .bill-detail td:nth-child(10) {
     width: 100px; /* Action */
+}
+
+#exchange-btn{
+    background-color: #007bff;
 }
 
 .bill-detail td button {
@@ -128,6 +136,8 @@
     border-radius: 4px;
     padding: 5px 10px;
     cursor: pointer;
+    margin: 3px;
+    width: 100px;
 }
 
 .bill-detail td button:hover {

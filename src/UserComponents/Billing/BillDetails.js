@@ -84,15 +84,17 @@ const BillDetails = ({ userData }) => {
 
             {billData && (
                 <>
-                    <p><strong>Bill No:</strong> {billData.billNo}</p>
-                    <p><strong>User ID:</strong> {billData.userId}</p>
-                    <p><strong>Bill Date:</strong> {billData.bill_date}</p>
-                    <p><strong>Customer Name:</strong> {billData.customerName || 'N/A'}</p>
-                    <p><strong>Payment Mode:</strong> {billData.paymentMode}</p>
-                    <p><strong>Final Amount:</strong> {billData.final_amount}</p>
-
+                <table>
+                    <tr>
+                    <td><p><strong>Bill No:</strong> {billData.billNo}</p></td>
+                    <td><p><strong>Cashier:</strong> {billData.userId}</p></td>
+                    <td><p><strong>Bill Date:</strong> {billData.bill_date}</p></td></tr>
+                    <tr><td><p><strong>Customer Name:</strong> {billData.customerName || 'N/A'}</p></td>
+                    <td><p><strong>Payment Mode:</strong> {billData.paymentMode}</p></td>
+                    <td><p><strong>Final Amount:</strong> {billData.final_amount}</p></td></tr>
+                    </table>
                     <h2>Items</h2>
-                    <table>
+                    <table className='bill-detail-table'>
                         <thead>
                             <tr>
                                 <th>Serial No</th>
@@ -127,7 +129,7 @@ const BillDetails = ({ userData }) => {
                                                 {isToday(billData.bill_date) && (
                                                     <button onClick={() => handleReturn(item)}>Return</button>
                                                 )}
-                                                <button onClick={() => handleExchange(item.sno, item.itemBarcodeID)}>Exchange</button>
+                                                <button id='exchange-btn' onClick={() => handleExchange(item.sno, item.itemBarcodeID)}>Exchange</button>
                                             </>
                                         )}
                                     </td>
