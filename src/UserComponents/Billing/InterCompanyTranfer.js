@@ -215,6 +215,7 @@ const InterCompanyTranfer = ({ userData }) => {
       {/* Customer Details */}
       <div className="customer-details">
         <h3>Company Details</h3>
+        <div className="customer-details-box">
         <label>
           Company Name:
           <input
@@ -226,7 +227,7 @@ const InterCompanyTranfer = ({ userData }) => {
         </label>
 
         <label>
-          School Name
+          School Name:
           <input
             type="text"
             value={schoolName}
@@ -234,7 +235,7 @@ const InterCompanyTranfer = ({ userData }) => {
             required
           />
         </label>
-      
+      </div>
         
       </div>
 
