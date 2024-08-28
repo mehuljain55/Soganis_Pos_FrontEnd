@@ -13,7 +13,6 @@ const NewBillContainer = ({ userData }) => {
   const [paymentMode, setPaymentMode] = useState('Cash');
   const searchInputRef = useRef(null);
   const dropdownRef = useRef(null);
-  const modalRef = useRef(null);
 
   useEffect(() => {
     const fetchItems = async () => {
@@ -61,7 +60,7 @@ const NewBillContainer = ({ userData }) => {
       const newItem = {
         ...item,
         quantity: 1,
-        amount: item.price * 1
+        amount: item.price * 1,
       };
       setSelectedItems([...selectedItems, newItem]);
     }
@@ -82,14 +81,14 @@ const NewBillContainer = ({ userData }) => {
     updatedItems[index] = {
       ...updatedItems[index],
       quantity: quantity,
-      amount: quantity * updatedItems[index].price
+      amount: quantity * updatedItems[index].price,
     };
     setSelectedItems(updatedItems);
   };
 
   const handleDropdownKeyEvents = (event) => {
     const items = dropdownRef.current.querySelectorAll('tr');
-    const currentIndex = Array.from(items).findIndex(item => item === document.activeElement);
+    const currentIndex = Array.from(items).findIndex((item) => item === document.activeElement);
 
     if (event.key === 'ArrowDown' && currentIndex < items.length - 1) {
       event.preventDefault();
@@ -113,7 +112,7 @@ const NewBillContainer = ({ userData }) => {
 
   const calculateTotalAmount = () => {
     let total = 0;
-    selectedItems.forEach(item => {
+    selectedItems.forEach((item) => {
       total += item.amount;
     });
     return total;
@@ -126,7 +125,7 @@ const NewBillContainer = ({ userData }) => {
       customerMobileNo: customerMobileNo,
       paymentMode: paymentMode,
       item_count: selectedItems.length,
-      bill: selectedItems.map(item => ({
+      bill: selectedItems.map((item) => ({
         itemBarcodeID: item.itemBarcodeID,
         itemType: item.itemType,
         itemColor: item.itemColor,
@@ -134,8 +133,8 @@ const NewBillContainer = ({ userData }) => {
         itemCategory: item.itemCategory,
         sellPrice: item.price,
         quantity: item.quantity,
-        total_amount: item.amount
-      }))
+        total_amount: item.amount,
+      })),
     };
 
     try {
@@ -143,22 +142,14 @@ const NewBillContainer = ({ userData }) => {
       console.log('Bill generated:', response.data);
 
       setSelectedItems([]);
-      closeModal();
+      // Clear customer details
+      setCustomerName('');
+      setCustomerMobileNo('');
+      setPaymentMode('Cash');
     } catch (error) {
       console.error('Error generating bill:', error);
     }
   };
-
-  const openModal = () => {
-    modalRef.current.style.display = 'flex';  // Ensure flex is used to center the modal
-};
-
-const closeModal = () => {
-    modalRef.current.style.display = 'none';  // Hide the modal
-    setCustomerName('');
-    setCustomerMobileNo('');
-    setPaymentMode('Cash');
-};
 
   const handleNameChange = (e) => {
     setCustomerName(e.target.value);
@@ -201,7 +192,7 @@ const closeModal = () => {
                 </tr>
               </thead>
               <tbody>
-                {searchResults.map(item => (
+                {searchResults.map((item) => (
                   <tr
                     key={item.id}
                     onClick={() => addItemToBill(item)}
@@ -221,6 +212,29 @@ const closeModal = () => {
             </table>
           </div>
         )}
+      </div>
+
+      <div className="customer-details">
+        <h2>Customer Details</h2>
+        <label>
+          Customer Name:
+          <input
+            type="text"
+            value={customerName}
+            onChange={handleNameChange}
+            required
+          />
+        </label>
+        <label>
+          Customer Mobile No:
+          <input
+            type="text"
+            value={customerMobileNo}
+            onChange={handleMobileNoChange}
+            required
+          />
+        </label>
+        
       </div>
 
       {/* Billing items table */}
@@ -249,7 +263,9 @@ const closeModal = () => {
                     <input
                       type="number"
                       value={item.quantity}
-                      onChange={(e) => handleQuantityChange(index, parseInt(e.target.value, 10))}
+                      onChange={(e) =>
+                        handleQuantityChange(index, parseInt(e.target.value, 10))
+                      }
                       min="1"
                     />
                   </td>
@@ -270,48 +286,18 @@ const closeModal = () => {
         <h4>Item Count: {selectedItems.length}</h4>
       </div>
 
-      {/* Buttons */}
-      <div className="buttons">
-        <button onClick={openModal}>Generate Bill</button>
-        <button onClick={() => setSelectedItems([])}>Clear Items</button>
-      </div>
-
-      {/* Modal */}
-      <div className="modal" ref={modalRef}>
-        <div className="modal-content">
-          <h2>Customer Details</h2>
-          <label>
-            Customer Name:
-            <input
-              type="text"
-              value={customerName}
-              onChange={handleNameChange}
-              placeholder="Enter customer name"
-            />
-          </label>
-          <label>
-            Customer Mobile No:
-            <input
-              type="text"
-              value={customerMobileNo}
-              onChange={handleMobileNoChange}
-              placeholder="Enter customer mobile no"
-            />
-          </label>
-          <label>
-            Payment Mode:
-            <select value={paymentMode} onChange={handlePaymentModeChange}>
-              <option value="Cash">Cash</option>
-              <option value="Card">Card</option>
-              <option value="UPI">UPI</option>
-            </select>
-          </label>
-          <div className="modal-buttons">
-            <button onClick={handleSubmit}>Generate Bill</button>
-            <button onClick={closeModal}>Cancel</button>
-          </div>
+     <div>      <label>
+          Payment Mode:
+          <select value={paymentMode} onChange={handlePaymentModeChange}>
+            <option value="Cash">Cash</option>
+            <option value="Card">Card</option>
+            <option value="UPI">UPI</option>
+          </select>
+        </label>
         </div>
-      </div>
+
+        <button onClick={handleSubmit}>Submit</button>
+     
     </div>
   );
 };

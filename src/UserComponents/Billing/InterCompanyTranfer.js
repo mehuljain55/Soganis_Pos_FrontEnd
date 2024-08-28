@@ -211,23 +211,14 @@ const InterCompanyTranfer = ({ userData }) => {
 
       {/* Customer Details */}
       <div className="customer-details">
-        <h3>Customer Details</h3>
+        <h3>Company Details</h3>
         <label>
-          Customer Name:
+          Company Name:
           <input
             type="text"
             value={customerName}
             onChange={handleNameChange}
-            placeholder="Enter customer name"
-          />
-        </label>
-        <label>
-          Customer Mobile No:
-          <input
-            type="text"
-            value={customerMobileNo}
-            onChange={handleMobileNoChange}
-            placeholder="Enter customer mobile no"
+            placeholder="Enter Company name"
           />
         </label>
         
