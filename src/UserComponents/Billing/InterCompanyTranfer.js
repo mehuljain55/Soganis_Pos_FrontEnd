@@ -293,7 +293,6 @@ const InterCompanyTranfer = ({ userData }) => {
           </select>
         </label></div>
 
-      {/* Submit button */}
       <button onClick={handleSubmit} className="generate-bill-button">Generate Bill</button>
 
     </div>
