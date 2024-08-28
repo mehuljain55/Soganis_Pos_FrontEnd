@@ -225,6 +225,8 @@ const NewBillContainer = ({ userData }) => {
 
       <div className="customer-details">
         <h2>Customer Details</h2>
+        <div className="customer-details-box">
+          
         <label>
           Customer Name:
           <input
@@ -253,7 +255,7 @@ const NewBillContainer = ({ userData }) => {
             required
           />
         </label>
-        
+        </div>
       </div>
 
       {/* Billing items table */}
