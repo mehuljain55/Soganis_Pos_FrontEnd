@@ -7,6 +7,19 @@
   pointer-events: none;
 }
 
+.offline-dialog {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  padding: 1em;
+  background-color: red;
+  color: white;
+  text-align: center;
+  z-index: 1000;
+}
+
+
 @media (prefers-reduced-motion: no-preference) {
   .App-logo {
     animation: App-logo-spin infinite 20s linear;
@@ -36,3 +49,4 @@
     transform: rotate(360deg);
   }
 }
+

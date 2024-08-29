@@ -88,11 +88,13 @@ const BillDetails = ({ userData }) => {
 
         axios.post(`${API_BASE_URL}/return_stock/bill`, itemsToReturn)
             .then(response => {
-                if (response.data.success) {
+                if (response.data=='success') {
                     setPopupMessage('Item returned');
+                    console.log(response.data);
                     setPopupType('success');
                 } else {
                     setPopupMessage('Please try again');
+                    console.log(response.data);
                     setPopupType('error');
                 }
                 setShowPopup(true);
@@ -208,7 +210,7 @@ const BillDetails = ({ userData }) => {
                                         ) : (
                                             <>
                                                 {isToday(billData.bill_date) && (
-                                                    <button onClick={() => handleSelectItem(item)}>Select</button>
+                                                    <button onClick={() => handleSelectItem(item)}>Return</button>
                                                 )}
                                                 <button id='exchange-btn' onClick={() => handleExchange(item.sno, item.itemBarcodeID)}>Exchange</button>
                                             </>
