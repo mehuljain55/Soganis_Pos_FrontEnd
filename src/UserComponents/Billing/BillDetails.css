@@ -44,6 +44,8 @@
     border-collapse: collapse;
     margin-top: 20px;
     table-layout: fixed;
+    overflow: hidden;
+    display: block;
 }
 
 .bill-detail th,
@@ -58,6 +60,7 @@
     background-color: #707070;
     color: white;
 }
+
 .bill-detail-table tr:nth-child(even) {
     background-color: #cbcbcb;
 }
@@ -65,14 +68,24 @@
 .bill-detail tbody {
     display: block;
     max-height: 300px; /* Adjust the height as needed */
-    overflow: hidden;
+    overflow-y: auto; /* Vertical scroll */
+    overflow-x: hidden; /* Prevent horizontal scroll */
 }
 
-.bill-detail thead, 
+.bill-detail thead {
+    display: table;
+    width: 100%;
+    table-layout: fixed;
+}
+
 .bill-detail tbody tr {
     display: table;
     width: 100%;
     table-layout: fixed;
+}
+
+.bill-detail-wrapper {
+    overflow-x: auto; /* Horizontal scroll */
 }
 
 .bill-detail th:nth-child(1),
@@ -125,7 +138,7 @@
     width: 100px; /* Action */
 }
 
-#exchange-btn{
+#exchange-btn {
     background-color: #007bff;
 }
 
@@ -144,7 +157,7 @@
     background-color: #c82333;
 }
 
-.modal {
+.bill-detail-return-modal {
     position: fixed;
     top: 0;
     left: 0;
@@ -152,20 +165,160 @@
     height: 100%;
     background-color: rgba(0, 0, 0, 0.5);
     display: flex;
-    align-items: center;
     justify-content: center;
-  }
-  
-  .modal-content {
-    background-color: white;
+    align-items: center;
+}
+
+.bill-detail-return-modal-content {
+    background-color: #fff;
     padding: 20px;
-    border-radius: 5px;
-    width: 300px;
-  }
-  
-  .modal-actions {
+    border-radius: 8px;
+    width: 80%;
+    max-width: 900px;
+}
+
+.bill-detail-return-items-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.bill-detail-return-items-table th, .bill-detail-return-items-table td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: left;
+}
+
+.bill-detail-return-items-table th {
+    background-color: #f2f2f2;
+}
+
+.bill-detail-return-total-amount {
+    text-align: right;
+    margin-top: 10px;
+}
+
+.bill-detail-return-modal-actions {
     display: flex;
     justify-content: space-between;
     margin-top: 20px;
-  }
-  
+}
+
+/* Popup Styles */
+.popup {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+}
+
+.popup-content {
+    background: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    text-align: center;
+}
+
+.popup.success {
+    border: 2px solid green;
+}
+
+.popup.error {
+    border: 2px solid red;
+}
+
+.popup.success .popup-content p {
+    color: green;
+}
+
+.popup.error .popup-content p {
+    color: red;
+}
+
+/* Table Styles */
+.bill-detail-table th,
+.bill-detail-table td {
+    padding: 8px;
+    text-align: left;
+}
+
+/* Return Modal */
+.bill-detail-return-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+}
+
+.bill-detail-return-modal-content {
+    background: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    width: 80%;
+    max-width: 800px;
+    overflow-x: auto;
+}
+
+.bill-detail-return-items-table th,
+.bill-detail-return-items-table td {
+    padding: 8px;
+    text-align: left;
+}
+
+/* Popup Styles */
+.popup {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+}
+
+.popup-content {
+    background: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    text-align: center;
+    position: relative;
+}
+
+.popup.success .popup-content::before {
+    content: '✔️'; /* Unicode for green tick */
+    color: green;
+    font-size: 24px;
+    display: block;
+    margin-bottom: 10px;
+}
+
+.popup.error .popup-content::before {
+    content: '❌'; /* Unicode for red cross */
+    color: red;
+    font-size: 24px;
+    display: block;
+    margin-bottom: 10px;
+}
+
+.popup-content p {
+    margin: 0;
+    font-size: 16px;
+}
+
+.popup-content button {
+    margin-top: 10px;
+}
