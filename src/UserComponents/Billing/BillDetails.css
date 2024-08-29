@@ -45,7 +45,7 @@
     margin-top: 20px;
     table-layout: fixed;
     overflow: hidden;
-    display: block;
+    /* display: block; */
 }
 
 .bill-detail th,
@@ -321,4 +321,8 @@
 
 .popup-content button {
     margin-top: 10px;
+}
+
+.billdets-info p{
+    margin: 5px;
 }

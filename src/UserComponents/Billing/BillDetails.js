@@ -160,7 +160,7 @@ const BillDetails = ({ userData }) => {
 
             {billData && (
                 <>
-                    <table>
+                    <table className="billdets-info">
                         <tr>
                             <td><p><strong>Bill No:</strong> {billData.billNo}</p></td>
                             <td><p><strong>Cashier:</strong> {billData.userId}</p></td>
