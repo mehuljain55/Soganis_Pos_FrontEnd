@@ -1,14 +1,16 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import './View.css';
 import { API_BASE_URL } from '../Config.js';
 
 const View = ({ data }) => {
   const [searchTerm, setSearchTerm] = useState('');
   const [maxQuantity, setMaxQuantity] = useState('');
-  const [placedOrders, setPlacedOrders] = useState({});
-  const [isEditingPrice, setIsEditingPrice] = useState(false);
-  const [isEditingQuantity, setIsEditingQuantity] = useState(false);
   const [editableData, setEditableData] = useState({});
+  const [isEditingQuantity, setIsEditingQuantity] = useState(false);
+  const [isEditingPrice, setIsEditingPrice] = useState(false);
+
+  // Refs to store input elements for navigation
+  const inputRefs = useRef({});
 
   const handleSearch = (event) => {
     setSearchTerm(event.target.value.toLowerCase());
@@ -32,10 +34,6 @@ const View = ({ data }) => {
       if (response.ok) {
         const status = await response.text();
         alert(`Order placed successfully: ${status}`);
-        setPlacedOrders((prev) => ({
-          ...prev,
-          [barcodedId]: true,
-        }));
       } else {
         alert('Failed to place order.');
       }
@@ -43,14 +41,6 @@ const View = ({ data }) => {
       console.error('Error placing order:', error);
       alert('An error occurred while placing the order.');
     }
-  };
-
-  const handleEditPriceClick = () => {
-    setIsEditingPrice(!isEditingPrice);
-  };
-
-  const handleEditQuantityClick = () => {
-    setIsEditingQuantity(!isEditingQuantity);
   };
 
   const handleInputChange = (e, id, field) => {
@@ -68,8 +58,8 @@ const View = ({ data }) => {
     try {
       const updates = Object.keys(editableData).map((id) => ({
         barcodedId: id,
-        price: editableData[id]?.price || data.find(item => item.itemBarcodeID === id)?.price,
-        quantity: editableData[id]?.quantity || data.find(item => item.itemBarcodeID === id)?.quantity,
+        price: editableData[id]?.price || data.find((item) => item.itemBarcodeID === id)?.price,
+        quantity: editableData[id]?.quantity || data.find((item) => item.itemBarcodeID === id)?.quantity,
       }));
 
       const response = await fetch(`${API_BASE_URL}/update_order`, {
@@ -82,6 +72,9 @@ const View = ({ data }) => {
 
       if (response.ok) {
         alert('Updates submitted successfully');
+        setEditableData({});
+        setIsEditingQuantity(false);
+        setIsEditingPrice(false);
       } else {
         alert('Failed to update orders.');
       }
@@ -89,6 +82,12 @@ const View = ({ data }) => {
       console.error('Error updating orders:', error);
       alert('An error occurred while updating the orders.');
     }
+  };
+
+  const handleDiscard = () => {
+    setEditableData({});
+    setIsEditingQuantity(false);
+    setIsEditingPrice(false);
   };
 
   const filteredData = data.filter((item) => {
@@ -107,20 +106,53 @@ const View = ({ data }) => {
     return matchesSearchTerm && matchesQuantityFilter;
   });
 
+  // Function to handle keyboard navigation
+  const handleKeyDown = (e, rowIndex, columnIndex, field) => {
+    if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(e.key)) {
+      e.preventDefault();
+      let newRow = rowIndex;
+      let newCol = columnIndex;
+  
+      if (e.key === 'ArrowUp') {
+        newRow = rowIndex > 0 ? rowIndex - 1 : rowIndex;
+      } else if (e.key === 'ArrowDown') {
+        newRow = rowIndex < filteredData.length - 1 ? rowIndex + 1 : rowIndex;
+      } else if (e.key === 'ArrowRight') {
+        if (columnIndex > 0) {
+          // Move left if not the first column
+          newCol = columnIndex - 1;
+        }
+      } else if (e.key === 'ArrowLeft') {
+        if (columnIndex < 1) {
+          // Move right if not the last editable column
+          newCol = columnIndex + 1;
+        }
+      }
+  
+      // Construct next field based on new column index and field type
+      const nextField = newCol === 0 ? 'quantity' : 'price';
+      const nextRef = inputRefs.current[`${newRow}-${newCol}-${nextField}`];
+      if (nextRef) {
+        nextRef.focus();
+      }
+    }
+  };
+  
   return (
     <div className="view-sales-filter-data-container">
       <div className="view-sales-filter-data-controls">
-        <button onClick={handleEditPriceClick}>
-          {isEditingPrice ? 'Finish Editing Price' : 'Edit Price'}
+        <button
+          onClick={() => setIsEditingPrice(!isEditingPrice)}
+          className="view-sales-filter-data-edit-btn"
+        >
+          {isEditingPrice ? 'Exit Edit Price' : 'Edit Price'}
         </button>
-        <button onClick={handleEditQuantityClick}>
-          {isEditingQuantity ? 'Finish Editing Quantity' : 'Edit Quantity'}
+        <button
+          onClick={() => setIsEditingQuantity(!isEditingQuantity)}
+          className="view-sales-filter-data-edit-btn"
+        >
+          {isEditingQuantity ? 'Exit Edit Quantity' : 'Edit Quantity'}
         </button>
-        {(isEditingPrice || isEditingQuantity) && (
-          <button onClick={handleUpdate} className="view-sales-filter-data-update-btn">
-            Update
-          </button>
-        )}
       </div>
 
       <div className="view-sales-filter-data-search-bar-wrapper">
@@ -159,8 +191,8 @@ const View = ({ data }) => {
               </tr>
             </thead>
             <tbody>
-              {filteredData.map((item, index) => (
-                <tr key={index}>
+              {filteredData.map((item, rowIndex) => (
+                <tr key={rowIndex}>
                   <td>{item.sno}</td>
                   <td>{item.itemCode}</td>
                   <td>{item.itemName}</td>
@@ -174,6 +206,10 @@ const View = ({ data }) => {
                         type="number"
                         value={editableData[item.itemBarcodeID]?.price ?? item.price}
                         onChange={(e) => handleInputChange(e, item.itemBarcodeID, 'price')}
+                        ref={(el) =>
+                          (inputRefs.current[`${rowIndex}-1-price`] = el)
+                        }
+                        onKeyDown={(e) => handleKeyDown(e, rowIndex, 1, 'price')}
                       />
                     ) : (
                       item.price
@@ -185,6 +221,10 @@ const View = ({ data }) => {
                         type="number"
                         value={editableData[item.itemBarcodeID]?.quantity ?? item.quantity}
                         onChange={(e) => handleInputChange(e, item.itemBarcodeID, 'quantity')}
+                        ref={(el) =>
+                          (inputRefs.current[`${rowIndex}-0-quantity`] = el)
+                        }
+                        onKeyDown={(e) => handleKeyDown(e, rowIndex, 0, 'quantity')}
                       />
                     ) : (
                       item.quantity
@@ -192,16 +232,12 @@ const View = ({ data }) => {
                   </td>
                   <td>{item.group_id}</td>
                   <td>
-                    {placedOrders[item.itemBarcodeID] ? (
-                      <span style={{ color: 'green' }}>Order Placed</span>
-                    ) : (
-                      <button
-                        onClick={() => handlePlaceOrder(item.itemBarcodeID)}
-                        className="view-sales-filter-data-place-order-btn"
-                      >
-                        Place Order
-                      </button>
-                    )}
+                    <button
+                      onClick={() => handlePlaceOrder(item.itemBarcodeID)}
+                      className="view-sales-filter-data-place-order-btn"
+                    >
+                      Place Order
+                    </button>
                   </td>
                 </tr>
               ))}
@@ -209,6 +245,25 @@ const View = ({ data }) => {
           </table>
         ) : (
           <p>No data found</p>
+        )}
+      </div>
+
+      <div className="view-sales-filter-data-actions">
+        {(isEditingQuantity || isEditingPrice) && (
+          <div className="view-sales-filter-data-actions">
+            <button
+              onClick={handleUpdate}
+              className="view-sales-filter-data-submit-btn"
+            >
+              Submit Updates
+            </button>
+            <button
+              onClick={handleDiscard}
+              className="view-sales-filter-data-cancel-btn"
+            >
+              Discard Changes
+            </button>
+          </div>
         )}
       </div>
     </div>
