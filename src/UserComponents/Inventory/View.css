@@ -1,9 +1,10 @@
 .view-sales-filter-data-table-wrapper {
-    max-height: 400px; /* Adjust based on your needs */
+    max-height: 300px; /* Adjust based on your needs */
     overflow-y: auto; /* Vertical scrolling */
     overflow-x: auto; /* Horizontal scrolling */
     border: 1px solid #ddd;
     background-color: #fff; /* Background color for better visibility */
+    margin-bottom: 10px;
 }
 
 .view-sales-filter-data-table-wrapper table {
@@ -92,4 +93,12 @@ tr:nth-child(even) {
 .filter-page-radio-output label  ,select{
     margin-right:10px ;
     font-size: 18px;
+}
+
+.view-sales-filter-data-controls , .view-sales-filter-data-actions{
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    justify-content: center;
+    margin-top: 10px;
 }
