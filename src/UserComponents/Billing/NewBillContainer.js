@@ -12,6 +12,9 @@ const NewBillContainer = ({ userData }) => {
   const [customerMobileNo, setCustomerMobileNo] = useState('');
   const [paymentMode, setPaymentMode] = useState('Cash');
   const [schoolName, setSchoolName] = useState('');
+  const [pdfUrl, setPdfUrl] = useState('');
+  const [showModal, setShowModal] = useState(false); // For modal visibility
+
   
   const searchInputRef = useRef(null);
   const dropdownRef = useRef(null);
@@ -126,7 +129,7 @@ const NewBillContainer = ({ userData }) => {
       customerName: customerName,
       customerMobileNo: customerMobileNo,
       paymentMode: paymentMode,
-      schoolName:schoolName,
+      schoolName: schoolName,
       item_count: selectedItems.length,
       bill: selectedItems.map((item) => ({
         itemBarcodeID: item.itemBarcodeID,
@@ -144,14 +147,33 @@ const NewBillContainer = ({ userData }) => {
       const response = await axios.post(`${API_BASE_URL}/billRequest`, billData);
       console.log('Bill generated:', response.data);
 
+      // Clear form data
       setSelectedItems([]);
-      // Clear customer details
       setCustomerName('');
       setCustomerMobileNo('');
       setPaymentMode('Cash');
+
+      // Set the PDF URL and show the modal
+      setPdfUrl(response.data.pdfUrl); // Assuming pdfUrl is the path to the generated PDF
+      setShowModal(true);
     } catch (error) {
       console.error('Error generating bill:', error);
     }
+  };
+
+  const handlePrint = () => {
+    const iframe = document.createElement('iframe');
+    iframe.style.display = 'none';
+    iframe.src = pdfUrl;
+    document.body.appendChild(iframe);
+    iframe.contentWindow.focus();
+    iframe.contentWindow.print();
+    document.body.removeChild(iframe);
+  };
+
+  const closeModal = () => {
+    setShowModal(false);
+    setPdfUrl('');
   };
 
   const handleNameChange = (e) => {

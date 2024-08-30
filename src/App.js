@@ -7,6 +7,8 @@ import FilterSalesPage from './UserComponents/SalesReport/FilterSalesPage';
 import CustomerOrder from './UserComponents/OrderBook/CustomerOrder';
 import OrderView from './UserComponents/OrderBook/OrderView';
 import PurchaseOrderBook from './UserComponents/OrderBook/PurchaseOrderBook';
+import BarcodePrintPage from './UserComponents/Billing/BarcodePrintPage';
+
 import './App.css'; // Custom CSS for styling
 
 function App() {
@@ -51,6 +53,8 @@ function App() {
             <Route path="/customer-order" element={<CustomerOrder />} />
             <Route path="/view_customer_order" element={<OrderView />} />
             <Route path="/purchase-order-book" element={<PurchaseOrderBook />} />
+            <Route path="/barcode" element={<BarcodePrintPage />} />
+        
           </Routes>
         )}
       </div>
