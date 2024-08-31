@@ -12,15 +12,17 @@ const NewBillContainer = ({ userData }) => {
   const [customerMobileNo, setCustomerMobileNo] = useState('');
   const [paymentMode, setPaymentMode] = useState('Cash');
   const [schoolName, setSchoolName] = useState('');
-  const [pdfUrl, setPdfUrl] = useState('');
-  const [showModal, setShowModal] = useState(false);
-  const [mode, setMode] = useState('search'); // State to handle mode
+  
+  const [isBarcodeMode, setIsBarcodeMode] = useState(false);
+  const [barcode, setBarcode] = useState('');
 
   const searchInputRef = useRef(null);
+  const barcodeInputRef = useRef(null);
   const dropdownRef = useRef(null);
 
+  // Fetch items based on searchTerm (for manual search)
   useEffect(() => {
-    if (mode === 'search' && searchTerm) {
+    if (!isBarcodeMode && searchTerm.trim() !== '') {
       const fetchItems = async () => {
         try {
           const response = await axios.get(`${API_BASE_URL}/getAllItems?searchTerm=${searchTerm}`);
@@ -31,24 +33,33 @@ const NewBillContainer = ({ userData }) => {
       };
       fetchItems();
     }
-  }, [searchTerm, mode]);
+  }, [searchTerm, isBarcodeMode]);
 
-  const handleKeyDown = async (event) => {
-    if (mode === 'barcode' && event.key === 'Enter') {
-      event.preventDefault();
-      try {
-        const response = await axios.get(`${API_BASE_URL}/search/item_code?barcode=${searchTerm}`);
-        if (response.data) {
-          addItemToBill(response.data);
+  // Fetch item based on barcode (for barcode scanning)
+  useEffect(() => {
+    if (isBarcodeMode && barcode.trim() !== '') {
+      const fetchItemByBarcode = async () => {
+        try {
+          const response = await axios.get(`${API_BASE_URL}/search/item_code`, {
+            params: { barcode: barcode.trim() },
+          });
+          if (response.data) {
+            addItemToBill(response.data);
+          } else {
+            console.error('Item not found for barcode:', barcode);
+          }
+        } catch (error) {
+          console.error('Error fetching item by barcode:', error);
+        } finally {
+          setBarcode('');
+          barcodeInputRef.current.focus();
         }
-      } catch (error) {
-        console.error('Error fetching item by barcode:', error);
-      }
-      setSearchTerm('');
+      };
+      fetchItemByBarcode();
     }
-  };
+  }, [barcode, isBarcodeMode]);
 
-  const handleKey = (event, item) => {
+  const handleKeyDown = (event, item) => {
     if (event.key === 'Enter') {
       addItemToBill(item);
     }
@@ -71,7 +82,7 @@ const NewBillContainer = ({ userData }) => {
     const existingItemIndex = selectedItems.findIndex(
       (selectedItem) => selectedItem.itemBarcodeID === item.itemBarcodeID
     );
-  
+
     if (existingItemIndex > -1) {
       const updatedItems = [...selectedItems];
       const existingItem = updatedItems[existingItemIndex];
@@ -86,11 +97,14 @@ const NewBillContainer = ({ userData }) => {
       };
       setSelectedItems([...selectedItems, newItem]);
     }
-  
-    setSearchTerm('');
-    setDropdownOpen(false);
+
+    if (!isBarcodeMode) {
+      setSearchTerm('');
+      setDropdownOpen(false);
+      searchInputRef.current.focus();
+    }
   };
-  
+
   const removeItemFromBill = (index) => {
     const updatedItems = [...selectedItems];
     updatedItems.splice(index, 1);
@@ -124,13 +138,6 @@ const NewBillContainer = ({ userData }) => {
       addItemToBill(searchResults[currentIndex]);
     }
   };
-
-  // Focus input field on mode change and when item is added
-  useEffect(() => {
-    if (searchInputRef.current) {
-      searchInputRef.current.focus();
-    }
-  }, [mode, selectedItems]);
 
   useEffect(() => {
     if (dropdownOpen && searchResults.length > 0 && dropdownRef.current) {
@@ -170,33 +177,15 @@ const NewBillContainer = ({ userData }) => {
       const response = await axios.post(`${API_BASE_URL}/billRequest`, billData);
       console.log('Bill generated:', response.data);
 
-      // Clear form data
       setSelectedItems([]);
+      // Clear customer details
       setCustomerName('');
       setCustomerMobileNo('');
       setPaymentMode('Cash');
-
-      // Set the PDF URL and show the modal
-      setPdfUrl(response.data.pdfUrl); // Assuming pdfUrl is the path to the generated PDF
-      setShowModal(true);
+      setSchoolName('');
     } catch (error) {
       console.error('Error generating bill:', error);
     }
-  };
-
-  const handlePrint = () => {
-    const iframe = document.createElement('iframe');
-    iframe.style.display = 'none';
-    iframe.src = pdfUrl;
-    document.body.appendChild(iframe);
-    iframe.contentWindow.focus();
-    iframe.contentWindow.print();
-    document.body.removeChild(iframe);
-  };
-
-  const closeModal = () => {
-    setShowModal(false);
-    setPdfUrl('');
   };
 
   const handleNameChange = (e) => {
@@ -215,105 +204,140 @@ const NewBillContainer = ({ userData }) => {
     setPaymentMode(e.target.value);
   };
 
-  const toggleMode = () => {
-    setMode((prevMode) => (prevMode === 'search' ? 'barcode' : 'search'));
+  const toggleBarcodeMode = () => {
+    setIsBarcodeMode(!isBarcodeMode);
     setSearchTerm('');
+    setDropdownOpen(false);
+    setBarcode('');
+    if (!isBarcodeMode) {
+      // If switching to barcode mode, focus on barcode input
+      setTimeout(() => {
+        barcodeInputRef.current.focus();
+      }, 100);
+    } else {
+      // If switching to manual mode, focus on search input
+      setTimeout(() => {
+        searchInputRef.current.focus();
+      }, 100);
+    }
   };
-
 
   return (
     <div className="new-bill-container">
       <h2>Billing</h2>
 
-      <button onClick={toggleMode}>
-        Switch to {mode === 'search' ? 'Barcode Scanner' : 'Search'} Mode
-      </button>
+      {/* Mode Toggle Button */}
+      <div className="mode-toggle">
+        <button onClick={toggleBarcodeMode}>
+          {isBarcodeMode ? 'Barcode Mode' : 'Search Mode'}
+        </button>
+      </div>
 
-      {/* Search bar or barcode scanner input */}
-      <div className="search-bar">
-        <input
-          type="text"
-          placeholder={mode === 'search' ? 'Search by item code' : 'Scan barcode'}
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-          onFocus={() => setDropdownOpen(mode === 'search')}
-          onKeyDown={mode === 'barcode' ? handleKeyDown : handleDropdownKeyEvents}
-          ref={searchInputRef}  // Ensure the ref is correctly attached
-          autoFocus  // Automatically focus on render
-        />
-        {dropdownOpen && (
-          <div className="dropdown" ref={dropdownRef}>
-            <table>
-              <thead>
-                <tr>
-                  <th>Item Code</th>
-                  <th>Item Name</th>
-                  <th>Category</th>
-                  <th>Type</th>
-                  <th>Color</th>
-                  <th>Size</th>
-                  <th>Price</th>
-                </tr>
-              </thead>
-              <tbody>
-                {searchResults.map((item) => (
-                  <tr
-                    key={item.id}
-                    onClick={() => addItemToBill(item)}
-                    onKeyDown={(e) => handleKey(e, item)}
-                    tabIndex="0"
-                  >
-                    <td>{item.itemCode}</td>
-                    <td>{item.itemName}</td>
-                    <td>{item.itemCategory}</td>
-                    <td>{item.itemType}</td>
-                    <td>{item.itemColor}</td>
-                    <td>{item.itemSize}</td>
-                    <td>{item.price}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+      {/* Search Bar or Barcode Input */}
+      <div className="search-bar-container">
+        {isBarcodeMode ? (
+          <div className="barcode-input" ref={barcodeInputRef}>
+            <label>
+              Item Code (Barcode):
+              <input
+                type="text"
+                placeholder="Scan or enter barcode and press Enter"
+                value={barcode}
+                onChange={(e) => setBarcode(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter') {
+                    // The useEffect will handle fetching the item
+                    e.preventDefault();
+                  }
+                }}
+                autoFocus
+              />
+            </label>
+          </div>
+        ) : (
+          <div className="search-bar" ref={searchInputRef} tabIndex="0">
+            <input
+              type="text"
+              placeholder="Search by item code"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              onFocus={() => setDropdownOpen(true)}
+              onKeyDown={handleDropdownKeyEvents}
+            />
+            {dropdownOpen && (
+              <div className="dropdown" ref={dropdownRef}>
+                <table>
+                  <thead>
+                    <tr>
+                      <th>Item Code</th>
+                      <th>Item Name</th>
+                      <th>Category</th>
+                      <th>Type</th>
+                      <th>Color</th>
+                      <th>Size</th>
+                      <th>Price</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {searchResults.map((item, index) => (
+                      <tr
+                        key={item.id}
+                        onClick={() => addItemToBill(item)}
+                        onKeyDown={(e) => handleKeyDown(e, item)}
+                        tabIndex="0"
+                      >
+                        <td>{item.itemCode}</td>
+                        <td>{item.itemName}</td>
+                        <td>{item.itemCategory}</td>
+                        <td>{item.itemType}</td>
+                        <td>{item.itemColor}</td>
+                        <td>{item.itemSize}</td>
+                        <td>{item.price}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            )}
           </div>
         )}
       </div>
 
+      {/* Customer Details */}
       <div className="customer-details">
-        <h2>Customer Details</h2>
+        <h5>Customer Details</h5>
         <div className="customer-details-box">
-          
-        <label>
-          Customer Name:
-          <input
-            type="text"
-            value={customerName}
-            onChange={handleNameChange}
-            required
-          />
-        </label>
-        <label>
-          Customer Mobile No:
-          <input
-            type="text"
-            value={customerMobileNo}
-            onChange={handleMobileNoChange}
-            required
-          />
-        </label>
-
-        <label>
-          School Name
-          <input
-            type="text"
-            value={schoolName}
-            onChange={handleSchoolNameChange}
-            required
-          />
-        </label>
+          <label>
+            Customer Name:
+            <input
+              type="text"
+              value={customerName}
+              onChange={handleNameChange}
+              required
+            />
+          </label>
+          <label>
+            Customer Mobile No:
+            <input
+              type="text"
+              value={customerMobileNo}
+              onChange={handleMobileNoChange}
+              required
+            />
+          </label>
+          <label>
+            School Name:
+            <input
+              type="text"
+              value={schoolName}
+              onChange={handleSchoolNameChange}
+              required
+            />
+          </label>
         </div>
       </div>
 
-      {/* Billing items table */}
+      {/* Billing Items Table */}
       <div className="items-table-container">
         <div className="items-table">
           <table>
@@ -356,13 +380,15 @@ const NewBillContainer = ({ userData }) => {
         </div>
       </div>
 
-      {/* Total amount */}
+      {/* Summary */}
       <div className="summary">
-        <h3>Total Amount: ${calculateTotalAmount().toFixed(2)}</h3>
+        <h3>Total Amount: {calculateTotalAmount().toFixed(2)} Rs</h3>
         <h4>Item Count: {selectedItems.length}</h4>
       </div>
 
-     <div>      <label>
+      {/* Payment Mode */}
+      <div className="payment-mode">
+        <label>
           Payment Mode:
           <select value={paymentMode} onChange={handlePaymentModeChange}>
             <option value="Cash">Cash</option>
@@ -370,10 +396,12 @@ const NewBillContainer = ({ userData }) => {
             <option value="UPI">UPI</option>
           </select>
         </label>
-        </div>
+      </div>
 
+      {/* Submit Button */}
+      <div className="submit-button">
         <button onClick={handleSubmit}>Submit</button>
-     
+      </div>
     </div>
   );
 };

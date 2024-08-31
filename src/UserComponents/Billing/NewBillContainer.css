@@ -20,6 +20,14 @@ h2 {
   box-sizing: border-box;
 }
 
+.barcode-input{
+
+  width: 100%;
+  padding: 10px;
+  box-sizing: border-box
+}
+
+
 .dropdown {
   position: absolute;
   top: 100%;
