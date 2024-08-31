@@ -13,25 +13,42 @@ const NewBillContainer = ({ userData }) => {
   const [paymentMode, setPaymentMode] = useState('Cash');
   const [schoolName, setSchoolName] = useState('');
   const [pdfUrl, setPdfUrl] = useState('');
-  const [showModal, setShowModal] = useState(false); // For modal visibility
+  const [showModal, setShowModal] = useState(false);
+  const [mode, setMode] = useState('search'); // State to handle mode
 
-  
   const searchInputRef = useRef(null);
   const dropdownRef = useRef(null);
 
   useEffect(() => {
-    const fetchItems = async () => {
-      try {
-        const response = await axios.get(`${API_BASE_URL}/getAllItems?searchTerm=${searchTerm}`);
-        setSearchResults(response.data);
-      } catch (error) {
-        console.error('Error fetching items:', error);
-      }
-    };
-    fetchItems();
-  }, [searchTerm]);
+    if (mode === 'search' && searchTerm) {
+      const fetchItems = async () => {
+        try {
+          const response = await axios.get(`${API_BASE_URL}/getAllItems?searchTerm=${searchTerm}`);
+          setSearchResults(response.data);
+        } catch (error) {
+          console.error('Error fetching items:', error);
+        }
+      };
+      fetchItems();
+    }
+  }, [searchTerm, mode]);
 
-  const handleKeyDown = (event, item) => {
+  const handleKeyDown = async (event) => {
+    if (mode === 'barcode' && event.key === 'Enter') {
+      event.preventDefault();
+      try {
+        const response = await axios.get(`${API_BASE_URL}/search/item_code?barcode=${searchTerm}`);
+        if (response.data) {
+          addItemToBill(response.data);
+        }
+      } catch (error) {
+        console.error('Error fetching item by barcode:', error);
+      }
+      setSearchTerm('');
+    }
+  };
+
+  const handleKey = (event, item) => {
     if (event.key === 'Enter') {
       addItemToBill(item);
     }
@@ -54,7 +71,7 @@ const NewBillContainer = ({ userData }) => {
     const existingItemIndex = selectedItems.findIndex(
       (selectedItem) => selectedItem.itemBarcodeID === item.itemBarcodeID
     );
-
+  
     if (existingItemIndex > -1) {
       const updatedItems = [...selectedItems];
       const existingItem = updatedItems[existingItemIndex];
@@ -69,12 +86,11 @@ const NewBillContainer = ({ userData }) => {
       };
       setSelectedItems([...selectedItems, newItem]);
     }
-
+  
     setSearchTerm('');
     setDropdownOpen(false);
-    searchInputRef.current.focus();
   };
-
+  
   const removeItemFromBill = (index) => {
     const updatedItems = [...selectedItems];
     updatedItems.splice(index, 1);
@@ -108,6 +124,13 @@ const NewBillContainer = ({ userData }) => {
       addItemToBill(searchResults[currentIndex]);
     }
   };
+
+  // Focus input field on mode change and when item is added
+  useEffect(() => {
+    if (searchInputRef.current) {
+      searchInputRef.current.focus();
+    }
+  }, [mode, selectedItems]);
 
   useEffect(() => {
     if (dropdownOpen && searchResults.length > 0 && dropdownRef.current) {
@@ -192,21 +215,31 @@ const NewBillContainer = ({ userData }) => {
     setPaymentMode(e.target.value);
   };
 
+  const toggleMode = () => {
+    setMode((prevMode) => (prevMode === 'search' ? 'barcode' : 'search'));
+    setSearchTerm('');
+  };
 
 
   return (
     <div className="new-bill-container">
       <h2>Billing</h2>
 
-      {/* Search bar */}
-      <div className="search-bar" ref={searchInputRef} tabIndex="0">
+      <button onClick={toggleMode}>
+        Switch to {mode === 'search' ? 'Barcode Scanner' : 'Search'} Mode
+      </button>
+
+      {/* Search bar or barcode scanner input */}
+      <div className="search-bar">
         <input
           type="text"
-          placeholder="Search by item code"
+          placeholder={mode === 'search' ? 'Search by item code' : 'Scan barcode'}
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
-          onFocus={() => setDropdownOpen(true)}
-          onKeyDown={handleDropdownKeyEvents}
+          onFocus={() => setDropdownOpen(mode === 'search')}
+          onKeyDown={mode === 'barcode' ? handleKeyDown : handleDropdownKeyEvents}
+          ref={searchInputRef}  // Ensure the ref is correctly attached
+          autoFocus  // Automatically focus on render
         />
         {dropdownOpen && (
           <div className="dropdown" ref={dropdownRef}>
@@ -227,7 +260,7 @@ const NewBillContainer = ({ userData }) => {
                   <tr
                     key={item.id}
                     onClick={() => addItemToBill(item)}
-                    onKeyDown={(e) => handleKeyDown(e, item)}
+                    onKeyDown={(e) => handleKey(e, item)}
                     tabIndex="0"
                   >
                     <td>{item.itemCode}</td>
