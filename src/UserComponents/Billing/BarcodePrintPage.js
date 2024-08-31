@@ -53,7 +53,7 @@ const styles = {
     display: 'grid',
     gridTemplateColumns: 'repeat(3, 1fr)', // 3 columns
     gridTemplateRows: 'repeat(5, 1fr)',    // 5 rows
-    gap: '2px', // 2px gap between items for spacing
+    rowGap: '2px', // Vertical gap to prevent cutting off content
     boxSizing: 'border-box', // Include padding and border in element's total width and height
   },
   imageWrapper: {
@@ -82,7 +82,7 @@ const printStyles = `
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     grid-template-rows: repeat(5, 1fr);
-    gap: 0px; // Maintain the same gap for printing
+    row-gap: 2px; /* Maintain vertical gap for printing */
     width: 794px;
     height: 1123px;
   }
