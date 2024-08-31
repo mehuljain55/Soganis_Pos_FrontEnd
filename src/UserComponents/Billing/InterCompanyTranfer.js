@@ -223,14 +223,15 @@ const InterCompanyTranfer = ({ userData }) => {
 
   return (
     <div className="new-bill-container">
-      <h2>Inter Comany Transfer</h2>
-
-      {/* Mode Toggle Button */}
-      <div className="mode-toggle">
+  <div className="mode-toggle">
         <button onClick={toggleBarcodeMode}>
           {isBarcodeMode ? 'Barcode Mode' : 'Search Mode'}
         </button>
       </div>
+
+      <h2>Inter Comany Transfer</h2>
+
+ 
 
       {/* Search Bar or Barcode Input */}
       <div className="search-bar-container">

@@ -82,7 +82,7 @@ const NewBillContainer = ({ userData }) => {
     const existingItemIndex = selectedItems.findIndex(
       (selectedItem) => selectedItem.itemBarcodeID === item.itemBarcodeID
     );
-
+  
     if (existingItemIndex > -1) {
       const updatedItems = [...selectedItems];
       const existingItem = updatedItems[existingItemIndex];
@@ -97,14 +97,25 @@ const NewBillContainer = ({ userData }) => {
       };
       setSelectedItems([...selectedItems, newItem]);
     }
-
+  
     if (!isBarcodeMode) {
       setSearchTerm('');
       setDropdownOpen(false);
       searchInputRef.current.focus();
     }
+  
+    // Scroll to the latest item added
+    setTimeout(() => {
+      const tableBody = document.querySelector('.items-table tbody');
+      if (tableBody) {
+        const lastRow = tableBody.lastElementChild;
+        if (lastRow) {
+          lastRow.scrollIntoView({ behavior: 'smooth', block: 'end' });
+        }
+      }
+    }, 100); // Delay to ensure the item is added to the DOM
   };
-
+  
   const removeItemFromBill = (index) => {
     const updatedItems = [...selectedItems];
     updatedItems.splice(index, 1);
@@ -224,14 +235,14 @@ const NewBillContainer = ({ userData }) => {
 
   return (
     <div className="new-bill-container">
-      <h2>Billing</h2>
-
-      {/* Mode Toggle Button */}
-      <div className="mode-toggle">
+   <div className="mode-toggle">
         <button onClick={toggleBarcodeMode}>
           {isBarcodeMode ? 'Barcode Mode' : 'Search Mode'}
         </button>
       </div>
+      <h2>Billing</h2>
+
+ 
 
       {/* Search Bar or Barcode Input */}
       <div className="search-bar-container">
