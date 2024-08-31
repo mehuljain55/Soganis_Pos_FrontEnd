@@ -82,7 +82,6 @@ const printStyles = `
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     grid-template-rows: repeat(5, 1fr);
-    row-gap: 2px; /* Maintain vertical gap for printing */
     width: 794px;
     height: 1123px;
   }
