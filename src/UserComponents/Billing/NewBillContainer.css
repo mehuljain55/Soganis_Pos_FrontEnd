@@ -59,15 +59,25 @@ h2 {
 }
 
 /* Table container */
+/* Table container */
 .items-table-container {
   width: 100%;
-  max-height: 300px;
+  max-height: 240px;
   overflow: auto;
+  position: relative;
 }
 
+/* Table styling */
 .items-table {
   width: 100%;
   border-collapse: collapse;
+  table-layout: fixed; /* Ensures columns are fixed-width */
+}
+
+.items-table thead {
+  position: sticky;
+  top: 0;
+  z-index: 1; /* Keeps the header on top of scrolling content */
 }
 
 .items-table th, .items-table td {
@@ -94,7 +104,6 @@ h2 {
   border-radius: 10px;
   background-color: red;
   border:none;
-  
 }
 
 /* Summary section */

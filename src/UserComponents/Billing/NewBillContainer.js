@@ -20,20 +20,25 @@ const NewBillContainer = ({ userData }) => {
   const barcodeInputRef = useRef(null);
   const dropdownRef = useRef(null);
 
-  // Fetch items based on searchTerm (for manual search)
   useEffect(() => {
     if (!isBarcodeMode && searchTerm.trim() !== '') {
       const fetchItems = async () => {
         try {
           const response = await axios.get(`${API_BASE_URL}/getAllItems?searchTerm=${searchTerm}`);
-          setSearchResults(response.data);
+          if (response.data) {
+            setSearchResults(response.data);
+          } else {
+            setSearchResults([]); // Set an empty array if data is null or undefined
+          }
         } catch (error) {
           console.error('Error fetching items:', error);
+          setSearchResults([]); // Optionally handle errors by setting an empty array
         }
       };
       fetchItems();
     }
   }, [searchTerm, isBarcodeMode]);
+  
 
   // Fetch item based on barcode (for barcode scanning)
   useEffect(() => {
@@ -366,7 +371,7 @@ const NewBillContainer = ({ userData }) => {
             <tbody>
               {selectedItems.map((item, index) => (
                 <tr key={index}>
-                  <td>{item.itemBarcodeID}</td>
+                  <td>{item.itemCode}</td>
                   <td>{item.itemType}</td>
                   <td>{item.itemColor}</td>
                   <td>{item.itemSize}</td>
@@ -408,8 +413,6 @@ const NewBillContainer = ({ userData }) => {
           </select>
         </label>
       </div>
-
-      {/* Submit Button */}
       <div className="submit-button">
         <button onClick={handleSubmit}>Submit</button>
       </div>
