@@ -4,8 +4,7 @@ import { API_BASE_URL } from '../Config.js';
 const BarcodePrintPage = () => {
   const [images, setImages] = useState([]);
   const [barcode, setBarcode] = useState('');
-  const [searchTerm, setSearchTerm] = useState('');
-  
+
   const maxImages = 40;
 
   const handleImageUpload = (event) => {
@@ -49,7 +48,7 @@ const BarcodePrintPage = () => {
     styleSheet.type = "text/css";
     styleSheet.innerText = printStyles;
     document.head.appendChild(styleSheet);
-    
+
     return () => {
       document.head.removeChild(styleSheet);
     };
@@ -71,7 +70,11 @@ const BarcodePrintPage = () => {
         {images.map((image, index) => (
           <div key={index} style={styles.imageWrapper}>
             <img src={image} alt={`Barcode ${index + 1}`} style={styles.image} />
-            <button style={styles.deleteButton} onClick={() => handleDeleteImage(index)}>
+            <button 
+              style={styles.deleteButton} 
+              className="no-print" 
+              onClick={() => handleDeleteImage(index)}
+            >
               &times;
             </button>
           </div>
@@ -97,10 +100,9 @@ const styles = {
     display: 'grid',
     gridTemplateColumns: 'repeat(4, 1fr)', // 4 columns
     gridTemplateRows: 'repeat(10, 1fr)',   // 10 rows
-    rowGap: '10px',
-    columnGap: '10px',
+    rowGap: '0',  // Remove row gap
+    columnGap: '0',  // Remove column gap
     boxSizing: 'border-box',
-    padding: '10px', // Padding to ensure content fits within page
   },
   imageWrapper: {
     position: 'relative',
@@ -109,7 +111,6 @@ const styles = {
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
-    padding: 0,
     margin: 0,
   },
   image: {
@@ -138,28 +139,30 @@ const printStyles = `
     size: A4;
     margin: 0; /* Remove default margins */
   }
-  
+
   body {
     margin: 0;
     padding: 0;
   }
 
   .no-print {
-    display: none;
+    display: none !important; /* Ensure elements with 'no-print' class are hidden */
   }
-  
+
   #printableArea {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
     grid-template-rows: repeat(10, 1fr);
     width: 100%;
     height: 100%;
-    row-gap: 10px;
-    column-gap: 10px;
-    margin: 0; /* Ensure no extra margin */
-    padding: 0; /* Ensure no extra padding */
+    margin: 0;
+    padding: 0;
   }
-  
+
+  .imageWrapper {
+    box-shadow: inset 0 -1px 0 0 black, inset -1px 0 0 0 black; /* Grid lines for print */
+  }
+
   * {
     margin: 0;
     padding: 0;

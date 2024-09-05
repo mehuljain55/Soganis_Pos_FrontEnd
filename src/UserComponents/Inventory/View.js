@@ -2,7 +2,7 @@ import React, { useState, useRef } from 'react';
 import './View.css';
 import { API_BASE_URL } from '../Config.js';
 
-const View = ({ data }) => {
+const View = ({ data,onUpdateSuccess }) => {
   const [searchTerm, setSearchTerm] = useState('');
   const [maxQuantity, setMaxQuantity] = useState('');
   const [editableData, setEditableData] = useState({});
@@ -62,7 +62,7 @@ const View = ({ data }) => {
         quantity: editableData[id]?.quantity || data.find((item) => item.itemBarcodeID === id)?.quantity,
       }));
 
-      const response = await fetch(`${API_BASE_URL}/update_order`, {
+      const response = await fetch(`${API_BASE_URL}/update_inventory`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -75,6 +75,7 @@ const View = ({ data }) => {
         setEditableData({});
         setIsEditingQuantity(false);
         setIsEditingPrice(false);
+        onUpdateSuccess();
       } else {
         alert('Failed to update orders.');
       }
@@ -185,7 +186,10 @@ const View = ({ data }) => {
                 <th>Item Size</th>
                 <th>Item Category</th>
                 <th>Price</th>
-                <th>Quantity</th>
+
+                <th>Available Quantity</th>
+                <th>Added Quantity</th>
+                
                 <th>Group ID</th>
                 <th>Action</th>
               </tr>
@@ -215,17 +219,17 @@ const View = ({ data }) => {
                       item.price
                     )}
                   </td>
+                  <td>{item.quantity}</td>
                   <td>
                     {isEditingQuantity ? (
                       <input
-                        type="number"
-                        value={editableData[item.itemBarcodeID]?.quantity ?? item.quantity}
-                        onChange={(e) => handleInputChange(e, item.itemBarcodeID, 'quantity')}
-                        ref={(el) =>
-                          (inputRefs.current[`${rowIndex}-0-quantity`] = el)
-                        }
-                        onKeyDown={(e) => handleKeyDown(e, rowIndex, 0, 'quantity')}
-                      />
+                      type="number"
+                      value={editableData[item.itemBarcodeID]?.quantity ?? 0}  // Set initial value to 0
+                      onChange={(e) => handleInputChange(e, item.itemBarcodeID, 'quantity')}
+                      ref={(el) => (inputRefs.current[`${rowIndex}-0-quantity`] = el)}
+                      onKeyDown={(e) => handleKeyDown(e, rowIndex, 0, 'quantity')}
+                    />
+                    
                     ) : (
                       item.quantity
                     )}
