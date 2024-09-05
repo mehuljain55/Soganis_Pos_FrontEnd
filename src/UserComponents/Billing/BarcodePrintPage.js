@@ -3,8 +3,8 @@ import React, { useState } from 'react';
 const BarcodePrintPage = () => {
   const [images, setImages] = useState([]);
 
-  // Calculate max images to fit 5 rows and 3 columns
-  const maxImages = 15; // 5 rows x 3 columns
+  // Calculate max images to fit 10 rows and 4 columns
+  const maxImages = 40; // 10 rows x 4 columns
 
   const handleImageUpload = (event) => {
     const files = Array.from(event.target.files);
@@ -51,9 +51,10 @@ const styles = {
     width: '794px',  // A4 width in pixels at 96 DPI
     height: '1123px', // A4 height in pixels at 96 DPI
     display: 'grid',
-    gridTemplateColumns: 'repeat(3, 1fr)', // 3 columns
-    gridTemplateRows: 'repeat(5, 1fr)',    // 5 rows
-    rowGap: '2px', // Vertical gap to prevent cutting off content
+    gridTemplateColumns: 'repeat(4, 1fr)', // 4 columns
+    gridTemplateRows: 'repeat(10, 1fr)',   // 10 rows
+    rowGap: '10px', // Increased vertical gap
+    columnGap: '10px', // Increased horizontal gap
     boxSizing: 'border-box', // Include padding and border in element's total width and height
   },
   imageWrapper: {
@@ -75,19 +76,35 @@ const styles = {
 // Print styles
 const printStyles = `
 @media print {
+  @page {
+    size: A4;
+    margin: 0; /* Removes default page margins */
+  }
+  
+  body {
+    margin: 0;
+    padding: 0;
+  }
+
   .no-print {
     display: none;
   }
+  
   #printableArea {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    grid-template-rows: repeat(5, 1fr);
+    grid-template-columns: repeat(4, 1fr);
+    grid-template-rows: repeat(10, 1fr);
     width: 794px;
     height: 1123px;
+    row-gap: 10px;
+    column-gap: 10px;
+    margin: 0 auto; /* Centers the content on the page */
   }
+  
   * {
     margin: 0;
     padding: 0;
+    box-sizing: border-box;
   }
 }
 `;
