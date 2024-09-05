@@ -1,0 +1,49 @@
+.search-bar {
+    position: relative;
+  }
+  
+  .search-bar input {
+    width: 1000px;
+    padding: 10px;
+    box-sizing: border-box;
+  }
+  
+  .barcode-input{
+  
+    width: 100%;
+    padding: 10px;
+    box-sizing: border-box
+  }
+  
+  
+  .dropdown {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    width: 100%;
+    background-color: white;
+    border: 1px solid #ddd;
+    max-height: 200px;
+    overflow-y: auto;
+    z-index: 1000;
+  }
+  
+  .dropdown table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  
+  .dropdown th, .dropdown td {
+    padding: 8px;
+    text-align: left;
+  }
+  
+  .dropdown tr {
+    cursor: pointer;
+  }
+  
+  .dropdown tr:hover {
+    background-color: #f0f0f0;
+  }
+  
+  

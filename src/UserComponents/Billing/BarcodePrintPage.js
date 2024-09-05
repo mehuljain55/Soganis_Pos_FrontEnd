@@ -1,10 +1,12 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { API_BASE_URL } from '../Config.js';
 
 const BarcodePrintPage = () => {
   const [images, setImages] = useState([]);
-
-  // Calculate max images to fit 10 rows and 4 columns
-  const maxImages = 40; // 10 rows x 4 columns
+  const [barcode, setBarcode] = useState('');
+  const [searchTerm, setSearchTerm] = useState('');
+  
+  const maxImages = 40;
 
   const handleImageUpload = (event) => {
     const files = Array.from(event.target.files);
@@ -16,20 +18,62 @@ const BarcodePrintPage = () => {
     }
   };
 
+  const handleGenerateBarcode = async () => {
+    if (!barcode) return;
+    try {
+      const response = await fetch(`${API_BASE_URL}/generate_barcodes?itemCode=${barcode}`);
+      const blob = await response.blob();
+      const imageUrl = URL.createObjectURL(blob);
+      if (images.length < maxImages) {
+        setImages((prevImages) => [...prevImages, imageUrl]);
+      } else {
+        alert(`You can only upload up to ${maxImages} images to fit on an A4 sheet.`);
+      }
+    } catch (error) {
+      console.error('Error generating barcode:', error);
+    }
+  };
+
+  const handleDeleteImage = (index) => {
+    const newImages = images.filter((_, i) => i !== index);
+    setImages(newImages);
+  };
+
   const handlePrint = () => {
     window.print();
   };
 
+  useEffect(() => {
+    // Add print styles to the page
+    const styleSheet = document.createElement("style");
+    styleSheet.type = "text/css";
+    styleSheet.innerText = printStyles;
+    document.head.appendChild(styleSheet);
+    
+    return () => {
+      document.head.removeChild(styleSheet);
+    };
+  }, []);
+
   return (
     <div style={styles.container}>
       <div className="no-print" style={styles.header}>
-        <input type="file" accept="image/*" multiple onChange={handleImageUpload} />
+        <input
+          type="text"
+          placeholder="Enter barcode"
+          value={barcode}
+          onChange={(e) => setBarcode(e.target.value)}
+        />
+        <button onClick={handleGenerateBarcode}>Generate Barcode</button>
         <button onClick={handlePrint}>Print</button>
       </div>
       <div id="printableArea" style={styles.page}>
         {images.map((image, index) => (
           <div key={index} style={styles.imageWrapper}>
             <img src={image} alt={`Barcode ${index + 1}`} style={styles.image} />
+            <button style={styles.deleteButton} onClick={() => handleDeleteImage(index)}>
+              &times;
+            </button>
           </div>
         ))}
       </div>
@@ -53,11 +97,13 @@ const styles = {
     display: 'grid',
     gridTemplateColumns: 'repeat(4, 1fr)', // 4 columns
     gridTemplateRows: 'repeat(10, 1fr)',   // 10 rows
-    rowGap: '10px', // Increased vertical gap
-    columnGap: '10px', // Increased horizontal gap
-    boxSizing: 'border-box', // Include padding and border in element's total width and height
+    rowGap: '10px',
+    columnGap: '10px',
+    boxSizing: 'border-box',
+    padding: '10px', // Padding to ensure content fits within page
   },
   imageWrapper: {
+    position: 'relative',
     width: '100%',
     height: '100%',
     display: 'flex',
@@ -71,14 +117,26 @@ const styles = {
     maxHeight: '100%',
     display: 'block',
   },
+  deleteButton: {
+    position: 'absolute',
+    top: '5px',
+    right: '5px',
+    background: 'red',
+    color: 'white',
+    border: 'none',
+    borderRadius: '50%',
+    width: '20px',
+    height: '20px',
+    fontSize: '14px',
+    cursor: 'pointer',
+  },
 };
 
-// Print styles
 const printStyles = `
 @media print {
   @page {
     size: A4;
-    margin: 0; /* Removes default page margins */
+    margin: 0; /* Remove default margins */
   }
   
   body {
@@ -94,11 +152,12 @@ const printStyles = `
     display: grid;
     grid-template-columns: repeat(4, 1fr);
     grid-template-rows: repeat(10, 1fr);
-    width: 794px;
-    height: 1123px;
+    width: 100%;
+    height: 100%;
     row-gap: 10px;
     column-gap: 10px;
-    margin: 0 auto; /* Centers the content on the page */
+    margin: 0; /* Ensure no extra margin */
+    padding: 0; /* Ensure no extra padding */
   }
   
   * {
@@ -108,11 +167,5 @@ const printStyles = `
   }
 }
 `;
-
-// Add print styles to the page
-const styleSheet = document.createElement("style");
-styleSheet.type = "text/css";
-styleSheet.innerText = printStyles;
-document.head.appendChild(styleSheet);
 
 export default BarcodePrintPage;
