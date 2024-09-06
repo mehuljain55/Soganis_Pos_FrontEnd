@@ -25,6 +25,17 @@ const NewBillContainer = ({ userData }) => {
   const [showPdfModal, setShowPdfModal] = useState(false);
   const [pdfData, setPdfData] = useState(null);
   const pdfModalRef = useRef(null);
+  const [showCustomItemModal, setShowCustomItemModal] = useState(false);
+  const [customItem, setCustomItem] = useState({
+    itemBarcodeID: 'SG9999999',
+    itemType: '',
+    itemColor: '',
+    itemSize: '',
+    itemCategory: '',
+    sellPrice: 0,
+    quantity: 1,
+    amount: 0,
+  });
 
 
   useEffect(() => {
@@ -45,6 +56,18 @@ const NewBillContainer = ({ userData }) => {
       fetchItems();
     }
   }, [searchTerm, isBarcodeMode]);
+
+  const handleCustomItemChange = (e) => {
+    const { name, value } = e.target;
+    setCustomItem((prev) => ({
+      ...prev,
+      [name]: value,
+      amount: name === 'quantity' || name === 'sellPrice' 
+        ? customItem.sellPrice * customItem.quantity
+        : prev.amount,
+    }));
+  };
+
   
 
   // Fetch item based on barcode (for barcode scanning)
@@ -244,6 +267,30 @@ const NewBillContainer = ({ userData }) => {
     setPaymentMode(e.target.value);
   };
 
+  const handleAddCustomItem = () => {
+    // Calculate amount
+    const amount = customItem.sellPrice * customItem.quantity;
+  
+    // Create the new item object
+    const newItem = {
+      itemCode: customItem.itemBarcodeID,
+      itemType: customItem.itemType,
+      itemColor: customItem.itemColor,
+      itemSize: customItem.itemSize,
+      itemCategory: customItem.itemCategory,
+      quantity: customItem.quantity,
+      price:customItem.sellPrice,
+      amount:customItem.amount,
+    };
+  
+    // Update the selectedItems state
+    setSelectedItems([...selectedItems, newItem]);
+  
+    // Close the modal
+    setShowCustomItemModal(false);
+  };
+  
+
   const toggleBarcodeMode = () => {
     setIsBarcodeMode(!isBarcodeMode);
     setSearchTerm('');
@@ -415,6 +462,8 @@ const NewBillContainer = ({ userData }) => {
                   </td>
                 </tr>
               ))}
+
+              <tr>  <button onClick={() => setShowCustomItemModal(true)}>Add Custom Item</button></tr>
             </tbody>
           </table>
         </div>
@@ -464,6 +513,98 @@ const NewBillContainer = ({ userData }) => {
           </Button>
         </Modal.Footer>
       </Modal>
+
+      <Modal show={showCustomItemModal} onHide={() => setShowCustomItemModal(false)} className="custom-item-modal">
+  <Modal.Header closeButton>
+    <Modal.Title>Add Custom Item</Modal.Title>
+  </Modal.Header>
+  <Modal.Body>
+    <form>
+      <div className="form-group">
+        <label>Item Barcode ID:</label>
+        <input
+          type="text"
+          name="itemBarcodeID"
+          value={customItem.itemBarcodeID}
+          onChange={handleCustomItemChange}
+          readOnly
+        />
+      </div>
+      <div className="form-group">
+        <label>Item Type:</label>
+        <input
+          type="text"
+          name="itemType"
+          value={customItem.itemType}
+          onChange={handleCustomItemChange}
+        />
+      </div>
+      <div className="form-group">
+        <label>Item Color:</label>
+        <input
+          type="text"
+          name="itemColor"
+          value={customItem.itemColor}
+          onChange={handleCustomItemChange}
+        />
+      </div>
+      <div className="form-group">
+        <label>Item Size:</label>
+        <input
+          type="text"
+          name="itemSize"
+          value={customItem.itemSize}
+          onChange={handleCustomItemChange}
+        />
+      </div>
+      <div className="form-group">
+        <label>Item Category:</label>
+        <input
+          type="text"
+          name="itemCategory"
+          value={customItem.itemCategory}
+          onChange={handleCustomItemChange}
+        />
+      </div>
+      <div className="form-group">
+        <label>Price:</label>
+        <input
+          type="number"
+          name="sellPrice"
+          value={customItem.sellPrice}
+          onChange={handleCustomItemChange}
+        />
+      </div>
+      <div className="form-group">
+        <label>Quantity:</label>
+        <input
+          type="number"
+          name="quantity"
+          value={customItem.quantity}
+          onChange={handleCustomItemChange}
+          min="1"
+        />
+      </div>
+      <div className="form-group">
+        <label>Amount:</label>
+        <input
+          type="text"
+          name="amount"
+          value={customItem.amount}
+          readOnly
+        />
+      </div>
+    </form>
+  </Modal.Body>
+  <Modal.Footer>
+    <Button variant="secondary" onClick={() => setShowCustomItemModal(false)}>
+      Close
+    </Button>
+    <Button variant="primary" onClick={handleAddCustomItem}>
+      Add Item
+    </Button>
+  </Modal.Footer>
+</Modal>
 
     </div>
   );

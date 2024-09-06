@@ -305,3 +305,83 @@
 .billdets-info p{
     margin: 5px;
 }
+
+/* Modal container */
+.bill-detail-exchange-modal {
+    position: fixed; /* Position the modal relative to the viewport */
+    z-index: 1000; /* Ensure the modal is on top of other elements */
+    top: 0;
+    left: 0;
+    width: 100%; /* Full width */
+    height: 100%; /* Full height */
+    display: flex; /* Use flexbox to center the modal content */
+    align-items: center; /* Vertically center */
+    justify-content: center; /* Horizontally center */
+    background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent background */
+}
+
+/* Modal content */
+.bill-detail-exchange-modal-content {
+    background-color: #fff; /* White background */
+    padding: 20px; /* Some padding */
+    border-radius: 8px; /* Rounded corners */
+    max-width: 600px; /* Maximum width */
+    width: 90%; /* Responsive width */
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3); /* Subtle shadow */
+}
+
+/* Modal header */
+.bill-detail-exchange-modal-content h2 {
+    margin-top: 0; /* Remove default margin */
+    margin-bottom: 20px; /* Add some space below the heading */
+}
+
+/* Table styles */
+.bill-detail-exchange-items-table {
+    width: 100%; /* Full width */
+    border-collapse: collapse; /* Collapse borders */
+    margin-bottom: 20px; /* Space below the table */
+}
+
+.bill-detail-exchange-items-table th,
+.bill-detail-exchange-items-table td {
+    border: 1px solid #ddd; /* Border around cells */
+    padding: 8px; /* Cell padding */
+    text-align: left; /* Left-align text */
+}
+
+.bill-detail-exchange-items-table th {
+    background-color: #f2f2f2; /* Light gray background for headers */
+}
+
+/* Input styles */
+.bill-detail-exchange-items-table input[type="number"] {
+    width: 60px; /* Set a fixed width */
+    padding: 4px; /* Some padding */
+    box-sizing: border-box; /* Ensure padding doesn't affect width */
+}
+
+/* Buttons container */
+.bill-detail-exchange-modal-content div {
+    display: flex;
+    justify-content: flex-end; /* Align buttons to the right */
+    gap: 10px; /* Space between buttons */
+}
+
+/* Buttons styles */
+.bill-detail-exchange-modal-content button {
+    padding: 10px 20px; /* Padding */
+    border: none; /* Remove borders */
+    border-radius: 4px; /* Rounded corners */
+    cursor: pointer; /* Pointer cursor on hover */
+}
+
+.bill-detail-exchange-modal-content button:first-child {
+    background-color: #28a745; /* Green background */
+    color: #fff; /* White text */
+}
+
+.bill-detail-exchange-modal-content button:last-child {
+    background-color: #dc3545; /* Red background */
+    color: #fff; /* White text */
+}
