@@ -307,15 +307,20 @@ const InterCompanyTranfer = ({ userData }) => {
       <div className="customer-details">
         <h5>Customer Details</h5>
         <div className="customer-details-box">
-          <label>
-            Company Name:
-            <input
-              type="text"
-              value={customerName}
-              onChange={handleNameChange}
-              required
-            />
-          </label>
+        <label>
+  Company Name:
+  <select
+    value={customerName}
+    onChange={handleNameChange}
+    required
+  >
+    <option value="">Select a company</option>
+    <option value="Rajwada">Rajwada</option>
+    <option value="Vijay Nagar">Vijay Nagar</option>
+    <option value="Scheme 140">Scheme 140</option>
+  </select>
+</label>
+
          
           <label>
             School Name:
