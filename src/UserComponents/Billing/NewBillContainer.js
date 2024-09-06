@@ -168,23 +168,28 @@ const NewBillContainer = ({ userData }) => {
   };
 
   const handleDropdownKeyEvents = (event) => {
-    const items = dropdownRef.current.querySelectorAll('tr');
-    const currentIndex = Array.from(items).findIndex((item) => item === document.activeElement);
-
-    if (event.key === 'ArrowDown' && currentIndex < items.length - 1) {
-      event.preventDefault();
-      items[currentIndex + 1].focus();
-    } else if (event.key === 'ArrowUp' && currentIndex > 0) {
-      event.preventDefault();
-      items[currentIndex - 1].focus();
-    } else if (event.key === 'Escape') {
-      setDropdownOpen(false);
-      searchInputRef.current.focus();
-    } else if (event.key === 'Enter' && currentIndex >= 0) {
-      addItemToBill(searchResults[currentIndex]);
+    // Check if dropdownRef.current is not null
+    if (dropdownRef.current) {
+      const items = dropdownRef.current.querySelectorAll('tr');
+      const currentIndex = Array.from(items).findIndex((item) => item === document.activeElement);
+  
+      if (event.key === 'ArrowDown' && currentIndex < items.length - 1) {
+        event.preventDefault();
+        items[currentIndex + 1].focus();
+      } else if (event.key === 'ArrowUp' && currentIndex > 0) {
+        event.preventDefault();
+        items[currentIndex - 1].focus();
+      } else if (event.key === 'Escape') {
+        setDropdownOpen(false);
+        searchInputRef.current.focus();
+      } else if (event.key === 'Enter' && currentIndex >= 0) {
+        addItemToBill(searchResults[currentIndex]);
+      }
+    } else {
+      console.warn('Dropdown reference is null.');
     }
   };
-
+  
   useEffect(() => {
     if (dropdownOpen && searchResults.length > 0 && dropdownRef.current) {
       dropdownRef.current.firstChild.focus();
@@ -291,24 +296,42 @@ const NewBillContainer = ({ userData }) => {
     setShowCustomItemModal(false);
   };
   
+// Function to toggle between barcode and search mode
+const toggleBarcodeMode = () => {
+  setIsBarcodeMode((prev) => !prev);
+  setSearchTerm('');
+  setDropdownOpen(false);
+  setBarcode('');
 
-  const toggleBarcodeMode = () => {
-    setIsBarcodeMode(!isBarcodeMode);
-    setSearchTerm('');
-    setDropdownOpen(false);
-    setBarcode('');
-    if (!isBarcodeMode) {
-      // If switching to barcode mode, focus on barcode input
-      setTimeout(() => {
-        barcodeInputRef.current.focus();
-      }, 100);
-    } else {
-      // If switching to manual mode, focus on search input
-      setTimeout(() => {
-        searchInputRef.current.focus();
-      }, 100);
+  if (!isBarcodeMode) {
+    // If switching to barcode mode, focus on barcode input
+    setTimeout(() => {
+      barcodeInputRef.current.focus();
+    }, 100);
+  } else {
+    // If switching to manual mode, focus on search input
+    setTimeout(() => {
+      searchInputRef.current.focus();
+    }, 100);
+  }
+};
+
+// Effect to listen for Shift key press
+useEffect(() => {
+  const handleKeyDown = (event) => {
+    if (event.key === 'Shift') {
+      toggleBarcodeMode();
     }
   };
+
+  window.addEventListener('keydown', handleKeyDown);
+
+  // Cleanup event listener on component unmount
+  return () => {
+    window.removeEventListener('keydown', handleKeyDown);
+  };
+}, [isBarcodeMode]);
+
 
   return (
     <div className="new-bill-container">
