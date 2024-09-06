@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { API_BASE_URL } from '../Config.js';
 import './BillDetails.css';
+import ExchangeBill from './ExchangeBill.js'; 
+
 
 const BillDetails = ({ userData }) => {
     const [billNo, setBillNo] = useState('');
@@ -17,8 +19,9 @@ const BillDetails = ({ userData }) => {
     const [popupType, setPopupType] = useState('');
     const [defectItem, setDefectItem] = useState(null);
 const [defectQuantity, setDefectQuantity] = useState(0);
-const [isDefectModalOpen, setIsDefectModalOpen] = useState(false);
 
+const [isDefectModalOpen, setIsDefectModalOpen] = useState(false);
+const [exchangeAmount, setExchangeAmount] = useState(0);
 
     const handleInputChange = (event) => {
         setBillNo(event.target.value);
@@ -128,15 +131,19 @@ const [isDefectModalOpen, setIsDefectModalOpen] = useState(false);
         axios.post(`${API_BASE_URL}/stock/exchange`, itemsToExchange)
             .then(response => {
                 if (response.data === 'success') {
-                    setPopupMessage('Item exchanged successfully');
-                    setPopupType('success');
+                    const exchangeAmount = calculateTotalAmount(); // Calculate total exchange amount
+                    setExchangeAmount(exchangeAmount);
+                    setIsModalOpen(false)
+                    setIsExchangeModalOpen(true);
+                  
+             
                 } else {
                     setPopupMessage('Exchange failed. Please try again.');
                     setPopupType('error');
                 }
-                setShowPopup(true);
+              //  setShowPopup(true);
                 fetchBill(); // Refetch bill data after exchange
-                setIsExchangeModalOpen(false);
+               // setIsExchangeModalOpen(false);
                 setSelectedItems([]);
             })
             .catch(error => {
@@ -179,6 +186,11 @@ const [isDefectModalOpen, setIsDefectModalOpen] = useState(false);
             // Handle error
             setShowPopup({ message: 'Error defecting item!', type: 'error' });
         });
+    };
+
+    const handleCloseExchangeModal = () => {
+        setIsExchangeModalOpen(false);
+        setExchangeAmount(0);  // Reset exchangeAmount when modal is closed
     };
     
 
@@ -387,6 +399,24 @@ const [isDefectModalOpen, setIsDefectModalOpen] = useState(false);
         </div>
     </div>
 )}
+
+
+
+{isExchangeModalOpen && (
+    <>
+        <div className="item-exchange-modal-overlay"></div>
+        <div className="item-exchange-modal-bill">
+            <ExchangeBill
+                userData={userData}
+                exchangeAmount={exchangeAmount}
+                onClose={handleCloseExchangeModal}
+            />
+        </div>
+    </>
+)}
+
+
+
 
 
            

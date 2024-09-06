@@ -1,12 +1,11 @@
 import React, { useState, useRef, useEffect } from 'react';
 import axios from 'axios';
-import './NewBillContainer.css';
+import './ExchangeBill.css';
 import { API_BASE_URL } from '../Config.js';
 import Modal from 'react-bootstrap/Modal';
 import Button from 'react-bootstrap/Button';
-import ExchangeBillModal from './ExchangeBillModal'; // Import the new modal component
 
-const ExchangeBill = ({ userData }, {ExchangeAmount}) => {
+const ExchangeBill = ({ userData, exchangeAmount, onClose }) => {
   const [selectedItems, setSelectedItems] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [searchResults, setSearchResults] = useState([]);
@@ -206,6 +205,7 @@ const ExchangeBill = ({ userData }, {ExchangeAmount}) => {
       customerMobileNo: customerMobileNo,
       paymentMode: paymentMode,
       schoolName: schoolName,
+      balanceAmount:exchangeAmount,
       item_count: selectedItems.length,
       bill: selectedItems.map((item) => ({
         itemBarcodeID: item.itemBarcodeID,
@@ -215,12 +215,13 @@ const ExchangeBill = ({ userData }, {ExchangeAmount}) => {
         itemCategory: item.itemCategory,
         sellPrice: item.price,
         quantity: item.quantity,
+      
         total_amount: item.amount,
       })),
     };
 
     try {
-      const response = await axios.post(`${API_BASE_URL}/billRequest`, billData, { responseType: 'arraybuffer' });
+      const response = await axios.post(`${API_BASE_URL}/exchange/billRequest`, billData, { responseType: 'arraybuffer' });
       const pdfBlob = new Blob([response.data], { type: 'application/pdf' });
       const pdfUrl = URL.createObjectURL(pdfBlob);
 
@@ -233,6 +234,8 @@ const ExchangeBill = ({ userData }, {ExchangeAmount}) => {
       setCustomerMobileNo('');
       setPaymentMode('Cash');
       setSchoolName('');
+   
+      
     } catch (error) {
       console.error('Error generating bill:', error);
     }
@@ -242,13 +245,16 @@ const ExchangeBill = ({ userData }, {ExchangeAmount}) => {
     if (pdfModalRef.current) {
       pdfModalRef.current.focus();
       pdfModalRef.current.contentWindow.print();
+      onClose();
     }
   };
-
+  
+  console.log(exchangeAmount);
   const handleClosePdfModal = () => {
     setShowPdfModal(false);
     URL.revokeObjectURL(pdfData); // Clean up the object URL
     setPdfData(null);
+    onClose();
   };
 
   const handleNameChange = (e) => {
@@ -317,7 +323,7 @@ const ExchangeBill = ({ userData }, {ExchangeAmount}) => {
           {isBarcodeMode ? 'Barcode Mode' : 'Search Mode'}
         </button>
       </div>
-      <h2>Billing</h2>
+      <h2>Exchange</h2>
 
  
 
@@ -393,36 +399,7 @@ const ExchangeBill = ({ userData }, {ExchangeAmount}) => {
 
       {/* Customer Details */}
       <div className="customer-details">
-        <h5>Customer Details</h5>
-        <div className="customer-details-box">
-          <label>
-            Customer Name:
-            <input
-              type="text"
-              value={customerName}
-              onChange={handleNameChange}
-              required
-            />
-          </label>
-          <label>
-            Customer Mobile No:
-            <input
-              type="text"
-              value={customerMobileNo}
-              onChange={handleMobileNoChange}
-              required
-            />
-          </label>
-          <label>
-            School Name:
-            <input
-              type="text"
-              value={schoolName}
-              onChange={handleSchoolNameChange}
-              required
-            />
-          </label>
-        </div>
+       <h5>Credit Available: {exchangeAmount}</h5>
       </div>
 
       {/* Billing Items Table */}
@@ -472,7 +449,8 @@ const ExchangeBill = ({ userData }, {ExchangeAmount}) => {
 
       {/* Summary */}
       <div className="summary">
-        <h3>Total Amount: {calculateTotalAmount().toFixed(2)} Rs</h3>
+      <h3>Total Amount: {(calculateTotalAmount() - exchangeAmount).toFixed(2)} Rs</h3>
+
         <h4>Item Count: {selectedItems.length}</h4>
       </div>
 
@@ -600,6 +578,8 @@ const ExchangeBill = ({ userData }, {ExchangeAmount}) => {
     </Button>
   </Modal.Footer>
 </Modal>
+
+<button className="close-button" onClick={onClose}>Close</button>
 
     </div>
   );
