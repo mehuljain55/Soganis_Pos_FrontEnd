@@ -2,6 +2,8 @@ import React, { useState, useRef, useEffect } from 'react';
 import axios from 'axios';
 import './NewBillContainer.css';
 import { API_BASE_URL } from '../Config.js';
+import Modal from 'react-bootstrap/Modal';
+import Button from 'react-bootstrap/Button';
 
 const InterCompanyTranfer = ({ userData }) => {
   const [selectedItems, setSelectedItems] = useState([]);
@@ -19,7 +21,10 @@ const InterCompanyTranfer = ({ userData }) => {
   const searchInputRef = useRef(null);
   const barcodeInputRef = useRef(null);
   const dropdownRef = useRef(null);
-
+  const [showPdfModal, setShowPdfModal] = useState(false);
+  const [pdfData, setPdfData] = useState(null);
+  const pdfModalRef = useRef(null);
+  const [showCustomItemModal, setShowCustomItemModal] = useState(false);
   // Fetch items based on searchTerm (for manual search)
   useEffect(() => {
     if (!isBarcodeMode && searchTerm.trim() !== '') {
@@ -69,6 +74,18 @@ const InterCompanyTranfer = ({ userData }) => {
     if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
       setDropdownOpen(false);
     }
+  };
+
+  const handlePrint = () => {
+    if (pdfModalRef.current) {
+      pdfModalRef.current.focus();
+      pdfModalRef.current.contentWindow.print();
+    }
+  };
+  const handleClosePdfModal = () => {
+    setShowPdfModal(false);
+    URL.revokeObjectURL(pdfData); // Clean up the object URL
+    setPdfData(null);
   };
 
   useEffect(() => {
@@ -173,8 +190,12 @@ const InterCompanyTranfer = ({ userData }) => {
     };
 
     try {
-      const response = await axios.post(`${API_BASE_URL}/intercompany/billRequest`, billData);
-      console.log('Bill generated:', response.data);
+      const response = await axios.post(`${API_BASE_URL}/billRequest`, billData, { responseType: 'arraybuffer' });
+      const pdfBlob = new Blob([response.data], { type: 'application/pdf' });
+      const pdfUrl = URL.createObjectURL(pdfBlob);
+
+      setPdfData(pdfUrl);
+      setShowPdfModal(true);
 
       setSelectedItems([]);
       // Clear customer details
@@ -399,7 +420,33 @@ const InterCompanyTranfer = ({ userData }) => {
       <div className="submit-button">
         <button onClick={handleSubmit}>Submit</button>
       </div>
+      <Modal show={showPdfModal} onHide={handleClosePdfModal} size="lg">
+        <Modal.Header closeButton>
+          <Modal.Title>Bill PDF</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          {pdfData && (
+            <iframe
+              ref={pdfModalRef}
+              src={pdfData}
+              width="100%"
+              height="500px"
+              title="Bill PDF"
+            />
+          )}
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={handleClosePdfModal}>
+            Close
+          </Button>
+          <Button variant="primary" onClick={handlePrint}>
+            Print
+          </Button>
+        </Modal.Footer>
+      </Modal>
     </div>
+
+    
   );
 };
 
