@@ -273,6 +273,7 @@ const NewBillContainer = ({ userData }) => {
   
     // Create the new item object
     const newItem = {
+      itemBarcodeID:customItem.itemBarcodeID,
       itemCode: customItem.itemBarcodeID,
       itemType: customItem.itemType,
       itemColor: customItem.itemColor,
@@ -280,7 +281,7 @@ const NewBillContainer = ({ userData }) => {
       itemCategory: customItem.itemCategory,
       quantity: customItem.quantity,
       price:customItem.sellPrice,
-      amount:customItem.amount,
+      amount:(customItem.quantity)*(customItem.sellPrice),
     };
   
     // Update the selectedItems state
@@ -586,13 +587,7 @@ const NewBillContainer = ({ userData }) => {
         />
       </div>
       <div className="form-group">
-        <label>Amount:</label>
-        <input
-          type="text"
-          name="amount"
-          value={customItem.amount}
-          readOnly
-        />
+       
       </div>
     </form>
   </Modal.Body>
