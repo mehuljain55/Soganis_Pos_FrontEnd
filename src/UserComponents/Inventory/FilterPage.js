@@ -99,6 +99,37 @@ const FilterPage = () => {
     setSelectedItemType(event.target.value);
   };
 
+  const refreshData = () => {
+    // Fetch data again based on current filter and selection
+    if (selectedFilter === "filter1" && selectedSchool && selectedItemType) {
+      axios
+        .get(`${API_BASE_URL}/filter/item_category/item_type`, {
+          params: {
+            schoolCode: selectedSchool,
+            itemType: selectedItemType,
+          },
+        })
+        .then((response) => setData(response.data))
+        .catch((error) => console.error("Error fetching data:", error));
+    } else if (selectedFilter === "filter2" && selectedItemType) {
+      axios
+        .get(`${API_BASE_URL}/filter/item_list_type`, {
+          params: {
+            itemType: selectedItemType,
+          },
+        })
+        .then((response) => setData(response.data))
+        .catch((error) => console.error("Error fetching data:", error));
+    } else if (selectedFilter === "filter3" && selectedSchool) {
+      axios
+        .get(
+          `${API_BASE_URL}/filter/item_list_school_code?schoolCode=${selectedSchool}`,
+        )
+        .then((response) => setData(response.data))
+        .catch((error) => console.error("Error fetching data:", error));
+    }
+  };
+
   return (
     <div>
       <h1>Filter Page</h1>
@@ -140,8 +171,6 @@ const FilterPage = () => {
           <label htmlFor="filter3">School</label>
         </div>
       </div>
-
-
 
       <div className="filter-page-radio-output">
         {selectedFilter === "filter1" && (
@@ -213,11 +242,9 @@ const FilterPage = () => {
         )}
 
         {/* Display the View component if data is available */}
-        {data.length > 0 && <View data={data} />}
+        {data.length > 0 && <View data={data} onUpdateSuccess={refreshData} />}
       </div>
     </div>
-
-
   );
 };
 

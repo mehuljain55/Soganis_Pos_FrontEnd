@@ -9,6 +9,7 @@ const BillDetails = ({ userData }) => {
     const [returnedItems, setReturnedItems] = useState({});
     const [currentDate, setCurrentDate] = useState(new Date().toISOString().split('T')[0]);
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const [isExchangeModalOpen, setIsExchangeModalOpen] = useState(false); // New state for exchange modal
     const [returnQuantities, setReturnQuantities] = useState({});
     const [selectedItems, setSelectedItems] = useState([]);
     const [showPopup, setShowPopup] = useState(false);
@@ -59,6 +60,7 @@ const BillDetails = ({ userData }) => {
         if (!returnedItems[item.sno]) {
             setSelectedItems(prevState => [...prevState, item]);
             setReturnQuantities(prevState => ({ ...prevState, [item.sno]: 0 }));
+            
         }
     };
 
@@ -76,25 +78,18 @@ const BillDetails = ({ userData }) => {
         const itemsToReturn = selectedItems.map(item => ({
             sno: item.sno,
             barcodedId: item.itemBarcodeID,
+            price:item.sellPrice,
+            userId:userData.userId,
             return_quantity: returnQuantities[item.sno],
         }));
 
-        for (const item of selectedItems) {
-            if (returnQuantities[item.sno] > item.quantity) {
-                alert('Return quantity cannot exceed available quantity.');
-                return;
-            }
-        }
-
         axios.post(`${API_BASE_URL}/return_stock/bill`, itemsToReturn)
             .then(response => {
-                if (response.data=='success') {
+                if (response.data === 'success') {
                     setPopupMessage('Item returned');
-                    console.log(response.data);
                     setPopupType('success');
                 } else {
                     setPopupMessage('Please try again');
-                    console.log(response.data);
                     setPopupType('error');
                 }
                 setShowPopup(true);
@@ -117,37 +112,57 @@ const BillDetails = ({ userData }) => {
             });
     };
 
-    const handleExchange = (sno, itemBarcodeID) => {
-        console.log(`Exchange item with Serial No: ${sno} and Barcode ID: ${itemBarcodeID}`);
+    const handleExchange = () => {
+        const itemsToExchange = selectedItems.map(item => ({
+            sno: item.sno,
+            barcodedId: item.itemBarcodeID,
+            price:item.sellPrice,
+            userId:userData.userId,
+            return_quantity: returnQuantities[item.sno],
+        }));
+
+        axios.post(`${API_BASE_URL}/stock/exchange`, itemsToExchange)
+            .then(response => {
+                if (response.data === 'success') {
+                    setPopupMessage('Item exchanged successfully');
+                    setPopupType('success');
+                } else {
+                    setPopupMessage('Exchange failed. Please try again.');
+                    setPopupType('error');
+                }
+                setShowPopup(true);
+                fetchBill(); // Refetch bill data after exchange
+                setIsExchangeModalOpen(false);
+                setSelectedItems([]);
+            })
+            .catch(error => {
+                console.error('Error exchanging items:', error);
+                setPopupMessage('Exchange failed. Please try again.');
+                setPopupType('error');
+                setShowPopup(true);
+            });
     };
 
-    const isToday = (date) => {
-        return date === currentDate;
-    };
+    const isToday = (date) => date === currentDate;
 
-    const calculateTotalAmount = () => {
-        return selectedItems.reduce((total, item) => {
-            const returnQuantity = returnQuantities[item.sno] || 0;
-            return total + (item.sellPrice * returnQuantity);
-        }, 0);
-    };
+    const calculateTotalAmount = () => selectedItems.reduce((total, item) => {
+        const returnQuantity = returnQuantities[item.sno] || 0;
+        return total + (item.sellPrice * returnQuantity);
+    }, 0);
 
     // Popup component definition
-    const Popup = ({ message, type, onClose }) => {
-        return (
-            <div className={`popup ${type}`}>
-                <div className="popup-content">
-                    <p>{message}</p>
-                    <button onClick={onClose}>Close</button>
-                </div>
+    const Popup = ({ message, type, onClose }) => (
+        <div className={`popup ${type}`}>
+            <div className="popup-content">
+                <p>{message}</p>
+                <button onClick={onClose}>Close</button>
             </div>
-        );
-    };
+        </div>
+    );
 
     return (
         <div className="bill-detail">
             <h1>Bill Details</h1>
-
             <div>
                 <label htmlFor="billNo">Enter Bill No:</label>
                 <input
@@ -175,7 +190,7 @@ const BillDetails = ({ userData }) => {
                         </tr>
                     </table>
                     <h2>Items</h2>
-                    <table className='bill-detail-table'>
+                    <table className="bill-detail-table">
                         <thead>
                             <tr>
                                 <th>Serial No</th>
@@ -209,10 +224,22 @@ const BillDetails = ({ userData }) => {
                                             <span style={{ color: 'green' }}>Item Selected</span>
                                         ) : (
                                             <>
-                                                {isToday(billData.bill_date) && (
-                                                    <button onClick={() => handleSelectItem(item)}>Return</button>
-                                                )}
-                                                <button id='exchange-btn' onClick={() => handleExchange(item.sno, item.itemBarcodeID)}>Exchange</button>
+                                                
+                                                {item.status === "Returned" ? (
+                    <span>Item Returned</span>
+                ) : item.status === "Exchanged" ? (
+                    <span>Item Exchanged</span>
+                ) : item.quantity <= 0 ? (
+                    <span>Item Exchanged or returned</span>
+                ) : returnedItems[item.sno] ? (
+                    <button disabled>Item Returned</button>
+                ) : selectedItems.find(selectedItem => selectedItem.sno === item.sno) ? (
+                    <span style={{ color: 'green' }}>Item Selected</span>
+                ) : (
+                    <button onClick={() => handleSelectItem(item)}>Return</button>
+                )}
+                                            
+                                             
                                             </>
                                         )}
                                     </td>
@@ -221,8 +248,9 @@ const BillDetails = ({ userData }) => {
                         </tbody>
                     </table>
                     {selectedItems.length > 0 && (
-                        <button onClick={() => setIsModalOpen(true)}>Return Selected Items</button>
+                        <button onClick={() => setIsModalOpen(true)}>Return / Exchange </button>
                     )}
+                  
                 </>
             )}
 
@@ -235,45 +263,42 @@ const BillDetails = ({ userData }) => {
                                 <tr>
                                     <th>Barcode ID</th>
                                     <th>Name</th>
-                                    <th>School</th>
+                                    <th>Category</th>
                                     <th>Price</th>
-                                    <th>Available Quantity</th>
                                     <th>Return Quantity</th>
-                                    <th>Amount</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                {selectedItems.map((item) => {
-                                    const amount = item.sellPrice * (returnQuantities[item.sno] || 0);
-                                    return (
-                                        <tr key={item.sno}>
-                                            <td>{item.itemBarcodeID}</td>
-                                            <td>{item.itemType}</td> 
-                                            <td>{item.itemCategory}</td>
-                                            <td>{item.sellPrice}</td>
-                                            <td>{item.quantity}</td>
-                                            <td>
-                                                <input
-                                                    type="number"
-                                                    min="0"
-                                                    value={returnQuantities[item.sno] || ''}
-                                                    onChange={(e) => handleQuantityChange(item.sno, e.target.value)}
-                                                />
-                                            </td>
-                                            <td>{amount}</td>
-                                        </tr>
-                                    );
-                                })}
+                                {selectedItems.map((item) => (
+                                    <tr key={item.sno}>
+                                        <td>{item.itemBarcodeID}</td>
+                                        <td>{item.itemType}</td>
+                                        <td>{item.itemCategory}</td>
+                                        <td>{item.sellPrice}</td>
+                                        <td>
+                                            <input
+                                                type="number"
+                                                value={returnQuantities[item.sno]}
+                                                onChange={(e) => handleQuantityChange(item.sno, e.target.value)}
+                                            />
+                                        </td>
+                                    </tr>
+                                ))}
                             </tbody>
                         </table>
-                        <div className="bill-detail-return-modal-actions">
-                            <p><strong>Total Amount:</strong> {calculateTotalAmount()}</p>
-                            <button onClick={confirmReturn}>Confirm Return</button>
+                        <p><strong>Total Return Amount:</strong> {calculateTotalAmount()}</p>
+                        <div>
+                            <button onClick={confirmReturn}>Return</button>
+                            <button onClick={handleExchange}>Exchange</button>
+
+
                             <button onClick={() => setIsModalOpen(false)}>Cancel</button>
                         </div>
                     </div>
                 </div>
             )}
+
+           
 
             {showPopup && (
                 <Popup
@@ -282,17 +307,6 @@ const BillDetails = ({ userData }) => {
                     onClose={() => setShowPopup(false)}
                 />
             )}
-        </div>
-    );
-};
-
-const Popup = ({ message, type, onClose }) => {
-    return (
-        <div className={`popup ${type}`}>
-            <div className="popup-content">
-                <p>{message}</p>
-                <button onClick={onClose}>Close</button>
-            </div>
         </div>
     );
 };

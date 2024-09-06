@@ -46,7 +46,7 @@ const MainComponent = ({ userData }) => {
     <div className="container-fluid">
       {/* Top Bar */}
       <div className="top-bar">
-        <h1>Soganis NX</h1>
+        <h1>SOGANI NX</h1>
         {userData && (
           <div>
             <span>User: {userData.sname}</span>
