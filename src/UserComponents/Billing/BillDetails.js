@@ -15,6 +15,10 @@ const BillDetails = ({ userData }) => {
     const [showPopup, setShowPopup] = useState(false);
     const [popupMessage, setPopupMessage] = useState('');
     const [popupType, setPopupType] = useState('');
+    const [defectItem, setDefectItem] = useState(null);
+const [defectQuantity, setDefectQuantity] = useState(0);
+const [isDefectModalOpen, setIsDefectModalOpen] = useState(false);
+
 
     const handleInputChange = (event) => {
         setBillNo(event.target.value);
@@ -150,6 +154,34 @@ const BillDetails = ({ userData }) => {
         return total + (item.sellPrice * returnQuantity);
     }, 0);
 
+    const handleDefectItem = (item) => {
+        setDefectItem(item);
+        setDefectQuantity(0);
+        setIsDefectModalOpen(true);
+    };
+    
+    const confirmDefect = () => {
+        axios.post(`${API_BASE_URL}/stock/defect`, {
+            sno: defectItem.sno,
+            barcodedId: defectItem.itemBarcodeID,
+            return_quantity: defectQuantity,
+            price: defectItem.sellPrice,
+            userId: userData.userId // Make sure `userId` is defined
+        })
+        .then(response => {
+            // Handle successful defect submission
+            setShowPopup({ message: 'Item defected successfully!', type: 'success' });
+            setIsDefectModalOpen(false);
+            fetchBill(); 
+            setSelectedItems([]);
+        })
+        .catch(error => {
+            // Handle error
+            setShowPopup({ message: 'Error defecting item!', type: 'error' });
+        });
+    };
+    
+
     // Popup component definition
     const Popup = ({ message, type, onClose }) => (
         <div className={`popup ${type}`}>
@@ -195,6 +227,8 @@ const BillDetails = ({ userData }) => {
                             <tr>
                                 <th>Serial No</th>
                                 <th>Item Barcode ID</th>
+                                <th>Description</th>
+                                
                                 <th>Item Type</th>
                                 <th>Item Color</th>
                                 <th>Item Size</th>
@@ -210,6 +244,8 @@ const BillDetails = ({ userData }) => {
                                 <tr key={item.sno}>
                                     <td>{item.sno}</td>
                                     <td>{item.itemBarcodeID}</td>
+                                    <td>{item.description}</td>
+                                    
                                     <td>{item.itemType}</td>
                                     <td>{item.itemColor}</td>
                                     <td>{item.itemSize}</td>
@@ -225,18 +261,25 @@ const BillDetails = ({ userData }) => {
                                         ) : (
                                             <>
                                                 
-                                                {item.status === "Returned" ? (
+                                               
+                {item.status === "Returned" ? (
                     <span>Item Returned</span>
                 ) : item.status === "Exchanged" ? (
                     <span>Item Exchanged</span>
-                ) : item.quantity <= 0 ? (
+                ): item.status === "Defected" ? (
+                    <span>Defected Item Returned</span>
+                ): item.quantity <= 0 ? (
                     <span>Item Exchanged or returned</span>
                 ) : returnedItems[item.sno] ? (
                     <button disabled>Item Returned</button>
                 ) : selectedItems.find(selectedItem => selectedItem.sno === item.sno) ? (
                     <span style={{ color: 'green' }}>Item Selected</span>
                 ) : (
-                    <button onClick={() => handleSelectItem(item)}>Return</button>
+                    <>
+                                <button onClick={() => handleSelectItem(item)}>Return</button>
+                                <button onClick={() => handleDefectItem(item)}>Defect</button>
+                            </>
+                    
                 )}
                                             
                                              
@@ -290,6 +333,7 @@ const BillDetails = ({ userData }) => {
                         <div>
                             <button onClick={confirmReturn}>Return</button>
                             <button onClick={handleExchange}>Exchange</button>
+                
 
 
                             <button onClick={() => setIsModalOpen(false)}>Cancel</button>
@@ -297,6 +341,53 @@ const BillDetails = ({ userData }) => {
                     </div>
                 </div>
             )}
+ {isDefectModalOpen && (
+    <div className="unique-defect-modal">
+        <div className="unique-defect-modal-content">
+            <h2>Defect Item</h2>
+            <table className="unique-defect-items-table">
+                <thead>
+                    <tr>
+                        <th>Barcode ID</th>
+                        <th>Name</th>
+                        <th>Category</th>
+                        <th>Price</th>
+                        <th>Defect Quantity</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>{defectItem.itemBarcodeID}</td>
+                        <td>{defectItem.itemType}</td>
+                        <td>{defectItem.itemCategory}</td>
+                        <td>{defectItem.sellPrice}</td>
+                        <td>
+                            <input
+                                type="number"
+                                value={defectQuantity}
+                                onChange={(e) => {
+                                    const newQuantity = Number(e.target.value);
+                                    if (newQuantity <= defectItem.quantity) {
+                                        setDefectQuantity(newQuantity);
+                                    } else {
+                                        // Optionally, provide feedback to the user
+                                        alert(`Defect quantity cannot exceed ${defectItem.quantity}`);
+                                        setDefectQuantity(defectItem.quantity);
+                                    }
+                                }}
+                            />
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            <div className="unique-defect-buttons">
+                <button onClick={confirmDefect}>Confirm Defect</button>
+                <button onClick={() => setIsDefectModalOpen(false)}>Cancel</button>
+            </div>
+        </div>
+    </div>
+)}
+
 
            
 
