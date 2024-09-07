@@ -38,19 +38,16 @@ const NewBillContainer = ({ userData }) => {
   });
 
 
+  // Fetch items based on search term (for manual search)
   useEffect(() => {
     if (!isBarcodeMode && searchTerm.trim() !== '') {
       const fetchItems = async () => {
         try {
           const response = await axios.get(`${API_BASE_URL}/getAllItems?searchTerm=${searchTerm}`);
-          if (response.data) {
-            setSearchResults(response.data);
-          } else {
-            setSearchResults([]); // Set an empty array if data is null or undefined
-          }
+          setSearchResults(response.data || []); // Set search results or empty array
         } catch (error) {
           console.error('Error fetching items:', error);
-          setSearchResults([]); // Optionally handle errors by setting an empty array
+          setSearchResults([]);
         }
       };
       fetchItems();
@@ -69,8 +66,6 @@ const NewBillContainer = ({ userData }) => {
   };
 
   
-
-  // Fetch item based on barcode (for barcode scanning)
   useEffect(() => {
     if (isBarcodeMode && barcode.trim() !== '') {
       const fetchItemByBarcode = async () => {
@@ -86,7 +81,7 @@ const NewBillContainer = ({ userData }) => {
         } catch (error) {
           console.error('Error fetching item by barcode:', error);
         } finally {
-          setBarcode('');
+          setBarcode(''); // Clear barcode field
           barcodeInputRef.current.focus();
         }
       };
@@ -94,11 +89,14 @@ const NewBillContainer = ({ userData }) => {
     }
   }, [barcode, isBarcodeMode]);
 
+
   const handleKeyDown = (event, item) => {
     if (event.key === 'Enter') {
       addItemToBill(item);
     }
   };
+
+
 
   const handleClickOutside = (event) => {
     if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
@@ -189,6 +187,8 @@ const NewBillContainer = ({ userData }) => {
       console.warn('Dropdown reference is null.');
     }
   };
+
+  
   
   useEffect(() => {
     if (dropdownOpen && searchResults.length > 0 && dropdownRef.current) {
@@ -272,6 +272,14 @@ const NewBillContainer = ({ userData }) => {
     setPaymentMode(e.target.value);
   };
 
+  useEffect(() => {
+    
+    if (searchInputRef.current) {
+      console.log("Search filed");
+      searchInputRef.current.focus();  // Automatically focus the input
+    }
+  }, []);
+
   const handleAddCustomItem = () => {
     // Calculate amount
     const amount = customItem.sellPrice * customItem.quantity;
@@ -295,50 +303,37 @@ const NewBillContainer = ({ userData }) => {
     // Close the modal
     setShowCustomItemModal(false);
   };
-  
   const toggleBarcodeMode = () => {
-    setIsBarcodeMode((prev) => !prev);
-    setSearchTerm('');
-    setDropdownOpen(false);
-    setBarcode('');
-  
-    if (!isBarcodeMode) {
-      // If switching to barcode mode, focus on barcode input
-      setTimeout(() => {
-        barcodeInputRef.current.focus();
-        barcodeInputRef.current.dispatchEvent(new MouseEvent('mousedown', { bubbles: true }));
-        barcodeInputRef.current.dispatchEvent(new MouseEvent('mouseup', { bubbles: true }));
-        barcodeInputRef.current.click();
-      }, 100);
-    } else {
-      // If switching to manual mode, focus on search input
-      requestAnimationFrame(() => {
-        searchInputRef.current.focus();
-        searchInputRef.current.dispatchEvent(new MouseEvent('mousedown', { bubbles: true }));
-        searchInputRef.current.dispatchEvent(new MouseEvent('mouseup', { bubbles: true }));
-        searchInputRef.current.click();
-      });
-    }
-  };
-  
-  
-  
+    setIsBarcodeMode((prevMode) => {
+      const newMode = !prevMode;
 
-// Effect to listen for Shift key press
-useEffect(() => {
-  const handleKeyDown = (event) => {
-    if (event.key === 'Shift') {
-      toggleBarcodeMode();
-    }
+      // Use requestAnimationFrame to ensure the DOM updates before focusing
+      if (newMode) {
+        // Barcode mode - focus on the barcode input
+        setTimeout(() => barcodeInputRef.current.focus(), 0);
+      } else {
+        // Search mode - focus on the search input
+        setTimeout(() => searchInputRef.current.focus(), 0);
+      }
+
+      return newMode;
+    });
   };
 
-  window.addEventListener('keydown', handleKeyDown);
+  // Effect to listen for Shift key press and toggle mode
+  useEffect(() => {
+    const handleKeyDown = (event) => {
+      if (event.key === 'Shift') {
+        toggleBarcodeMode();
+      }
+    };
 
-  // Cleanup event listener on component unmount
-  return () => {
-    window.removeEventListener('keydown', handleKeyDown);
-  };
-}, [isBarcodeMode]);
+    window.addEventListener('keydown', handleKeyDown);
+
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  }, []);
 
 
   return (
@@ -350,77 +345,74 @@ useEffect(() => {
       </div>
       <h2>Billing</h2>
 
- 
-
-      {/* Search Bar or Barcode Input */}
       <div className="search-bar-container">
-        {isBarcodeMode ? (
-          <div className="barcode-input" ref={barcodeInputRef}>
-            <label>
-              Item Code (Barcode):
-              <input
-                type="text"
-                placeholder="Scan or enter barcode and press Enter"
-                value={barcode}
-                onChange={(e) => setBarcode(e.target.value)}
-                onKeyDown={(e) => {
-                  if (e.key === 'Enter') {
-                    // The useEffect will handle fetching the item
-                    e.preventDefault();
-                  }
-                }}
-                autoFocus
-              />
-            </label>
-          </div>
-        ) : (
-          <div className="search-bar" ref={searchInputRef} tabIndex="0">
-            <input
-              type="text"
-              placeholder="Search by item code"
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              onFocus={() => setDropdownOpen(true)}
-              onKeyDown={handleDropdownKeyEvents}
-            />
-            {dropdownOpen && (
-              <div className="dropdown" ref={dropdownRef}>
-                <table>
-                  <thead>
-                    <tr>
-                      <th>Item Code</th>
-                      <th>Item Name</th>
-                      <th>Category</th>
-                      <th>Type</th>
-                      <th>Color</th>
-                      <th>Size</th>
-                      <th>Price</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {searchResults.map((item, index) => (
-                      <tr
-                        key={item.id}
-                        onClick={() => addItemToBill(item)}
-                        onKeyDown={(e) => handleKeyDown(e, item)}
-                        tabIndex="0"
-                      >
-                        <td>{item.itemCode}</td>
-                        <td>{item.itemName}</td>
-                        <td>{item.itemCategory}</td>
-                        <td>{item.itemType}</td>
-                        <td>{item.itemColor}</td>
-                        <td>{item.itemSize}</td>
-                        <td>{item.price}</td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            )}
-          </div>
-        )}
+      {/* Barcode input */}
+      <div className="barcode-input">
+        <label>
+          Item Code (Barcode):
+          <input
+            type="text"
+            placeholder="Scan or enter barcode and press Enter"
+            value={barcode}
+            onChange={(e) => setBarcode(e.target.value)}
+            ref={barcodeInputRef}
+            onFocus={() => setIsBarcodeMode(true)}  // Focus switches to barcode mode
+          />
+        </label>
       </div>
+
+      <div className="search-bar" ref={searchInputRef} tabIndex="0">
+  <input
+    type="text"
+    placeholder="Search by item code"
+    value={searchTerm}
+    onChange={(e) => setSearchTerm(e.target.value)}
+    onFocus={() => {
+      setIsBarcodeMode(false);  // Disable barcode mode on focus
+      setDropdownOpen(true);    // Open the dropdown on focus
+
+    }}
+    ref={searchInputRef} 
+  />
+  {dropdownOpen && (
+    <div className="dropdown" ref={dropdownRef}>
+      <table>
+        <thead>
+          <tr>
+            <th>Item Code</th>
+            <th>Item Name</th>
+            <th>Category</th>
+            <th>Type</th>
+            <th>Color</th>
+            <th>Size</th>
+            <th>Price</th>
+          </tr>
+        </thead>
+        <tbody>
+          {searchResults.map((item, index) => (
+            <tr
+              key={item.id}
+              onClick={() => addItemToBill(item)}
+              onKeyDown={(e) => handleKeyDown(e, item)}
+              tabIndex="0"
+            >
+              <td>{item.itemCode}</td>
+              <td>{item.itemName}</td>
+              <td>{item.itemCategory}</td>
+              <td>{item.itemType}</td>
+              <td>{item.itemColor}</td>
+              <td>{item.itemSize}</td>
+              <td>{item.price}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  )}
+</div>
+
+    </div>
+
 
       {/* Customer Details */}
       <div className="customer-details">
