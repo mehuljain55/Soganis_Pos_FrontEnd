@@ -15,6 +15,8 @@ const NewBillContainer = ({ userData }) => {
   const [customerMobileNo, setCustomerMobileNo] = useState('');
   const [paymentMode, setPaymentMode] = useState('Cash');
   const [schoolName, setSchoolName] = useState('');
+  const [selectedIndex, setSelectedIndex] = useState(-1);
+ 
   
   const [isBarcodeMode, setIsBarcodeMode] = useState(false);
   const [barcode, setBarcode] = useState('');
@@ -45,6 +47,7 @@ const NewBillContainer = ({ userData }) => {
         try {
           const response = await axios.get(`${API_BASE_URL}/getAllItems?searchTerm=${searchTerm}`);
           setSearchResults(response.data || []); // Set search results or empty array
+          setSelectedIndex(-1);
         } catch (error) {
           console.error('Error fetching items:', error);
           setSearchResults([]);
@@ -64,6 +67,8 @@ const NewBillContainer = ({ userData }) => {
         : prev.amount,
     }));
   };
+
+  
 
   
   useEffect(() => {
@@ -89,7 +94,32 @@ const NewBillContainer = ({ userData }) => {
     }
   }, [barcode, isBarcodeMode]);
 
-
+  useEffect(() => {
+    if (dropdownRef.current && selectedIndex >= 0) {
+      const dropdown = dropdownRef.current;
+      const items = dropdown.querySelectorAll('tr');
+      if (items.length > 0) {
+        const item = items[selectedIndex];
+        const dropdownRect = dropdown.getBoundingClientRect();
+        const itemRect = item.getBoundingClientRect();
+        const dropdownTop = dropdownRect.top;
+        const dropdownBottom = dropdownRect.bottom;
+        const itemTop = itemRect.top - dropdownTop;
+        const itemBottom = itemRect.bottom - dropdownTop;
+        const visibleHeight = 150;
+        
+        // Scroll the dropdown so the selected item is in view
+        if (itemTop < 0) {
+          // Item is above the visible area
+          dropdown.scrollTop += itemTop - 15; // Adjust scrolling position to show the item
+        } else if (itemBottom > visibleHeight) {
+          // Item is below the visible area
+          dropdown.scrollTop += itemBottom - visibleHeight + 15; // Adjust scrolling position to show the item
+        }
+      }
+    }
+  }, [selectedIndex]);
+   
   const handleKeyDown = (event, item) => {
     if (event.key === 'Enter') {
       addItemToBill(item);
@@ -165,28 +195,7 @@ const NewBillContainer = ({ userData }) => {
     setSelectedItems(updatedItems);
   };
 
-  const handleDropdownKeyEvents = (event) => {
-    // Check if dropdownRef.current is not null
-    if (dropdownRef.current) {
-      const items = dropdownRef.current.querySelectorAll('tr');
-      const currentIndex = Array.from(items).findIndex((item) => item === document.activeElement);
-  
-      if (event.key === 'ArrowDown' && currentIndex < items.length - 1) {
-        event.preventDefault();
-        items[currentIndex + 1].focus();
-      } else if (event.key === 'ArrowUp' && currentIndex > 0) {
-        event.preventDefault();
-        items[currentIndex - 1].focus();
-      } else if (event.key === 'Escape') {
-        setDropdownOpen(false);
-        searchInputRef.current.focus();
-      } else if (event.key === 'Enter' && currentIndex >= 0) {
-        addItemToBill(searchResults[currentIndex]);
-      }
-    } else {
-      console.warn('Dropdown reference is null.');
-    }
-  };
+
 
   
   
@@ -202,6 +211,19 @@ const NewBillContainer = ({ userData }) => {
       total += item.amount;
     });
     return total;
+  };
+
+  const handleArrowNavigation = (e) => {
+    if (e.key === 'ArrowDown') {
+      setSelectedIndex((prevIndex) => Math.min(prevIndex + 1, searchResults.length - 1));
+      e.preventDefault();
+    } else if (e.key === 'ArrowUp') {
+      setSelectedIndex((prevIndex) => Math.max(prevIndex - 1, 0));
+      e.preventDefault();
+    } else if (e.key === 'Enter' && selectedIndex >= 0) {
+      addItemToBill(searchResults[selectedIndex]);
+      e.preventDefault();
+    }
   };
 
   const handleSubmit = async () => {
@@ -233,7 +255,6 @@ const NewBillContainer = ({ userData }) => {
       setShowPdfModal(true);
 
       setSelectedItems([]);
-      // Clear customer details
       setCustomerName('');
       setCustomerMobileNo('');
       setPaymentMode('Cash');
@@ -275,14 +296,11 @@ const NewBillContainer = ({ userData }) => {
   useEffect(() => {
     
     if (searchInputRef.current) {
-      console.log("Search filed");
       searchInputRef.current.focus();  // Automatically focus the input
     }
   }, []);
 
   const handleAddCustomItem = () => {
-    // Calculate amount
-    const amount = customItem.sellPrice * customItem.quantity;
   
     // Create the new item object
     const newItem = {
@@ -319,6 +337,20 @@ const NewBillContainer = ({ userData }) => {
       return newMode;
     });
   };
+  useEffect(() => {
+    if (showCustomItemModal) {
+      setCustomItem({
+        itemBarcodeID: 'SG9999999',
+        itemType: '',
+        itemColor: '',
+        itemSize: '',
+        itemCategory: '',
+        sellPrice: 0,
+        quantity: 1,
+        amount: 0,
+      });
+    }
+  }, [showCustomItemModal]);
 
   // Effect to listen for Shift key press and toggle mode
   useEffect(() => {
@@ -362,55 +394,55 @@ const NewBillContainer = ({ userData }) => {
       </div>
 
       <div className="search-bar" ref={searchInputRef} tabIndex="0">
-  <input
-    type="text"
-    placeholder="Search by item code"
-    value={searchTerm}
-    onChange={(e) => setSearchTerm(e.target.value)}
-    onFocus={() => {
-      setIsBarcodeMode(false);  // Disable barcode mode on focus
-      setDropdownOpen(true);    // Open the dropdown on focus
-
-    }}
-    ref={searchInputRef} 
-  />
-  {dropdownOpen && (
-    <div className="dropdown" ref={dropdownRef}>
-      <table>
-        <thead>
-          <tr>
-            <th>Item Code</th>
-            <th>Item Name</th>
-            <th>Category</th>
-            <th>Type</th>
-            <th>Color</th>
-            <th>Size</th>
-            <th>Price</th>
-          </tr>
-        </thead>
-        <tbody>
-          {searchResults.map((item, index) => (
-            <tr
-              key={item.id}
-              onClick={() => addItemToBill(item)}
-              onKeyDown={(e) => handleKeyDown(e, item)}
-              tabIndex="0"
-            >
-              <td>{item.itemCode}</td>
-              <td>{item.itemName}</td>
-              <td>{item.itemCategory}</td>
-              <td>{item.itemType}</td>
-              <td>{item.itemColor}</td>
-              <td>{item.itemSize}</td>
-              <td>{item.price}</td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+      <input
+        type="text"
+        placeholder="Search by item code"
+        value={searchTerm}
+        onChange={(e) => setSearchTerm(e.target.value)}
+        onFocus={() => {
+          setDropdownOpen(true);
+        }}
+        onKeyDown={handleArrowNavigation}
+      />
+      {dropdownOpen && (
+        <div className="dropdown" ref={dropdownRef}>
+          <table>
+            <thead>
+              <tr>
+                <th>Item Code</th>
+                <th>Item Name</th>
+                <th>Category</th>
+                <th>Type</th>
+                <th>Color</th>
+                <th>Size</th>
+                <th>Price</th>
+              </tr>
+            </thead>
+            <tbody>
+              {searchResults.map((item, index) => (
+                <tr
+                  key={item.id}
+                  onClick={() => addItemToBill(item)}
+                  onKeyDown={(e) => handleKeyDown(e, item)}
+                  tabIndex="0"
+                  style={{
+                    backgroundColor: index === selectedIndex ? 'lightblue' : 'transparent'
+                  }}
+                >
+                  <td>{item.itemCode}</td>
+                  <td>{item.itemName}</td>
+                  <td>{item.itemCategory}</td>
+                  <td>{item.itemType}</td>
+                  <td>{item.itemColor}</td>
+                  <td>{item.itemSize}</td>
+                  <td>{item.price}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
     </div>
-  )}
-</div>
-
     </div>
 
 
@@ -487,10 +519,12 @@ const NewBillContainer = ({ userData }) => {
                 </tr>
               ))}
 
-              <tr>  <button onClick={() => setShowCustomItemModal(true)}>Add Custom Item</button></tr>
             </tbody>
           </table>
+          
         </div>
+        
+        <button onClick={() => setShowCustomItemModal(true)}>Custom Item</button>
       </div>
 
       {/* Summary */}
@@ -512,6 +546,7 @@ const NewBillContainer = ({ userData }) => {
       </div>
       <div className="submit-button">
         <button onClick={handleSubmit}>Submit</button>
+        
       </div>
       <Modal show={showPdfModal} onHide={handleClosePdfModal} size="lg">
         <Modal.Header closeButton>
