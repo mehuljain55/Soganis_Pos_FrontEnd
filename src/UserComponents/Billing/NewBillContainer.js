@@ -296,25 +296,33 @@ const NewBillContainer = ({ userData }) => {
     setShowCustomItemModal(false);
   };
   
-// Function to toggle between barcode and search mode
-const toggleBarcodeMode = () => {
-  setIsBarcodeMode((prev) => !prev);
-  setSearchTerm('');
-  setDropdownOpen(false);
-  setBarcode('');
-
-  if (!isBarcodeMode) {
-    // If switching to barcode mode, focus on barcode input
-    setTimeout(() => {
-      barcodeInputRef.current.focus();
-    }, 100);
-  } else {
-    // If switching to manual mode, focus on search input
-    setTimeout(() => {
-      searchInputRef.current.focus();
-    }, 100);
-  }
-};
+  const toggleBarcodeMode = () => {
+    setIsBarcodeMode((prev) => !prev);
+    setSearchTerm('');
+    setDropdownOpen(false);
+    setBarcode('');
+  
+    if (!isBarcodeMode) {
+      // If switching to barcode mode, focus on barcode input
+      setTimeout(() => {
+        barcodeInputRef.current.focus();
+        barcodeInputRef.current.dispatchEvent(new MouseEvent('mousedown', { bubbles: true }));
+        barcodeInputRef.current.dispatchEvent(new MouseEvent('mouseup', { bubbles: true }));
+        barcodeInputRef.current.click();
+      }, 100);
+    } else {
+      // If switching to manual mode, focus on search input
+      requestAnimationFrame(() => {
+        searchInputRef.current.focus();
+        searchInputRef.current.dispatchEvent(new MouseEvent('mousedown', { bubbles: true }));
+        searchInputRef.current.dispatchEvent(new MouseEvent('mouseup', { bubbles: true }));
+        searchInputRef.current.click();
+      });
+    }
+  };
+  
+  
+  
 
 // Effect to listen for Shift key press
 useEffect(() => {
