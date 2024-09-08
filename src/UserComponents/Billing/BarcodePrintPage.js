@@ -7,16 +7,6 @@ const BarcodePrintPage = () => {
 
   const maxImages = 40;
 
-  const handleImageUpload = (event) => {
-    const files = Array.from(event.target.files);
-    if (images.length + files.length <= maxImages) {
-      const newImages = files.map((file) => URL.createObjectURL(file));
-      setImages((prevImages) => [...prevImages, ...newImages]);
-    } else {
-      alert(`You can only upload up to ${maxImages} images to fit on an A4 sheet.`);
-    }
-  };
-
   const handleGenerateBarcode = async () => {
     if (!barcode) return;
     try {
@@ -54,6 +44,31 @@ const BarcodePrintPage = () => {
     };
   }, []);
 
+  const renderGrid = () => {
+    const grid = [];
+    for (let i = 0; i < maxImages; i++) {
+      grid.push(
+        <div key={i} style={styles.imageWrapper} className="imageWrapper">
+          {images[i] ? (
+            <>
+              <img src={images[i]} alt={`Barcode ${i + 1}`} style={styles.image} />
+              <button
+                style={styles.deleteButton}
+                className="no-print"
+                onClick={() => handleDeleteImage(i)}
+              >
+                &times;
+              </button>
+            </>
+          ) : (
+            <div style={styles.placeholder} className="no-print">Empty Slot {i + 1}</div> // Placeholder for empty slots (hidden on print)
+          )}
+        </div>
+      );
+    }
+    return grid;
+  };
+
   return (
     <div style={styles.container}>
       <div className="no-print" style={styles.header}>
@@ -67,18 +82,7 @@ const BarcodePrintPage = () => {
         <button onClick={handlePrint}>Print</button>
       </div>
       <div id="printableArea" style={styles.page}>
-        {images.map((image, index) => (
-          <div key={index} style={styles.imageWrapper}>
-            <img src={image} alt={`Barcode ${index + 1}`} style={styles.image} />
-            <button 
-              style={styles.deleteButton} 
-              className="no-print" 
-              onClick={() => handleDeleteImage(index)}
-            >
-              &times;
-            </button>
-          </div>
-        ))}
+        {renderGrid()}
       </div>
     </div>
   );
@@ -95,13 +99,13 @@ const styles = {
     marginBottom: '20px',
   },
   page: {
-    width: '794px',  // A4 width in pixels at 96 DPI
+    width: '794px', // A4 width in pixels at 96 DPI
     height: '1123px', // A4 height in pixels at 96 DPI
     display: 'grid',
     gridTemplateColumns: 'repeat(4, 1fr)', // 4 columns
-    gridTemplateRows: 'repeat(10, 1fr)',   // 10 rows
-    rowGap: '0',  // Remove row gap
-    columnGap: '0',  // Remove column gap
+    gridTemplateRows: 'repeat(10, 1fr)', // 10 rows
+    rowGap: '0', // Remove row gap
+    columnGap: '0', // Remove column gap
     boxSizing: 'border-box',
   },
   imageWrapper: {
@@ -112,11 +116,16 @@ const styles = {
     justifyContent: 'center',
     alignItems: 'center',
     margin: 0,
+    border: '1px solid lightgray', // Show grid lines on UI
   },
   image: {
     maxWidth: '100%',
     maxHeight: '100%',
     display: 'block',
+  },
+  placeholder: {
+    fontSize: '12px',
+    color: 'gray',
   },
   deleteButton: {
     position: 'absolute',
@@ -160,7 +169,7 @@ const printStyles = `
   }
 
   .imageWrapper {
-    box-shadow: inset 0 -1px 0 0 black, inset -1px 0 0 0 black; /* Grid lines for print */
+    border: none !important; /* Hide grid lines during print */
   }
 
   * {
