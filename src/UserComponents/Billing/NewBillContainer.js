@@ -4,6 +4,7 @@ import './NewBillContainer.css';
 import { API_BASE_URL } from '../Config.js';
 import Modal from 'react-bootstrap/Modal';
 import Button from 'react-bootstrap/Button';
+import BillPopup from './BillPopup'; // Import the popup component
 
 
 const NewBillContainer = ({ userData }) => {
@@ -16,7 +17,8 @@ const NewBillContainer = ({ userData }) => {
   const [paymentMode, setPaymentMode] = useState('Cash');
   const [schoolName, setSchoolName] = useState('');
   const [selectedIndex, setSelectedIndex] = useState(-1);
- 
+  const [shiftPressTime, setShiftPressTime] = useState(null); 
+    
   
   const [isBarcodeMode, setIsBarcodeMode] = useState(false);
   const [barcode, setBarcode] = useState('');
@@ -28,6 +30,10 @@ const NewBillContainer = ({ userData }) => {
   const [pdfData, setPdfData] = useState(null);
   const pdfModalRef = useRef(null);
   const [showCustomItemModal, setShowCustomItemModal] = useState(false);
+  const inputRefs = useRef([]);
+  const [isTableFocused, setIsTableFocused] = useState(false); 
+  const [showPopup, setShowPopup] = useState(false);
+
   const [customItem, setCustomItem] = useState({
     itemBarcodeID: 'SG9999999',
     itemType: '',
@@ -126,6 +132,47 @@ const NewBillContainer = ({ userData }) => {
     }
   };
 
+  const handlePopupConfirm = () => {
+    setShowPopup(false);
+    handleSubmit(); // Call handleSubmit when confirmed
+  };
+
+  const handlePopupCancel = () => {
+    setShowPopup(false); // Close the popup without submitting
+  };
+
+  const handleItemTableKeyDown = (e, rowItemTableIndex, colItemTableIndex) => {
+    if (!isTableFocused) return; // Only handle arrow keys when table is focused
+
+    switch (e.key) {
+      case 'ArrowUp':
+        e.preventDefault(); // Prevent quantity field from changing on ArrowUp
+        if (rowItemTableIndex > 0 && inputRefs.current[rowItemTableIndex - 1]?.[colItemTableIndex]) {
+          inputRefs.current[rowItemTableIndex - 1][colItemTableIndex].focus();
+        }
+        break;
+      case 'ArrowDown':
+        e.preventDefault(); // Prevent quantity field from changing on ArrowDown
+        if (rowItemTableIndex < selectedItems.length - 1 && inputRefs.current[rowItemTableIndex + 1]?.[colItemTableIndex]) {
+          inputRefs.current[rowItemTableIndex + 1][colItemTableIndex].focus();
+        }
+        break;
+      case 'ArrowLeft':
+        if (colItemTableIndex > 0 && inputRefs.current[rowItemTableIndex]?.[colItemTableIndex - 1]) {
+          inputRefs.current[rowItemTableIndex][colItemTableIndex - 1].focus();
+        }
+        break;
+      case 'ArrowRight':
+        if (colItemTableIndex < inputRefs.current[rowItemTableIndex]?.length - 1 && inputRefs.current[rowItemTableIndex]?.[colItemTableIndex + 1]) {
+          inputRefs.current[rowItemTableIndex][colItemTableIndex + 1].focus();
+        }
+        break;
+      default:
+        break;
+    }
+  };
+
+
 
 
   const handleClickOutside = (event) => {
@@ -195,6 +242,21 @@ const NewBillContainer = ({ userData }) => {
     setSelectedItems(updatedItems);
   };
 
+  useEffect(() => {
+    const handleKeyDown = (event) => {
+      if (event.ctrlKey && event.key === 's') {
+        event.preventDefault(); // Prevent the browser's default Save action
+        setShowPopup(true); // Show the custom popup
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  }, []);
+
 
 
   
@@ -227,6 +289,13 @@ const NewBillContainer = ({ userData }) => {
   };
 
   const handleSubmit = async () => {
+
+    if (selectedItems.length === 0) {
+      alert("The item list cannot be empty. Please add at least one item.")
+      return; // Prevent API call
+    }
+
+
     const billData = {
       userId: userData.userId,
       customerName: customerName,
@@ -337,6 +406,24 @@ const NewBillContainer = ({ userData }) => {
       return newMode;
     });
   };
+
+  const handleArrowKeyCustomerDetail = (e, fieldName) => {
+    const fields = ['customerName', 'customerMobileNo', 'schoolName'];
+    const currentIndex = fields.indexOf(fieldName);
+  
+    if (e.key === 'ArrowLeft') {
+      // Move to the previous field if it exists
+      if (currentIndex > 0) {
+        document.querySelector(`[name=${fields[currentIndex - 1]}]`).focus();
+      }
+    } else if (e.key === 'ArrowRight') {
+      // Move to the next field if it exists
+      if (currentIndex < fields.length - 1) {
+        document.querySelector(`[name=${fields[currentIndex + 1]}]`).focus();
+      }
+    }
+  };
+  
   useEffect(() => {
     if (showCustomItemModal) {
       setCustomItem({
@@ -356,7 +443,15 @@ const NewBillContainer = ({ userData }) => {
   useEffect(() => {
     const handleKeyDown = (event) => {
       if (event.key === 'Shift') {
-        toggleBarcodeMode();
+        const currentTime = new Date().getTime(); // Get current time
+
+        // Check if Shift was pressed twice within 500ms (or adjust as needed)
+        if (shiftPressTime && currentTime - shiftPressTime < 500) {
+          toggleBarcodeMode(); // Change mode if Shift is pressed twice quickly
+          setShiftPressTime(null); // Reset the time
+        } else {
+          setShiftPressTime(currentTime); // Store the time of the first Shift press
+        }
       }
     };
 
@@ -365,7 +460,8 @@ const NewBillContainer = ({ userData }) => {
     return () => {
       window.removeEventListener('keydown', handleKeyDown);
     };
-  }, []);
+  }, [shiftPressTime]); // Track shiftPressTime changes
+
 
 
   return (
@@ -375,24 +471,26 @@ const NewBillContainer = ({ userData }) => {
           {isBarcodeMode ? 'Barcode Mode' : 'Search Mode'}
         </button>
       </div>
-      <h2>Billing</h2>
+
+      <div className="billing-container">
+  <div className="billing-head">
+    <h2>Billing</h2>
+  </div>
+  <div className="barcode-input">
+      <input
+        type="text"
+        placeholder="Scan or enter barcode and press Enter"
+        value={barcode}
+        onChange={(e) => setBarcode(e.target.value)}
+        ref={barcodeInputRef}
+        onFocus={() => setIsBarcodeMode(true)} // Focus switches to barcode mode
+      />
+   </div>
+</div>
 
       <div className="search-bar-container">
       {/* Barcode input */}
-      <div className="barcode-input">
-        <label>
-          Item Code (Barcode):
-          <input
-            type="text"
-            placeholder="Scan or enter barcode and press Enter"
-            value={barcode}
-            onChange={(e) => setBarcode(e.target.value)}
-            ref={barcodeInputRef}
-            onFocus={() => setIsBarcodeMode(true)}  // Focus switches to barcode mode
-          />
-        </label>
-      </div>
-
+      
       <div className="search-bar" ref={searchInputRef} tabIndex="0">
       <input
         type="text"
@@ -411,7 +509,6 @@ const NewBillContainer = ({ userData }) => {
               <tr>
                 <th>Item Code</th>
                 <th>Item Name</th>
-                <th>Category</th>
                 <th>Type</th>
                 <th>Color</th>
                 <th>Size</th>
@@ -431,7 +528,6 @@ const NewBillContainer = ({ userData }) => {
                 >
                   <td>{item.itemCode}</td>
                   <td>{item.itemName}</td>
-                  <td>{item.itemCategory}</td>
                   <td>{item.itemType}</td>
                   <td>{item.itemColor}</td>
                   <td>{item.itemSize}</td>
@@ -448,85 +544,106 @@ const NewBillContainer = ({ userData }) => {
 
       {/* Customer Details */}
       <div className="customer-details">
-        <h5>Customer Details</h5>
-        <div className="customer-details-box">
-          <label>
-            Customer Name:
-            <input
-              type="text"
-              value={customerName}
-              onChange={handleNameChange}
-              required
-            />
-          </label>
-          <label>
-            Customer Mobile No:
-            <input
-              type="text"
-              value={customerMobileNo}
-              onChange={handleMobileNoChange}
-              required
-            />
-          </label>
-          <label>
-            School Name:
-            <input
-              type="text"
-              value={schoolName}
-              onChange={handleSchoolNameChange}
-              required
-            />
-          </label>
-        </div>
-      </div>
+  <h5>Customer Details</h5>
+  <div className="customer-details-box">
+    <label>
+      Customer Name:
+      <input
+        type="text"
+        name="customerName"
+        value={customerName}
+        onChange={handleNameChange}
+        onKeyDown={(e) => handleArrowKeyCustomerDetail(e, 'customerName')}
+        required
+      />
+    </label>
+    <label>
+      Customer Mobile No:
+      <input
+        type="text"
+        name="customerMobileNo"
+        value={customerMobileNo}
+        onChange={handleMobileNoChange}
+        onKeyDown={(e) => handleArrowKeyCustomerDetail(e, 'customerMobileNo')}
+        required
+      />
+    </label>
+    <label>
+      School Name:
+      <input
+        type="text"
+        name="schoolName"
+        value={schoolName}
+        onChange={handleSchoolNameChange}
+        onKeyDown={(e) => handleArrowKeyCustomerDetail(e, 'schoolName')}
+        required
+      />
+    </label>
+  </div>
+</div>
 
       {/* Billing Items Table */}
-      <div className="items-table-container">
-        <div className="items-table">
-          <table>
-            <thead>
-              <tr>
-                <th>Item Code</th>
-                <th>Type</th>
-                <th>Color</th>
-                <th>Size</th>
-                <th>Quantity</th>
-                <th>Amount</th>
-                <th>Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              {selectedItems.map((item, index) => (
-                <tr key={index}>
-                  <td>{item.itemCode}</td>
-                  <td>{item.itemType}</td>
-                  <td>{item.itemColor}</td>
-                  <td>{item.itemSize}</td>
-                  <td>
-                    <input
-                      type="number"
-                      value={item.quantity}
-                      onChange={(e) =>
-                        handleQuantityChange(index, parseInt(e.target.value, 10))
+      <div
+      className="items-table-container"
+      onFocus={() => setIsTableFocused(true)}   // Set table focus
+      onBlur={() => setIsTableFocused(false)}  // Remove focus when out of table
+      tabIndex={0}  // Make div focusable
+    >
+      <div className="items-table">
+        <table>
+          <thead>
+            <tr>
+              <th>Item Code</th>
+              <th>Item Name</th>
+              <th>Color</th>
+              <th>Size</th>
+              <th>Price</th>
+             
+              <th>Quantity</th>
+              <th>Amount</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {selectedItems.map((item, rowItemTableIndex) => (
+              <tr key={rowItemTableIndex}>
+                <td>{item.itemCode}</td>
+                <td>{item.itemName}</td>
+                <td>{item.itemColor}</td>
+                <td>{item.itemSize}</td>
+                <td>{item.price}</td>
+                <td>
+                  <input
+                    type="number"
+                    value={item.quantity}
+                    ref={(el) => {
+                      if (!inputRefs.current[rowItemTableIndex]) inputRefs.current[rowItemTableIndex] = [];
+                      inputRefs.current[rowItemTableIndex][4] = el; // 4 corresponds to the "Quantity" column
+                    }}
+                    onChange={(e) =>
+                      handleQuantityChange(rowItemTableIndex, parseInt(e.target.value, 10))
+                    }
+                    onKeyDown={(e) => {
+                      handleItemTableKeyDown(e, rowItemTableIndex, 4); // Handle arrow keys for table navigation
+                      if (e.key === 'ArrowUp' || e.key === 'ArrowDown') {
+                        e.preventDefault(); // Prevent default behavior of incrementing/decrementing quantity
                       }
-                      min="1"
-                    />
-                  </td>
-                  <td>{item.amount.toFixed(2)}</td>
-                  <td>
-                    <button onClick={() => removeItemFromBill(index)}>Remove</button>
-                  </td>
-                </tr>
-              ))}
-
-            </tbody>
-          </table>
-          
-        </div>
-        
-        <button onClick={() => setShowCustomItemModal(true)}>Custom Item</button>
+                    }}
+                    min="1"
+                    
+                  />
+                </td>
+                <td>{item.amount.toFixed(2)}</td>
+                <td>
+                  <button onClick={() => removeItemFromBill(rowItemTableIndex)}>Remove</button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
       </div>
-
+      <button onClick={() => setShowCustomItemModal(true)}>Custom Item</button>
+    </div>
       {/* Summary */}
       <div className="summary">
         <h3>Total Amount: {calculateTotalAmount().toFixed(2)} Rs</h3>
@@ -548,6 +665,14 @@ const NewBillContainer = ({ userData }) => {
         <button onClick={handleSubmit}>Submit</button>
         
       </div>
+
+      {showPopup && (
+        <BillPopup
+          onConfirm={handlePopupConfirm}
+          onCancel={handlePopupCancel}
+        />
+      )}
+
       <Modal show={showPdfModal} onHide={handleClosePdfModal} size="lg">
         <Modal.Header closeButton>
           <Modal.Title>Bill PDF</Modal.Title>
