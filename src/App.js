@@ -10,6 +10,7 @@ import PurchaseOrderBook from './UserComponents/OrderBook/PurchaseOrderBook';
 import BarcodePrintPage from './UserComponents/Billing/BarcodePrintPage';
 
 import './App.css'; // Custom CSS for styling
+import Bill from './UserComponents/Billing/Bill';
 
 function App() {
   const [userData, setUserData] = useState(null);
@@ -54,6 +55,7 @@ function App() {
             <Route path="/view_customer_order" element={<OrderView />} />
             <Route path="/purchase-order-book" element={<PurchaseOrderBook />} />
             <Route path="/barcode" element={<BarcodePrintPage />} />
+            <Route path="/bill" element={<Bill />} />
         
           </Routes>
         )}

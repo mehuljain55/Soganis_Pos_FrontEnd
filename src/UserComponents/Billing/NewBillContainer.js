@@ -4,6 +4,7 @@ import './NewBillContainer.css';
 import { API_BASE_URL } from '../Config.js';
 import Modal from 'react-bootstrap/Modal';
 import Button from 'react-bootstrap/Button';
+import BillPopup from './BillPopup'; // Import the popup component
 
 
 const NewBillContainer = ({ userData }) => {
@@ -15,6 +16,9 @@ const NewBillContainer = ({ userData }) => {
   const [customerMobileNo, setCustomerMobileNo] = useState('');
   const [paymentMode, setPaymentMode] = useState('Cash');
   const [schoolName, setSchoolName] = useState('');
+  const [selectedIndex, setSelectedIndex] = useState(-1);
+  const [shiftPressTime, setShiftPressTime] = useState(null); 
+    
   
   const [isBarcodeMode, setIsBarcodeMode] = useState(false);
   const [barcode, setBarcode] = useState('');
@@ -26,6 +30,10 @@ const NewBillContainer = ({ userData }) => {
   const [pdfData, setPdfData] = useState(null);
   const pdfModalRef = useRef(null);
   const [showCustomItemModal, setShowCustomItemModal] = useState(false);
+  const inputRefs = useRef([]);
+  const [isTableFocused, setIsTableFocused] = useState(false); 
+  const [showPopup, setShowPopup] = useState(false);
+
   const [customItem, setCustomItem] = useState({
     itemBarcodeID: 'SG9999999',
     itemType: '',
@@ -38,19 +46,17 @@ const NewBillContainer = ({ userData }) => {
   });
 
 
+  // Fetch items based on search term (for manual search)
   useEffect(() => {
     if (!isBarcodeMode && searchTerm.trim() !== '') {
       const fetchItems = async () => {
         try {
           const response = await axios.get(`${API_BASE_URL}/getAllItems?searchTerm=${searchTerm}`);
-          if (response.data) {
-            setSearchResults(response.data);
-          } else {
-            setSearchResults([]); // Set an empty array if data is null or undefined
-          }
+          setSearchResults(response.data || []); // Set search results or empty array
+          setSelectedIndex(-1);
         } catch (error) {
           console.error('Error fetching items:', error);
-          setSearchResults([]); // Optionally handle errors by setting an empty array
+          setSearchResults([]);
         }
       };
       fetchItems();
@@ -70,7 +76,7 @@ const NewBillContainer = ({ userData }) => {
 
   
 
-  // Fetch item based on barcode (for barcode scanning)
+  
   useEffect(() => {
     if (isBarcodeMode && barcode.trim() !== '') {
       const fetchItemByBarcode = async () => {
@@ -86,7 +92,7 @@ const NewBillContainer = ({ userData }) => {
         } catch (error) {
           console.error('Error fetching item by barcode:', error);
         } finally {
-          setBarcode('');
+          setBarcode(''); // Clear barcode field
           barcodeInputRef.current.focus();
         }
       };
@@ -94,11 +100,80 @@ const NewBillContainer = ({ userData }) => {
     }
   }, [barcode, isBarcodeMode]);
 
+  useEffect(() => {
+    if (dropdownRef.current && selectedIndex >= 0) {
+      const dropdown = dropdownRef.current;
+      const items = dropdown.querySelectorAll('tr');
+      if (items.length > 0) {
+        const item = items[selectedIndex];
+        const dropdownRect = dropdown.getBoundingClientRect();
+        const itemRect = item.getBoundingClientRect();
+        const dropdownTop = dropdownRect.top;
+        const dropdownBottom = dropdownRect.bottom;
+        const itemTop = itemRect.top - dropdownTop;
+        const itemBottom = itemRect.bottom - dropdownTop;
+        const visibleHeight = 150;
+        
+        // Scroll the dropdown so the selected item is in view
+        if (itemTop < 0) {
+          // Item is above the visible area
+          dropdown.scrollTop += itemTop - 15; // Adjust scrolling position to show the item
+        } else if (itemBottom > visibleHeight) {
+          // Item is below the visible area
+          dropdown.scrollTop += itemBottom - visibleHeight + 15; // Adjust scrolling position to show the item
+        }
+      }
+    }
+  }, [selectedIndex]);
+   
   const handleKeyDown = (event, item) => {
     if (event.key === 'Enter') {
       addItemToBill(item);
     }
   };
+
+  const handlePopupConfirm = () => {
+    setShowPopup(false);
+    handleSubmit(); // Call handleSubmit when confirmed
+  };
+
+  const handlePopupCancel = () => {
+    setShowPopup(false); // Close the popup without submitting
+  };
+
+  const handleItemTableKeyDown = (e, rowItemTableIndex, colItemTableIndex) => {
+    if (!isTableFocused) return; // Only handle arrow keys when table is focused
+
+    switch (e.key) {
+      case 'ArrowUp':
+        e.preventDefault(); // Prevent quantity field from changing on ArrowUp
+        if (rowItemTableIndex > 0 && inputRefs.current[rowItemTableIndex - 1]?.[colItemTableIndex]) {
+          inputRefs.current[rowItemTableIndex - 1][colItemTableIndex].focus();
+        }
+        break;
+      case 'ArrowDown':
+        e.preventDefault(); // Prevent quantity field from changing on ArrowDown
+        if (rowItemTableIndex < selectedItems.length - 1 && inputRefs.current[rowItemTableIndex + 1]?.[colItemTableIndex]) {
+          inputRefs.current[rowItemTableIndex + 1][colItemTableIndex].focus();
+        }
+        break;
+      case 'ArrowLeft':
+        if (colItemTableIndex > 0 && inputRefs.current[rowItemTableIndex]?.[colItemTableIndex - 1]) {
+          inputRefs.current[rowItemTableIndex][colItemTableIndex - 1].focus();
+        }
+        break;
+      case 'ArrowRight':
+        if (colItemTableIndex < inputRefs.current[rowItemTableIndex]?.length - 1 && inputRefs.current[rowItemTableIndex]?.[colItemTableIndex + 1]) {
+          inputRefs.current[rowItemTableIndex][colItemTableIndex + 1].focus();
+        }
+        break;
+      default:
+        break;
+    }
+  };
+
+
+
 
   const handleClickOutside = (event) => {
     if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
@@ -167,28 +242,24 @@ const NewBillContainer = ({ userData }) => {
     setSelectedItems(updatedItems);
   };
 
-  const handleDropdownKeyEvents = (event) => {
-    // Check if dropdownRef.current is not null
-    if (dropdownRef.current) {
-      const items = dropdownRef.current.querySelectorAll('tr');
-      const currentIndex = Array.from(items).findIndex((item) => item === document.activeElement);
-  
-      if (event.key === 'ArrowDown' && currentIndex < items.length - 1) {
-        event.preventDefault();
-        items[currentIndex + 1].focus();
-      } else if (event.key === 'ArrowUp' && currentIndex > 0) {
-        event.preventDefault();
-        items[currentIndex - 1].focus();
-      } else if (event.key === 'Escape') {
-        setDropdownOpen(false);
-        searchInputRef.current.focus();
-      } else if (event.key === 'Enter' && currentIndex >= 0) {
-        addItemToBill(searchResults[currentIndex]);
+  useEffect(() => {
+    const handleKeyDown = (event) => {
+      if (event.ctrlKey && event.key === 's') {
+        event.preventDefault(); // Prevent the browser's default Save action
+        setShowPopup(true); // Show the custom popup
       }
-    } else {
-      console.warn('Dropdown reference is null.');
-    }
-  };
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  }, []);
+
+
+
+  
   
   useEffect(() => {
     if (dropdownOpen && searchResults.length > 0 && dropdownRef.current) {
@@ -204,7 +275,27 @@ const NewBillContainer = ({ userData }) => {
     return total;
   };
 
+  const handleArrowNavigation = (e) => {
+    if (e.key === 'ArrowDown') {
+      setSelectedIndex((prevIndex) => Math.min(prevIndex + 1, searchResults.length - 1));
+      e.preventDefault();
+    } else if (e.key === 'ArrowUp') {
+      setSelectedIndex((prevIndex) => Math.max(prevIndex - 1, 0));
+      e.preventDefault();
+    } else if (e.key === 'Enter' && selectedIndex >= 0) {
+      addItemToBill(searchResults[selectedIndex]);
+      e.preventDefault();
+    }
+  };
+
   const handleSubmit = async () => {
+
+    if (selectedItems.length === 0) {
+      alert("The item list cannot be empty. Please add at least one item.")
+      return; // Prevent API call
+    }
+
+
     const billData = {
       userId: userData.userId,
       customerName: customerName,
@@ -233,7 +324,6 @@ const NewBillContainer = ({ userData }) => {
       setShowPdfModal(true);
 
       setSelectedItems([]);
-      // Clear customer details
       setCustomerName('');
       setCustomerMobileNo('');
       setPaymentMode('Cash');
@@ -272,9 +362,14 @@ const NewBillContainer = ({ userData }) => {
     setPaymentMode(e.target.value);
   };
 
+  useEffect(() => {
+    
+    if (searchInputRef.current) {
+      searchInputRef.current.focus();  // Automatically focus the input
+    }
+  }, []);
+
   const handleAddCustomItem = () => {
-    // Calculate amount
-    const amount = customItem.sellPrice * customItem.quantity;
   
     // Create the new item object
     const newItem = {
@@ -295,42 +390,78 @@ const NewBillContainer = ({ userData }) => {
     // Close the modal
     setShowCustomItemModal(false);
   };
+  const toggleBarcodeMode = () => {
+    setIsBarcodeMode((prevMode) => {
+      const newMode = !prevMode;
+
+      // Use requestAnimationFrame to ensure the DOM updates before focusing
+      if (newMode) {
+        // Barcode mode - focus on the barcode input
+        setTimeout(() => barcodeInputRef.current.focus(), 0);
+      } else {
+        // Search mode - focus on the search input
+        setTimeout(() => searchInputRef.current.focus(), 0);
+      }
+
+      return newMode;
+    });
+  };
+
+  const handleArrowKeyCustomerDetail = (e, fieldName) => {
+    const fields = ['customerName', 'customerMobileNo', 'schoolName'];
+    const currentIndex = fields.indexOf(fieldName);
   
-// Function to toggle between barcode and search mode
-const toggleBarcodeMode = () => {
-  setIsBarcodeMode((prev) => !prev);
-  setSearchTerm('');
-  setDropdownOpen(false);
-  setBarcode('');
-
-  if (!isBarcodeMode) {
-    // If switching to barcode mode, focus on barcode input
-    setTimeout(() => {
-      barcodeInputRef.current.focus();
-    }, 100);
-  } else {
-    // If switching to manual mode, focus on search input
-    setTimeout(() => {
-      searchInputRef.current.focus();
-    }, 100);
-  }
-};
-
-// Effect to listen for Shift key press
-useEffect(() => {
-  const handleKeyDown = (event) => {
-    if (event.key === 'Shift') {
-      toggleBarcodeMode();
+    if (e.key === 'ArrowLeft') {
+      // Move to the previous field if it exists
+      if (currentIndex > 0) {
+        document.querySelector(`[name=${fields[currentIndex - 1]}]`).focus();
+      }
+    } else if (e.key === 'ArrowRight') {
+      // Move to the next field if it exists
+      if (currentIndex < fields.length - 1) {
+        document.querySelector(`[name=${fields[currentIndex + 1]}]`).focus();
+      }
     }
   };
+  
+  useEffect(() => {
+    if (showCustomItemModal) {
+      setCustomItem({
+        itemBarcodeID: 'SG9999999',
+        itemType: '',
+        itemColor: '',
+        itemSize: '',
+        itemCategory: '',
+        sellPrice: 0,
+        quantity: 1,
+        amount: 0,
+      });
+    }
+  }, [showCustomItemModal]);
 
-  window.addEventListener('keydown', handleKeyDown);
+  // Effect to listen for Shift key press and toggle mode
+  useEffect(() => {
+    const handleKeyDown = (event) => {
+      if (event.key === 'Shift') {
+        const currentTime = new Date().getTime(); // Get current time
 
-  // Cleanup event listener on component unmount
-  return () => {
-    window.removeEventListener('keydown', handleKeyDown);
-  };
-}, [isBarcodeMode]);
+        // Check if Shift was pressed twice within 500ms (or adjust as needed)
+        if (shiftPressTime && currentTime - shiftPressTime < 500) {
+          toggleBarcodeMode(); // Change mode if Shift is pressed twice quickly
+          setShiftPressTime(null); // Reset the time
+        } else {
+          setShiftPressTime(currentTime); // Store the time of the first Shift press
+        }
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [shiftPressTime]); // Track shiftPressTime changes
+
 
 
   return (
@@ -340,159 +471,179 @@ useEffect(() => {
           {isBarcodeMode ? 'Barcode Mode' : 'Search Mode'}
         </button>
       </div>
-      <h2>Billing</h2>
 
- 
+      <div className="billing-container">
+  <div className="billing-head">
+    <h2>Billing</h2>
+  </div>
+  <div className="barcode-input">
+      <input
+        type="text"
+        placeholder="Scan or enter barcode and press Enter"
+        value={barcode}
+        onChange={(e) => setBarcode(e.target.value)}
+        ref={barcodeInputRef}
+        onFocus={() => setIsBarcodeMode(true)} // Focus switches to barcode mode
+      />
+   </div>
+</div>
 
-      {/* Search Bar or Barcode Input */}
       <div className="search-bar-container">
-        {isBarcodeMode ? (
-          <div className="barcode-input" ref={barcodeInputRef}>
-            <label>
-              Item Code (Barcode):
-              <input
-                type="text"
-                placeholder="Scan or enter barcode and press Enter"
-                value={barcode}
-                onChange={(e) => setBarcode(e.target.value)}
-                onKeyDown={(e) => {
-                  if (e.key === 'Enter') {
-                    // The useEffect will handle fetching the item
-                    e.preventDefault();
-                  }
-                }}
-                autoFocus
-              />
-            </label>
-          </div>
-        ) : (
-          <div className="search-bar" ref={searchInputRef} tabIndex="0">
-            <input
-              type="text"
-              placeholder="Search by item code"
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              onFocus={() => setDropdownOpen(true)}
-              onKeyDown={handleDropdownKeyEvents}
-            />
-            {dropdownOpen && (
-              <div className="dropdown" ref={dropdownRef}>
-                <table>
-                  <thead>
-                    <tr>
-                      <th>Item Code</th>
-                      <th>Item Name</th>
-                      <th>Category</th>
-                      <th>Type</th>
-                      <th>Color</th>
-                      <th>Size</th>
-                      <th>Price</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {searchResults.map((item, index) => (
-                      <tr
-                        key={item.id}
-                        onClick={() => addItemToBill(item)}
-                        onKeyDown={(e) => handleKeyDown(e, item)}
-                        tabIndex="0"
-                      >
-                        <td>{item.itemCode}</td>
-                        <td>{item.itemName}</td>
-                        <td>{item.itemCategory}</td>
-                        <td>{item.itemType}</td>
-                        <td>{item.itemColor}</td>
-                        <td>{item.itemSize}</td>
-                        <td>{item.price}</td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            )}
-          </div>
-        )}
-      </div>
-
-      {/* Customer Details */}
-      <div className="customer-details">
-        <h5>Customer Details</h5>
-        <div className="customer-details-box">
-          <label>
-            Customer Name:
-            <input
-              type="text"
-              value={customerName}
-              onChange={handleNameChange}
-              required
-            />
-          </label>
-          <label>
-            Customer Mobile No:
-            <input
-              type="text"
-              value={customerMobileNo}
-              onChange={handleMobileNoChange}
-              required
-            />
-          </label>
-          <label>
-            School Name:
-            <input
-              type="text"
-              value={schoolName}
-              onChange={handleSchoolNameChange}
-              required
-            />
-          </label>
-        </div>
-      </div>
-
-      {/* Billing Items Table */}
-      <div className="items-table-container">
-        <div className="items-table">
+      {/* Barcode input */}
+      
+      <div className="search-bar" ref={searchInputRef} tabIndex="0">
+      <input
+        type="text"
+        placeholder="Search by item code"
+        value={searchTerm}
+        onChange={(e) => setSearchTerm(e.target.value)}
+        onFocus={() => {
+          setDropdownOpen(true);
+        }}
+        onKeyDown={handleArrowNavigation}
+      />
+      {dropdownOpen && (
+        <div className="dropdown" ref={dropdownRef}>
           <table>
             <thead>
               <tr>
                 <th>Item Code</th>
+                <th>Item Name</th>
                 <th>Type</th>
                 <th>Color</th>
                 <th>Size</th>
-                <th>Quantity</th>
-                <th>Amount</th>
-                <th>Actions</th>
+                <th>Price</th>
               </tr>
             </thead>
             <tbody>
-              {selectedItems.map((item, index) => (
-                <tr key={index}>
+              {searchResults.map((item, index) => (
+                <tr
+                  key={item.id}
+                  onClick={() => addItemToBill(item)}
+                  onKeyDown={(e) => handleKeyDown(e, item)}
+                  tabIndex="0"
+                  style={{
+                    backgroundColor: index === selectedIndex ? 'lightblue' : 'transparent'
+                  }}
+                >
                   <td>{item.itemCode}</td>
+                  <td>{item.itemName}</td>
                   <td>{item.itemType}</td>
                   <td>{item.itemColor}</td>
                   <td>{item.itemSize}</td>
-                  <td>
-                    <input
-                      type="number"
-                      value={item.quantity}
-                      onChange={(e) =>
-                        handleQuantityChange(index, parseInt(e.target.value, 10))
-                      }
-                      min="1"
-                    />
-                  </td>
-                  <td>{item.amount.toFixed(2)}</td>
-                  <td>
-                    <button onClick={() => removeItemFromBill(index)}>Remove</button>
-                  </td>
+                  <td>{item.price}</td>
                 </tr>
               ))}
-
-              <tr>  <button onClick={() => setShowCustomItemModal(true)}>Add Custom Item</button></tr>
             </tbody>
           </table>
         </div>
-      </div>
+      )}
+    </div>
+    </div>
 
+
+      {/* Customer Details */}
+      <div className="customer-details">
+  <h5>Customer Details</h5>
+  <div className="customer-details-box">
+    <label>
+      Customer Name:
+      <input
+        type="text"
+        name="customerName"
+        value={customerName}
+        onChange={handleNameChange}
+        onKeyDown={(e) => handleArrowKeyCustomerDetail(e, 'customerName')}
+        required
+      />
+    </label>
+    <label>
+      Customer Mobile No:
+      <input
+        type="text"
+        name="customerMobileNo"
+        value={customerMobileNo}
+        onChange={handleMobileNoChange}
+        onKeyDown={(e) => handleArrowKeyCustomerDetail(e, 'customerMobileNo')}
+        required
+      />
+    </label>
+    <label>
+      School Name:
+      <input
+        type="text"
+        name="schoolName"
+        value={schoolName}
+        onChange={handleSchoolNameChange}
+        onKeyDown={(e) => handleArrowKeyCustomerDetail(e, 'schoolName')}
+        required
+      />
+    </label>
+  </div>
+</div>
+
+      {/* Billing Items Table */}
+      <div
+      className="items-table-container"
+      onFocus={() => setIsTableFocused(true)}   // Set table focus
+      onBlur={() => setIsTableFocused(false)}  // Remove focus when out of table
+      tabIndex={0}  // Make div focusable
+    >
+      <div className="items-table">
+        <table>
+          <thead>
+            <tr>
+              <th>Item Code</th>
+              <th>Item Name</th>
+              <th>Color</th>
+              <th>Size</th>
+              <th>Price</th>
+             
+              <th>Quantity</th>
+              <th>Amount</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {selectedItems.map((item, rowItemTableIndex) => (
+              <tr key={rowItemTableIndex}>
+                <td>{item.itemCode}</td>
+                <td>{item.itemName}</td>
+                <td>{item.itemColor}</td>
+                <td>{item.itemSize}</td>
+                <td>{item.price}</td>
+                <td>
+                  <input
+                    type="number"
+                    value={item.quantity}
+                    ref={(el) => {
+                      if (!inputRefs.current[rowItemTableIndex]) inputRefs.current[rowItemTableIndex] = [];
+                      inputRefs.current[rowItemTableIndex][4] = el; // 4 corresponds to the "Quantity" column
+                    }}
+                    onChange={(e) =>
+                      handleQuantityChange(rowItemTableIndex, parseInt(e.target.value, 10))
+                    }
+                    onKeyDown={(e) => {
+                      handleItemTableKeyDown(e, rowItemTableIndex, 4); // Handle arrow keys for table navigation
+                      if (e.key === 'ArrowUp' || e.key === 'ArrowDown') {
+                        e.preventDefault(); // Prevent default behavior of incrementing/decrementing quantity
+                      }
+                    }}
+                    min="1"
+                    
+                  />
+                </td>
+                <td>{item.amount.toFixed(2)}</td>
+                <td>
+                  <button onClick={() => removeItemFromBill(rowItemTableIndex)}>Remove</button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+      <button onClick={() => setShowCustomItemModal(true)}>Custom Item</button>
+    </div>
       {/* Summary */}
       <div className="summary">
         <h3>Total Amount: {calculateTotalAmount().toFixed(2)} Rs</h3>
@@ -512,7 +663,16 @@ useEffect(() => {
       </div>
       <div className="submit-button">
         <button onClick={handleSubmit}>Submit</button>
+        
       </div>
+
+      {showPopup && (
+        <BillPopup
+          onConfirm={handlePopupConfirm}
+          onCancel={handlePopupCancel}
+        />
+      )}
+
       <Modal show={showPdfModal} onHide={handleClosePdfModal} size="lg">
         <Modal.Header closeButton>
           <Modal.Title>Bill PDF</Modal.Title>

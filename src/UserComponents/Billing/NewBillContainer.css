@@ -28,6 +28,7 @@ h2 {
 }
 
 
+/* Dropdown Styles */
 .dropdown {
   position: absolute;
   top: 100%;
@@ -50,6 +51,30 @@ h2 {
   text-align: left;
 }
 
+.dropdown th:nth-child(1), .dropdown td:nth-child(1) {
+  width: 10%; /* Adjust width as needed */
+}
+
+.dropdown th:nth-child(2), .dropdown td:nth-child(2) {
+  width: 25%; /* Adjust width as needed */
+}
+
+.dropdown th:nth-child(3), .dropdown td:nth-child(3) {
+  width: 10%; /* Adjust width as needed */
+}
+
+.dropdown th:nth-child(4), .dropdown td:nth-child(4) {
+  width: 10%; /* Adjust width as needed */
+}
+
+.dropdown th:nth-child(5), .dropdown td:nth-child(5) {
+  width: 5%; /* Adjust width as needed */
+}
+
+.dropdown th:nth-child(6), .dropdown td:nth-child(6) {
+  width: 10%; /* Adjust width as needed */
+}
+
 .dropdown tr {
   cursor: pointer;
 }
@@ -58,7 +83,6 @@ h2 {
   background-color: #f0f0f0;
 }
 
-/* Table container */
 /* Table container */
 .items-table-container {
   width: 100%;
@@ -71,13 +95,13 @@ h2 {
 .items-table {
   width: 100%;
   border-collapse: collapse;
-  table-layout: fixed; /* Ensures columns are fixed-width */
+  table-layout: fixed; /* Ensures the width is fixed */
 }
 
 .items-table thead {
   position: sticky;
   top: 0;
-  z-index: 1; /* Keeps the header on top of scrolling content */
+  z-index: 1;
 }
 
 .items-table th, .items-table td {
@@ -86,25 +110,67 @@ h2 {
   text-align: left;
 }
 
+/* Customize widths of specific columns using nth-child */
+.items-table th:nth-child(1), /* Item Code */
+.items-table td:nth-child(1) {
+  width: 8%; /* Adjust as needed */
+}
+
+.items-table th:nth-child(2), /* Item Name */
+.items-table td:nth-child(2) {
+  width: 20%;
+}
+
+.items-table th:nth-child(3), /* Color */
+.items-table td:nth-child(3) {
+  width: 10%;
+}
+
+.items-table th:nth-child(4), /* Size */
+.items-table td:nth-child(4) {
+  width: 4%;
+}
+
+.items-table th:nth-child(5), /* Price */
+.items-table td:nth-child(5) {
+  width: 5%;
+}
+
+.items-table th:nth-child(6), /* Quantity */
+.items-table td:nth-child(6) {
+  width: 5%;
+}
+
+.items-table th:nth-child(7), /* Amount */
+.items-table td:nth-child(7) {
+  width: 8%;
+}
+
+.items-table th:nth-child(8), /* Actions */
+.items-table td:nth-child(8) {
+  width: 5%;
+}
+
 .items-table th {
   background-color: #707070;
   color: white;
 }
 
 .items-table input {
-  width: 60px;
+  width: 100%; /* Allow input to take full width */
 }
 
 .items-table tr:nth-child(even) {
-  background-color:#cbcbcb;
+  background-color: #cbcbcb;
 }
 
-.items-table button{
+.items-table button {
   padding: 3px;
   border-radius: 10px;
   background-color: red;
-  border:none;
+  border: none;
 }
+
 
 /* Summary section */
 .summary {
@@ -310,4 +376,28 @@ h2 {
     padding: 10px 20px;
     font-size: 1rem;
   }
+}
+
+.billing-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px; /* Adjust padding as needed */
+}
+
+.billing-head {
+  flex: 1;
+  text-align: center;
+  margin-left: 500px;
+}
+
+.barcode-input {
+  flex: 1;
+  display: flex;
+  justify-content: flex-end;
+  height: 50px;
+}
+
+.barcode-input label {
+  margin-left: auto; /* Ensures the input is aligned to the right */
 }
