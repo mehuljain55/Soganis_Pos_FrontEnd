@@ -144,7 +144,7 @@ const styles = {
   },
   page: {
     width: '794px', // A4 width in pixels at 96 DPI
-    height: '1123px', // A4 height in pixels at 96 DPI
+    height: '1100px', // A4 height in pixels at 96 DPI
     display: 'grid',
     gridTemplateColumns: 'repeat(4, 1fr)', // 4 columns
     gridTemplateRows: 'repeat(10, 1fr)', // 10 rows
@@ -165,7 +165,6 @@ const styles = {
   image: {
     maxWidth: '100%',
     maxHeight: '100%',
-    height:'80%',
     display: 'block',
   },
   placeholder: {
