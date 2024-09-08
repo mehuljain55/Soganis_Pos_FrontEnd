@@ -1,22 +1,34 @@
 import React, { useState, useEffect } from 'react';
 import { API_BASE_URL } from '../Config.js';
+import { height } from '@fortawesome/free-solid-svg-icons/fa0';
 
 const BarcodePrintPage = () => {
-  const [images, setImages] = useState([]);
+  const [images, setImages] = useState(Array(40).fill(null)); // Initialize with null values
   const [barcode, setBarcode] = useState('');
+  const [draggedIndex, setDraggedIndex] = useState(null); // Store the index of the dragged image
 
   const maxImages = 40;
 
   const handleGenerateBarcode = async () => {
     if (!barcode) return;
+    
     try {
       const response = await fetch(`${API_BASE_URL}/generate_barcodes?itemCode=${barcode}`);
       const blob = await response.blob();
       const imageUrl = URL.createObjectURL(blob);
-      if (images.length < maxImages) {
-        setImages((prevImages) => [...prevImages, imageUrl]);
+      
+      // Find the first empty slot (index with `null` or `undefined` image)
+      const emptyIndex = images.findIndex((image) => !image);
+
+      if (emptyIndex !== -1) {
+        // Place the new image in the first empty slot
+        setImages((prevImages) => {
+          const newImages = [...prevImages];
+          newImages[emptyIndex] = imageUrl;
+          return newImages;
+        });
       } else {
-        alert(`You can only upload up to ${maxImages} images to fit on an A4 sheet.`);
+        alert(`All ${maxImages} slots are filled.`);
       }
     } catch (error) {
       console.error('Error generating barcode:', error);
@@ -25,15 +37,37 @@ const BarcodePrintPage = () => {
 
   const handleDeleteImage = (index) => {
     const newImages = images.filter((_, i) => i !== index);
-    setImages(newImages);
+    setImages((prevImages) => {
+      const updatedImages = [...prevImages];
+      updatedImages[index] = null; // Reset to null
+      return updatedImages;
+    });
   };
 
   const handlePrint = () => {
     window.print();
   };
 
+  const handleDragStart = (index) => {
+    setDraggedIndex(index);
+  };
+
+  const handleDragOver = (event) => {
+    event.preventDefault();
+  };
+
+  const handleDrop = (index) => {
+    if (draggedIndex !== null) {
+      const updatedImages = [...images];
+      const temp = updatedImages[index];
+      updatedImages[index] = updatedImages[draggedIndex];
+      updatedImages[draggedIndex] = temp;
+      setImages(updatedImages);
+      setDraggedIndex(null); // Reset the dragged index
+    }
+  };
+
   useEffect(() => {
-    // Add print styles to the page
     const styleSheet = document.createElement("style");
     styleSheet.type = "text/css";
     styleSheet.innerText = printStyles;
@@ -48,7 +82,15 @@ const BarcodePrintPage = () => {
     const grid = [];
     for (let i = 0; i < maxImages; i++) {
       grid.push(
-        <div key={i} style={styles.imageWrapper} className="imageWrapper">
+        <div
+          key={i}
+          style={styles.imageWrapper}
+          className="imageWrapper"
+          draggable={images[i] ? true : false} // Make image slot draggable if it has an image
+          onDragStart={() => handleDragStart(i)}
+          onDragOver={handleDragOver}
+          onDrop={() => handleDrop(i)}
+        >
           {images[i] ? (
             <>
               <img src={images[i]} alt={`Barcode ${i + 1}`} style={styles.image} />
@@ -61,7 +103,9 @@ const BarcodePrintPage = () => {
               </button>
             </>
           ) : (
-            <div style={styles.placeholder} className="no-print">Empty Slot {i + 1}</div> // Placeholder for empty slots (hidden on print)
+            <div style={styles.placeholder} className="no-print">
+              Empty Slot {i + 1}
+            </div>
           )}
         </div>
       );
@@ -121,6 +165,7 @@ const styles = {
   image: {
     maxWidth: '100%',
     maxHeight: '100%',
+    height:'80%',
     display: 'block',
   },
   placeholder: {
