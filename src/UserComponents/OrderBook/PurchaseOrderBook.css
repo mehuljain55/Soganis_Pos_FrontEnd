@@ -1,32 +1,36 @@
 .purchase-order-book-container {
-    padding: 20px;
-    max-width: 1200px;
-    margin: auto;
-  }
-  
-  .purchase-order-book-table {
-    width: 100%;
-    border-collapse: collapse;
-  }
-  
-  .purchase-order-book-table th,
-  .purchase-order-book-table td {
-    border: 1px solid #ccc;
-    padding: 10px;
-    text-align: left;
-    border: 1px solid black;
-  }
-  .generate-order-button {
-    margin-top: 20px;
-    padding: 10px 20px;
-    background-color: #4CAF50;
-    color: white;
-    border: none;
-    cursor: pointer;
-    font-size: 16px;
-  }
-  
-  .generate-order-button:hover {
-    background-color: #45a049;
-  }
-  
+  padding: 20px;
+  max-width: 1500px;
+  max-height: 600px;
+  overflow-y: auto;
+}
+
+.purchase-order-book-table-container {
+  border: 1px solid #ccc;
+}
+
+.purchase-order-book-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.purchase-order-book-table th,
+.purchase-order-book-table td {
+  border: 1px solid #ccc;
+  padding: 10px;
+  text-align: left;
+}
+
+.generate-order-button {
+  margin-top: 20px;
+  padding: 10px 20px;
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+.generate-order-button:hover {
+  background-color: #45a049;
+}

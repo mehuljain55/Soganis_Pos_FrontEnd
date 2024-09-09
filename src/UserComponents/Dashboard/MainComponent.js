@@ -7,6 +7,8 @@ import BillDetails from '../Billing/BillDetails.js';
 import Salary from '../Salary/Salary.js';
 import UserCashCollection from '../CashCollectionReport/UserCashCollection.js'; 
 import FilterPage from '../Inventory/FilterPage.js'; 
+import SearchModal from '../Inventory/SearchModal.js'; 
+
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSyncAlt } from '@fortawesome/free-solid-svg-icons';
 import './MainComponent.css'; 
@@ -21,6 +23,8 @@ import { API_BASE_URL } from '../Config.js';
 const MainComponent = ({ userData }) => {
   const [selectedMenuItem, setSelectedMenuItem] = useState('');
   const [todayCashCollection, setTodayCashCollection] = useState(null);
+  const [isSearchModalOpen, setIsSearchModalOpen] = useState(false); // State for modal
+
 
   const fetchTodayCashCollection = async () => {
     try {
@@ -37,6 +41,22 @@ const MainComponent = ({ userData }) => {
   const handleMenuItemClick = (menuItem) => {
     setSelectedMenuItem(menuItem);
   };
+
+  const handleShortcutKey = (event) => { // Renamed function
+    if (event.ctrlKey && event.key === 'f') {
+      event.preventDefault(); // Prevent default browser behavior
+      setIsSearchModalOpen(true);
+    }
+  };
+
+  useEffect(() => {
+    fetchTodayCashCollection();
+    window.addEventListener('keydown', handleShortcutKey); // Updated function name
+    return () => {
+      window.removeEventListener('keydown', handleShortcutKey); // Updated function name
+    };
+  }, []);
+
 
   useEffect(() => {
     fetchTodayCashCollection();
@@ -96,6 +116,11 @@ const MainComponent = ({ userData }) => {
         
         </main>
       </div>
+      <SearchModal
+        isOpen={isSearchModalOpen}
+        onClose={() => setIsSearchModalOpen(false)}
+      />
+
     </div>
   );
 };

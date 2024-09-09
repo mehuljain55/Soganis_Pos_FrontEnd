@@ -174,12 +174,59 @@ h2 {
 
 /* Summary section */
 .summary {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
   margin-top: 20px;
+  position: relative;
 }
 
-.summary h3, .summary h4 {
-  margin: 5px 0;
+/* Button styling */
+.custom-btn button {
+  padding: 5px 10px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
 }
+
+.custom-btn button:hover {
+  background-color: #0056b3;
+}
+
+/* Center the item summary */
+.item-summary {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  text-align: center;
+}
+
+/* Payment section - Right alignment */
+.payment-section {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+}
+
+/* Optional: Improve submit button styling */
+#submit-btn {
+  padding: 5px 30px;
+  background-color: #28a745;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.submit-button button:hover {
+  background-color: #218838;
+}
+
 
 /* Customer info section */
 .customer-info {
@@ -401,3 +448,4 @@ h2 {
 .barcode-input label {
   margin-left: auto; /* Ensures the input is aligned to the right */
 }
+

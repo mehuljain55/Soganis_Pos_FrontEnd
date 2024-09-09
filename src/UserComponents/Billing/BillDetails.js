@@ -19,6 +19,7 @@ const BillDetails = ({ userData }) => {
     const [popupType, setPopupType] = useState('');
     const [defectItem, setDefectItem] = useState(null);
 const [defectQuantity, setDefectQuantity] = useState(0);
+const [itemsToExchange, setItemsToExchange] = useState([]);
 
 const [isDefectModalOpen, setIsDefectModalOpen] = useState(false);
 const [exchangeAmount, setExchangeAmount] = useState(0);
@@ -120,38 +121,24 @@ const [exchangeAmount, setExchangeAmount] = useState(0);
     };
 
     const handleExchange = () => {
-        const itemsToExchange = selectedItems.map(item => ({
+        const exchangeItems = selectedItems.map(item => ({
             sno: item.sno,
             barcodedId: item.itemBarcodeID,
-            price:item.sellPrice,
-            userId:userData.userId,
+            price: item.sellPrice,
+            itemType:item.itemType,
+            itemCategory:item.itemCategory,
+            userId: userData.userId,
             return_quantity: returnQuantities[item.sno],
         }));
-
-        axios.post(`${API_BASE_URL}/stock/exchange`, itemsToExchange)
-            .then(response => {
-                if (response.data === 'success') {
+    
+        setItemsToExchange(exchangeItems); // Set the globally accessible state
+    
                     const exchangeAmount = calculateTotalAmount(); // Calculate total exchange amount
                     setExchangeAmount(exchangeAmount);
-                    setIsModalOpen(false)
+                    setIsModalOpen(false);
                     setIsExchangeModalOpen(true);
-                  
-             
-                } else {
-                    setPopupMessage('Exchange failed. Please try again.');
-                    setPopupType('error');
-                }
-              //  setShowPopup(true);
-                fetchBill(); // Refetch bill data after exchange
-               // setIsExchangeModalOpen(false);
-                setSelectedItems([]);
-            })
-            .catch(error => {
-                console.error('Error exchanging items:', error);
-                setPopupMessage('Exchange failed. Please try again.');
-                setPopupType('error');
-                setShowPopup(true);
-            });
+                    fetchBill(); // Refetch bill data after exchange
+        
     };
 
     const isToday = (date) => date === currentDate;
@@ -408,6 +395,7 @@ const [exchangeAmount, setExchangeAmount] = useState(0);
         <div className="item-exchange-modal-bill">
             <ExchangeBill
                 userData={userData}
+                itemsToExchange={itemsToExchange}
                 exchangeAmount={exchangeAmount}
                 onClose={handleCloseExchangeModal}
             />

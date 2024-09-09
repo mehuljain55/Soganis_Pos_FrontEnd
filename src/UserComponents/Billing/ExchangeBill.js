@@ -5,7 +5,7 @@ import { API_BASE_URL } from '../Config.js';
 import Modal from 'react-bootstrap/Modal';
 import Button from 'react-bootstrap/Button';
 
-const ExchangeBill = ({ userData, exchangeAmount, onClose }) => {
+const ExchangeBill = ({ userData,itemsToExchange, exchangeAmount, onClose }) => {
   const [selectedItems, setSelectedItems] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [searchResults, setSearchResults] = useState([]);
@@ -66,6 +66,8 @@ const ExchangeBill = ({ userData, exchangeAmount, onClose }) => {
         : prev.amount,
     }));
   };
+
+  console.log(itemsToExchange);
 
   
 
@@ -205,7 +207,7 @@ const ExchangeBill = ({ userData, exchangeAmount, onClose }) => {
       customerMobileNo: customerMobileNo,
       paymentMode: paymentMode,
       schoolName: schoolName,
-      balanceAmount:exchangeAmount,
+      balanceAmount: exchangeAmount,
       item_count: selectedItems.length,
       bill: selectedItems.map((item) => ({
         itemBarcodeID: item.itemBarcodeID,
@@ -215,31 +217,43 @@ const ExchangeBill = ({ userData, exchangeAmount, onClose }) => {
         itemCategory: item.itemCategory,
         sellPrice: item.price,
         quantity: item.quantity,
-      
         total_amount: item.amount,
       })),
     };
-
+  
+    const exchangeData = itemsToExchange.map((item) => ({
+      sno: item.sno,
+      barcodedId: item.barcodedId,
+      price: item.price,
+      return_quantity: item.return_quantity,
+    }));
+  
+    const requestData = {
+      bill: billData,
+      itemModel: exchangeData,
+    };
+  
     try {
-      const response = await axios.post(`${API_BASE_URL}/exchange/billRequest`, billData, { responseType: 'arraybuffer' });
+      const response = await axios.post(`${API_BASE_URL}/exchange/billRequest`, requestData, {
+        responseType: 'arraybuffer',
+      });
+  
       const pdfBlob = new Blob([response.data], { type: 'application/pdf' });
       const pdfUrl = URL.createObjectURL(pdfBlob);
-
+  
       setPdfData(pdfUrl);
       setShowPdfModal(true);
-
+  
       setSelectedItems([]);
-      // Clear customer details
       setCustomerName('');
       setCustomerMobileNo('');
       setPaymentMode('Cash');
       setSchoolName('');
-   
-      
     } catch (error) {
       console.error('Error generating bill:', error);
     }
   };
+  
 
   const handlePrint = () => {
     if (pdfModalRef.current) {
@@ -272,6 +286,8 @@ const ExchangeBill = ({ userData, exchangeAmount, onClose }) => {
   const handlePaymentModeChange = (e) => {
     setPaymentMode(e.target.value);
   };
+
+  
 
   const handleAddCustomItem = () => {
     // Calculate amount
@@ -318,6 +334,7 @@ const ExchangeBill = ({ userData, exchangeAmount, onClose }) => {
 
   return (
     <div className="new-bill-container">
+
    <div className="mode-toggle">
         <button onClick={toggleBarcodeMode}>
           {isBarcodeMode ? 'Barcode Mode' : 'Search Mode'}
@@ -401,6 +418,36 @@ const ExchangeBill = ({ userData, exchangeAmount, onClose }) => {
       <div className="customer-details">
        <h5>Credit Available: {exchangeAmount}</h5>
       </div>
+
+      <div>
+      <h5>Exchange Items</h5>
+      <table>
+        <thead>
+          <tr>
+            <th>S.No</th>
+            <th>Item Type</th>
+            <th>School</th>
+            <th>Price</th>
+            <th>Return Quantity</th>
+            <th>Amount</th>
+          </tr>
+        </thead>
+        <tbody>
+          {itemsToExchange.map((item, index) => (
+            <tr key={index}>
+              <td>{item.sno}</td>
+              <td>{item.itemType}</td>
+              <td> {item.itemCategory}</td>   
+              <td>{item.price}</td>
+              <td>{item.return_quantity}</td>
+              <td>
+              {item.return_quantity * item.price}
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
 
       {/* Billing Items Table */}
       <div className="items-table-container">
