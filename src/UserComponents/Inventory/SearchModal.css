@@ -1,0 +1,171 @@
+/* Styles for the entire modal overlay */
+.item-search-box-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000; /* Ensure the modal is above other content */
+}
+
+/* Styles for the modal content */
+.item-search-box-content {
+  background-color: #fff;
+  border-radius: 8px;
+  padding: 20px;
+  max-width: 1400px;
+  width: 100%;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  position: relative;
+}
+
+/* Header styling */
+.item-search-box-content h2 {
+  margin: 0;
+  padding-bottom: 10px;
+  border-bottom: 1px solid #ddd;
+  font-size: 1.5rem;
+  color: #333;
+}
+
+/* Input field styling */
+.item-search-box-content input[type="text"] {
+  width: calc(100% - 22px);
+  padding: 10px;
+  margin-bottom: 10px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 1rem;
+}
+
+/* Button styling */
+.item-search-box-content button {
+  background-color: #007bff;
+  border: none;
+  color: #fff;
+  padding: 10px 15px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 1rem;
+  margin-right: 10px;
+  transition: background-color 0.3s;
+}
+
+/* Button hover effect */
+.item-search-box-content button:hover {
+  background-color: #0056b3;
+}
+
+/* Clear button styling */
+.item-search-box-content button.clear-button {
+  background-color: #dc3545;
+}
+
+.item-search-box-content button.clear-button:hover {
+  background-color: #c82333;
+}
+
+/* Close button styling */
+.item-search-box-content button.close-button {
+  background-color: #6c757d;
+}
+
+.item-search-box-content button.close-button:hover {
+  background-color: #5a6268;
+}
+
+/* Table styling */
+.item-search-box-content table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+}
+
+/* Column widths */
+.item-search-box-content th:nth-child(1),
+.item-search-box-content td:nth-child(1) {
+  width: 10%;
+}
+
+.item-search-box-content th:nth-child(2),
+.item-search-box-content td:nth-child(2) {
+  width: 15%;
+}
+
+.item-search-box-content th:nth-child(3),
+.item-search-box-content td:nth-child(3) {
+  width: 10%;
+}
+
+.item-search-box-content th:nth-child(4),
+.item-search-box-content td:nth-child(4) {
+  width: 10%;
+}
+
+.item-search-box-content th:nth-child(5),
+.item-search-box-content td:nth-child(5) {
+  width: 10%;
+}
+
+.item-search-box-content th:nth-child(6),
+.item-search-box-content td:nth-child(6) {
+  width: 5%;
+}
+
+.item-search-box-content th:nth-child(7),
+.item-search-box-content td:nth-child(7) {
+  width: 8%;
+}
+
+.item-search-box-content th:nth-child(8),
+.item-search-box-content td:nth-child(8) {
+  width: 10%;
+}
+
+.item-search-box-content th:nth-child(9),
+.item-search-box-content td:nth-child(9) {
+  width: 10px;
+}
+
+.item-search-box-content th:nth-child(10),
+.item-search-box-content td:nth-child(10) {
+  width: 11%;
+}
+
+/* Table cell and header styling */
+.item-search-box-content th,
+.item-search-box-content td {
+  border: 1px solid #050505;
+  padding: 10px;
+  text-align: left;
+}
+
+.item-search-box-content th {
+  background-color: #707070;
+  font-weight: bold;
+}
+
+.item-search-box-content tr:nth-child(even) {
+  background-color: #f2f2f2;
+}
+
+/* Close button inside modal */
+.item-search-box-content button.close-button {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: transparent;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+}
+
+
+
+#close-button{
+    background-color: #dc3545; 
+}

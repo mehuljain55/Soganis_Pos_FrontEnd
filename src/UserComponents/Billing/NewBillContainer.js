@@ -33,6 +33,13 @@ const NewBillContainer = ({ userData }) => {
   const inputRefs = useRef([]);
   const [isTableFocused, setIsTableFocused] = useState(false); 
   const [showPopup, setShowPopup] = useState(false);
+  const [someState, setSomeState] = useState(false); 
+  const [allSchools, setAllSchools] = useState([]);
+  const [filteredSchools, setFilteredSchools] = useState([]);
+  const [isAutofilled, setIsAutofilled] = useState(false); // To control if autofill happens
+
+  const [suggestions, setSuggestions] = useState([]);
+
 
   const [customItem, setCustomItem] = useState({
     itemBarcodeID: 'SG9999999',
@@ -45,6 +52,18 @@ const NewBillContainer = ({ userData }) => {
     amount: 0,
   });
 
+  useEffect(() => {
+    const fetchAllSchools = async () => {
+      try {
+        const response = await axios.get(`${API_BASE_URL}/filter/getSchool`);
+        setAllSchools(response.data);
+      } catch (error) {
+        console.error('Error fetching school names:', error);
+      }
+    };
+
+    fetchAllSchools();
+  }, []);
 
   // Fetch items based on search term (for manual search)
   useEffect(() => {
@@ -74,6 +93,7 @@ const NewBillContainer = ({ userData }) => {
     }));
   };
 
+  
   
 
   
@@ -351,7 +371,32 @@ const NewBillContainer = ({ userData }) => {
   };
 
   const handleSchoolNameChange = (e) => {
-    setSchoolName(e.target.value);
+    const inputValue = e.target.value;
+    setSchoolName(inputValue);
+    setIsAutofilled(false); // Reset autofill control
+
+    // Only attempt to autofill when 3 or more characters are entered
+    if (inputValue.length >= 3) {
+      const matchingSchool = allSchools.find((school) =>
+        school.toLowerCase().startsWith(inputValue.toLowerCase())
+      );
+
+      // If there's a match and autofill hasn't happened yet
+      if (matchingSchool && !isAutofilled) {
+        setSchoolName(matchingSchool);
+        setIsAutofilled(true); // Set autofill to true to avoid overwriting
+        setTimeout(() => {
+          e.target.setSelectionRange(inputValue.length, matchingSchool.length);
+        }, 0); // Allow time for the input value to update
+      }
+    }
+  };
+
+  const handleSchoolKeyDown = (e) => {
+    // Handle backspace or typing to cancel autofill
+    if (isAutofilled && (e.key === 'Backspace' || e.key.length === 1)) {
+      setIsAutofilled(false); // Disable autofill if user types or backspaces
+    }
   };
 
   const handleMobileNoChange = (e) => {
@@ -379,6 +424,8 @@ const NewBillContainer = ({ userData }) => {
       itemColor: customItem.itemColor,
       itemSize: customItem.itemSize,
       itemCategory: customItem.itemCategory,
+      itemName: `${customItem.itemCategory} ${customItem.itemType}`,
+
       quantity: customItem.quantity,
       price:customItem.sellPrice,
       amount:(customItem.quantity)*(customItem.sellPrice),
@@ -438,6 +485,21 @@ const NewBillContainer = ({ userData }) => {
       });
     }
   }, [showCustomItemModal]);
+
+  useEffect(() => {
+    const handleKeyDown = (event) => {
+      if (event.ctrlKey && event.key === 'c') {
+        setShowCustomItemModal(true);  // Open the modal
+        setSomeState(true);  // Simultaneously set a variable or state
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [someState]); // Dependency array with `someState`
 
   // Effect to listen for Shift key press and toggle mode
   useEffect(() => {
@@ -568,17 +630,19 @@ const NewBillContainer = ({ userData }) => {
         required
       />
     </label>
-    <label>
-      School Name:
-      <input
-        type="text"
-        name="schoolName"
-        value={schoolName}
-        onChange={handleSchoolNameChange}
-        onKeyDown={(e) => handleArrowKeyCustomerDetail(e, 'schoolName')}
-        required
-      />
-    </label>
+    <div className="school-name-input">
+      <label>
+        School Name:
+        <input
+          type="text"
+          name="schoolName"
+          value={schoolName}
+          onChange={handleSchoolNameChange}
+          required
+        />
+      </label>
+    </div>
+   
   </div>
 </div>
 
@@ -642,29 +706,34 @@ const NewBillContainer = ({ userData }) => {
           </tbody>
         </table>
       </div>
-      <button onClick={() => setShowCustomItemModal(true)}>Custom Item</button>
     </div>
       {/* Summary */}
       <div className="summary">
-        <h3>Total Amount: {calculateTotalAmount().toFixed(2)} Rs</h3>
-        <h4>Item Count: {selectedItems.length}</h4>
-      </div>
+  <div className="custom-btn">
+    <button onClick={() => setShowCustomItemModal(true)}>Custom Item</button>
+  </div>
+  <div className="item-summary">
+    <h3>Total Amount: {calculateTotalAmount().toFixed(2)} Rs</h3>
+    <h4>Item Count: {selectedItems.length}</h4>
+  </div>
+  <div className="payment-section">
+    <div className="payment-mode">
+      <label>
+        Payment Mode:
+        <select value={paymentMode} onChange={handlePaymentModeChange}>
+          <option value="Cash">Cash</option>
+          <option value="Card">Card</option>
+          <option value="UPI">UPI</option>
+        </select>
+      </label>
+      <button  id='submit-btn' onClick={handleSubmit}>Bill</button>
+ 
+    </div>
+    
+  </div>
+</div>
 
-      {/* Payment Mode */}
-      <div className="payment-mode">
-        <label>
-          Payment Mode:
-          <select value={paymentMode} onChange={handlePaymentModeChange}>
-            <option value="Cash">Cash</option>
-            <option value="Card">Card</option>
-            <option value="UPI">UPI</option>
-          </select>
-        </label>
-      </div>
-      <div className="submit-button">
-        <button onClick={handleSubmit}>Submit</button>
-        
-      </div>
+
 
       {showPopup && (
         <BillPopup

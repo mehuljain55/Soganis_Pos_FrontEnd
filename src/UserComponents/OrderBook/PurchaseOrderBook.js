@@ -44,6 +44,19 @@ const PurchaseOrderBook = () => {
   };
 
   
+  const handleDeleteOrder = (orderId) => {
+    axios.post(`${API_BASE_URL}/order/delete_order`, null, { params: { orderId } })
+      .then(response => {
+        if (response.data === "Success") {
+          setOrders(orders.filter(order => order.orderId !== orderId)); // Remove the deleted order from the list
+          fetchOrders();
+        }
+      })
+      .catch(error => {
+        alert('Failed to delete order: ' + error.message);
+      });
+  };
+
   const handleGenerateOrder = () => {
     if (orders.length === 0) {
       alert('No orders to generate.');
@@ -74,6 +87,8 @@ const PurchaseOrderBook = () => {
   if (error) return <p>Error: {error}</p>;
 
   return (
+
+    <div>
     <div className="purchase-order-book-container">
       <h1>Purchase Order Book</h1>
       <table className="purchase-order-book-table">
@@ -86,6 +101,7 @@ const PurchaseOrderBook = () => {
             <th>Quantity</th>
             <th>Item Type</th>
             <th>School</th>
+            <th>Action</th>
           </tr>
         </thead>
         <tbody>
@@ -104,11 +120,20 @@ const PurchaseOrderBook = () => {
               </td>
               <td>{order.itemType}</td>
               <td>{order.school}</td>
+              <td>
+                  <button 
+                    onClick={() => handleDeleteOrder(order.orderId)} 
+                    className="delete-order-button">
+                    Delete
+                  </button> {/* Delete button */}
+                </td>
             </tr>
           ))}
         </tbody>
       </table>
-      <button onClick={handleGenerateOrder} className="generate-order-button">Generate Order</button>
+    </div>
+    <button onClick={handleGenerateOrder} className="generate-order-button">Generate Order</button>
+    
     </div>
   );
 };
