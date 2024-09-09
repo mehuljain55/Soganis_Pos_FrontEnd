@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { API_BASE_URL } from '../Config.js';
-import { height } from '@fortawesome/free-solid-svg-icons/fa0';
 
 const BarcodePrintPage = () => {
   const [images, setImages] = useState(Array(40).fill(null)); // Initialize with null values
@@ -121,9 +120,24 @@ const BarcodePrintPage = () => {
           placeholder="Enter barcode"
           value={barcode}
           onChange={(e) => setBarcode(e.target.value)}
+          style={styles.input}
         />
-        <button onClick={handleGenerateBarcode}>Generate Barcode</button>
-        <button onClick={handlePrint}>Print</button>
+        <button 
+          onClick={handleGenerateBarcode} 
+          style={styles.button} 
+          onMouseOver={(e) => e.currentTarget.style.backgroundColor = styles.buttonHover.backgroundColor} 
+          onMouseOut={(e) => e.currentTarget.style.backgroundColor = styles.button.backgroundColor}
+        >
+          Generate Barcode
+        </button>
+        <button 
+          onClick={handlePrint} 
+          style={styles.button} 
+          onMouseOver={(e) => e.currentTarget.style.backgroundColor = styles.buttonHover.backgroundColor} 
+          onMouseOut={(e) => e.currentTarget.style.backgroundColor = styles.button.backgroundColor}
+        >
+          Print
+        </button>
       </div>
       <div id="printableArea" style={styles.page}>
         {renderGrid()}
@@ -138,19 +152,28 @@ const styles = {
     flexDirection: 'column',
     alignItems: 'center',
     padding: '20px',
+    overflowY: 'auto', // Allow vertical scrolling
+    maxHeight: '110vh', // Set maximum height for the container to allow vertical scrolling
+    overflowX: 'hidden', // Prevent horizontal scrolling
   },
   header: {
     marginBottom: '20px',
+    display: 'flex',
+    gap: '10px', // Add space between the input and buttons
+    alignItems: 'center',
   },
   page: {
     width: '794px', // A4 width in pixels at 96 DPI
     height: '1100px', // A4 height in pixels at 96 DPI
+    backgroundColor: 'white', // Set background color to white
     display: 'grid',
     gridTemplateColumns: 'repeat(4, 1fr)', // 4 columns
     gridTemplateRows: 'repeat(10, 1fr)', // 10 rows
     rowGap: '0', // Remove row gap
     columnGap: '0', // Remove column gap
     boxSizing: 'border-box',
+    overflowY: 'auto', // Enable vertical scroll if content exceeds the height
+    overflowX: 'hidden', // Prevent horizontal scrolling
   },
   imageWrapper: {
     position: 'relative',
@@ -184,6 +207,28 @@ const styles = {
     fontSize: '14px',
     cursor: 'pointer',
   },
+  input: {
+    padding: '8px 12px',
+    fontSize: '16px',
+    border: '1px solid #ccc',
+    borderRadius: '4px',
+    boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
+    width: '200px', // Set width for consistency
+  },
+  button: {
+    padding: '8px 16px',
+    fontSize: '16px',
+    border: 'none',
+    borderRadius: '4px',
+    cursor: 'pointer',
+    color: 'white',
+    backgroundColor: '#007bff',
+    margin: '0 5px', // Space between buttons
+    transition: 'background-color 0.3s',
+  },
+  buttonHover: {
+    backgroundColor: '#0056b3',
+  },
 };
 
 const printStyles = `
@@ -206,10 +251,12 @@ const printStyles = `
     display: grid;
     grid-template-columns: repeat(4, 1fr);
     grid-template-rows: repeat(10, 1fr);
-    width: 100%;
-    height: 100%;
+    width: 794px; /* Ensure exact A4 width for print */
+    height: 1100px; /* Ensure exact A4 height for print */
     margin: 0;
     padding: 0;
+    background: white; /* Set background color to white for print */
+    overflow: hidden; /* Prevent any scrolling during print */
   }
 
   .imageWrapper {
