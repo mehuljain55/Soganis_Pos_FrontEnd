@@ -178,6 +178,7 @@ const [exchangeAmount, setExchangeAmount] = useState(0);
     const handleCloseExchangeModal = () => {
         setIsExchangeModalOpen(false);
         setExchangeAmount(0);  // Reset exchangeAmount when modal is closed
+        fetchBill();
     };
     
 
@@ -379,6 +380,10 @@ const [exchangeAmount, setExchangeAmount] = useState(0);
                     </tr>
                 </tbody>
             </table>
+            <div className="unique-defect-amount">
+             Amount: {defectItem.sellPrice * defectQuantity}
+            </div>
+        
             <div className="unique-defect-buttons">
                 <button onClick={confirmDefect}>Confirm Defect</button>
                 <button onClick={() => setIsDefectModalOpen(false)}>Cancel</button>
