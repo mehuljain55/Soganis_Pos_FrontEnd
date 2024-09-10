@@ -3,6 +3,7 @@ import axios from 'axios';
 import NewBillContainer from '../Billing/NewBillContainer.js'; 
 import InterCompanyTranfer from '../Billing/InterCompanyTranfer.js'; 
 import BillDetails from '../Billing/BillDetails.js'; 
+import { useNavigate } from 'react-router-dom'; 
 
 import Salary from '../Salary/Salary.js';
 import UserCashCollection from '../CashCollectionReport/UserCashCollection.js'; 
@@ -24,6 +25,8 @@ const MainComponent = ({ userData }) => {
   const [selectedMenuItem, setSelectedMenuItem] = useState('');
   const [todayCashCollection, setTodayCashCollection] = useState(null);
   const [isSearchModalOpen, setIsSearchModalOpen] = useState(false); // State for modal
+  const navigate = useNavigate(); // Initialize useNavigate
+
 
 
   const fetchTodayCashCollection = async () => {
@@ -95,6 +98,8 @@ const MainComponent = ({ userData }) => {
           <button onClick={() => handleMenuItemClick('Cash Collection')}>Cash Collection</button>
           <button onClick={() => handleMenuItemClick('View Sales Report')}>Sale Report</button>
           <button onClick={() => handleMenuItemClick('Salary Register')}>Salary Register</button>
+          <button onClick={() => navigate('/barcode')}>Open Barcode</button>
+        
     
         </div>
         <main className="main-content">
