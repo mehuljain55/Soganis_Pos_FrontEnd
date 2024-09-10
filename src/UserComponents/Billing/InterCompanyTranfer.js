@@ -4,7 +4,7 @@ import './NewBillContainer.css';
 import { API_BASE_URL } from '../Config.js';
 import Modal from 'react-bootstrap/Modal';
 import Button from 'react-bootstrap/Button';
-import BillPopup from './BillPopup'; // Import the popup component
+import BillPopup from './BillPopup'; 
 
 
 const InterCompanyTranfer = ({ userData }) => {
@@ -229,9 +229,11 @@ const InterCompanyTranfer = ({ userData }) => {
     }
   
     if (!isBarcodeMode) {
-      setSearchTerm('');
-      setDropdownOpen(false);
-      searchInputRef.current.focus();
+      requestAnimationFrame(() => {
+          setSearchTerm('');
+          setDropdownOpen(false);
+          searchInputRef.current.focus();
+      });
     }
   
     // Scroll to the latest item added
@@ -536,7 +538,7 @@ const InterCompanyTranfer = ({ userData }) => {
 
       <div className="billing-container">
   <div className="billing-head">
-    <h2>Billing</h2>
+    <h2>Inter Company Transfer</h2>
   </div>
   <div className="barcode-input">
       <input
@@ -580,7 +582,7 @@ const InterCompanyTranfer = ({ userData }) => {
             <tbody>
               {searchResults.map((item, index) => (
                 <tr
-                  key={item.id}
+                  key={item.itemBarcodeID}
                   onClick={() => addItemToBill(item)}
                   onKeyDown={(e) => handleKeyDown(e, item)}
                   tabIndex="0"

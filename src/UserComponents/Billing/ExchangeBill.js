@@ -228,9 +228,13 @@ const ExchangeBill = ({ userData,itemsToExchange, exchangeAmount, onClose }) => 
     }
   
     if (!isBarcodeMode) {
-      setSearchTerm('');
-      setDropdownOpen(false);
-      searchInputRef.current.focus();
+     
+      requestAnimationFrame(() => {
+          setSearchTerm('');
+          setDropdownOpen(false);
+          searchInputRef.current.focus();
+      });
+  
     }
   
     // Scroll to the latest item added
@@ -548,7 +552,7 @@ const ExchangeBill = ({ userData,itemsToExchange, exchangeAmount, onClose }) => 
 
       <div className="billing-container">
   <div className="billing-head">
-    <h2>Billing</h2>
+    <h2>Exchange</h2>
   </div>
   <div className="barcode-input">
       <input
@@ -593,7 +597,7 @@ const ExchangeBill = ({ userData,itemsToExchange, exchangeAmount, onClose }) => 
             <tbody>
               {searchResults.map((item, index) => (
                 <tr
-                  key={item.id}
+                  key={item.itemBarcodeID}
                   onClick={() => addItemToBill(item)}
                   onKeyDown={(e) => handleKeyDown(e, item)}
                   tabIndex="0"

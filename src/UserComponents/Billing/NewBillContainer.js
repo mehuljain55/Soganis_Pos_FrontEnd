@@ -35,10 +35,8 @@ const NewBillContainer = ({ userData }) => {
   const [showPopup, setShowPopup] = useState(false);
   const [someState, setSomeState] = useState(false); 
   const [allSchools, setAllSchools] = useState([]);
-  const [filteredSchools, setFilteredSchools] = useState([]);
   const [isAutofilled, setIsAutofilled] = useState(false); // To control if autofill happens
 
-  const [suggestions, setSuggestions] = useState([]);
 
 
   const [customItem, setCustomItem] = useState({
@@ -67,7 +65,7 @@ const NewBillContainer = ({ userData }) => {
 
   // Fetch items based on search term (for manual search)
   useEffect(() => {
-    if (!isBarcodeMode && searchTerm.trim() !== '') {
+    if (searchTerm.trim() !== '') {
       const fetchItems = async () => {
         try {
           const response = await axios.get(`${API_BASE_URL}/getAllItems?searchTerm=${searchTerm}`);
@@ -80,7 +78,7 @@ const NewBillContainer = ({ userData }) => {
       };
       fetchItems();
     }
-  }, [searchTerm, isBarcodeMode]);
+  }, [searchTerm]);
 
   const handleCustomItemChange = (e) => {
     const { name, value } = e.target;
@@ -229,9 +227,13 @@ const NewBillContainer = ({ userData }) => {
     }
   
     if (!isBarcodeMode) {
-      setSearchTerm('');
+      requestAnimationFrame(() => {
+          setSearchTerm('');
+          
+          searchInputRef.current.focus();
+        
+      });
       setDropdownOpen(false);
-      searchInputRef.current.focus();
     }
   
     // Scroll to the latest item added
@@ -580,7 +582,7 @@ const NewBillContainer = ({ userData }) => {
             <tbody>
               {searchResults.map((item, index) => (
                 <tr
-                  key={item.id}
+                  key={item.itemBarcodeID}
                   onClick={() => addItemToBill(item)}
                   onKeyDown={(e) => handleKeyDown(e, item)}
                   tabIndex="0"
