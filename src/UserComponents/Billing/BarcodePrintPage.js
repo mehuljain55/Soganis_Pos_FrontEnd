@@ -5,35 +5,41 @@ const BarcodePrintPage = () => {
   const [images, setImages] = useState(Array(40).fill(null)); // Initialize with null values
   const [barcode, setBarcode] = useState('');
   const [draggedIndex, setDraggedIndex] = useState(null); // Store the index of the dragged image
-
+  const [quantity, setQuantity] = useState(1);
   const maxImages = 40;
 
   const handleGenerateBarcode = async () => {
-    if (!barcode) return;
-    
+    if (!barcode || quantity < 1) return; // Validate barcode and ensure quantity is at least 1
+  
     try {
       const response = await fetch(`${API_BASE_URL}/generate_barcodes?itemCode=${barcode}`);
       const blob = await response.blob();
       const imageUrl = URL.createObjectURL(blob);
-      
-      // Find the first empty slot (index with `null` or `undefined` image)
-      const emptyIndex = images.findIndex((image) => !image);
-
-      if (emptyIndex !== -1) {
-        // Place the new image in the first empty slot
-        setImages((prevImages) => {
-          const newImages = [...prevImages];
-          newImages[emptyIndex] = imageUrl;
-          return newImages;
-        });
-      } else {
-        alert(`All ${maxImages} slots are filled.`);
-      }
+  
+      setImages((prevImages) => {
+        const newImages = [...prevImages];
+        let count = 0;
+  
+        // Loop to insert the same image according to the specified quantity
+        for (let i = 0; i < newImages.length && count < quantity; i++) {
+          if (!newImages[i]) {
+            newImages[i] = imageUrl;
+            count++;
+          }
+        }
+  
+        // Alert if there are not enough slots for the required quantity
+        if (count < quantity) {
+          alert(`Only ${count} slots were available. ${quantity - count} barcodes couldn't be added.`);
+        }
+  
+        return newImages;
+      });
     } catch (error) {
       console.error('Error generating barcode:', error);
     }
   };
-
+  
   const handleDeleteImage = (index) => {
     const newImages = images.filter((_, i) => i !== index);
     setImages((prevImages) => {
@@ -126,6 +132,14 @@ const BarcodePrintPage = () => {
           onChange={(e) => setBarcode(e.target.value)}
           style={styles.input}
         />
+        <input
+  type="number"
+  placeholder="Quantity"
+  value={quantity}
+  onChange={(e) => setQuantity(Number(e.target.value))}
+  style={styles.input}
+/>
+
         <button 
           onClick={handleGenerateBarcode} 
           style={styles.button} 
@@ -165,7 +179,7 @@ const styles = {
     alignItems: 'center',
     padding: '20px',
     overflowY: 'auto', // Allow vertical scrolling
-    maxHeight: '100vh', // Set maximum height for the container to allow vertical scrolling
+    maxHeight: '115vh', // Set maximum height for the container to allow vertical scrolling
     overflowX: 'hidden', // Prevent horizontal scrolling
   },
   header: {
@@ -264,7 +278,7 @@ const printStyles = `
     grid-template-columns: repeat(4, 1fr);
     grid-template-rows: repeat(10, 1fr);
     width: 794px; /* Ensure exact A4 width for print */
-    height: 1100px; /* Ensure exact A4 height for print */
+    height: 1123px; /* Ensure exact A4 height for print */
     margin: 0;
     padding: 0;
     background: white; /* Set background color to white for print */
