@@ -2,12 +2,12 @@ import React, { useState, useEffect } from 'react';
 import { API_BASE_URL } from '../Config.js';
 
 const BarcodePrintPage = () => {
-  const [images, setImages] = useState([]); // Dynamically handle images
+  const [images, setImages] = useState([]);
   const [barcode, setBarcode] = useState('');
   const [draggedIndex, setDraggedIndex] = useState(null);
   const [quantity, setQuantity] = useState(1);
   const [currentPage, setCurrentPage] = useState(0);
-  const imagesPerPage = 40; // Max images per page
+  const imagesPerPage = 40;
 
   const handleGenerateBarcode = async () => {
     if (!barcode || quantity < 1) return;
@@ -19,14 +19,9 @@ const BarcodePrintPage = () => {
 
       setImages((prevImages) => {
         const newImages = [...prevImages];
-
-        let count = 0;
-        // Insert the barcode image into available slots
         for (let i = 0; i < quantity; i++) {
           newImages.push(imageUrl);
-          count++;
         }
-
         return newImages;
       });
     } catch (error) {
@@ -37,7 +32,7 @@ const BarcodePrintPage = () => {
   const handleDeleteImage = (index) => {
     setImages((prevImages) => {
       const updatedImages = [...prevImages];
-      updatedImages.splice(index, 1); // Remove the image at the specified index
+      updatedImages.splice(index, 1);
       return updatedImages;
     });
   };
@@ -51,7 +46,7 @@ const BarcodePrintPage = () => {
   };
 
   const handleClearAll = () => {
-    setImages([]); // Clear all images
+    setImages([]);
   };
 
   const handleDragOver = (event) => {
@@ -154,7 +149,6 @@ const BarcodePrintPage = () => {
           onChange={(e) => setQuantity(Number(e.target.value))}
           style={styles.input}
         />
-
         <button 
           onClick={handleGenerateBarcode} 
           style={styles.button}
@@ -288,7 +282,6 @@ const styles = {
     color: '#000',
   },
 };
-
 const printStyles = `
 @media print {
   @page {
@@ -303,23 +296,24 @@ const printStyles = `
   }
   #printableArea {
     position: absolute;
-    top: 0;
     left: 0;
-    width: 794px; /* A4 width */
-    height: 1100px; /* A4 height */
-    overflow: hidden; /* Prevent scrollbar during printing */
-  }
-  .imageWrapper {
-    border: none !important; /* Remove border when printing */
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background: white;
+    overflow: visible; /* Ensure no scrollbars are visible */
+    border: none; /* Ensure no borders are printed */
   }
   .no-print {
-    display: none !important;
+    display: none; /* Hide elements that should not be printed */
   }
-  html, body {
-    overflow: hidden; /* Disable scrollbars for print */
+  .imageWrapper {
+    border: none !important; /* Ensure no borders are printed around images */
+  }
+  img {
+    border: none !important; /* Ensure no borders are printed around images */
   }
 }
 `;
-
 
 export default BarcodePrintPage;
