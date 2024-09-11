@@ -87,13 +87,13 @@ const MainComponent = ({ userData }) => {
       <div className="main-content-wrapper">
         <div className="sidebar">
           <button onClick={() => handleMenuItemClick('New Bill')}>New Bill</button>
-          <button onClick={() => handleMenuItemClick('Returns')}>Return</button>
+          <button onClick={() => handleMenuItemClick('Returns')}>Return/Exchange</button>
           <button onClick={() => handleMenuItemClick('Inter Company Transaction')}>Inter Company</button>
         
           <button onClick={() => handleMenuItemClick('Add Order')}>Customer Order Book</button>
           <button onClick={() => handleMenuItemClick('View Order')}>View Order Book</button>
           <button onClick={() => handleMenuItemClick('View Stock')}>View Stock</button>
-          <button onClick={() => handleMenuItemClick('Purchase Order')}>Purchase Order Book</button>
+          <button onClick={() => handleMenuItemClick('Purchase Order')}>Purchase Order</button>
           
           <button onClick={() => handleMenuItemClick('Cash Collection')}>Cash Collection</button>
           <button onClick={() => handleMenuItemClick('View Sales Report')}>Sale Report</button>

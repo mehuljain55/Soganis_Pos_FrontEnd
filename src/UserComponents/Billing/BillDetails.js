@@ -276,7 +276,7 @@ const [exchangeAmount, setExchangeAmount] = useState(0);
                     <span style={{ color: 'green' }}>Item Selected</span>
                 ) : (
                     <>
-                                <button onClick={() => handleSelectItem(item)}>Return</button>
+                                <button onClick={() => handleSelectItem(item)}>Select</button>
                                 <button onClick={() => handleDefectItem(item)}>Defect</button>
                             </>
                     
