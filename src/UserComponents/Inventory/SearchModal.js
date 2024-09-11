@@ -4,22 +4,21 @@ import './SearchModal.css'; // Updated CSS file
 import { API_BASE_URL } from '../Config.js';
 
 const SearchModal = ({ isOpen, onClose }) => {
-  const [barcode, setBarcode] = useState('');
   const [items, setItems] = useState([]);
   const [orderedItems, setOrderedItems] = useState(new Set());
-  const barcodeInputRef = useRef(null);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [searchResults, setSearchResults] = useState([]);
+  const [dropdownOpen, setDropdownOpen] = useState(false);
+  const [selectedIndex, setSelectedIndex] = useState(-1);
+  
+  const dropdownRef = useRef(null);
+  const searchInputRef = useRef(null);
   const tableRef = useRef(null);
 
   useEffect(() => {
-    if (isOpen && barcodeInputRef.current) {
-      barcodeInputRef.current.focus();
-    }
-  }, [isOpen]);
-
-  useEffect(() => {
     const handleFocus = (event) => {
-      if (tableRef.current && !tableRef.current.contains(event.target)) {
-        barcodeInputRef.current.focus();
+      if (tableRef.current && !tableRef.current.contains(event.target) && !searchInputRef.current.contains(event.target)) {
+        searchInputRef.current.focus();
       }
     };
 
@@ -29,40 +28,25 @@ const SearchModal = ({ isOpen, onClose }) => {
     };
   }, [items]);
 
-  const handleSearch = async () => {
-    try {
-      const response = await axios.get(`${API_BASE_URL}/search/item_code`, {
-        params: { barcode }
-      });
-
-      const newItem = response.data;
-
-      if (newItem && newItem.itemBarcodeID) {
-        if (!items.find(item => item.itemBarcodeID === newItem.itemBarcodeID)) {
-          setItems([...items, newItem]);
-          setBarcode('');
-        }
-      } else {
-        alert("Item not found");
+  useEffect(() => {
+    const fetchItems = async () => {
+      try {
+        const response = await axios.get(`${API_BASE_URL}/getAllItems`, {
+          params: { searchTerm }
+        });
+        setSearchResults(response.data || []); // Set search results or empty array
+        setSelectedIndex(-1);
+      } catch (error) {
+        console.error('Error fetching items:', error);
+        setSearchResults([]);
       }
-    } catch (error) {
-      console.error('Error fetching item data:', error);
+    };
+    if (searchTerm.length > 0) {
+      fetchItems();
+    } else {
+      setSearchResults([]);
     }
-  };
-
-  const handleClear = () => {
-    setBarcode('');
-    setItems([]);
-    if (barcodeInputRef.current) {
-      barcodeInputRef.current.focus();
-    }
-  };
-
-  const handleKeyDown = (event) => {
-    if (event.key === 'Enter') {
-      handleSearch();
-    }
-  };
+  }, [searchTerm]);
 
   const handlePlaceOrder = async (barcodedId) => {
     try {
@@ -88,8 +72,40 @@ const SearchModal = ({ isOpen, onClose }) => {
     }
   };
 
+  const addItemToBill = (item) => {
+    if (!items.find(existingItem => existingItem.itemBarcodeID === item.itemBarcodeID)) {
+      setItems([...items, item]);
+      setSearchTerm('');
+      setDropdownOpen(false);
+  
+      // Ensure the input field is focused after adding an item
+      requestAnimationFrame(() => {
+        if (searchInputRef.current) {
+          searchInputRef.current.focus();
+        }
+      });
+    }
+  };
+  
+  
+
+  const handleArrowNavigation = (event) => {
+    if (event.key === 'ArrowDown') {
+      setSelectedIndex(prev => Math.min(prev + 1, searchResults.length - 1));
+    } else if (event.key === 'ArrowUp') {
+      setSelectedIndex(prev => Math.max(prev - 1, 0));
+    } else if (event.key === 'Enter' && selectedIndex >= 0) {
+      addItemToBill(searchResults[selectedIndex]);
+    }
+  };
+
+  const handleKeyDown = (event, item) => {
+    if (event.key === 'Enter') {
+      addItemToBill(item);
+    }
+  };
+
   const reset = () => {
-    setBarcode('');
     setItems([]);
     setOrderedItems(new Set());
   };
@@ -105,16 +121,52 @@ const SearchModal = ({ isOpen, onClose }) => {
         <div className="item-search-box-content" onClick={e => e.stopPropagation()}>
           <button className="close-button" onClick={handleModalClose}>×</button>
           <h2>Search Item</h2>
-          <input
-            ref={barcodeInputRef}
-            type="text"
-            value={barcode}
-            onChange={(e) => setBarcode(e.target.value)}
-            onKeyDown={handleKeyDown}
-            placeholder="Enter barcode"
-          />
-          <button onClick={handleSearch}>Search</button>
-          <button className="clear-button" onClick={handleClear}>Clear</button>
+          <div className="search-bar" ref={searchInputRef} tabIndex="0">
+            <input
+              type="text"
+              placeholder="Search by item code"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              onFocus={() => setDropdownOpen(true)}
+              onKeyDown={handleArrowNavigation}
+            />
+            {dropdownOpen && searchResults.length > 0 && (
+              <div className="dropdown" ref={dropdownRef}>
+                <table>
+                  <thead>
+                    <tr>
+                      <th>Item Code</th>
+                      <th>Item Name</th>
+                      <th>Type</th>
+                      <th>Color</th>
+                      <th>Size</th>
+                      <th>Price</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {searchResults.map((item, index) => (
+                      <tr
+                        key={item.id}
+                        onClick={() => addItemToBill(item)}
+                        onKeyDown={(e) => handleKeyDown(e, item)}
+                        tabIndex="0"
+                        style={{
+                          backgroundColor: index === selectedIndex ? 'lightblue' : 'transparent'
+                        }}
+                      >
+                        <td>{item.itemCode}</td>
+                        <td>{item.itemName}</td>
+                        <td>{item.itemType}</td>
+                        <td>{item.itemColor}</td>
+                        <td>{item.itemSize}</td>
+                        <td>{item.price}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            )}
+          </div>
           {items.length > 0 && (
             <div ref={tableRef}>
               <table>

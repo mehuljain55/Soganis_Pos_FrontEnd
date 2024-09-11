@@ -51,6 +51,10 @@ const BarcodePrintPage = () => {
     setDraggedIndex(index);
   };
 
+  const handleClearAll = () => {
+    setImages(Array(maxImages).fill(null)); // Clear all images
+  };
+
   const handleDragOver = (event) => {
     event.preventDefault();
   };
@@ -138,6 +142,14 @@ const BarcodePrintPage = () => {
         >
           Print
         </button>
+        <button 
+          onClick={handleClearAll} 
+          style={styles.button} 
+          onMouseOver={(e) => e.currentTarget.style.backgroundColor = styles.buttonHover.backgroundColor} 
+          onMouseOut={(e) => e.currentTarget.style.backgroundColor = styles.button.backgroundColor}
+        >
+          Clear All
+        </button>
       </div>
       <div id="printableArea" style={styles.page}>
         {renderGrid()}
@@ -153,7 +165,7 @@ const styles = {
     alignItems: 'center',
     padding: '20px',
     overflowY: 'auto', // Allow vertical scrolling
-    maxHeight: '110vh', // Set maximum height for the container to allow vertical scrolling
+    maxHeight: '100vh', // Set maximum height for the container to allow vertical scrolling
     overflowX: 'hidden', // Prevent horizontal scrolling
   },
   header: {
