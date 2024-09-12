@@ -1,0 +1,133 @@
+.add-item-stock {
+    padding: 20px;
+    max-width: 100%;
+    overflow-x: auto;
+  }
+  
+  h2 {
+    margin-bottom: 20px;
+  }
+  
+  .add-row-button, .submit-button {
+    margin: 10px 0;
+    padding: 10px 20px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  
+  .add-row-button:hover, .submit-button:hover {
+    background-color: #45a049;
+  }
+  
+  .item-stock-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+  }
+  
+  .item-stock-table th, .item-stock-table td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: center;
+  }
+  
+  /* Set specific column widths using nth-child */
+  .item-stock-table th:nth-child(1),
+  .item-stock-table td:nth-child(1) {
+    width: 10%; /* Width for 'Item Code' */
+  }
+  
+  .item-stock-table th:nth-child(2),
+  .item-stock-table td:nth-child(2) {
+    width: 15%; /* Width for 'Item Name' */
+  }
+  
+  .item-stock-table th:nth-child(3),
+  .item-stock-table td:nth-child(3) {
+    width: 12%; /* Width for 'Item Type' */
+  }
+  
+  .item-stock-table th:nth-child(4),
+  .item-stock-table td:nth-child(4) {
+    width: 8%; /* Width for 'Item Size' */
+  }
+  
+  .item-stock-table th:nth-child(5),
+  .item-stock-table td:nth-child(5) {
+    width: 10%; /* Width for 'Item Color' */
+  }
+  
+  .item-stock-table th:nth-child(6),
+  .item-stock-table td:nth-child(6) {
+    width: 12%; /* Width for 'Item Category' */
+  }
+  
+  .item-stock-table th:nth-child(7),
+  .item-stock-table td:nth-child(7) {
+    width: 8%; /* Width for 'Price' */
+  }
+  
+  .item-stock-table th:nth-child(8),
+  .item-stock-table td:nth-child(8) {
+    width: 10%; /* Width for 'Wholesale Price' */
+  }
+  
+  .item-stock-table th:nth-child(9),
+  .item-stock-table td:nth-child(9) {
+    width: 8%; /* Width for 'Quantity' */
+  }
+  
+  .item-stock-table th:nth-child(10),
+  .item-stock-table td:nth-child(10) {
+    width: 15%; /* Width for 'Description' */
+  }
+  
+  .item-stock-table th {
+    background-color: #707070;
+  }
+  
+  .item-stock-table td input, 
+  .item-stock-table td select {
+    width: 100%;
+    padding: 5px;
+    box-sizing: border-box;
+    border: 1px solid #ccc;
+    border-radius: 3px;
+  }
+  
+  .item-stock-table td input[type="number"] {
+    -moz-appearance: textfield;
+  }
+  
+  .item-stock-table td input[type="number"]::-webkit-outer-spin-button,
+  .item-stock-table td input[type="number"]::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+  
+  .error {
+    border: 1px solid red;
+  }
+  
+  .error-message {
+    color: red;
+    font-size: 0.875em;
+    margin-left: 5px;
+  }
+  
+  .remove-button {
+    background-color: #f44336; /* Red */
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    cursor: pointer;
+    border-radius: 3px;
+  }
+  
+  .remove-button:hover {
+    background-color: #d32f2f; /* Darker red */
+  }
+  

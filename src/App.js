@@ -6,6 +6,10 @@ import FilterPage from './UserComponents/Inventory/FilterPage';
 import FilterSalesPage from './UserComponents/SalesReport/FilterSalesPage';
 import CustomerOrder from './UserComponents/OrderBook/CustomerOrder';
 import OrderView from './UserComponents/OrderBook/OrderView';
+import AddItemStock from './UserComponents/Inventory/AddItemStock';
+
+
+
 import PurchaseOrderBook from './UserComponents/OrderBook/PurchaseOrderBook';
 import BarcodePrintPage from './UserComponents/Billing/BarcodePrintPage';
 
@@ -56,6 +60,7 @@ function App() {
             <Route path="/purchase-order-book" element={<PurchaseOrderBook />} />
             <Route path="/barcode" element={<BarcodePrintPage />} />
             <Route path="/bill" element={<Bill />} />
+            <Route path="/add_item" element={<AddItemStock />} />
         
           </Routes>
         )}
