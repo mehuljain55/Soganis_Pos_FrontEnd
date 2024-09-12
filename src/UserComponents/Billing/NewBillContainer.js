@@ -18,11 +18,8 @@ const NewBillContainer = ({ userData }) => {
   const [schoolName, setSchoolName] = useState('');
   const [selectedIndex, setSelectedIndex] = useState(-1);
   const [shiftPressTime, setShiftPressTime] = useState(null); 
-    
-  
   const [isBarcodeMode, setIsBarcodeMode] = useState(false);
   const [barcode, setBarcode] = useState('');
-
   const searchInputRef = useRef(null);
   const barcodeInputRef = useRef(null);
   const dropdownRef = useRef(null);
@@ -36,9 +33,6 @@ const NewBillContainer = ({ userData }) => {
   const [someState, setSomeState] = useState(false); 
   const [allSchools, setAllSchools] = useState([]);
   const [isAutofilled, setIsAutofilled] = useState(false); // To control if autofill happens
-
-
-
   const [customItem, setCustomItem] = useState({
     itemBarcodeID: 'SG9999999',
     itemType: '',
@@ -94,7 +88,6 @@ const NewBillContainer = ({ userData }) => {
   
   
 
-  
   useEffect(() => {
     if (isBarcodeMode && barcode.trim() !== '') {
       const fetchItemByBarcode = async () => {
