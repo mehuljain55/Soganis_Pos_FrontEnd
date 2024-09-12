@@ -190,8 +190,8 @@ const styles = {
     flexDirection: 'column',
     alignItems: 'center',
     padding: '20px',
-    overflowY: 'auto',
-    maxHeight: '115vh',
+    overflowY: 'auto', // Allow vertical scrolling
+    maxHeight: '100vh', // Set max height to viewport height for scrolling
     overflowX: 'hidden',
   },
   header: {
@@ -210,8 +210,9 @@ const styles = {
     rowGap: '0',
     columnGap: '0',
     boxSizing: 'border-box',
-    overflowY: 'auto',
+    overflowY: 'auto', // Allow scrolling inside the page area
     overflowX: 'hidden',
+    marginBottom: '20px', // Space between pages if there are multiple
   },
   imageWrapper: {
     position: 'relative',
@@ -267,14 +268,16 @@ const styles = {
     backgroundColor: '#0056b3',
   },
   pagination: {
-    marginTop: '20px',
+    marginTop: '10px', // Reduced margin
+    paddingBottom: '40px', // Added padding to create space below the pagination
     display: 'flex',
     gap: '10px',
     justifyContent: 'center',
+    position: 'relative', // Position it relative to the page container
   },
   pageButton: {
-    padding: '8px 16px',
-    fontSize: '16px',
+    padding: '6px 12px', // Slightly smaller button padding for a more compact look
+    fontSize: '14px', // Reduced font size for better fit
     border: '1px solid #ccc',
     borderRadius: '4px',
     cursor: 'pointer',
@@ -282,6 +285,8 @@ const styles = {
     color: '#000',
   },
 };
+
+
 const printStyles = `
 @media print {
   @page {
