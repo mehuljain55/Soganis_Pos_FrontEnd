@@ -1,7 +1,9 @@
 .add-item-stock {
+  height: 100%;
     padding: 20px;
     max-width: 100%;
     overflow-x: auto;
+    overflow-y: scroll;
   }
   
   h2 {
@@ -67,17 +69,17 @@
   
   .item-stock-table th:nth-child(7),
   .item-stock-table td:nth-child(7) {
-    width: 8%; /* Width for 'Price' */
+    width: 6%; /* Width for 'Price' */
   }
   
   .item-stock-table th:nth-child(8),
   .item-stock-table td:nth-child(8) {
-    width: 10%; /* Width for 'Wholesale Price' */
+    width: 6%; /* Width for 'Wholesale Price' */
   }
   
   .item-stock-table th:nth-child(9),
   .item-stock-table td:nth-child(9) {
-    width: 8%; /* Width for 'Quantity' */
+    width: 3%; /* Width for 'Quantity' */
   }
   
   .item-stock-table th:nth-child(10),
@@ -131,3 +133,7 @@
     background-color: #d32f2f; /* Darker red */
   }
   
+
+  .actionBtns button{
+    margin: 10px;
+  }

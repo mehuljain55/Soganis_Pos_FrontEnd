@@ -215,10 +215,9 @@ const AddItemStock = () => {
   return (
     <div className="add-item-stock">
       <h2>Add Item Stock</h2>
-      <button className="add-row-button" onClick={addItemRow}>Add New Item</button>
+      <div className="actionBtns">
       <button className="clear-button" onClick={clearItemRows}>Clear Items</button>
-      <button className="refresh-button" onClick={fetchItemCategoryAndType}>Refresh Categories and Types</button>
-
+      <button className="refresh-button" onClick={fetchItemCategoryAndType}>Refresh</button>
       <input
         type="file"
         accept=".xlsx, .xls"
@@ -226,6 +225,7 @@ const AddItemStock = () => {
         className="upload-button"
         ref={fileInputRef} // Reference for resetting the file input
       />
+ </div>
 
       <table className="item-stock-table">
         <thead>
@@ -348,8 +348,11 @@ const AddItemStock = () => {
           ))}
         </tbody>
       </table>
+      <div className="actionBtns">
+              <button className="add-row-button" onClick={addItemRow}>Add Item</button>
+              <button className="submit-button" onClick={handleSubmit}>Submit</button>
 
-      <button className="submit-button" onClick={handleSubmit}>Submit</button>
+      </div>
     </div>
   );
 };
