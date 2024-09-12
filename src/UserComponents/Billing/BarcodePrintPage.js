@@ -202,7 +202,7 @@ const styles = {
   },
   page: {
     width: '794px',
-    height: '1100px',
+    height: '1123px',
     backgroundColor: 'white',
     display: 'grid',
     gridTemplateColumns: 'repeat(4, 1fr)',
