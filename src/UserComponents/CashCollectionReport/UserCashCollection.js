@@ -26,7 +26,7 @@ const UserCashCollection = () => {
   };
 
   const calculateTotalCashCollection = () => {
-    return userCashCollection.reduce((total, item) => total + item.cash_collection, 0);
+    return userCashCollection.reduce((total, item) => total + item.final_cash_collection, 0);
   };
 
   if (error) {
@@ -43,6 +43,9 @@ const UserCashCollection = () => {
             <th>Collection Date</th>
             <th>User Name</th>
             <th>Cash Collection</th>
+            <th>Cash Returned</th>
+            <th>Total</th>
+            
           </tr>
         </thead>
         <tbody>
@@ -52,12 +55,15 @@ const UserCashCollection = () => {
               <td>{formatDate(item.collection_date)}</td>
               <td>{item.userName}</td>
               <td>{item.cash_collection}</td>
+              <td>{item.cash_return}</td>
+              <td>{item.final_cash_collection}</td>
+              
             </tr>
           ))}
         </tbody>
         <tfoot>
           <tr>
-            <td colSpan="3"><strong>Today's Total Sale</strong></td>
+            <td colSpan="5"><strong>Today's Total Sale</strong></td>
             <td><strong>{calculateTotalCashCollection()}</strong></td>
           </tr>
         </tfoot>

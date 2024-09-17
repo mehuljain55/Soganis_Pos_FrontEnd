@@ -5,7 +5,7 @@ import './AddItemStock.css'; // Import the CSS file
 import { API_BASE_URL } from "../Config.js";
 
 const AddItemStock = () => {
-  const initialItemState = { itemCode: '', itemName: '', itemType: '', itemSize: '', itemColor: '', itemCategory: '', price: '', wholeSalePrice: '', quantity: 0, description: '' };
+  const initialItemState = { itemCode: '', itemName: '', itemType: '', itemSize: '', itemColor: '', itemCategory: '', price: '', wholeSalePrice: '', quantity: 0, description: '', groupId: '' };
   const [items, setItems] = useState([initialItemState]);
   const [itemCategoryOptions, setItemCategoryOptions] = useState([]);
   const [itemTypeOptions, setItemTypeOptions] = useState([]);
@@ -202,7 +202,8 @@ const AddItemStock = () => {
           price: row[6] || '',
           wholeSalePrice: row[7] || '',
           quantity: row[8] || 0,
-          description: row[9] || ''
+          description: row[9] || '',
+          groupId: row[10] || ''
         };
       });
   
@@ -240,6 +241,8 @@ const AddItemStock = () => {
             <th>Wholesale Price</th>
             <th>Quantity</th>
             <th>Barcode Description</th>
+            <th>Group ID</th>
+            
             <th>Action</th>
           </tr>
         </thead>
@@ -340,6 +343,16 @@ const AddItemStock = () => {
                   onKeyDown={(e) => handleKeyDown(e, rowIndex, 9)}
                   placeholder="Description"
                 />
+              </td>
+
+              <td>
+              <input
+                  value={item.groupId}
+                  onChange={(e) => handleInputChange(e, rowIndex, 'groupId')}
+                  onKeyDown={(e) => handleKeyDown(e, rowIndex, 10)}
+                  placeholder="Group Id"
+                />
+              
               </td>
               <td>
         <button onClick={() => removeItemRow(rowIndex)} className="remove-button">Remove</button>
