@@ -64,7 +64,7 @@
   
   .item-stock-table th:nth-child(6),
   .item-stock-table td:nth-child(6) {
-    width: 12%; /* Width for 'Item Category' */
+    width: 10%; /* Width for 'Item Category' */
   }
   
   .item-stock-table th:nth-child(7),
@@ -86,7 +86,18 @@
   .item-stock-table td:nth-child(10) {
     width: 15%; /* Width for 'Description' */
   }
+
+  .item-stock-table th:nth-child(11),
+  .item-stock-table td:nth-child(11) {
+    width: 20%; /* Width for Group Id */
+  }
   
+
+  .item-stock-table th:nth-child(12),
+  .item-stock-table td:nth-child(12) {
+    width: 15%; /* Width for Group Id */
+  }
+
   .item-stock-table th {
     background-color: #707070;
   }

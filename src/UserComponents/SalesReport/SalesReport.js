@@ -3,16 +3,25 @@ import './SalesReport.css';
 import { API_BASE_URL } from "../Config.js";
 
 const SalesReport = ({ data }) => {
-  const totalAmountSum = data.length > 0 ? data.reduce((sum, item) => sum + item.totalAmount, 0) : 0;
+
+  const filteredData = Array.isArray(data) ? data.filter(item => item.totalQuantity > 0) : [];
+
+  const totalAmountSum = filteredData.length > 0 ? filteredData.reduce((sum, item) => sum + item.totalAmount, 0) : 0;
 
   const handleExport = async () => {
+    
+    if (filteredData.length === 0) {
+      alert('No data to export.');
+      
+      return;
+    }
     try {
       const response = await fetch(`${API_BASE_URL}/sales/export`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(data),
+        body: JSON.stringify(filteredData),
       });
 
       if (!response.ok) {
@@ -37,7 +46,7 @@ const SalesReport = ({ data }) => {
     <div className="sales-report">
       <h5>Sales Report </h5>
       <div className="table-container">
-        {data.length > 0 ? (
+        {filteredData.length > 0 ? (
           <table>
             <thead>
               <tr>
@@ -53,7 +62,7 @@ const SalesReport = ({ data }) => {
               </tr>
             </thead>
             <tbody>
-              {data.map((item, index) => (
+              {filteredData.map((item, index) => (
                 <tr key={index}>
                   <td>{item.itemBarcodeID}</td>
                   <td>{item.description}</td>
