@@ -191,28 +191,27 @@ const styles = {
     alignItems: 'center',
     padding: '20px',
     overflowY: 'auto', // Allow vertical scrolling
-    maxHeight: '100vh', // Set max height to viewport height for scrolling
-    overflowX: 'hidden',
+    maxHeight: '110vh', // Set maximum height for the container to allow vertical scrolling
+    overflowX: 'hidden', // Prevent horizontal scrolling
   },
   header: {
     marginBottom: '20px',
     display: 'flex',
-    gap: '10px',
+    gap: '10px', // Add space between the input and buttons
     alignItems: 'center',
   },
   page: {
-    width: '794px',
-    height: '1123px',
-    backgroundColor: 'white',
+    width: '794px', // A4 width in pixels at 96 DPI
+    height: '1100px', // A4 height in pixels at 96 DPI
+    backgroundColor: 'white', // Set background color to white
     display: 'grid',
-    gridTemplateColumns: 'repeat(4, 1fr)',
-    gridTemplateRows: 'repeat(10, 1fr)',
-    rowGap: '0',
-    columnGap: '0',
+    gridTemplateColumns: 'repeat(4, 1fr)', // 4 columns
+    gridTemplateRows: 'repeat(10, 1fr)', // 10 rows
+    rowGap: '0', // Remove row gap
+    columnGap: '0', // Remove column gap
     boxSizing: 'border-box',
-    overflowY: 'auto', // Allow scrolling inside the page area
-    overflowX: 'hidden',
-    marginBottom: '20px', // Space between pages if there are multiple
+    overflowY: 'auto', // Enable vertical scroll if content exceeds the height
+    overflowX: 'hidden', // Prevent horizontal scrolling
   },
   imageWrapper: {
     position: 'relative',
@@ -222,7 +221,7 @@ const styles = {
     justifyContent: 'center',
     alignItems: 'center',
     margin: 0,
-    border: '1px solid lightgray',
+    border: '1px solid lightgray', // Show grid lines on UI
   },
   image: {
     maxWidth: '100%',
@@ -252,73 +251,63 @@ const styles = {
     border: '1px solid #ccc',
     borderRadius: '4px',
     boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
-    width: '200px',
+    width: '200px', // Set width for consistency
   },
   button: {
-    padding: '8px 12px',
+    padding: '8px 16px',
     fontSize: '16px',
-    backgroundColor: '#007bff',
-    color: 'white',
     border: 'none',
     borderRadius: '4px',
     cursor: 'pointer',
-    transition: 'background-color 0.3s ease',
+    color: 'white',
+    backgroundColor: '#007bff',
+    margin: '0 5px', // Space between buttons
+    transition: 'background-color 0.3s',
   },
   buttonHover: {
     backgroundColor: '#0056b3',
   },
-  pagination: {
-    marginTop: '10px', // Reduced margin
-    paddingBottom: '40px', // Added padding to create space below the pagination
-    display: 'flex',
-    gap: '10px',
-    justifyContent: 'center',
-    position: 'relative', // Position it relative to the page container
-  },
-  pageButton: {
-    padding: '6px 12px', // Slightly smaller button padding for a more compact look
-    fontSize: '14px', // Reduced font size for better fit
-    border: '1px solid #ccc',
-    borderRadius: '4px',
-    cursor: 'pointer',
-    backgroundColor: '#ccc',
-    color: '#000',
-  },
 };
-
 
 const printStyles = `
 @media print {
   @page {
     size: A4;
+    margin: 0; /* Remove default margins */
+  }
+
+  body {
     margin: 0;
+    padding: 0;
   }
-  body * {
-    visibility: hidden;
-  }
-  #printableArea, #printableArea * {
-    visibility: visible;
-  }
-  #printableArea {
-    position: absolute;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    background: white;
-    overflow: visible; /* Ensure no scrollbars are visible */
-    border: none; /* Ensure no borders are printed */
-  }
+
   .no-print {
-    display: none; /* Hide elements that should not be printed */
+    display: none !important; /* Ensure elements with 'no-print' class are hidden */
   }
+
+  #printableArea {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    grid-template-rows: repeat(10, 1fr);
+    width: 794px; /* Ensure exact A4 width for print */
+    height: 1100px; /* Ensure exact A4 height for print */
+    margin: 0;
+    padding: 0;
+    background: white; /* Set background color to white for print */
+    overflow: hidden; /* Prevent any scrolling during print */
+  }
+
   .imageWrapper {
-    border: none !important; /* Ensure no borders are printed around images */
+    border: none !important; /* Hide grid lines during print */
   }
-  img {
-    border: none !important; /* Ensure no borders are printed around images */
+
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
   }
 }
 `;
 
 export default BarcodePrintPage;
+
