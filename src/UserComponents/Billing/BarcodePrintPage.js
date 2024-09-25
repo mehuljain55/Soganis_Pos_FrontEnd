@@ -1,16 +1,21 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { API_BASE_URL } from '../Config.js';
 
 const BarcodePrintPage = () => {
+  
   const [images, setImages] = useState([]);
+  
   const [barcode, setBarcode] = useState('');
   const [draggedIndex, setDraggedIndex] = useState(null);
   const [quantity, setQuantity] = useState(1);
   const [currentPage, setCurrentPage] = useState(0);
-  const navigate = useNavigate();
+  const barcodeRef = useRef(null);
+  const quantityRef = useRef(null);
+  
   const imagesPerPage = 40;
 
+  
   const handleGenerateBarcode = async () => {
     if (!barcode || quantity < 1) return;
 
@@ -26,6 +31,9 @@ const BarcodePrintPage = () => {
         }
         return newImages;
       });
+      
+    
+   
     } catch (error) {
       console.error('Error generating barcode:', error);
     }
@@ -266,6 +274,42 @@ const BarcodePrintPage = () => {
     </div>
   );
 
+  const handleKeyDown = (event) => {
+    if (event.key === 'Enter') {
+      if (document.activeElement === barcodeRef.current) {
+        quantityRef.current.focus();
+        event.preventDefault(); 
+      }else if (document.activeElement === quantityRef.current) {
+        // Generate barcode when Enter is pressed in the quantity input
+        handleGenerateBarcode();
+        event.preventDefault(); 
+      }
+    
+    } else if (event.key === 'ArrowDown') {
+      event.preventDefault(); // Prevent the default scrolling behavior
+      if (document.activeElement === barcodeRef.current) {
+        quantityRef.current.focus();
+      } else if (document.activeElement === quantityRef.current) {
+        barcodeRef.current.focus();
+      }
+    } else if (event.key === 'ArrowUp') {
+      event.preventDefault();
+      if (document.activeElement === quantityRef.current) {
+        barcodeRef.current.focus();
+      } else if (document.activeElement === barcodeRef.current) {
+        quantityRef.current.focus();
+      }
+    }
+  };
+
+  useEffect(() => {
+    document.addEventListener('keydown', handleKeyDown);
+    return () => {
+      document.removeEventListener('keydown', handleKeyDown);
+    };
+  }, []);
+
+
   useEffect(() => {
     const styleSheet = document.createElement("style");
     styleSheet.type = "text/css";
@@ -281,20 +325,28 @@ const BarcodePrintPage = () => {
     <div style={styles.container}>
       <div style={styles.sidebar}>
         <div className="no-print" style={styles.header}>
+          <label>
+            Barcode Id
+          </label>
           <input
-            type="text"
-            placeholder="Enter barcode"
-            value={barcode}
-            onChange={(e) => setBarcode(e.target.value)}
-            style={styles.input}
-          />
+          type="text"
+          ref={barcodeRef}
+          value={barcode}
+          onChange={(e) => setBarcode(e.target.value)}
+          placeholder="Enter Barcode"
+          style={styles.input}
+        />
+          <label>
+            Quantity
+          </label>
           <input
-            type="number"
-            placeholder="Quantity"
-            value={quantity}
-            onChange={(e) => setQuantity(Number(e.target.value))}
-            style={styles.input}
-          />
+          type="number"
+          ref={quantityRef}
+          value={quantity}
+          onChange={(e) => setQuantity(Math.max(1, e.target.value))} // Ensure quantity is at least 1
+          min="1"
+          style={styles.input}
+        />
           <button 
             onClick={handleGenerateBarcode} 
             style={styles.button}
@@ -340,7 +392,7 @@ const BarcodePrintPage = () => {
 const styles = {
   container: {
     display: 'flex',
-    maxHeight: '110vh',
+    maxHeight: '100vh',
     overflowY: 'auto',
     overflowX: 'hidden',
   },
