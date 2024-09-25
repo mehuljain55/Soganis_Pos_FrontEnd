@@ -1,5 +1,9 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { API_BASE_URL } from '../Config.js';
+import PrintAllPage from './PrintAllPage';
+
+
 
 const BarcodePrintPage = () => {
   const [images, setImages] = useState([]);
@@ -7,6 +11,8 @@ const BarcodePrintPage = () => {
   const [draggedIndex, setDraggedIndex] = useState(null);
   const [quantity, setQuantity] = useState(1);
   const [currentPage, setCurrentPage] = useState(0);
+  const [showPrintAllPage, setShowPrintAllPage] = useState(false);
+  const navigate = useNavigate();
   const imagesPerPage = 40;
 
   const handleGenerateBarcode = async () => {
@@ -52,7 +58,84 @@ const BarcodePrintPage = () => {
   const handleDragOver = (event) => {
     event.preventDefault();
   };
-
+  
+  const handlePrintAll = () => {
+    const printWindow = window.open('', '_blank', 'width=800,height=600');
+    printWindow.document.write(`
+      <html>
+      <head>
+        <title>Print Barcodes</title>
+        <style>
+          @media print {
+            @page {
+              size: A4;
+              margin: 0; /* Remove default margins */
+            }
+            body {
+              margin: 0;
+              padding: 0;
+            }
+            .page {
+              width: 794px; /* A4 width in pixels at 96 DPI */
+              height: 1123px; /* A4 height in pixels at 96 DPI */
+              display: grid;
+              grid-template-columns: repeat(4, 1fr); /* 4 columns */
+              grid-template-rows: repeat(10, 1fr); /* 10 rows */
+              page-break-after: always; /* New page after each */
+              background-color: white; /* Ensure background is white */
+            }
+            .imageWrapper {
+              display: flex;
+              justify-content: center;
+              align-items: center;
+              border: none; /* Hide grid lines */
+            }
+            img {
+              max-width: 100%;
+              max-height: 100%;
+            }
+          }
+        </style>
+      </head>
+      <body>
+    `);
+  
+    // Filter out any invalid images (e.g., placeholders)
+    const validImages = images.filter(image => image && image !== 'placeholder'); // Adjust condition as necessary
+  
+    // Calculate how many full pages are needed based on valid images
+    const imagesPerPage = 40;
+    const totalPages = Math.ceil(validImages.length / imagesPerPage);
+  
+    for (let page = 0; page < totalPages; page++) {
+      printWindow.document.write('<div class="page">');
+  
+      // Get the current set of images for the page
+      const currentImages = validImages.slice(page * imagesPerPage, (page + 1) * imagesPerPage);
+      currentImages.forEach(image => {
+        printWindow.document.write(`
+          <div class="imageWrapper">
+            <img src="${image}" alt="Barcode" />
+          </div>
+        `);
+      });
+  
+      printWindow.document.write('</div>');
+    }
+  
+    printWindow.document.write(`
+      </body>
+      </html>
+    `);
+    printWindow.document.close();
+  
+    // Wait for the new window to load and then print
+    printWindow.onload = () => {
+      printWindow.print();
+      printWindow.close(); // Close the window after printing
+    };
+  };
+  
   const handleDrop = (index) => {
     if (draggedIndex !== null) {
       const updatedImages = [...images];
@@ -165,6 +248,15 @@ const BarcodePrintPage = () => {
         >
           Print
         </button>
+        <button
+        onClick={handlePrintAll}
+        style={styles.button}
+        onMouseOver={(e) => e.currentTarget.style.backgroundColor = styles.buttonHover.backgroundColor}
+        onMouseOut={(e) => e.currentTarget.style.backgroundColor = styles.button.backgroundColor}
+      >
+        Print All
+      </button>
+
         <button 
           onClick={handleClearAll} 
           style={styles.button}
@@ -173,6 +265,7 @@ const BarcodePrintPage = () => {
         >
           Clear All
         </button>
+        
       </div>
 
       <div id="printableArea" style={styles.page}>
