@@ -1,9 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { API_BASE_URL } from '../Config.js';
-import PrintAllPage from './PrintAllPage';
-
-
 
 const BarcodePrintPage = () => {
   const [images, setImages] = useState([]);
@@ -11,7 +8,6 @@ const BarcodePrintPage = () => {
   const [draggedIndex, setDraggedIndex] = useState(null);
   const [quantity, setQuantity] = useState(1);
   const [currentPage, setCurrentPage] = useState(0);
-  const [showPrintAllPage, setShowPrintAllPage] = useState(false);
   const navigate = useNavigate();
   const imagesPerPage = 40;
 
@@ -44,8 +40,82 @@ const BarcodePrintPage = () => {
   };
 
   const handlePrint = () => {
-    window.print();
-  };
+    const startIndex = currentPage * imagesPerPage;
+    const endIndex = startIndex + imagesPerPage;
+
+    const printWindow = window.open('', '_blank', 'width=800,height=600');
+    printWindow.document.write(`
+      <html>
+        <head>
+          <title>Print Barcodes</title>
+          <style>
+            @media print {
+              @page {
+                size: A4;
+                margin: 0; /* Remove default margins */
+              }
+              body {
+                margin: 0;
+                padding: 0;
+                background: white; /* Set background color to white for print */
+              }
+              #printableArea {
+                display: grid;
+                grid-template-columns: repeat(4, 1fr); /* 4 columns */
+                grid-template-rows: repeat(10, 112px); /* 10 rows with specific height */
+                width: 794px; /* Ensure exact A4 width for print */
+                height: 1123px; /* Ensure exact A4 height for print */
+                margin: 0;
+                padding: 0;
+                overflow: hidden; /* Prevent any scrolling during print */
+              }
+              .imageWrapper {
+                display: flex; /* Center images */
+                justify-content: center;
+                align-items: center;
+                height: 112px; /* Height for each row */
+                border: none !important; /* Ensure no border during print */
+              }
+              img {
+                max-width: 100%;
+                max-height: 100%;
+                display: block;
+              }
+              .emptySlot {
+                display: none; /* Hide the placeholder text */
+              }
+              * {
+                margin: 0;
+                padding: 0;
+                box-sizing: border-box;
+              }
+            }
+          </style>
+        </head>
+        <body>
+          <div id="printableArea">
+            ${Array.from({ length: imagesPerPage }).map((_, index) => {
+                const imageIndex = startIndex + index; // Calculate the image index
+                const image = images[imageIndex]; // Get the image at that index
+                return `
+                  <div class="imageWrapper">
+                    ${image ? `<img src="${image}" alt="Barcode" />` : '<div class="emptySlot"></div>'}
+                  </div>
+                `;
+              }).join('')}
+          </div>
+        </body>
+      </html>
+    `);
+
+    printWindow.document.close(); // Close the document to apply styles
+
+    printWindow.onload = () => {
+      printWindow.print(); // Trigger print when the content is loaded
+      printWindow.close(); // Close the print window after printing
+    };
+};
+
 
   const handleDragStart = (index) => {
     setDraggedIndex(index);
@@ -58,7 +128,7 @@ const BarcodePrintPage = () => {
   const handleDragOver = (event) => {
     event.preventDefault();
   };
-  
+
   const handlePrintAll = () => {
     const printWindow = window.open('', '_blank', 'width=800,height=600');
     printWindow.document.write(`
@@ -99,18 +169,12 @@ const BarcodePrintPage = () => {
       </head>
       <body>
     `);
-  
-    // Filter out any invalid images (e.g., placeholders)
-    const validImages = images.filter(image => image && image !== 'placeholder'); // Adjust condition as necessary
-  
-    // Calculate how many full pages are needed based on valid images
-    const imagesPerPage = 40;
+
+    const validImages = images.filter(image => image && image !== 'placeholder');
     const totalPages = Math.ceil(validImages.length / imagesPerPage);
-  
+
     for (let page = 0; page < totalPages; page++) {
       printWindow.document.write('<div class="page">');
-  
-      // Get the current set of images for the page
       const currentImages = validImages.slice(page * imagesPerPage, (page + 1) * imagesPerPage);
       currentImages.forEach(image => {
         printWindow.document.write(`
@@ -119,23 +183,21 @@ const BarcodePrintPage = () => {
           </div>
         `);
       });
-  
       printWindow.document.write('</div>');
     }
-  
+
     printWindow.document.write(`
       </body>
       </html>
     `);
     printWindow.document.close();
-  
-    // Wait for the new window to load and then print
+
     printWindow.onload = () => {
       printWindow.print();
-      printWindow.close(); // Close the window after printing
+      printWindow.close();
     };
   };
-  
+
   const handleDrop = (index) => {
     if (draggedIndex !== null) {
       const updatedImages = [...images];
@@ -217,62 +279,60 @@ const BarcodePrintPage = () => {
 
   return (
     <div style={styles.container}>
-      <div className="no-print" style={styles.header}>
-        <input
-          type="text"
-          placeholder="Enter barcode"
-          value={barcode}
-          onChange={(e) => setBarcode(e.target.value)}
-          style={styles.input}
-        />
-        <input
-          type="number"
-          placeholder="Quantity"
-          value={quantity}
-          onChange={(e) => setQuantity(Number(e.target.value))}
-          style={styles.input}
-        />
-        <button 
-          onClick={handleGenerateBarcode} 
-          style={styles.button}
-          onMouseOver={(e) => e.currentTarget.style.backgroundColor = styles.buttonHover.backgroundColor} 
-          onMouseOut={(e) => e.currentTarget.style.backgroundColor = styles.button.backgroundColor}
-        >
-          Generate Barcode
-        </button>
-        <button 
-          onClick={handlePrint} 
-          style={styles.button}
-          onMouseOver={(e) => e.currentTarget.style.backgroundColor = styles.buttonHover.backgroundColor} 
-          onMouseOut={(e) => e.currentTarget.style.backgroundColor = styles.button.backgroundColor}
-        >
-          Print
-        </button>
-        <button
-        onClick={handlePrintAll}
-        style={styles.button}
-        onMouseOver={(e) => e.currentTarget.style.backgroundColor = styles.buttonHover.backgroundColor}
-        onMouseOut={(e) => e.currentTarget.style.backgroundColor = styles.button.backgroundColor}
-      >
-        Print All
-      </button>
-
-        <button 
-          onClick={handleClearAll} 
-          style={styles.button}
-          onMouseOver={(e) => e.currentTarget.style.backgroundColor = styles.buttonHover.backgroundColor} 
-          onMouseOut={(e) => e.currentTarget.style.backgroundColor = styles.button.backgroundColor}
-        >
-          Clear All
-        </button>
-        
+      <div style={styles.sidebar}>
+        <div className="no-print" style={styles.header}>
+          <input
+            type="text"
+            placeholder="Enter barcode"
+            value={barcode}
+            onChange={(e) => setBarcode(e.target.value)}
+            style={styles.input}
+          />
+          <input
+            type="number"
+            placeholder="Quantity"
+            value={quantity}
+            onChange={(e) => setQuantity(Number(e.target.value))}
+            style={styles.input}
+          />
+          <button 
+            onClick={handleGenerateBarcode} 
+            style={styles.button}
+            onMouseOver={(e) => e.currentTarget.style.backgroundColor = styles.buttonHover.backgroundColor} 
+            onMouseOut={(e) => e.currentTarget.style.backgroundColor = styles.button.backgroundColor}
+          >
+            Generate Barcode
+          </button>
+          <button 
+            onClick={handlePrint} 
+            style={styles.button}
+            onMouseOver={(e) => e.currentTarget.style.backgroundColor = styles.buttonHover.backgroundColor} 
+            onMouseOut={(e) => e.currentTarget.style.backgroundColor = styles.button.backgroundColor}
+          >
+            Print
+          </button>
+          <button 
+            onClick={handlePrintAll} 
+            style={styles.button}
+            onMouseOver={(e) => e.currentTarget.style.backgroundColor = styles.buttonHover.backgroundColor} 
+            onMouseOut={(e) => e.currentTarget.style.backgroundColor = styles.button.backgroundColor}
+          >
+            Print All
+          </button>
+          <button 
+            onClick={handleClearAll} 
+            style={styles.button}
+            onMouseOver={(e) => e.currentTarget.style.backgroundColor = styles.buttonHover.backgroundColor} 
+            onMouseOut={(e) => e.currentTarget.style.backgroundColor = styles.button.backgroundColor}
+          >
+            Clear All
+          </button>
+        </div>
+        {renderPageNavigation()}
       </div>
-
       <div id="printableArea" style={styles.page}>
         {renderGrid()}
       </div>
-
-      {renderPageNavigation()}
     </div>
   );
 };
@@ -280,82 +340,85 @@ const BarcodePrintPage = () => {
 const styles = {
   container: {
     display: 'flex',
+    maxHeight: '110vh',
+    overflowY: 'auto',
+    overflowX: 'hidden',
+  },
+  sidebar: {
+    display: 'flex',
     flexDirection: 'column',
-    alignItems: 'center',
     padding: '20px',
-    overflowY: 'auto', // Allow vertical scrolling
-    maxHeight: '110vh', // Set maximum height for the container to allow vertical scrolling
-    overflowX: 'hidden', // Prevent horizontal scrolling
+    width: '250px', // Fixed width for sidebar
+    borderRight: '1px solid lightgray',
   },
   header: {
     marginBottom: '20px',
     display: 'flex',
-    gap: '10px', // Add space between the input and buttons
-    alignItems: 'center',
+    flexDirection: 'column', // Stack inputs vertically
+    gap: '10px',
+    alignItems: 'flex-start',
   },
   page: {
-    width: '794px', // A4 width in pixels at 96 DPI
-    height: '1100px', // A4 height in pixels at 96 DPI
-    backgroundColor: 'white', // Set background color to white
+    width: '794px', // A4 width in pixels
+    height: '1123px', // A4 height in pixels
     display: 'grid',
-    gridTemplateColumns: 'repeat(4, 1fr)', // 4 columns
-    gridTemplateRows: 'repeat(10, 1fr)', // 10 rows
-    rowGap: '0', // Remove row gap
-    columnGap: '0', // Remove column gap
-    boxSizing: 'border-box',
-    overflowY: 'auto', // Enable vertical scroll if content exceeds the height
-    overflowX: 'hidden', // Prevent horizontal scrolling
+    gridTemplateColumns: 'repeat(4, 1fr)',
+    gridTemplateRows: 'repeat(10, 1fr)',
+    padding: '20px', // Add padding for spacing
   },
   imageWrapper: {
-    position: 'relative',
-    width: '100%',
-    height: '100%',
+    border: '1px solid lightgray',
+    margin: '5px',
+    padding: '5px',
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
-    margin: 0,
-    border: '1px solid lightgray', // Show grid lines on UI
+    flexDirection: 'column',
+    height: '100%', // Make it fill the grid cell
+    position: 'relative', // Set relative positioning
   },
   image: {
     maxWidth: '100%',
     maxHeight: '100%',
-    display: 'block',
-  },
-  placeholder: {
-    fontSize: '12px',
-    color: 'gray',
   },
   deleteButton: {
-    position: 'absolute',
-    top: '5px',
-    right: '5px',
-    background: 'red',
-    color: 'white',
+    position: 'absolute', // Position absolute to the wrapper
+    top: '5px', // Adjust top positioning
+    right: '5px', // Adjust right positioning
+    background: 'none',
     border: 'none',
-    borderRadius: '50%',
-    width: '20px',
-    height: '20px',
-    fontSize: '14px',
+    color: 'red',
+    fontSize: '20px',
     cursor: 'pointer',
+    marginTop: '5px',
   },
-  input: {
-    padding: '8px 12px',
-    fontSize: '16px',
-    border: '1px solid #ccc',
+  placeholder: {
+    height: '100px', // Set a fixed height for empty slots
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    border: '1px dashed gray',
+    width: '100%',
+    color: 'gray',
+  },
+  pagination: {
+    display: 'flex',
+    justifyContent: 'space-around',
+    marginTop: '20px',
+  },
+  pageButton: {
+    padding: '10px',
+    cursor: 'pointer',
+    border: '1px solid #007bff',
     borderRadius: '4px',
-    boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
-    width: '200px', // Set width for consistency
   },
   button: {
-    padding: '8px 16px',
-    fontSize: '16px',
+    padding: '10px 20px',
+    backgroundColor: '#007bff',
+    color: '#fff',
     border: 'none',
     borderRadius: '4px',
     cursor: 'pointer',
-    color: 'white',
-    backgroundColor: '#007bff',
-    margin: '0 5px', // Space between buttons
-    transition: 'background-color 0.3s',
   },
   buttonHover: {
     backgroundColor: '#0056b3',
@@ -403,4 +466,3 @@ const printStyles = `
 `;
 
 export default BarcodePrintPage;
-
