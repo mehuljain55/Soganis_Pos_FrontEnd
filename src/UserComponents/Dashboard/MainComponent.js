@@ -1,24 +1,20 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom'; 
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faSyncAlt } from '@fortawesome/free-solid-svg-icons';
+import './MainComponent.css'; 
 import NewBillContainer from '../Billing/NewBillContainer.js'; 
 import InterCompanyTranfer from '../Billing/InterCompanyTranfer.js'; 
 import BillDetails from '../Billing/BillDetails.js'; 
-import { useNavigate } from 'react-router-dom'; 
-
 import Salary from '../Salary/Salary.js';
 import UserCashCollection from '../CashCollectionReport/UserCashCollection.js'; 
 import FilterPage from '../Inventory/FilterPage.js'; 
 import SearchModal from '../Inventory/SearchModal.js'; 
-
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faSyncAlt } from '@fortawesome/free-solid-svg-icons';
-import './MainComponent.css'; 
 import FilterSalesPage from '../SalesReport/FilterSalesPage.js'; 
 import CustomerOrder from '../OrderBook/CustomerOrder.js'; 
 import OrderView from '../OrderBook/OrderView.js'; 
 import PurchaseOrderBook from '../OrderBook/PurchaseOrderBook.js'; 
-
-
 import { API_BASE_URL } from '../Config.js';
 
 const MainComponent = ({ userData }) => {
@@ -99,6 +95,7 @@ const MainComponent = ({ userData }) => {
           <button onClick={() => handleMenuItemClick('View Sales Report')}>Sale Report</button>
           <button onClick={() => handleMenuItemClick('Salary Register')}>Salary Register</button>
           <button onClick={() => navigate('/barcode')}>Open Barcode</button>
+          <button onClick={() => navigate('/add_item')}>Add Inventory</button>
         
     
         </div>
