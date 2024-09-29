@@ -1,0 +1,110 @@
+/* Container styling for the main page */
+.container {
+    max-width: 800px;
+    margin: 20px auto;
+    padding: 20px;
+    font-family: Arial, sans-serif;
+    background-color: #f9f9f9;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  }
+  
+  /* Form styling */
+  .form-container {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  
+  input[type="file"] {
+    padding: 5px;
+    font-size: 14px;
+  }
+  
+  button {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    cursor: pointer;
+    border-radius: 5px;
+  }
+  
+  button:hover {
+    background-color: #45a049;
+  }
+  
+  /* Refresh button specific styles */
+  .refresh-button {
+    background-color: #f44336;
+  }
+  
+  .refresh-button:hover {
+    background-color: #e53935;
+  }
+  
+  /* Table container with scroll */
+  .table-container {
+    margin-top: 20px;
+    max-height: 400px; /* Set a max-height for the table to enable scrolling */
+    overflow-y: auto;
+    overflow-x: hidden;
+  }
+  
+  /* Styled table */
+  .styled-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 25px 0;
+    font-size: 18px;
+    text-align: left;
+  }
+  
+  /* Table header styling */
+  .styled-table th {
+    background-color: #4CAF50;
+    color: white;
+    padding: 12px 15px;
+  }
+  
+  /* Table body row styling */
+  .styled-table td {
+    padding: 12px 15px;
+    border: 1px solid #ddd;
+  }
+  
+  /* Row nth-child styling for alternate background */
+  .styled-table tr:nth-child(even) {
+    background-color: #707070;
+  }
+  
+  .styled-table tr:nth-child(odd) {
+    background-color: #ffffff;
+  }
+  
+  /* Table row hover effect */
+  .styled-table tr:hover {
+    background-color: #ddd;
+  }
+  
+  /* Set table width manually and adjust table cell width */
+  .styled-table th:nth-child(1), .styled-table td:nth-child(1) {
+    width: 20%; /* School Code */
+  }
+  
+  .styled-table th:nth-child(2), .styled-table td:nth-child(2) {
+    width: 20%; /* Item Code */
+  }
+  
+  .styled-table th:nth-child(3), .styled-table td:nth-child(3) {
+    width: 20%; /* Size */
+  }
+  
+  .styled-table th:nth-child(4), .styled-table td:nth-child(4) {
+    width: 20%; /* Color */
+  }
+  
+  .styled-table th:nth-child(5), .styled-table td:nth-child(5) {
+    width: 20%; /* Quantity */
+  }
+  

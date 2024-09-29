@@ -7,8 +7,7 @@ import FilterSalesPage from './UserComponents/SalesReport/FilterSalesPage';
 import CustomerOrder from './UserComponents/OrderBook/CustomerOrder';
 import OrderView from './UserComponents/OrderBook/OrderView';
 import AddItemStock from './UserComponents/Inventory/AddItemStock';
-
-
+import AddInventoryItem from './UserComponents/Inventory/AddInventoryItem';
 
 import PurchaseOrderBook from './UserComponents/OrderBook/PurchaseOrderBook';
 import BarcodePrintPage from './UserComponents/Billing/BarcodePrintPage';
@@ -20,6 +19,21 @@ function App() {
   const [userData, setUserData] = useState(null);
   const [serverOffline, setServerOffline] = useState(false);
 
+  // Function to save userData to localStorage
+  const saveUserData = (data) => {
+    setUserData(data);
+    localStorage.setItem('userData', JSON.stringify(data)); // Store in localStorage
+  };
+
+  // Retrieve userData from localStorage when the app loads
+  useEffect(() => {
+    const savedUserData = localStorage.getItem('userData');
+    if (savedUserData) {
+      setUserData(JSON.parse(savedUserData));
+    }
+  }, []);
+
+  // Function to check the server status
   useEffect(() => {
     const checkServerStatus = async () => {
       try {
@@ -49,7 +63,8 @@ function App() {
           </div>
         )}
         {!userData ? (
-          <Login setUserData={setUserData} />
+          // Pass the saveUserData function to Login component
+          <Login setUserData={saveUserData} />
         ) : (
           <Routes>
             <Route path="/" element={<MainComponent userData={userData} />} />
@@ -61,7 +76,7 @@ function App() {
             <Route path="/barcode" element={<BarcodePrintPage />} />
             <Route path="/bill" element={<Bill />} />
             <Route path="/add_item" element={<AddItemStock />} />
-        
+            <Route path="/inventory/update" element={<AddInventoryItem />} />
           </Routes>
         )}
       </div>

@@ -95,7 +95,9 @@ const MainComponent = ({ userData }) => {
           <button onClick={() => handleMenuItemClick('View Sales Report')}>Sale Report</button>
           <button onClick={() => handleMenuItemClick('Salary Register')}>Salary Register</button>
           <button onClick={() => navigate('/barcode')}>Open Barcode</button>
-          <button onClick={() => navigate('/add_item')}>Add Inventory</button>
+          <button onClick={() => window.open('/add_item', '_blank')}>Add Inventory</button>
+<button onClick={() => window.open('/inventory/update', '_blank')}>Update Inventory</button>
+          
         
     
         </div>
