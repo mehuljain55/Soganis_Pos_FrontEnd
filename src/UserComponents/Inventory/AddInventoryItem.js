@@ -1,7 +1,5 @@
 import React, { useState } from "react";
 import axios from "axios";
-import './AddInventoryItem.css'; // CSS file for styling
-import { API_BASE_URL } from '../Config.js';
 
 function AddInventoryItem() {
   const [file, setFile] = useState(null);
@@ -20,7 +18,7 @@ function AddInventoryItem() {
     formData.append("file", file);
 
     try {
-      const response = await axios.post(`${API_BASE_URL}/inventory/add`, formData, {
+      const response = await axios.post("http://localhost:8080/inventory/add", formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
@@ -42,9 +40,9 @@ function AddInventoryItem() {
   };
 
   return (
-    <div className="container">
+    <div>
       <h1>Upload Excel File</h1>
-      <form onSubmit={handleSubmit} className="form-container">
+      <form onSubmit={handleSubmit}>
         <input
           id="fileInput"
           type="file"
@@ -52,7 +50,7 @@ function AddInventoryItem() {
           accept=".xlsx"
         />
         <button type="submit">Upload</button>
-        <button type="button" onClick={handleRefresh} className="refresh-button">
+        <button type="button" onClick={handleRefresh} style={{ marginLeft: "10px" }}>
           Refresh
         </button>
       </form>
@@ -60,26 +58,26 @@ function AddInventoryItem() {
       {error && <p style={{ color: "red" }}>{error}</p>}
 
       {items.length > 0 && (
-        <div className="table-container">
+        <div>
           <h2>Parsed Data</h2>
-          <table className="styled-table">
+          <table style={{ width: "100%", borderCollapse: "collapse" }}>
             <thead>
               <tr>
-                <th>School Code</th>
-                <th>Item Code</th>
-                <th>Size</th>
-                <th>Color</th>
-                <th>Quantity</th>
+                <th style={{ border: "1px solid #ccc", padding: "8px" }}>School Code</th>
+                <th style={{ border: "1px solid #ccc", padding: "8px" }}>Item Code</th>
+                <th style={{ border: "1px solid #ccc", padding: "8px" }}>Size</th>
+                <th style={{ border: "1px solid #ccc", padding: "8px" }}>Color</th>
+                <th style={{ border: "1px solid #ccc", padding: "8px" }}>Quantity</th>
               </tr>
             </thead>
             <tbody>
               {items.map((item, index) => (
-                <tr key={index} className={`row-${(index % 2) + 1}`}>
-                  <td>{item.schoolCode}</td>
-                  <td>{item.itemCode}</td>
-                  <td>{item.size}</td>
-                  <td>{item.itemColor}</td>
-                  <td>{item.quantity}</td>
+                <tr key={index}>
+                  <td style={{ border: "1px solid #ccc", padding: "8px" }}>{item.schoolCode}</td>
+                  <td style={{ border: "1px solid #ccc", padding: "8px" }}>{item.itemCode}</td>
+                  <td style={{ border: "1px solid #ccc", padding: "8px" }}>{item.size}</td>
+                  <td style={{ border: "1px solid #ccc", padding: "8px" }}>{item.itemColor}</td>
+                  <td style={{ border: "1px solid #ccc", padding: "8px" }}>{item.quantity}</td>
                 </tr>
               ))}
             </tbody>

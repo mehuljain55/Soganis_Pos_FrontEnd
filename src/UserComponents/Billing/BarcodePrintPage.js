@@ -131,6 +131,7 @@ const BarcodePrintPage = () => {
 
   const handleClearAll = () => {
     setImages([]);
+    setCurrentPage(0); 
   };
 
   const handleDragOver = (event) => {
