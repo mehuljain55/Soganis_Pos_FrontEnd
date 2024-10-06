@@ -47,6 +47,7 @@ const BarcodePrintPage = () => {
     });
   };
 
+
   const handlePrint = () => {
     const startIndex = currentPage * imagesPerPage;
     const endIndex = startIndex + imagesPerPage;
@@ -133,6 +134,20 @@ const BarcodePrintPage = () => {
     setImages([]);
     setCurrentPage(0); 
   };
+
+  const handleClearCurrentPage = () => {
+    const startIndex = currentPage * imagesPerPage;
+    const endIndex = startIndex + imagesPerPage;
+  
+    setImages((prevImages) => {
+      const updatedImages = [...prevImages];
+      updatedImages.splice(startIndex, imagesPerPage); // Remove all images from the current page
+      return updatedImages;
+    });
+};
+
+  
+  
 
   const handleDragOver = (event) => {
     event.preventDefault();
@@ -380,6 +395,15 @@ const BarcodePrintPage = () => {
           >
             Clear All
           </button>
+
+          <button 
+      onClick={handleClearCurrentPage} 
+      style={styles.button}
+      onMouseOver={(e) => e.currentTarget.style.backgroundColor = styles.buttonHover.backgroundColor} 
+      onMouseOut={(e) => e.currentTarget.style.backgroundColor = styles.button.backgroundColor}
+    >
+      Clear Current Page
+    </button> 
         </div>
         {renderPageNavigation()}
       </div>
@@ -403,6 +427,13 @@ const styles = {
     padding: '20px',
     width: '250px', // Fixed width for sidebar
     borderRight: '1px solid lightgray',
+    position: 'fixed', // Sidebar stays fixed on the screen
+    top: 0, // Align with the top of the page
+    left: 0, // Align with the left side of the page
+    height: '100vh', // Ensure sidebar covers the full height of the screen
+    backgroundColor: '#fff', // Ensure the background remains white
+    zIndex: 1000, // Ensure it stays above the main content
+    overflowY: 'auto', // Allow scrolling within the sidebar if content overflows
   },
   header: {
     marginBottom: '20px',
@@ -418,6 +449,7 @@ const styles = {
     gridTemplateColumns: 'repeat(4, 1fr)',
     gridTemplateRows: 'repeat(10, 1fr)',
     padding: '20px', // Add padding for spacing
+    marginLeft: '270px', // Adjust this to be slightly larger than the sidebar width
   },
   imageWrapper: {
     border: '1px solid lightgray',
@@ -459,11 +491,11 @@ const styles = {
     justifyContent: 'space-around',
     marginTop: '20px',
   },
-  pageButton: {
-    padding: '10px',
-    cursor: 'pointer',
-    border: '1px solid #007bff',
-    borderRadius: '4px',
+  pagination: {
+    display: 'grid',
+    gridTemplateColumns: 'repeat(auto-fill, minmax(50px, 1fr))', // Each button will take at least 50px, and fill the available space
+    gap: '10px', // Space between buttons
+    marginTop: '20px',
   },
   button: {
     padding: '10px 20px',
@@ -477,7 +509,6 @@ const styles = {
     backgroundColor: '#0056b3',
   },
 };
-
 const printStyles = `
 @media print {
   @page {
