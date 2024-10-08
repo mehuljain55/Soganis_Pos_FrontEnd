@@ -5,7 +5,6 @@ import { API_BASE_URL } from '../Config.js';
 const BarcodePrintPage = () => {
   
   const [images, setImages] = useState([]);
-  
   const [barcode, setBarcode] = useState('');
   const [draggedIndex, setDraggedIndex] = useState(null);
   const [quantity, setQuantity] = useState(1);
@@ -339,8 +338,10 @@ const BarcodePrintPage = () => {
 
   return (
     <div style={styles.container}>
+        <div className="sidebar">
       <div style={styles.sidebar}>
         <div className="no-print" style={styles.header}>
+ 
           <label>
             Barcode Id
           </label>
@@ -363,6 +364,8 @@ const BarcodePrintPage = () => {
           min="1"
           style={styles.input}
         />
+
+
           <button 
             onClick={handleGenerateBarcode} 
             style={styles.button}
@@ -373,6 +376,7 @@ const BarcodePrintPage = () => {
           </button>
           <button 
             onClick={handlePrint} 
+          
             style={styles.button}
             onMouseOver={(e) => e.currentTarget.style.backgroundColor = styles.buttonHover.backgroundColor} 
             onMouseOut={(e) => e.currentTarget.style.backgroundColor = styles.button.backgroundColor}
@@ -404,6 +408,7 @@ const BarcodePrintPage = () => {
     >
       Clear Current Page
     </button> 
+    </div>
         </div>
         {renderPageNavigation()}
       </div>
@@ -493,8 +498,8 @@ const styles = {
   },
   pagination: {
     display: 'grid',
-    gridTemplateColumns: 'repeat(auto-fill, minmax(50px, 1fr))', // Each button will take at least 50px, and fill the available space
-    gap: '10px', // Space between buttons
+    gridTemplateColumns: 'repeat(auto-fill, minmax(50px, 1fr))', 
+    gap: '10px', 
     marginTop: '20px',
   },
   button: {

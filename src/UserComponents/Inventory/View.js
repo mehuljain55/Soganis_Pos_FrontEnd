@@ -8,12 +8,10 @@ function AddInventoryItem() {
   const [items, setItems] = useState([]);
   const [error, setError] = useState(null);
 
-  // Handle file selection
   const handleFileChange = (e) => {
     setFile(e.target.files[0]);
   };
 
-  // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
     const formData = new FormData();
