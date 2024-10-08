@@ -1,91 +1,277 @@
-import React, { useState } from "react";
-import axios from "axios";
-import './AddInventoryItem.css'; // CSS file for styling
+import React, { useState, useRef } from 'react';
+import './View.css';
 import { API_BASE_URL } from '../Config.js';
 
-function AddInventoryItem() {
-  const [file, setFile] = useState(null);
-  const [items, setItems] = useState([]);
-  const [error, setError] = useState(null);
+const View = ({ data,onUpdateSuccess }) => {
+  const [searchTerm, setSearchTerm] = useState('');
+  const [maxQuantity, setMaxQuantity] = useState('');
+  const [editableData, setEditableData] = useState({});
+  const [isEditingQuantity, setIsEditingQuantity] = useState(false);
+  const [isEditingPrice, setIsEditingPrice] = useState(false);
 
-  const handleFileChange = (e) => {
-    setFile(e.target.files[0]);
+  // Refs to store input elements for navigation
+  const inputRefs = useRef({});
+
+  const handleSearch = (event) => {
+    setSearchTerm(event.target.value.toLowerCase());
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    const formData = new FormData();
-    formData.append("file", file);
+  const handleQuantityFilter = (event) => {
+    const value = event.target.value;
+    setMaxQuantity(value ? parseInt(value, 10) : '');
+  };
 
+  const handlePlaceOrder = async (barcodedId) => {
     try {
-      const response = await axios.post(`${API_BASE_URL}/inventory/add`, formData, {
+      const response = await fetch(`${API_BASE_URL}/create_order`, {
+        method: 'POST',
         headers: {
-          "Content-Type": "multipart/form-data",
+          'Content-Type': 'application/x-www-form-urlencoded',
         },
+        body: new URLSearchParams({ barcodedId }),
       });
-      setItems(response.data); // The parsed data from backend
-      setError(null);
-    } catch (err) {
-      console.error(err);
-      setError("Failed to upload file");
+
+      if (response.ok) {
+        const status = await response.text();
+        alert(`Order placed successfully: ${status}`);
+      } else {
+        alert('Failed to place order.');
+      }
+    } catch (error) {
+      console.error('Error placing order:', error);
+      alert('An error occurred while placing the order.');
     }
   };
 
-  // Handle refreshing data (clear the state)
-  const handleRefresh = () => {
-    setFile(null);
-    setItems([]);
-    setError(null);
-    document.getElementById('fileInput').value = null; // Reset file input field
+  const handleInputChange = (e, id, field) => {
+    const { value } = e.target;
+    setEditableData((prev) => ({
+      ...prev,
+      [id]: {
+        ...prev[id],
+        [field]: value,
+      },
+    }));
   };
 
+  const handleUpdate = async () => {
+    try {
+      const updates = Object.keys(editableData).map((id) => ({
+        barcodedId: id,
+        price: editableData[id]?.price || data.find((item) => item.itemBarcodeID === id)?.price,
+        quantity: editableData[id]?.quantity || data.find((item) => item.itemBarcodeID === id)?.quantity,
+      }));
+
+      const response = await fetch(`${API_BASE_URL}/update_inventory`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(updates),
+      });
+
+      if (response.ok) {
+        alert('Updates submitted successfully');
+        setEditableData({});
+        setIsEditingQuantity(false);
+        setIsEditingPrice(false);
+        onUpdateSuccess();
+      } else {
+        alert('Failed to update orders.');
+      }
+    } catch (error) {
+      console.error('Error updating orders:', error);
+      alert('An error occurred while updating the orders.');
+    }
+  };
+
+  const handleDiscard = () => {
+    setEditableData({});
+    setIsEditingQuantity(false);
+    setIsEditingPrice(false);
+  };
+
+  const filteredData = data.filter((item) => {
+    const matchesSearchTerm =
+      (item.itemCode && item.itemCode.toLowerCase().includes(searchTerm)) ||
+      (item.itemName && item.itemName.toLowerCase().includes(searchTerm)) ||
+      (item.itemType && item.itemType.toLowerCase().includes(searchTerm)) ||
+      (item.itemColor && item.itemColor.toLowerCase().includes(searchTerm)) ||
+      (item.itemSize && item.itemSize.toLowerCase().includes(searchTerm)) ||
+      (item.itemCategory && item.itemCategory.toLowerCase().includes(searchTerm)) ||
+      (item.group_id && item.group_id.toLowerCase().includes(searchTerm));
+
+    const matchesQuantityFilter =
+      maxQuantity === '' || (item.quantity && item.quantity <= maxQuantity);
+
+    return matchesSearchTerm && matchesQuantityFilter;
+  });
+
+  // Function to handle keyboard navigation
+  const handleKeyDown = (e, rowIndex, columnIndex, field) => {
+    if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(e.key)) {
+      e.preventDefault();
+      let newRow = rowIndex;
+      let newCol = columnIndex;
+  
+      if (e.key === 'ArrowUp') {
+        newRow = rowIndex > 0 ? rowIndex - 1 : rowIndex;
+      } else if (e.key === 'ArrowDown') {
+        newRow = rowIndex < filteredData.length - 1 ? rowIndex + 1 : rowIndex;
+      } else if (e.key === 'ArrowRight') {
+        if (columnIndex > 0) {
+          // Move left if not the first column
+          newCol = columnIndex - 1;
+        }
+      } else if (e.key === 'ArrowLeft') {
+        if (columnIndex < 1) {
+          // Move right if not the last editable column
+          newCol = columnIndex + 1;
+        }
+      }
+  
+      // Construct next field based on new column index and field type
+      const nextField = newCol === 0 ? 'quantity' : 'price';
+      const nextRef = inputRefs.current[`${newRow}-${newCol}-${nextField}`];
+      if (nextRef) {
+        nextRef.focus();
+      }
+    }
+  };
+  
   return (
-    <div className="container">
-      <h1>Upload Excel File</h1>
-      <form onSubmit={handleSubmit} className="form-container">
-        <input
-          id="fileInput"
-          type="file"
-          onChange={handleFileChange}
-          accept=".xlsx"
-        />
-        <button type="submit">Upload</button>
-        <button type="button" onClick={handleRefresh} className="refresh-button">
-          Refresh
+    <div className="view-sales-filter-data-container">
+      <div className="view-sales-filter-data-controls">
+        <button
+          onClick={() => setIsEditingPrice(!isEditingPrice)}
+          className="view-sales-filter-data-edit-btn"
+        >
+          {isEditingPrice ? 'Exit Edit Price' : 'Edit Price'}
         </button>
-      </form>
+        <button
+          onClick={() => setIsEditingQuantity(!isEditingQuantity)}
+          className="view-sales-filter-data-edit-btn"
+        >
+          {isEditingQuantity ? 'Exit Edit Quantity' : 'Edit Quantity'}
+        </button>
+      </div>
 
-      {error && <p style={{ color: "red" }}>{error}</p>}
+      <div className="view-sales-filter-data-search-bar-wrapper">
+        <input
+          type="text"
+          placeholder="Search..."
+          value={searchTerm}
+          onChange={handleSearch}
+          className="view-sales-filter-data-search-bar"
+        />
+        <input
+          type="number"
+          placeholder="Max Quantity"
+          value={maxQuantity}
+          onChange={handleQuantityFilter}
+          className="view-sales-filter-data-quantity-filter"
+        />
+      </div>
 
-      {items.length > 0 && (
-        <div className="table-container">
-          <h2>Parsed Data</h2>
-          <table className="styled-table">
+      <div className="view-sales-filter-data-table-wrapper">
+        {filteredData.length > 0 ? (
+          <table>
             <thead>
               <tr>
-                <th>School Code</th>
+                <th>S.No</th>
                 <th>Item Code</th>
-                <th>Size</th>
-                <th>Color</th>
-                <th>Quantity</th>
+                <th>Item Name</th>
+                <th>Item Type</th>
+                <th>Item Color</th>
+                <th>Item Size</th>
+                <th>Item Category</th>
+                <th>Price</th>
+
+                <th>Available Quantity</th>
+                <th>Added Quantity</th>
+                
+                <th>Group ID</th>
+                <th>Action</th>
               </tr>
             </thead>
             <tbody>
-              {items.map((item, index) => (
-                <tr key={index} className={`row-${(index % 2) + 1}`}>
-                  <td>{item.schoolCode}</td>
+              {filteredData.map((item, rowIndex) => (
+                <tr key={rowIndex}>
+                  <td>{item.sno}</td>
                   <td>{item.itemCode}</td>
-                  <td>{item.size}</td>
+                  <td>{item.itemName}</td>
+                  <td>{item.itemType}</td>
                   <td>{item.itemColor}</td>
+                  <td>{item.itemSize}</td>
+                  <td>{item.itemCategory}</td>
+                  <td>
+                    {isEditingPrice ? (
+                      <input
+                        type="number"
+                        value={editableData[item.itemBarcodeID]?.price ?? item.price}
+                        onChange={(e) => handleInputChange(e, item.itemBarcodeID, 'price')}
+                        ref={(el) =>
+                          (inputRefs.current[`${rowIndex}-1-price`] = el)
+                        }
+                        onKeyDown={(e) => handleKeyDown(e, rowIndex, 1, 'price')}
+                      />
+                    ) : (
+                      item.price
+                    )}
+                  </td>
                   <td>{item.quantity}</td>
+                  <td>
+                    {isEditingQuantity ? (
+                      <input
+                      type="number"
+                      value={editableData[item.itemBarcodeID]?.quantity ?? 0}  // Set initial value to 0
+                      onChange={(e) => handleInputChange(e, item.itemBarcodeID, 'quantity')}
+                      ref={(el) => (inputRefs.current[`${rowIndex}-0-quantity`] = el)}
+                      onKeyDown={(e) => handleKeyDown(e, rowIndex, 0, 'quantity')}
+                    />
+                    
+                    ) : (
+                      item.quantity
+                    )}
+                  </td>
+                  <td>{item.group_id}</td>
+                  <td>
+                    <button
+                      onClick={() => handlePlaceOrder(item.itemBarcodeID)}
+                      className="view-sales-filter-data-place-order-btn"
+                    >
+                      Place Order
+                    </button>
+                  </td>
                 </tr>
               ))}
             </tbody>
           </table>
-        </div>
-      )}
+        ) : (
+          <p>No data found</p>
+        )}
+      </div>
+
+      <div className="view-sales-filter-data-actions">
+        {(isEditingQuantity || isEditingPrice) && (
+          <div className="view-sales-filter-data-actions">
+            <button
+              onClick={handleUpdate}
+              className="view-sales-filter-data-submit-btn"
+            >
+              Submit Updates
+            </button>
+            <button
+              onClick={handleDiscard}
+              className="view-sales-filter-data-cancel-btn"
+            >
+              Discard Changes
+            </button>
+          </div>
+        )}
+      </div>
     </div>
   );
-}
+};
 
-export default AddInventoryItem;
+export default View;
