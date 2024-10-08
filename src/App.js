@@ -8,12 +8,12 @@ import CustomerOrder from './UserComponents/OrderBook/CustomerOrder';
 import OrderView from './UserComponents/OrderBook/OrderView';
 import AddItemStock from './UserComponents/Inventory/AddItemStock';
 import AddInventoryItem from './UserComponents/Inventory/AddInventoryItem';
-
 import PurchaseOrderBook from './UserComponents/OrderBook/PurchaseOrderBook';
 import BarcodePrintPage from './UserComponents/Billing/BarcodePrintPage';
+import Bill from './UserComponents/Billing/Bill';
 
 import './App.css'; // Custom CSS for styling
-import Bill from './UserComponents/Billing/Bill';
+
 
 function App() {
   const [userData, setUserData] = useState(null);
