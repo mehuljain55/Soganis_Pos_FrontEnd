@@ -107,7 +107,7 @@ const View = ({ data,onUpdateSuccess }) => {
     return matchesSearchTerm && matchesQuantityFilter;
   });
 
-  // Function to handle keyboard navigation
+
   const handleKeyDown = (e, rowIndex, columnIndex, field) => {
     if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(e.key)) {
       e.preventDefault();
