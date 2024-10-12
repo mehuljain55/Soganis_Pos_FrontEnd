@@ -17,7 +17,7 @@ const BarcodePrintPage = () => {
   
   const handleGenerateBarcode = async () => {
     if (!barcode || quantity < 1) return;
-
+    
     try {
       const response = await fetch(`${API_BASE_URL}/generate_barcodes?itemCode=${barcode}`);
       const blob = await response.blob();

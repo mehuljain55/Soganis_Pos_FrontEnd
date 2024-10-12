@@ -45,7 +45,7 @@ const PurchaseOrderBook = () => {
 
   
   const handleDeleteOrder = (orderId) => {
-    axios.post(`${API_BASE_URL}/order/delete_order`, null, { params: { orderId } })
+    axios.post(`${API_BASE_URL}/inventory/order/delete_order`, null, { params: { orderId } })
       .then(response => {
         if (response.data === "Success") {
           setOrders(orders.filter(order => order.orderId !== orderId)); // Remove the deleted order from the list
@@ -62,12 +62,25 @@ const PurchaseOrderBook = () => {
       alert('No orders to generate.');
       return;
     }
-
-    axios.post(`${API_BASE_URL}/generate_order`, orders, {
+  
+    // Fetch user from local storage
+    const user = JSON.parse(localStorage.getItem('user'));
+    if (!user) {
+      alert('User not found in local storage.');
+      return;
+    }
+  
+    // Prepare order data including user information
+    const purchaseOrderModel = {
+      purchaseOrderBookList: orders, // Assuming `orders` contains the purchase order books
+      user: user // Attach user fetched from local storage
+    };
+  
+    axios.post(`${API_BASE_URL}/inventory/generate_order`, purchaseOrderModel, {
       responseType: 'blob' 
     })
     .then(response => {
-      const url = window.URL.createObjectURL(new Blob([response.data])); 
+      const url = window.URL.createObjectURL(new Blob([response.data]));
       const link = document.createElement('a');
       link.href = url;
       link.setAttribute('download', 'order.xlsx');
@@ -82,7 +95,7 @@ const PurchaseOrderBook = () => {
       alert('Failed to generate order: ' + error.message);
     });
   };
-
+  
   if (isLoading) return <p>Loading...</p>;
   if (error) return <p>Error: {error}</p>;
 

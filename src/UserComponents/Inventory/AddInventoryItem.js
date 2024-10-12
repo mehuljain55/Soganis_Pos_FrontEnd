@@ -14,22 +14,28 @@ function AddInventoryItem() {
   // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
+  
+    // Fetch the user from local storage
+    const user = JSON.parse(localStorage.getItem("user"));
+  
     const formData = new FormData();
     formData.append("file", file);
-
+    formData.append("user", new Blob([JSON.stringify(user)], { type: "application/json" }));
+  
     try {
       const response = await axios.post("http://localhost:8080/inventory/add", formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
       });
-      setItems(response.data); // The parsed data from backend
+      setItems(response.data); // The parsed data from the backend
       setError(null);
     } catch (err) {
       console.error(err);
       setError("Failed to upload file");
     }
   };
+  
 
   // Handle refreshing data (clear the state)
   const handleRefresh = () => {

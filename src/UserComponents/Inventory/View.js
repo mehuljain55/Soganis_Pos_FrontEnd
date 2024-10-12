@@ -56,20 +56,35 @@ const View = ({ data,onUpdateSuccess }) => {
 
   const handleUpdate = async () => {
     try {
-      const updates = Object.keys(editableData).map((id) => ({
+      // Fetch user from local storage
+      const user = JSON.parse(localStorage.getItem('user'));
+      if (!user) {
+        alert('User not found in local storage.');
+        return;
+      }
+  
+      // Map the data into the expected format
+      const itemAddModel = Object.keys(editableData).map((id) => ({
         barcodedId: id,
         price: editableData[id]?.price || data.find((item) => item.itemBarcodeID === id)?.price,
         quantity: editableData[id]?.quantity || data.find((item) => item.itemBarcodeID === id)?.quantity,
       }));
-
-      const response = await fetch(`${API_BASE_URL}/update_inventory`, {
+  
+      // Create the inventory update model with both items and user
+      const inventoryUpdateModel = {
+        itemAddModel: itemAddModel,
+        user: user
+      };
+  
+      // API request
+      const response = await fetch(`${API_BASE_URL}/inventory/update_inventory`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(updates),
+        body: JSON.stringify(inventoryUpdateModel),
       });
-
+  
       if (response.ok) {
         alert('Updates submitted successfully');
         setEditableData({});
@@ -77,13 +92,14 @@ const View = ({ data,onUpdateSuccess }) => {
         setIsEditingPrice(false);
         onUpdateSuccess();
       } else {
-        alert('Failed to update orders.');
+        alert('Failed to update inventory.');
       }
     } catch (error) {
-      console.error('Error updating orders:', error);
-      alert('An error occurred while updating the orders.');
+      console.error('Error updating inventory:', error);
+      alert('An error occurred while updating the inventory.');
     }
   };
+  
 
   const handleDiscard = () => {
     setEditableData({});
