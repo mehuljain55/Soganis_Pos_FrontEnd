@@ -64,12 +64,23 @@ const ExchangeBill = ({ userData,itemsToExchange, exchangeAmount, onClose }) => 
     fetchAllSchools();
   }, []);
 
-  // Fetch items based on search term (for manual search)
+ 
   useEffect(() => {
-    if (!isBarcodeMode && searchTerm.trim() !== '') {
+    if (searchTerm.trim() !== '') {
       const fetchItems = async () => {
         try {
-          const response = await axios.get(`${API_BASE_URL}/getAllItems?searchTerm=${searchTerm}`);
+          // Fetch user from local storage
+          const user = JSON.parse(localStorage.getItem("user"));
+          const storeId = user ? user.storeId : '';
+  
+          // Make API call with searchTerm and storeId
+          const response = await axios.get(`${API_BASE_URL}/inventory/getAllItems`, {
+            params: {
+              searchTerm: searchTerm,
+              storeId: storeId, // Send storeId from local storage
+            }
+          });
+  
           setSearchResults(response.data || []); // Set search results or empty array
           setSelectedIndex(-1);
         } catch (error) {
@@ -77,6 +88,7 @@ const ExchangeBill = ({ userData,itemsToExchange, exchangeAmount, onClose }) => 
           setSearchResults([]);
         }
       };
+  
       fetchItems();
     }
   }, [searchTerm, isBarcodeMode]);
@@ -338,14 +350,17 @@ const ExchangeBill = ({ userData,itemsToExchange, exchangeAmount, onClose }) => 
       price: item.price,
       return_quantity: item.return_quantity,
     }));
+
+    const userData = JSON.parse(localStorage.getItem('user'));
   
     const requestData = {
       bill: billData,
       itemModel: exchangeData,
+      user: userData,
     };
   
     try {
-      const response = await axios.post(`${API_BASE_URL}/exchange/billRequest`, requestData, {
+      const response = await axios.post(`${API_BASE_URL}/user/exchange/billRequest`, requestData, {
         responseType: 'arraybuffer',
       });
   

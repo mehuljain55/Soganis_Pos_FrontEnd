@@ -67,10 +67,21 @@ const InterCompanyTranfer = ({ userData }) => {
 
   // Fetch items based on search term (for manual search)
   useEffect(() => {
-    if (!isBarcodeMode && searchTerm.trim() !== '') {
+    if (searchTerm.trim() !== '') {
       const fetchItems = async () => {
         try {
-          const response = await axios.get(`${API_BASE_URL}/getAllItems?searchTerm=${searchTerm}`);
+          // Fetch user from local storage
+          const user = JSON.parse(localStorage.getItem("user"));
+          const storeId = user ? user.storeId : '';
+  
+          // Make API call with searchTerm and storeId
+          const response = await axios.get(`${API_BASE_URL}/inventory/getAllItems`, {
+            params: {
+              searchTerm: searchTerm,
+              storeId: storeId, // Send storeId from local storage
+            }
+          });
+  
           setSearchResults(response.data || []); // Set search results or empty array
           setSelectedIndex(-1);
         } catch (error) {
@@ -78,9 +89,12 @@ const InterCompanyTranfer = ({ userData }) => {
           setSearchResults([]);
         }
       };
+  
       fetchItems();
     }
   }, [searchTerm, isBarcodeMode]);
+
+  
 
   const handleCustomItemChange = (e) => {
     const { name, value } = e.target;
@@ -338,7 +352,7 @@ const InterCompanyTranfer = ({ userData }) => {
     };
 
     try {
-      const response = await axios.post(`${API_BASE_URL}/intercompany/billRequest`, billData, { responseType: 'arraybuffer' });
+      const response = await axios.post(`${API_BASE_URL}/user/intercompany/billRequest`, billData, { responseType: 'arraybuffer' });
       const pdfBlob = new Blob([response.data], { type: 'application/pdf' });
       const pdfUrl = URL.createObjectURL(pdfBlob);
 

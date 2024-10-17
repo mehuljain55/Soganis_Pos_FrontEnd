@@ -20,14 +20,14 @@ import { API_BASE_URL } from '../Config.js';
 const MainComponent = ({ userData }) => {
   const [selectedMenuItem, setSelectedMenuItem] = useState('');
   const [todayCashCollection, setTodayCashCollection] = useState(null);
-  const [isSearchModalOpen, setIsSearchModalOpen] = useState(false); // State for modal
-  const navigate = useNavigate(); // Initialize useNavigate
+  const [isSearchModalOpen, setIsSearchModalOpen] = useState(false);
+  const navigate = useNavigate(); 
 
 
 
   const fetchTodayCashCollection = async () => {
     try {
-      const response = await axios.get(`${API_BASE_URL}/getTodayUserCashCollection`, {
+      const response = await axios.get(`${API_BASE_URL}/user/getTodayUserCashCollection`, {
         params: { userId: userData.userId }
       });
       setTodayCashCollection(response.data);
@@ -41,18 +41,18 @@ const MainComponent = ({ userData }) => {
     setSelectedMenuItem(menuItem);
   };
 
-  const handleShortcutKey = (event) => { // Renamed function
+  const handleShortcutKey = (event) => { 
     if (event.ctrlKey && event.key === 'f') {
-      event.preventDefault(); // Prevent default browser behavior
+      event.preventDefault(); 
       setIsSearchModalOpen(true);
     }
   };
 
   useEffect(() => {
     fetchTodayCashCollection();
-    window.addEventListener('keydown', handleShortcutKey); // Updated function name
+    window.addEventListener('keydown', handleShortcutKey); 
     return () => {
-      window.removeEventListener('keydown', handleShortcutKey); // Updated function name
+      window.removeEventListener('keydown', handleShortcutKey); 
     };
   }, []);
 

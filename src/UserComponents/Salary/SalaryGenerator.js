@@ -26,8 +26,10 @@ const SalaryGenerator = () => {
     setLoading(true);
     const month_fy = `${month}_${year}`;
     try {
-      const response = await axios.get(`${API_BASE_URL}/salary/generate`, {
-        params: { month_fy }
+      const userData = JSON.parse(localStorage.getItem('userData'));
+      const storeId = userData?.storeId; // Retrieve storeId from user data
+      const response = await axios.get(`${API_BASE_URL}/user/salary/generate`, {
+        params: { month_fy, storeId }
       });
 
       if (response.status === 200) {
@@ -47,7 +49,7 @@ const SalaryGenerator = () => {
 
   const updateSalaryStatus = async (salary) => {
     try {
-      const response = await axios.post(`${API_BASE_URL}/salary/paid`, salary);
+      const response = await axios.post(`${API_BASE_URL}/user/salary/paid`, salary);
       if (response.status === 200) {
         alert(`Status Update: ${response.data}`);
         fetchSalaries(); // Refresh the data
@@ -64,7 +66,7 @@ const SalaryGenerator = () => {
     setSelectedUserId(userId);
     setSelectedMonthFy(monthFy);
     try {
-      const response = await axios.get(`${API_BASE_URL}/salary/user_salary_statement`, {
+      const response = await axios.get(`${API_BASE_URL}/user/salary/user_salary_statement`, {
         params: { userId, month_fy: monthFy }
       });
 

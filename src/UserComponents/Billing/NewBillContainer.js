@@ -62,7 +62,18 @@ const NewBillContainer = ({ userData }) => {
     if (searchTerm.trim() !== '') {
       const fetchItems = async () => {
         try {
-          const response = await axios.get(`${API_BASE_URL}/getAllItems?searchTerm=${searchTerm}`);
+          // Fetch user from local storage
+          const user = JSON.parse(localStorage.getItem("user"));
+          const storeId = user ? user.storeId : '';
+  
+          // Make API call with searchTerm and storeId
+          const response = await axios.get(`${API_BASE_URL}/inventory/getAllItems`, {
+            params: {
+              searchTerm: searchTerm,
+              storeId: storeId, // Send storeId from local storage
+            }
+          });
+  
           setSearchResults(response.data || []); // Set search results or empty array
           setSelectedIndex(-1);
         } catch (error) {
@@ -70,9 +81,11 @@ const NewBillContainer = ({ userData }) => {
           setSearchResults([]);
         }
       };
+  
       fetchItems();
     }
   }, [searchTerm]);
+  
 
   const handleCustomItemChange = (e) => {
     const { name, value } = e.target;
@@ -331,7 +344,7 @@ const NewBillContainer = ({ userData }) => {
     };
 
     try {
-      const response = await axios.post(`${API_BASE_URL}/billRequest`, billData, { responseType: 'arraybuffer' });
+      const response = await axios.post(`${API_BASE_URL}/user/billRequest`, billData, { responseType: 'arraybuffer' });
       const pdfBlob = new Blob([response.data], { type: 'application/pdf' });
       const pdfUrl = URL.createObjectURL(pdfBlob);
 

@@ -10,16 +10,27 @@ const UserCashCollection = () => {
   useEffect(() => {
     const fetchUserCashCollection = async () => {
       try {
-        const response = await axios.get(`${API_BASE_URL}/getUserCashCollection`);
-        setUserCashCollection(response.data);
+        // Fetch user data from local storage
+        const userData = JSON.parse(localStorage.getItem('userData'));
+        const storeId = userData?.storeId; // Retrieve storeId from user data
+  
+        if (storeId) {
+          // Make API call with storeId as a query parameter
+          const response = await axios.get(`${API_BASE_URL}/user/getUserCashCollection`, {
+            params: { storeId: storeId },
+          });
+          setUserCashCollection(response.data);
+        } else {
+          console.error('Store ID not found in user data');
+        }
       } catch (err) {
         setError(err);
       }
     };
-
+  
     fetchUserCashCollection();
   }, []);
-
+  
   const formatDate = (dateString) => {
     const options = { day: '2-digit', month: '2-digit', year: 'numeric' };
     return new Date(dateString).toLocaleDateString('en-GB', options);

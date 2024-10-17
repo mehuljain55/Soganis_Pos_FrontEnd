@@ -22,7 +22,7 @@ function App() {
   // Function to save userData to localStorage
   const saveUserData = (data) => {
     setUserData(data);
-    localStorage.setItem('userData', JSON.stringify(data)); // Store in localStorage
+    localStorage.setItem('user', JSON.stringify(data)); // Store in localStorage
   };
 
   // Retrieve userData from localStorage when the app loads
@@ -37,7 +37,7 @@ function App() {
   useEffect(() => {
     const checkServerStatus = async () => {
       try {
-        const response = await fetch('http://localhost:8080/health-check');
+        const response = await fetch('http://localhost:8080/user/health-check');
         if (response.ok) {
           setServerOffline(false);
         } else {
