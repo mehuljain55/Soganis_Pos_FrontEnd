@@ -11,7 +11,6 @@ import AddInventoryItem from './UserComponents/Inventory/AddInventoryItem';
 import PurchaseOrderBook from './UserComponents/OrderBook/PurchaseOrderBook';
 import BarcodePrintPage from './UserComponents/Billing/BarcodePrintPage';
 import Bill from './UserComponents/Billing/Bill';
-import { API_BASE_URL } from './UserComponents/Config.js';
 
 import './App.css'; // Custom CSS for styling
 
@@ -38,7 +37,7 @@ function App() {
   useEffect(() => {
     const checkServerStatus = async () => {
       try {
-        const response = await fetch(`${API_BASE_URL}/user/health-check`);
+        const response = await fetch('http://localhost:8080/user/health-check');
         if (response.ok) {
           setServerOffline(false);
         } else {
