@@ -16,15 +16,24 @@ const CustomerOrder = () => {
     const [showModal, setShowModal] = useState(false);
 
     useEffect(() => {
-        fetch(`${API_BASE_URL}/filter/getSchool`)
-            .then(response => response.json())
-            .then(data => setSchools(data))
-            .catch(error => console.error('Error fetching school names:', error));
-
-        fetch(`${API_BASE_URL}/filter/item_type`)
-            .then(response => response.json())
-            .then(data => setItemTypes(data))
-            .catch(error => console.error('Error fetching item types:', error));
+        const userData = JSON.parse(localStorage.getItem('user'));
+        const storeId = userData?.storeId; 
+    
+        if (storeId) {
+            // Fetch school names
+            fetch(`${API_BASE_URL}/user/filter/getSchool?storeId=${storeId}`)
+                .then((response) => response.json())
+                .then((data) => setSchools(data))
+                .catch((error) => console.error('Error fetching school names:', error));
+    
+            // Fetch item types
+            fetch(`${API_BASE_URL}/user/filter/item_type?storeId=${storeId}`)
+                .then((response) => response.json())
+                .then((data) => setItemTypes(data))
+                .catch((error) => console.error('Error fetching item types:', error));
+        } else {
+            console.error('Store ID not found in local storage');
+        }
     }, []);
 
     const handleInputChange = (e, index, field) => {

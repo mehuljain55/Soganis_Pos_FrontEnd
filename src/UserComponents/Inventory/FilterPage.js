@@ -13,45 +13,75 @@ const FilterPage = () => {
   const [data, setData] = useState([]); // State for storing fetched data
 
   useEffect(() => {
-    // Fetch the list of schools when the component mounts
-    axios
-      .get(`${API_BASE_URL}/filter/getSchool`)
-      .then((response) => setSchoolList(response.data))
-      .catch((error) => console.error("Error fetching schools:", error));
+    const userData = JSON.parse(localStorage.getItem('user'));
+    const storeId = userData?.storeId; 
+    if (storeId) {
+      // Fetch the list of schools using storeId as a query parameter
+      axios
+        .get(`${API_BASE_URL}/user/filter/getSchool`, {
+          params: { storeId: storeId }
+        })
+        .then((response) => setSchoolList(response.data))
+        .catch((error) => console.error("Error fetching schools:", error));
+    } else {
+      console.error("Store ID not found in local storage");
+    }
   }, []);
 
   useEffect(() => {
     if (selectedFilter === "filter1" && selectedSchool) {
-      // Fetch item types based on the selected school
-      axios
-        .get(
-          `${API_BASE_URL}/filter/school/item_type?schoolCode=${selectedSchool}`,
-        )
-        .then((response) => setFilteredItemTypeList(response.data))
-        .catch((error) =>
-          console.error("Error fetching item types for school:", error),
-        );
+      const userData = JSON.parse(localStorage.getItem('userData'));
+      const storeId = userData?.storeId; // Retrieve storeId from user data
+  
+      if (storeId) {
+  
+        axios
+          .get(`${API_BASE_URL}/user/filter/school/item_type`, {
+            params: { schoolCode: selectedSchool, storeId: storeId } // Pass both schoolCode and storeId
+          })
+          .then((response) => setFilteredItemTypeList(response.data))
+          .catch((error) =>
+            console.error("Error fetching item types for school:", error)
+          );
+      } else {
+        console.error("Store ID not found in local storage");
+      }
     }
   }, [selectedFilter, selectedSchool]);
 
   useEffect(() => {
     if (selectedFilter === "filter2") {
-      // Fetch all item types when filter 2 is selected
-      axios
-        .get(`${API_BASE_URL}/filter/item_type`)
-        .then((response) => setItemTypeList(response.data))
-        .catch((error) => console.error("Error fetching item types:", error));
+      // Fetch user data from local storage
+      const userData = JSON.parse(localStorage.getItem('user'));
+      const storeId = userData?.storeId; // Retrieve storeId from user data
+  
+      if (storeId) {
+        // Fetch all item types with storeId as query parameter
+        axios
+          .get(`${API_BASE_URL}/user/filter/item_type`, {
+            params: { storeId: storeId } // Pass storeId in the API call
+          })
+          .then((response) => setItemTypeList(response.data))
+          .catch((error) => console.error("Error fetching item types:", error));
+      } else {
+        console.error("Store ID not found in local storage");
+      }
     }
   }, [selectedFilter]);
+  
 
   useEffect(() => {
+      const userData = JSON.parse(localStorage.getItem('user'));
+      const storeId = userData?.storeId; // Retrieve storeId from user data
+  
     if (selectedFilter === "filter1" && selectedSchool && selectedItemType) {
-      // Fetch data based on the selected school and item type for Filter 1
+      
       axios
-        .get(`${API_BASE_URL}/filter/item_category/item_type`, {
+        .get(`${API_BASE_URL}/user/filter/item_category/item_type`, {
           params: {
             schoolCode: selectedSchool,
             itemType: selectedItemType,
+            storeId: storeId,
           },
         })
         .then((response) => setData(response.data))
@@ -64,6 +94,7 @@ const FilterPage = () => {
         .get(`${API_BASE_URL}/filter/item_list_type`, {
           params: {
             itemType: selectedItemType,
+            storeId: storeId,
           },
         })
         .then((response) => setData(response.data))
@@ -73,13 +104,16 @@ const FilterPage = () => {
     } else if (selectedFilter === "filter3" && selectedSchool) {
       // Fetch data based on the selected school for Filter 3
       axios
-        .get(
-          `${API_BASE_URL}/filter/item_list_school_code?schoolCode=${selectedSchool}`,
-        )
-        .then((response) => setData(response.data))
-        .catch((error) =>
-          console.error("Error fetching data for Filter 3:", error),
-        );
+      .get(`${API_BASE_URL}/user/filter/item_list_school_code`, {
+        params: {
+          schoolCode: selectedSchool, // schoolCode from selectedSchool
+          storeId: storeId, // storeId from local storage
+        },
+      })
+      .then((response) => setData(response.data))
+      .catch((error) =>
+        console.error("Error fetching data for Filter 3:", error)
+      );
     }
   }, [selectedFilter, selectedSchool, selectedItemType]);
 
@@ -100,33 +134,41 @@ const FilterPage = () => {
   };
 
   const refreshData = () => {
-    // Fetch data again based on current filter and selection
+
+    const userData = JSON.parse(localStorage.getItem('user'));
+    const storeId = userData?.storeId; // Retrieve storeId from local storage
+  
     if (selectedFilter === "filter1" && selectedSchool && selectedItemType) {
       axios
-        .get(`${API_BASE_URL}/filter/item_category/item_type`, {
+        .get(`${API_BASE_URL}/user/filter/item_category/item_type`, {
           params: {
             schoolCode: selectedSchool,
             itemType: selectedItemType,
+            storeId: storeId,
           },
         })
         .then((response) => setData(response.data))
         .catch((error) => console.error("Error fetching data:", error));
     } else if (selectedFilter === "filter2" && selectedItemType) {
       axios
-        .get(`${API_BASE_URL}/filter/item_list_type`, {
+        .get(`${API_BASE_URL}/user/filter/item_list_type`, {
           params: {
             itemType: selectedItemType,
+            storeId: storeId,
           },
         })
         .then((response) => setData(response.data))
         .catch((error) => console.error("Error fetching data:", error));
     } else if (selectedFilter === "filter3" && selectedSchool) {
       axios
-        .get(
-          `${API_BASE_URL}/filter/item_list_school_code?schoolCode=${selectedSchool}`,
-        )
-        .then((response) => setData(response.data))
-        .catch((error) => console.error("Error fetching data:", error));
+      .get(`${API_BASE_URL}/user/filter/item_list_school_code`, {
+        params: {
+          schoolCode: selectedSchool, // schoolCode from selectedSchool
+          storeId: storeId,
+        },
+      })
+      .then((response) => setData(response.data))
+      .catch((error) => console.error("Error fetching data:", error));
     }
   };
 

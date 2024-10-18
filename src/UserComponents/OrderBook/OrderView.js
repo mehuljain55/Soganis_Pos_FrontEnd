@@ -8,7 +8,7 @@ const OrderView = () => {
     const [expandedOrders, setExpandedOrders] = useState({});
 
     const fetchOrders = () => {
-        fetch(`${API_BASE_URL}/view/customer_order_details?status=${status}`, {
+        fetch(`${API_BASE_URL}/user/view/customer_order_details?status=${status}`, {
             method: 'POST',
         })
             .then(response => response.json())
