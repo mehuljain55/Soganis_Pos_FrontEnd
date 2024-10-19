@@ -54,7 +54,14 @@ const ExchangeBill = ({ userData,itemsToExchange, exchangeAmount, onClose }) => 
   useEffect(() => {
     const fetchAllSchools = async () => {
       try {
-        const response = await axios.get(`${API_BASE_URL}/filter/getSchool`);
+        const user = JSON.parse(localStorage.getItem('user'));
+        const storeId = user?.storeId; // Retrieve storeId from user data
+       
+        const response = await axios.get(`${API_BASE_URL}/user/filter/getSchool`, {
+          params: {
+              storeId: storeId // Include storeId as a query parameter
+          }
+      });;
         setAllSchools(response.data);
       } catch (error) {
         console.error('Error fetching school names:', error);
