@@ -324,8 +324,11 @@ const ExchangeBill = ({ userData,itemsToExchange, exchangeAmount, onClose }) => 
   };
 
   const handleSubmit = async () => {
+    const user = JSON.parse(localStorage.getItem("user"));
+    const storeId = user ? user.storeId : '';
+
     const billData = {
-      userId: userData.userId,
+      userId: user.userId,
       customerName: customerName,
       customerMobileNo: customerMobileNo,
       paymentMode: paymentMode,

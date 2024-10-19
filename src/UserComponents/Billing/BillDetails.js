@@ -32,7 +32,7 @@ const [exchangeAmount, setExchangeAmount] = useState(0);
         const user = JSON.parse(localStorage.getItem('user')); 
         const storeId = user ? user.storeId : ''; 
     
-        axios.get(`${API_BASE_URL}/getBill/${billNo}/${storeId}`)
+        axios.get(`${API_BASE_URL}/user/getBill/${billNo}/${storeId}`)
             .then(response => {
                 setBillData(response.data);
                 setSelectedItems([]);

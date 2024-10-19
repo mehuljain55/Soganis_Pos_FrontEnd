@@ -11,7 +11,7 @@ const UserCashCollection = () => {
     const fetchUserCashCollection = async () => {
       try {
         // Fetch user data from local storage
-        const userData = JSON.parse(localStorage.getItem('userData'));
+        const userData = JSON.parse(localStorage.getItem('user'));
         const storeId = userData?.storeId; // Retrieve storeId from user data
   
         if (storeId) {
@@ -20,6 +20,7 @@ const UserCashCollection = () => {
             params: { storeId: storeId },
           });
           setUserCashCollection(response.data);
+          console.log(response.data);
         } else {
           console.error('Store ID not found in user data');
         }

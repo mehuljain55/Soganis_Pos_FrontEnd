@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import axios from "axios";
+import { API_BASE_URL } from '../Config.js';
 
 function AddInventoryItem() {
   const [file, setFile] = useState(null);
@@ -23,7 +24,7 @@ function AddInventoryItem() {
     formData.append("user", new Blob([JSON.stringify(user)], { type: "application/json" }));
   
     try {
-      const response = await axios.post("http://localhost:8080/inventory/add", formData, {
+      const response = await axios.post(`${API_BASE_URL}/inventory/add`, formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
