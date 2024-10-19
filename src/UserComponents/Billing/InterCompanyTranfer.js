@@ -115,8 +115,14 @@ const InterCompanyTranfer = ({ userData }) => {
     if (isBarcodeMode && barcode.trim() !== '') {
       const fetchItemByBarcode = async () => {
         try {
+          const user = JSON.parse(localStorage.getItem('user'));
+          const storeId = user?.storeId; // Retrieve storeId from user data
+    
           const response = await axios.get(`${API_BASE_URL}/search/item_code`, {
-            params: { barcode: barcode.trim() },
+            params: {
+              barcode: barcode.trim(),
+              storeId: storeId // Include storeId as a query parameter
+            }
           });
           if (response.data) {
             addItemToBill(response.data);

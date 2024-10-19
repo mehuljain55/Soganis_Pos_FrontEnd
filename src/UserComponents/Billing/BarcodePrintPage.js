@@ -19,7 +19,9 @@ const BarcodePrintPage = () => {
     if (!barcode || quantity < 1) return;
     
     try {
-      const response = await fetch(`${API_BASE_URL}/user/generate_barcodes?itemCode=${barcode}`);
+      const userData = JSON.parse(localStorage.getItem('user'));
+      const storeId = userData?.storeId; 
+      const response = await fetch(`${API_BASE_URL}/user/generate_barcodes?itemCode=${barcode}&storeId=${storeId}`);
       const blob = await response.blob();
       const imageUrl = URL.createObjectURL(blob);
 

@@ -11,30 +11,64 @@ const PurchaseOrderBook = () => {
 
   // Fetch the order list data from the API
   useEffect(() => {
-    axios.get(`${API_BASE_URL}/view-order`)
+    setIsLoading(true);
+    setError(null);
+
+    const user = JSON.parse(localStorage.getItem('user'));
+    const storeId = user?.storeId; // Retrieve storeId from localStorage
+
+    if (storeId) {
+      axios.get(`${API_BASE_URL}/user/view-order`, {
+        params: {
+          storeId: storeId // Pass storeId as a query parameter
+        }
+      })
       .then(response => {
-        setOrders(response.data);
-        setIsLoading(false);
+        setOrders(response.data); // Set the fetched orders to the state
+        setIsLoading(false); // Loading is done
       })
       .catch(error => {
-        setError(error.message);
-        setIsLoading(false);
+        setError(error.message); // Set error state if the request fails
+        setIsLoading(false); // Stop loading if there is an error
       });
+    } else {
+      setError("Store ID not found in user data.");
+      setIsLoading(false);
+    }
   }, []);
+
+
 
   const fetchOrders = () => {
     setIsLoading(true);
     setError(null);
-    axios.get(`${API_BASE_URL}/view-order`)
-      .then(response => {
-        setOrders(response.data);
+
+    const user = JSON.parse(localStorage.getItem('user'));
+    const storeId = user?.storeId; // Retrieve storeId from localStorage
+
+    if (storeId) {
+        axios.get(`${API_BASE_URL}/user/view-order`, {
+            params: {
+                storeId: storeId // Pass storeId as a query parameter
+            }
+        })
+        .then(response => {
+            setOrders(response.data); // Set the orders from the response
+            console.log("Order");
+            console.log(orders);
+            setIsLoading(false);
+        })
+        .catch(error => {
+            setError(error.message);
+            setIsLoading(false);
+        });
+    } else {
+        console.error("storeId not found in user data.");
+        setError("Store ID not found.");
         setIsLoading(false);
-      })
-      .catch(error => {
-        setError(error.message);
-        setIsLoading(false);
-      });
-  };
+    }
+};
+
 
   // Handle quantity change
   const handleQuantityChange = (index, value) => {

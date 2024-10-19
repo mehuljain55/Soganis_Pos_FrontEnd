@@ -3,12 +3,16 @@ import './CustomerOrder.css';
 import { API_BASE_URL } from '../Config.js';
 
 const CustomerOrder = () => {
+    const user = JSON.parse(localStorage.getItem('user'));
+    const storeId = user?.storeId || ''; // Retrieve storeId from localStorage or set it to an empty string if not available
+
     const [order, setOrder] = useState({
         customerName: '',
         mobileNo: '',
         deliveryDate: '',
         totalAmount: 0,
         advancePayment: 0,
+        storeId: storeId,
         orders: [{ schoolName: '', itemType: '', description: '', size: '', quantity: 0, price: 0, amount: 0 }]
     });
     const [schools, setSchools] = useState([]);
@@ -61,7 +65,15 @@ const CustomerOrder = () => {
     };
 
     const handleConfirm = () => {
-        fetch(`${API_BASE_URL}/customer_order_details`, {
+        const user = JSON.parse(localStorage.getItem('user'));
+        const storeId = user?.storeId; // Retrieve storeId from user data
+
+        const updatedOrder = {
+            ...order,
+            storeId: storeId // Include storeId in the order object
+        };
+    
+        fetch(`${API_BASE_URL}/user/customer_order_details`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'

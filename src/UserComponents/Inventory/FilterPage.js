@@ -30,7 +30,7 @@ const FilterPage = () => {
 
   useEffect(() => {
     if (selectedFilter === "filter1" && selectedSchool) {
-      const userData = JSON.parse(localStorage.getItem('userData'));
+      const userData = JSON.parse(localStorage.getItem('user'));
       const storeId = userData?.storeId; // Retrieve storeId from user data
   
       if (storeId) {

@@ -23,13 +23,20 @@ const View = ({ data,onUpdateSuccess }) => {
 
   const handlePlaceOrder = async (barcodedId) => {
     try {
-      const response = await fetch(`${API_BASE_URL}/create_order`, {
+      const user = JSON.parse(localStorage.getItem('user'));
+      const storeId = user?.storeId; // Retrieve storeId from localStorage
+      
+      const response = await fetch(`${API_BASE_URL}/user/create_order`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded',
         },
-        body: new URLSearchParams({ barcodedId }),
+        body: new URLSearchParams({
+          barcodedId: barcodedId,  // Send barcodedId
+          storeId: storeId         // Send storeId as well
+        }),
       });
+    
 
       if (response.ok) {
         const status = await response.text();
