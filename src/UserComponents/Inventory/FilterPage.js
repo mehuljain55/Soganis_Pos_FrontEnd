@@ -24,7 +24,7 @@ const FilterPage = () => {
         .then((response) => setSchoolList(response.data))
         .catch((error) => console.error("Error fetching schools:", error));
     } else {
-      console.error("Store ID not found in local storage");
+      console.error("Store ID not found in session storage");
     }
   }, []);
 
@@ -44,14 +44,13 @@ const FilterPage = () => {
             console.error("Error fetching item types for school:", error)
           );
       } else {
-        console.error("Store ID not found in local storage");
+        console.error("Store ID not found in session storage");
       }
     }
   }, [selectedFilter, selectedSchool]);
 
   useEffect(() => {
     if (selectedFilter === "filter2") {
-      // Fetch user data from local storage
       const userData = JSON.parse(sessionStorage.getItem('user'));
       const storeId = userData?.storeId; // Retrieve storeId from user data
   
@@ -64,7 +63,7 @@ const FilterPage = () => {
           .then((response) => setItemTypeList(response.data))
           .catch((error) => console.error("Error fetching item types:", error));
       } else {
-        console.error("Store ID not found in local storage");
+        console.error("Store ID not found in session storage");
       }
     }
   }, [selectedFilter]);
@@ -107,7 +106,7 @@ const FilterPage = () => {
       .get(`${API_BASE_URL}/user/filter/item_list_school_code`, {
         params: {
           schoolCode: selectedSchool, // schoolCode from selectedSchool
-          storeId: storeId, // storeId from local storage
+          storeId: storeId, 
         },
       })
       .then((response) => setData(response.data))
@@ -136,7 +135,7 @@ const FilterPage = () => {
   const refreshData = () => {
 
     const userData = JSON.parse(sessionStorage.getItem('user'));
-    const storeId = userData?.storeId; // Retrieve storeId from local storage
+    const storeId = userData?.storeId; 
   
     if (selectedFilter === "filter1" && selectedSchool && selectedItemType) {
       axios

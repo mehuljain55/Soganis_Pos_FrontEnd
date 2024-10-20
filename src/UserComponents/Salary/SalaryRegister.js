@@ -14,7 +14,7 @@ const SalaryRegister = () => {
     const fetchUserList = async () => {
       try {
 
-        const userData = JSON.parse(localStorage.getItem('user'));
+        const userData = JSON.parse(sessionStorage.getItem('user'));
         const storeId = userData?.storeId; // Retrieve storeId from userData
   
         if (storeId) {

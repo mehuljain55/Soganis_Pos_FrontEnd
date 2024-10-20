@@ -14,8 +14,8 @@ const PurchaseOrderBook = () => {
     setIsLoading(true);
     setError(null);
 
-    const user = JSON.parse(localStorage.getItem('user'));
-    const storeId = user?.storeId; // Retrieve storeId from localStorage
+    const user = JSON.parse(sessionStorage.getItem('user'));
+    const storeId = user?.storeId; 
 
     if (storeId) {
       axios.get(`${API_BASE_URL}/user/view-order`, {
@@ -43,8 +43,8 @@ const PurchaseOrderBook = () => {
     setIsLoading(true);
     setError(null);
 
-    const user = JSON.parse(localStorage.getItem('user'));
-    const storeId = user?.storeId; // Retrieve storeId from localStorage
+    const user = JSON.parse(sessionStorage.getItem('user'));
+    const storeId = user?.storeId; 
 
     if (storeId) {
         axios.get(`${API_BASE_URL}/user/view-order`, {
@@ -97,17 +97,17 @@ const PurchaseOrderBook = () => {
       return;
     }
   
-    // Fetch user from local storage
-    const user = JSON.parse(localStorage.getItem('user'));
+    
+    const user = JSON.parse(sessionStorage.getItem('user'));
     if (!user) {
-      alert('User not found in local storage.');
+      alert('User not found in session storage.');
       return;
     }
   
     // Prepare order data including user information
     const purchaseOrderModel = {
       purchaseOrderBookList: orders, // Assuming `orders` contains the purchase order books
-      user: user // Attach user fetched from local storage
+      user: user 
     };
   
     axios.post(`${API_BASE_URL}/inventory/generate_order`, purchaseOrderModel, {

@@ -3,9 +3,8 @@ import './CustomerOrder.css';
 import { API_BASE_URL } from '../Config.js';
 
 const CustomerOrder = () => {
-    const user = JSON.parse(localStorage.getItem('user'));
-    const storeId = user?.storeId || ''; // Retrieve storeId from localStorage or set it to an empty string if not available
-
+    const user = JSON.parse(sessionStorage.getItem('user'));
+    const storeId = user?.storeId || '';
     const [order, setOrder] = useState({
         customerName: '',
         mobileNo: '',
@@ -20,7 +19,7 @@ const CustomerOrder = () => {
     const [showModal, setShowModal] = useState(false);
 
     useEffect(() => {
-        const userData = JSON.parse(localStorage.getItem('user'));
+        const userData = JSON.parse(sessionStorage.getItem('user'));
         const storeId = userData?.storeId; 
     
         if (storeId) {
@@ -36,7 +35,7 @@ const CustomerOrder = () => {
                 .then((data) => setItemTypes(data))
                 .catch((error) => console.error('Error fetching item types:', error));
         } else {
-            console.error('Store ID not found in local storage');
+            console.error('Store ID not found in session storage');
         }
     }, []);
 
@@ -65,7 +64,7 @@ const CustomerOrder = () => {
     };
 
     const handleConfirm = () => {
-        const user = JSON.parse(localStorage.getItem('user'));
+        const user = JSON.parse(sessionStorage.getItem('user'));
         const storeId = user?.storeId; // Retrieve storeId from user data
 
         const updatedOrder = {

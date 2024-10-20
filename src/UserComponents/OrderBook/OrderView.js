@@ -8,7 +8,7 @@ const OrderView = () => {
     const [expandedOrders, setExpandedOrders] = useState({});
 
     const fetchOrders = () => {
-        const user = JSON.parse(localStorage.getItem('user'));
+        const user = JSON.parse(sessionStorage.getItem('user'));
         const storeId = user?.storeId; // Retrieve storeId from user data
     
         fetch(`${API_BASE_URL}/user/view/customer_order_details?status=${status}&storeId=${storeId}`, {
