@@ -8,8 +8,7 @@ const SalaryRegister = () => {
   const [rows, setRows] = useState([{ userId: '', description: '', type: 'SELECT', date: new Date().toISOString().split('T')[0], amount: 0, hours: 0 }]);
   const [errorRows, setErrorRows] = useState([]);
   const [showPopup, setShowPopup] = useState(false);
-  const [popupStatus, setPopupStatus] = useState(null); // 'success' or 'failed'
-
+  const [popupStatus, setPopupStatus] = useState(null);
   useEffect(() => {
     const fetchUserList = async () => {
       try {

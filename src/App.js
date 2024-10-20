@@ -12,6 +12,8 @@ import PurchaseOrderBook from './UserComponents/OrderBook/PurchaseOrderBook';
 import BarcodePrintPage from './UserComponents/Billing/BarcodePrintPage';
 import Bill from './UserComponents/Billing/Bill';
 import { API_BASE_URL } from './UserComponents/Config.js';
+import StoreComponent from './UserComponents/Store/StoreComponent'; // Importing StoreComponent
+import StoreLogin from './UserComponents/Store/StoreLogin'; // Importing StoreLogin
 
 import './App.css'; 
 
@@ -55,28 +57,34 @@ function App() {
 
   return (
     <Router>
-      <div className="App">
-        {serverOffline && (
-          <div className="offline-dialog">
-            <p>Server is offline. Please check your connection.</p>
-          </div>
-        )}
-        {!userData ? (
-          <Login setUserData={saveUserData} />
-        ) : (
-          <Routes>
-            <Route path="/" element={<MainComponent userData={userData} />} />
-            <Route path="/filter" element={<FilterPage />} />
-            <Route path="/filter-sales" element={<FilterSalesPage />} />
-            <Route path="/customer-order" element={<CustomerOrder />} />
-            <Route path="/view_customer_order" element={<OrderView />} />
-            <Route path="/purchase-order-book" element={<PurchaseOrderBook />} />
-            <Route path="/barcode" element={<BarcodePrintPage />} />
-            <Route path="/bill" element={<Bill />} />
-            <Route path="/add_item" element={<AddItemStock />} />
-            <Route path="/inventory/update" element={<AddInventoryItem />} />
-          </Routes>
-        )}
+    <div className="App">
+      {serverOffline && (
+        <div className="offline-dialog">
+          <p>Server is offline. Please check your connection.</p>
+        </div>
+      )}
+    <Routes>
+          <Route path="/store/login" element={<StoreLogin />} />
+          <Route path="/store/dashboard" element={<StoreComponent />} />
+
+          {/* Conditional rendering based on userData for main app routes */}
+          {!userData ? (
+            <Route path="*" element={<Login setUserData={saveUserData} />} /> // Catch-all for login
+          ) : (
+            <>
+              <Route path="/" element={<MainComponent userData={userData} />} />
+              <Route path="/filter" element={<FilterPage />} />
+              <Route path="/filter-sales" element={<FilterSalesPage />} />
+              <Route path="/customer-order" element={<CustomerOrder />} />
+              <Route path="/view_customer_order" element={<OrderView />} />
+              <Route path="/purchase-order-book" element={<PurchaseOrderBook />} />
+              <Route path="/barcode" element={<BarcodePrintPage />} />
+              <Route path="/bill" element={<Bill />} />
+              <Route path="/add_item" element={<AddItemStock />} />
+              <Route path="/inventory/update" element={<AddInventoryItem />} />
+            </>
+          )}
+        </Routes>
       </div>
     </Router>
   );
