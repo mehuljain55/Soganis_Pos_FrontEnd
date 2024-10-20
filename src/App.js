@@ -13,20 +13,17 @@ import BarcodePrintPage from './UserComponents/Billing/BarcodePrintPage';
 import Bill from './UserComponents/Billing/Bill';
 import { API_BASE_URL } from './UserComponents/Config.js';
 
-import './App.css'; // Custom CSS for styling
+import './App.css'; 
 
 
 function App() {
   const [userData, setUserData] = useState(null);
   const [serverOffline, setServerOffline] = useState(false);
 
-  // Function to save userData to localStorage
   const saveUserData = (data) => {
     setUserData(data);
-    localStorage.setItem('user', JSON.stringify(data)); // Store in localStorage
-  };
+    localStorage.setItem('user', JSON.stringify(data));   };
 
-  // Retrieve userData from localStorage when the app loads
   useEffect(() => {
     const savedUserData = localStorage.getItem('userData');
     if (savedUserData) {
@@ -34,7 +31,6 @@ function App() {
     }
   }, []);
 
-  // Function to check the server status
   useEffect(() => {
     const checkServerStatus = async () => {
       try {
@@ -49,10 +45,10 @@ function App() {
       }
     };
 
-    checkServerStatus(); // Initial check on mount
+    checkServerStatus(); 
     const interval = setInterval(checkServerStatus, 20000); // Check every 20 seconds
 
-    return () => clearInterval(interval); // Cleanup on unmount
+    return () => clearInterval(interval);
   }, []);
 
   return (
@@ -64,7 +60,6 @@ function App() {
           </div>
         )}
         {!userData ? (
-          // Pass the saveUserData function to Login component
           <Login setUserData={saveUserData} />
         ) : (
           <Routes>
