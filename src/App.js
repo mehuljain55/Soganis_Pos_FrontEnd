@@ -50,7 +50,7 @@ function App() {
     };
 
     checkServerStatus(); // Initial check on mount
-    const interval = setInterval(checkServerStatus, 5000); // Check every 5 seconds
+    const interval = setInterval(checkServerStatus, 20000); // Check every 20 seconds
 
     return () => clearInterval(interval); // Cleanup on unmount
   }, []);
