@@ -22,10 +22,12 @@ function App() {
 
   const saveUserData = (data) => {
     setUserData(data);
-    localStorage.setItem('user', JSON.stringify(data));   };
+    localStorage.setItem('user', JSON.stringify(data)); 
+    sessionStorage.setItem('user', JSON.stringify(data)); 
+    };
 
   useEffect(() => {
-    const savedUserData = localStorage.getItem('userData');
+    const savedUserData = sessionStorage.getItem('userData');
     if (savedUserData) {
       setUserData(JSON.parse(savedUserData));
     }

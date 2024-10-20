@@ -41,7 +41,7 @@ function AddInventoryItem() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const user = JSON.parse(localStorage.getItem("user"));
+    const user = JSON.parse(sessionStorage.getItem("user"));
     const storeId = user ? user.storeId : '';
     setStoreId(storeId); // Set the storeId state
 

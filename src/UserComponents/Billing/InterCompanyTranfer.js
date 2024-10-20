@@ -55,7 +55,7 @@ const InterCompanyTranfer = ({ userData }) => {
   useEffect(() => {
     const fetchAllSchools = async () => {
       try {
-        const user = JSON.parse(localStorage.getItem('user'));
+        const user = JSON.parse(sessionStorage.getItem('user'));
         const storeId = user?.storeId; // Retrieve storeId from user data
         const response = await axios.get(`${API_BASE_URL}/user/filter/getSchool`, {
           params: {
@@ -76,15 +76,15 @@ const InterCompanyTranfer = ({ userData }) => {
     if (searchTerm.trim() !== '') {
       const fetchItems = async () => {
         try {
-          // Fetch user from local storage
-          const user = JSON.parse(localStorage.getItem("user"));
+         
+          const user = JSON.parse(sessionStorage.getItem("user"));
           const storeId = user ? user.storeId : '';
   
           // Make API call with searchTerm and storeId
           const response = await axios.get(`${API_BASE_URL}/inventory/getAllItems`, {
             params: {
               searchTerm: searchTerm,
-              storeId: storeId, // Send storeId from local storage
+              storeId: storeId, 
             }
           });
   
@@ -121,7 +121,7 @@ const InterCompanyTranfer = ({ userData }) => {
     if (isBarcodeMode && barcode.trim() !== '') {
       const fetchItemByBarcode = async () => {
         try {
-          const user = JSON.parse(localStorage.getItem('user'));
+          const user = JSON.parse(sessionStorage.getItem('user'));
           const storeId = user?.storeId; // Retrieve storeId from user data
     
           const response = await axios.get(`${API_BASE_URL}/search/item_code`, {

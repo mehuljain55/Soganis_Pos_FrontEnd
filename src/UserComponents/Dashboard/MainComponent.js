@@ -14,13 +14,15 @@ import SearchModal from '../Inventory/SearchModal.js';
 import FilterSalesPage from '../SalesReport/FilterSalesPage.js'; 
 import CustomerOrder from '../OrderBook/CustomerOrder.js'; 
 import OrderView from '../OrderBook/OrderView.js'; 
-import PurchaseOrderBook from '../OrderBook/PurchaseOrderBook.js'; 
+import PurchaseOrderBook from '../OrderBook/PurchaseOrderBook.js';
+import AddInventoryItem from '../Inventory/AddInventoryItem.js'; 
 import { API_BASE_URL } from '../Config.js';
 
 const MainComponent = ({ userData }) => {
   const [selectedMenuItem, setSelectedMenuItem] = useState('');
   const [todayCashCollection, setTodayCashCollection] = useState(null);
   const [isSearchModalOpen, setIsSearchModalOpen] = useState(false);
+  const user = JSON.parse(sessionStorage.getItem("user"));
   const navigate = useNavigate(); 
 
 
@@ -69,6 +71,8 @@ const MainComponent = ({ userData }) => {
         {userData && (
           <div>
             <span>User: {userData.sname}</span>
+            
+            <span>Shop: {userData.storeId}</span>
             <span style={{ marginLeft: '20px' }}>
               Today Cash Collection: {todayCashCollection}
               <button className="refresh-button" onClick={fetchTodayCashCollection}>
@@ -95,9 +99,10 @@ const MainComponent = ({ userData }) => {
           <button onClick={() => handleMenuItemClick('View Sales Report')}>Sale Report</button>
           <button onClick={() => handleMenuItemClick('Salary Register')}>Salary Register</button>
           <button onClick={() => navigate('/barcode')}>Open Barcode</button>
+          <button onClick={() => handleMenuItemClick('Update Inventory')}>Update Inventory</button>
+      
           <button onClick={() => window.open('/add_item', '_blank')}>Add Inventory</button>
-<button onClick={() => window.open('/inventory/update', '_blank')}>Update Inventory</button>
-          
+         
         
     
         </div>
@@ -117,6 +122,7 @@ const MainComponent = ({ userData }) => {
           {selectedMenuItem === 'View Sales Report' && <FilterSalesPage />}
         
           {selectedMenuItem === "Today's Sale" && <p>Today's Sale Component</p>}
+          {selectedMenuItem === 'Update Inventory' && <AddInventoryItem />}
         
         </main>
       </div>

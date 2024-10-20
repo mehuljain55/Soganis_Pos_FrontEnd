@@ -18,6 +18,8 @@ const LogoutPage = ({ setUserData }) => {
   // Function to handle logout
   const handleLogout = () => {
     localStorage.removeItem('userData'); // Remove user data from local storage
+    sessionStorage.removeItem('userData'); // Remove user data from local storage
+   
     setUserData(null); // Reset the user data state in the App component
     navigate('/'); // Redirect to the login page
   };

@@ -29,7 +29,7 @@ const [exchangeAmount, setExchangeAmount] = useState(0);
     };
 
     const fetchBill = () => {
-        const user = JSON.parse(localStorage.getItem('user')); 
+        const user = JSON.parse(sessionStorage.getItem('user')); 
         const storeId = user ? user.storeId : ''; 
     
         axios.get(`${API_BASE_URL}/user/getBill/${billNo}/${storeId}`)

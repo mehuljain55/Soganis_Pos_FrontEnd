@@ -5,7 +5,7 @@ import './AddItemStock.css'; // Import the CSS file
 import { API_BASE_URL } from "../Config.js";
 
 const AddItemStock = () => {
-  const user = JSON.parse(localStorage.getItem("user"));
+  const user = JSON.parse(sessionStorage.getItem("user"));
   const initialItemState = { itemCode: '',itemName: '',itemType: '',itemSize: '',itemColor: '',itemCategory: '',price: '',wholeSalePrice: '', quantity: 0,description: '',groupId: '',storeId: user ? user.storeId : ''};
   const [items, setItems] = useState([initialItemState]);
   const [itemCategoryOptions, setItemCategoryOptions] = useState([]);
@@ -20,7 +20,6 @@ const AddItemStock = () => {
 
   const fetchItemCategoryAndType = async () => {
     try {
-      const user = JSON.parse(localStorage.getItem("user"));
       const storeId = user ? user.storeId : '';
   
       const categoryResponse = await axios.get(`${API_BASE_URL}/inventory/search/school_list`, {
@@ -109,7 +108,6 @@ const AddItemStock = () => {
 
   const checkItemCode = async (itemCode) => {
     try {
-      const user = JSON.parse(localStorage.getItem("user"));
       const storeId = user ? user.storeId : '';
   
       const response = await axios.get(`${API_BASE_URL}/inventory/check/item_code`, { 

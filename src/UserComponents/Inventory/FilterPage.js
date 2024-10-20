@@ -11,9 +11,9 @@ const FilterPage = () => {
   const [selectedItemType, setSelectedItemType] = useState(""); // State for selected item type
   const [filteredItemTypeList, setFilteredItemTypeList] = useState([]);
   const [data, setData] = useState([]); // State for storing fetched data
-
+  const userData = JSON.parse(sessionStorage.getItem('user'));
   useEffect(() => {
-    const userData = JSON.parse(localStorage.getItem('user'));
+
     const storeId = userData?.storeId; 
     if (storeId) {
       // Fetch the list of schools using storeId as a query parameter
@@ -30,7 +30,7 @@ const FilterPage = () => {
 
   useEffect(() => {
     if (selectedFilter === "filter1" && selectedSchool) {
-      const userData = JSON.parse(localStorage.getItem('user'));
+      const userData = JSON.parse(sessionStorage.getItem('user'));
       const storeId = userData?.storeId; // Retrieve storeId from user data
   
       if (storeId) {
@@ -52,7 +52,7 @@ const FilterPage = () => {
   useEffect(() => {
     if (selectedFilter === "filter2") {
       // Fetch user data from local storage
-      const userData = JSON.parse(localStorage.getItem('user'));
+      const userData = JSON.parse(sessionStorage.getItem('user'));
       const storeId = userData?.storeId; // Retrieve storeId from user data
   
       if (storeId) {
@@ -71,7 +71,7 @@ const FilterPage = () => {
   
 
   useEffect(() => {
-      const userData = JSON.parse(localStorage.getItem('user'));
+      const userData = JSON.parse(sessionStorage.getItem('user'));
       const storeId = userData?.storeId; // Retrieve storeId from user data
   
     if (selectedFilter === "filter1" && selectedSchool && selectedItemType) {
@@ -135,7 +135,7 @@ const FilterPage = () => {
 
   const refreshData = () => {
 
-    const userData = JSON.parse(localStorage.getItem('user'));
+    const userData = JSON.parse(sessionStorage.getItem('user'));
     const storeId = userData?.storeId; // Retrieve storeId from local storage
   
     if (selectedFilter === "filter1" && selectedSchool && selectedItemType) {

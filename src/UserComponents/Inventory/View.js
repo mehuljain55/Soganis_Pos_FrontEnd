@@ -23,8 +23,8 @@ const View = ({ data,onUpdateSuccess }) => {
 
   const handlePlaceOrder = async (barcodedId) => {
     try {
-      const user = JSON.parse(localStorage.getItem('user'));
-      const storeId = user?.storeId; // Retrieve storeId from localStorage
+      const user = JSON.parse(sessionStorage.getItem('user'));
+      const storeId = user?.storeId; 
       
       const response = await fetch(`${API_BASE_URL}/user/create_order`, {
         method: 'POST',
@@ -64,7 +64,7 @@ const View = ({ data,onUpdateSuccess }) => {
   const handleUpdate = async () => {
     try {
       // Fetch user from local storage
-      const user = JSON.parse(localStorage.getItem('user'));
+      const user = JSON.parse(sessionStorage.getItem('user'));
       if (!user) {
         alert('User not found in local storage.');
         return;

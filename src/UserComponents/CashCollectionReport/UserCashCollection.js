@@ -10,8 +10,7 @@ const UserCashCollection = () => {
   useEffect(() => {
     const fetchUserCashCollection = async () => {
       try {
-        // Fetch user data from local storage
-        const userData = JSON.parse(localStorage.getItem('user'));
+        const userData = JSON.parse(sessionStorage.getItem('user'));
         const storeId = userData?.storeId; // Retrieve storeId from user data
   
         if (storeId) {

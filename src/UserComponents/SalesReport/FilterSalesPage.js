@@ -70,7 +70,7 @@ const FilterSalesPage = () => {
   // Fetch schools when the school filter is selected
   useEffect(() => {
     if (filters.school) {
-      const userData = JSON.parse(localStorage.getItem('user'));
+      const userData = JSON.parse(sessionStorage.getItem('user'));
       const storeId = userData?.storeId; // Retrieve storeId from user data
       if (storeId) {
         // Make API call with storeId as a query parameter
@@ -93,7 +93,7 @@ const FilterSalesPage = () => {
   useEffect(() => {
     if (filters.item) {
 
-      const userData = JSON.parse(localStorage.getItem('user'));
+      const userData = JSON.parse(sessionStorage.getItem('user'));
       const storeId = userData?.storeId; // Retrieve storeId from user data
 
       if (!storeId) {
@@ -135,7 +135,7 @@ const FilterSalesPage = () => {
   const fetchSalesData = () => {
     let url = `${API_BASE_URL}/report/findReportAll`; // Default URL for all reports
     const params = {};
-    const user = JSON.parse(localStorage.getItem("user"));
+    const user = JSON.parse(sessionStorage.getItem("user"));
     const storeId = user ? user.storeId : '';
 
     if (storeId) {
