@@ -1,1 +1,1 @@
-export const API_BASE_URL = 'http://soganiuniforms.shop/api';
+export const API_BASE_URL = 'http://localhost:8080/api';
