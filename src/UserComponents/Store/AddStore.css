@@ -1,0 +1,93 @@
+.add-store-component {
+    max-width: 500px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: #f9f9f9;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.add-store-component h2 {
+    text-align: center;
+}
+
+.add-store-form-group {
+    margin-bottom: 15px;
+}
+
+.add-store-form-group label {
+    display: block;
+    margin-bottom: 5px;
+}
+
+.add-store-form-group input {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.add-store-button {
+    width: 100%;
+    padding: 10px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.add-store-button:hover {
+    background-color: #45a049;
+}
+
+.add-store-message,
+.add-store-success-message,
+.add-store-error-message {
+    text-align: center;
+    margin-top: 10px;
+}
+
+.add-store-success-message {
+    color: green;
+}
+
+.add-store-error-message {
+    color: red;
+}
+
+.add-store-popup {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: white;
+    border: 1px solid green;
+    padding: 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    z-index: 1000;
+    border-radius: 10px;
+}
+
+.add-store-popup-content {
+    text-align: center;
+}
+
+.add-store-success-icon {
+    font-size: 3rem;
+    color: green;
+}
+
+.add-store-close-button {
+    margin-top: 20px;
+    padding: 10px 20px;
+    background-color: green;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.add-store-close-button:hover {
+    background-color: darkgreen;
+}

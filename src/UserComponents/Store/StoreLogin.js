@@ -10,15 +10,13 @@ const StoreLogin = () => {
     const navigate = useNavigate();
 
     const handleLogin = async (e) => {
-        e.preventDefault(); // Prevent default form submission behavior
-        setError(''); // Clear any previous error messages
+        e.preventDefault();
+        setError('');
 
         const userCredentials = {
-            userId: username, // Assuming userId is the correct field for the API
+            userId: username,
             password: password
         };
-
-        console.log("Attempting to log in with:", userCredentials); // Debug log
 
         try {
             const response = await fetch(`${API_BASE_URL}/store/admin/login`, {
@@ -29,19 +27,21 @@ const StoreLogin = () => {
                 body: JSON.stringify(userCredentials),
             });
 
-            // Check if the response is OK (status code 200-299)
             if (response.ok) {
-                const userData = await response.json(); // Parse the JSON response
-                console.log("User data received:", userData); // Debug log
-                navigate('/store/dashboard', { state: { user: userData } }); // Navigate to the store component
+                const userData = await response.json();
+                
+                // Store user data in session storage with the key "storeData"
+                sessionStorage.setItem('storeData', JSON.stringify(userData));
+                
+                // Navigate to the dashboard after successful login
+                navigate('/store/dashboard');
             } else {
-                // Handle non-200 responses
-                const errorMessage = await response.text(); // Get error message from response
-                setError(`Invalid credentials: ${errorMessage}`); // Update error state
+                const errorMessage = await response.text();
+                setError(`Invalid credentials: ${errorMessage}`);
             }
         } catch (error) {
-            console.error('Network error:', error); // Log network errors
-            setError('An error occurred. Please try again later.'); // Set a user-friendly error message
+            console.error('Network error:', error);
+            setError('An error occurred. Please try again later.');
         }
     };
 
@@ -49,14 +49,14 @@ const StoreLogin = () => {
         <div className="login-container">
             <form onSubmit={handleLogin} className="login-form">
                 <h2>Login</h2>
-                {error && <p className="error">{error}</p>} {/* Show error message if present */}
+                {error && <p className="error">{error}</p>}
                 <div className="form-group">
                     <label>Username:</label>
                     <input
                         type="text"
                         value={username}
-                        onChange={(e) => setUsername(e.target.value)} // Update username state
-                        required // Ensure this field is filled out
+                        onChange={(e) => setUsername(e.target.value)}
+                        required
                     />
                 </div>
                 <div className="form-group">
@@ -64,11 +64,11 @@ const StoreLogin = () => {
                     <input
                         type="password"
                         value={password}
-                        onChange={(e) => setPassword(e.target.value)} // Update password state
-                        required // Ensure this field is filled out
+                        onChange={(e) => setPassword(e.target.value)}
+                        required
                     />
                 </div>
-                <button type="submit">Login</button> {/* Submit button */}
+                <button type="submit">Login</button>
             </form>
         </div>
     );

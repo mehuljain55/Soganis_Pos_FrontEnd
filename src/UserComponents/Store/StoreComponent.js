@@ -1,12 +1,21 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import './StoreComponent.css';
 import AddStore from './AddStore';
 import AddUser from './AddUser';
 import ManageUser from './ManageUser';
-import { API_BASE_URL } from "../Config.js";
 
-const StoreComponent = ({ user }) => {
+const StoreComponent = () => {
     const [activeComponent, setActiveComponent] = useState('AddStore');
+    const navigate = useNavigate();
+
+    const user = JSON.parse(sessionStorage.getItem('storeData'));
+
+    useEffect(() => {
+        if (!user) {
+            navigate('/store/login');
+        }
+    }, [user, navigate]);
 
     const renderComponent = () => {
         switch (activeComponent) {
@@ -23,7 +32,7 @@ const StoreComponent = ({ user }) => {
 
     return (
         <div className="store-container">
-            <div className="sidebar">
+            <div className="store-sidebar">
                 <ul>
                     <li
                         className={activeComponent === 'AddStore' ? 'active' : ''}
@@ -45,7 +54,7 @@ const StoreComponent = ({ user }) => {
                     </li>
                 </ul>
             </div>
-            <div className="content">
+            <div className="store-content">
                 <h2>Welcome</h2>
                 {renderComponent()}
             </div>
