@@ -1,13 +1,21 @@
 import React, { useState, useEffect, useRef } from 'react';
+import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import Select from 'react-select';
 import { API_BASE_URL } from '../Config.js';
 
 const BarcodePrintPage = () => {
   
+  const userData = JSON.parse(sessionStorage.getItem('user'));
+  const storeId = userData?.storeId; 
   const [images, setImages] = useState([]);
   const [barcode, setBarcode] = useState('');
   const [draggedIndex, setDraggedIndex] = useState(null);
   const [quantity, setQuantity] = useState(1);
+  const [searchTerm, setSearchTerm] = useState(''); // State for the search term
+  const [barcodeOptions, setBarcodeOptions] = useState([]);
+  const [selectedBarcode, setSelectedBarcode] = useState(null);
+ 
   const [currentPage, setCurrentPage] = useState(0);
   const barcodeRef = useRef(null);
   const quantityRef = useRef(null);
@@ -16,15 +24,18 @@ const BarcodePrintPage = () => {
 
   
   const handleGenerateBarcode = async () => {
-    if (!barcode || quantity < 1) return;
-    
+    // Ensure selectedBarcode is defined and quantity is valid
+    if (!selectedBarcode || quantity < 1) return;
+  
     try {
       const userData = JSON.parse(sessionStorage.getItem('user'));
       const storeId = userData?.storeId; 
-      const response = await fetch(`${API_BASE_URL}/user/generate_barcodes?itemCode=${barcode}&storeId=${storeId}`);
+      // Use selectedBarcode.value which contains the itemCode
+      const response = await fetch(`${API_BASE_URL}/user/generate_barcodes?itemCode=${selectedBarcode.value}&storeId=${storeId}`);
       const blob = await response.blob();
       const imageUrl = URL.createObjectURL(blob);
-
+  
+      // Update the state to store generated barcode images
       setImages((prevImages) => {
         const newImages = [...prevImages];
         for (let i = 0; i < quantity; i++) {
@@ -32,14 +43,46 @@ const BarcodePrintPage = () => {
         }
         return newImages;
       });
-      
-    
-   
+  
     } catch (error) {
       console.error('Error generating barcode:', error);
     }
   };
+  
+ 
 
+  const fetchBarcodes = async (searchTerm) => {
+    if (!storeId) {
+      console.error('Store ID is not available.');
+      return;
+    }
+
+    try {
+      const response = await axios.get(`${API_BASE_URL}/inventory/getAllItemCode`, {
+        params: {
+          storeId,
+          searchTerm, // Include the search term in the API request
+        },
+      });
+      const options = response.data.map(item => ({
+        value: item.itemCode,
+        label: item.description || item.itemCode,
+      }));
+      setBarcodeOptions(options);
+    } catch (error) {
+      console.error('Error fetching barcodes:', error);
+    }
+  };
+
+  // useEffect to fetch barcodes when storeId or searchTerm changes
+  useEffect(() => {
+    if (searchTerm) {
+      fetchBarcodes(searchTerm);
+    } else {
+      setBarcodeOptions([]); // Clear options if searchTerm is empty
+    }
+  }, [storeId, searchTerm]);
+  
   const handleDeleteImage = (index) => {
     setImages((prevImages) => {
       const updatedImages = [...prevImages];
@@ -344,17 +387,22 @@ const BarcodePrintPage = () => {
       <div style={styles.sidebar}>
         <div className="no-print" style={styles.header}>
  
-          <label>
-            Barcode Id
-          </label>
-          <input
-          type="text"
-          ref={barcodeRef}
-          value={barcode}
-          onChange={(e) => setBarcode(e.target.value)}
-          placeholder="Enter Barcode"
-          style={styles.input}
-        />
+        <label>Barcode Id</label>
+      <Select
+        options={barcodeOptions}
+        value={selectedBarcode}
+        onChange={(selectedOption) => {
+          setSelectedBarcode(selectedOption);
+          // Set the input field to the itemCode when selected
+          setSearchTerm(selectedOption.value); // Display itemCode in the input
+        }}
+        onInputChange={(inputValue) => {
+          setSearchTerm(inputValue); // Update search term on input change
+          fetchBarcodes(inputValue); // Call fetchBarcodes with the input value
+        }}
+        placeholder="Search for Barcode"
+        styles={{ control: (base) => ({ ...base, width: '200px' }) }} // Fixed width for the select input
+      />
           <label>
             Quantity
           </label>
