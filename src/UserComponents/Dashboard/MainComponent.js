@@ -17,6 +17,9 @@ import OrderView from '../OrderBook/OrderView.js';
 import PurchaseOrderBook from '../OrderBook/PurchaseOrderBook.js';
 import AddInventoryItem from '../Inventory/AddInventoryItem.js'; 
 import { API_BASE_URL } from '../Config.js';
+import { LogoutButton, useLogout } from '../Login/LogoutPage.js'; // Importing LogoutButton and useLogout
+
+
 
 const MainComponent = ({ userData }) => {
   const [selectedMenuItem, setSelectedMenuItem] = useState('');
@@ -58,6 +61,9 @@ const MainComponent = ({ userData }) => {
     };
   }, []);
 
+   const handleLogout = useLogout();
+
+
 
   useEffect(() => {
     fetchTodayCashCollection();
@@ -79,6 +85,8 @@ const MainComponent = ({ userData }) => {
                 <FontAwesomeIcon icon={faSyncAlt} />
               </button>
             </span>
+            <LogoutButton onClick={handleLogout} style={{ color: 'white', backgroundColor: 'red', padding: '5px 10px', border: 'none', cursor: 'pointer' }} />
+
           </div>
         )}
       </div>
