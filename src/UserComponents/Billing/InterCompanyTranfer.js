@@ -429,8 +429,7 @@ const handleSelectChange = (selectedOption) => {
   const handleSchoolNameChange = (e) => {
     const inputValue = e.target.value;
     setSchoolName(inputValue);
-    setIsAutofilled(false); // Reset autofill control
-
+ 
     // Only attempt to autofill when 3 or more characters are entered
     if (inputValue.length >= 3) {
       const matchingSchool = allSchools.find((school) =>
@@ -448,12 +447,7 @@ const handleSelectChange = (selectedOption) => {
     }
   };
 
-  const handleSchoolKeyDown = (e) => {
-    // Handle backspace or typing to cancel autofill
-    if (isAutofilled && (e.key === 'Backspace' || e.key.length === 1)) {
-      setIsAutofilled(false); // Disable autofill if user types or backspaces
-    }
-  };
+
 
   const handleMobileNoChange = (e) => {
     setCustomerMobileNo(e.target.value);

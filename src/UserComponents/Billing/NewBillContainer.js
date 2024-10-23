@@ -429,8 +429,7 @@ const handleSelectChange = (selectedOption) => {
   const handleSchoolNameChange = (e) => {
     const inputValue = e.target.value;
     setSchoolName(inputValue);
-    setIsAutofilled(false); // Reset autofill control
-
+   
     // Only attempt to autofill when 3 or more characters are entered
     if (inputValue.length >= 3) {
       const matchingSchool = allSchools.find((school) =>
@@ -448,12 +447,7 @@ const handleSelectChange = (selectedOption) => {
     }
   };
 
-  const handleSchoolKeyDown = (e) => {
-    // Handle backspace or typing to cancel autofill
-    if (isAutofilled && (e.key === 'Backspace' || e.key.length === 1)) {
-      setIsAutofilled(false); // Disable autofill if user types or backspaces
-    }
-  };
+
 
   const handleMobileNoChange = (e) => {
     setCustomerMobileNo(e.target.value);
@@ -557,13 +551,11 @@ const handleSelectChange = (selectedOption) => {
     };
   }, [someState]); // Dependency array with `someState`
 
-  // Effect to listen for Shift key press and toggle mode
   useEffect(() => {
     const handleKeyDown = (event) => {
       if (event.key === 'Shift') {
         const currentTime = new Date().getTime(); // Get current time
 
-        // Check if Shift was pressed twice within 500ms (or adjust as needed)
         if (shiftPressTime && currentTime - shiftPressTime < 500) {
           toggleBarcodeMode(); // Change mode if Shift is pressed twice quickly
           setShiftPressTime(null); // Reset the time
