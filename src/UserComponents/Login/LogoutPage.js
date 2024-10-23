@@ -3,33 +3,35 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 
 // Reusable LogoutButton component
-const LogoutButton = ({ onClick }) => {
+export const LogoutButton = ({ onClick }) => {
   return (
-    <button className="logout-button" onClick={onClick}>
-      Logout
-    </button>
+    <button 
+    className="logout-button" 
+    onClick={onClick} 
+    style={{ 
+      color: 'white',          // Text color white
+      backgroundColor: 'red',  // Background color red
+      border: 'none',          // No border
+      padding: '10px 20px',    // Padding for spacing
+      cursor: 'pointer',       // Pointer cursor on hover
+      fontWeight: 'bold'       // Bold text
+    }}
+  >
+    Logout
+  </button>
   );
 };
 
-// Main LogoutPage component that handles the logic and uses LogoutButton
-const LogoutPage = ({ setUserData }) => {
+// Exported logout function
+export const useLogout = () => {
   const navigate = useNavigate();
 
-  // Function to handle logout
   const handleLogout = () => {
     localStorage.removeItem('userData'); // Remove user data from local storage
-    sessionStorage.removeItem('userData'); // Remove user data from local storage
-   
-    setUserData(null); // Reset the user data state in the App component
-    navigate('/'); // Redirect to the login page
+    sessionStorage.removeItem('userData'); // Remove user data from session storage
+    window.location.reload(); // Reload the page to reflect changes
   };
 
-  return (
-    <div className="logout-container">
-      {/* Use the reusable LogoutButton and pass handleLogout as the onClick prop */}
-      <LogoutButton onClick={handleLogout} />
-    </div>
-  );
+  return handleLogout;
 };
 
-export default LogoutPage;
