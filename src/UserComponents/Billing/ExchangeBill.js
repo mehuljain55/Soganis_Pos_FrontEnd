@@ -4,7 +4,9 @@ import './ExchangeBill.css';
 import { API_BASE_URL } from '../Config.js';
 import Modal from 'react-bootstrap/Modal';
 import Button from 'react-bootstrap/Button';
+import Select from 'react-select'; // Import Select
 import BillPopup from './BillPopup'; // Import the popup component
+
 
 
 const ExchangeBill = ({ userData,itemsToExchange, exchangeAmount, onClose }) => {
@@ -35,8 +37,10 @@ const ExchangeBill = ({ userData,itemsToExchange, exchangeAmount, onClose }) => 
   const [showPopup, setShowPopup] = useState(false);
   const [someState, setSomeState] = useState(false); 
  
+
   const [allSchools, setAllSchools] = useState([]);
-  const [isAutofilled, setIsAutofilled] = useState(false); // To control if autofill happens
+  const selectedSchoolRef = useRef(null); // Renamed to avoid collision
+
 
 
 
@@ -51,23 +55,35 @@ const ExchangeBill = ({ userData,itemsToExchange, exchangeAmount, onClose }) => 
     amount: 0,
   });
 
-  useEffect(() => {
-    const fetchAllSchools = async () => {
-      try {
+  const fetchAllSchools = async () => {
+    try {
         const user = JSON.parse(sessionStorage.getItem('user'));
-        const storeId = user?.storeId; // Retrieve storeId from user data
-       
+        const storeId = user?.storeId;
         const response = await axios.get(`${API_BASE_URL}/user/filter/getSchool`, {
-          params: {
-              storeId: storeId // Include storeId as a query parameter
-          }
-      });;
-        setAllSchools(response.data);
-      } catch (error) {
-        console.error('Error fetching school names:', error);
-      }
-    };
+            params: {
+                storeId: storeId,
+            },
+        });
 
+        if (Array.isArray(response.data)) {
+            const schoolOptions = response.data.map((school) => ({
+                value: school, // Assuming school is the name
+                label: school, // Same for label
+            }));
+            setAllSchools(schoolOptions);
+        } else {
+            console.error('Expected an array of schools, but got:', response.data);
+        }
+    } catch (error) {
+        console.error('Error fetching school names:', error);
+    }
+};
+
+const handleSelectChange = (selectedOption) => {
+    // Update state with the selected option's value
+    setSchoolName(selectedOption ? selectedOption.value : ''); // Ensure it's a string
+};
+  useEffect(() => {
     fetchAllSchools();
   }, []);
 
@@ -112,7 +128,14 @@ const ExchangeBill = ({ userData,itemsToExchange, exchangeAmount, onClose }) => 
   };
 
   
-  
+  const handleSelectFocus = () => {
+    setIsTableFocused(false); // Set table focus to false when Select is focused
+  };
+
+  const handleSelectBlur = () => {
+    setIsTableFocused(true); // Set table focus back to true when Select is blurred
+  }
+
 
   
   useEffect(() => {
@@ -654,6 +677,19 @@ const ExchangeBill = ({ userData,itemsToExchange, exchangeAmount, onClose }) => 
 
       {/* Customer Details */}
       <div className="customer-details">
+      <label>
+    School Name:
+    <Select
+        options={allSchools}
+        onFocus={handleSelectFocus} // Handle focus on Select
+        onBlur={handleSelectBlur} // Handle blur on Select
+        ref={selectedSchoolRef} // Use the renamed reference
+        value={allSchools.find(school => school.value === schoolName) || null} // Set the selected value correctly
+        onChange={handleSelectChange} // Update state on selection
+        placeholder="Select a school"
+        styles={{ control: (base) => ({ ...base, width: '200px' }) }} // Fixed width for the select input
+    />
+</label>
        <h5>Credit Available: {exchangeAmount}</h5>
      
       <h5>Exchange Items</h5>
