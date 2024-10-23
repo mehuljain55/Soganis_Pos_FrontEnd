@@ -9,10 +9,9 @@ const BarcodePrintPage = () => {
   const userData = JSON.parse(sessionStorage.getItem('user'));
   const storeId = userData?.storeId; 
   const [images, setImages] = useState([]);
-  const [barcode, setBarcode] = useState('');
   const [draggedIndex, setDraggedIndex] = useState(null);
   const [quantity, setQuantity] = useState(1);
-  const [searchTerm, setSearchTerm] = useState(''); // State for the search term
+  const [searchTerm, setSearchTerm] = useState(''); 
   const [barcodeOptions, setBarcodeOptions] = useState([]);
   const [selectedBarcode, setSelectedBarcode] = useState(null);
  
@@ -21,21 +20,21 @@ const BarcodePrintPage = () => {
   const quantityRef = useRef(null);
   
   const imagesPerPage = 40;
+  
 
   
   const handleGenerateBarcode = async () => {
-    // Ensure selectedBarcode is defined and quantity is valid
-    if (!selectedBarcode || quantity < 1) return;
+     if (!selectedBarcode || quantity < 1) return;
   
     try {
       const userData = JSON.parse(sessionStorage.getItem('user'));
       const storeId = userData?.storeId; 
-      // Use selectedBarcode.value which contains the itemCode
       const response = await fetch(`${API_BASE_URL}/user/generate_barcodes?itemCode=${selectedBarcode.value}&storeId=${storeId}`);
       const blob = await response.blob();
       const imageUrl = URL.createObjectURL(blob);
-  
-      // Update the state to store generated barcode images
+   
+
+    
       setImages((prevImages) => {
         const newImages = [...prevImages];
         for (let i = 0; i < quantity; i++) {
@@ -61,8 +60,7 @@ const BarcodePrintPage = () => {
       const response = await axios.get(`${API_BASE_URL}/inventory/getAllItemCode`, {
         params: {
           storeId,
-          searchTerm, // Include the search term in the API request
-        },
+          searchTerm,         },
       });
       const options = response.data.map(item => ({
         value: item.itemCode,
@@ -74,12 +72,11 @@ const BarcodePrintPage = () => {
     }
   };
 
-  // useEffect to fetch barcodes when storeId or searchTerm changes
   useEffect(() => {
     if (searchTerm) {
       fetchBarcodes(searchTerm);
     } else {
-      setBarcodeOptions([]); // Clear options if searchTerm is empty
+      setBarcodeOptions([]); 
     }
   }, [storeId, searchTerm]);
   
@@ -148,8 +145,8 @@ const BarcodePrintPage = () => {
         <body>
           <div id="printableArea">
             ${Array.from({ length: imagesPerPage }).map((_, index) => {
-                const imageIndex = startIndex + index; // Calculate the image index
-                const image = images[imageIndex]; // Get the image at that index
+                const imageIndex = startIndex + index; 
+                const image = images[imageIndex]; 
                 return `
                   <div class="imageWrapper">
                     ${image ? `<img src="${image}" alt="Barcode" />` : '<div class="emptySlot"></div>'}
@@ -161,11 +158,11 @@ const BarcodePrintPage = () => {
       </html>
     `);
 
-    printWindow.document.close(); // Close the document to apply styles
+    printWindow.document.close(); 
 
     printWindow.onload = () => {
-      printWindow.print(); // Trigger print when the content is loaded
-      printWindow.close(); // Close the print window after printing
+      printWindow.print(); 
+      printWindow.close(); 
     };
 };
 
@@ -240,6 +237,8 @@ const BarcodePrintPage = () => {
 
     const validImages = images.filter(image => image && image !== 'placeholder');
     const totalPages = Math.ceil(validImages.length / imagesPerPage);
+    console.log('Total pages:', totalPages);
+
 
     for (let page = 0; page < totalPages; page++) {
       printWindow.document.write('<div class="page">');
@@ -329,10 +328,13 @@ const BarcodePrintPage = () => {
           }}
         >
           {index + 1}
+
         </button>
+        
       ))}
     </div>
   );
+  
 
   const handleKeyDown = (event) => {
     if (event.key === 'Enter') {
@@ -380,93 +382,88 @@ const BarcodePrintPage = () => {
       document.head.removeChild(styleSheet);
     };
   }, []);
-
   return (
     <div style={styles.container}>
-        <div className="sidebar">
-      <div style={styles.sidebar}>
-        <div className="no-print" style={styles.header}>
- 
-        <label>Barcode Id</label>
-      <Select
-        options={barcodeOptions}
-        value={selectedBarcode}
-        onChange={(selectedOption) => {
-          setSelectedBarcode(selectedOption);
-          // Set the input field to the itemCode when selected
-          setSearchTerm(selectedOption.value); // Display itemCode in the input
-        }}
-        onInputChange={(inputValue) => {
-          setSearchTerm(inputValue); // Update search term on input change
-          fetchBarcodes(inputValue); // Call fetchBarcodes with the input value
-        }}
-        placeholder="Search for Barcode"
-        styles={{ control: (base) => ({ ...base, width: '200px' }) }} // Fixed width for the select input
-      />
-          <label>
-            Quantity
-          </label>
-          <input
-          type="number"
-          ref={quantityRef}
-          value={quantity}
-          onChange={(e) => setQuantity(Math.max(1, e.target.value))} // Ensure quantity is at least 1
-          min="1"
-          style={styles.input}
-        />
-
-
-          <button 
-            onClick={handleGenerateBarcode} 
-            style={styles.button}
-            onMouseOver={(e) => e.currentTarget.style.backgroundColor = styles.buttonHover.backgroundColor} 
-            onMouseOut={(e) => e.currentTarget.style.backgroundColor = styles.button.backgroundColor}
-          >
-            Generate Barcode
-          </button>
-          <button 
-            onClick={handlePrint} 
-          
-            style={styles.button}
-            onMouseOver={(e) => e.currentTarget.style.backgroundColor = styles.buttonHover.backgroundColor} 
-            onMouseOut={(e) => e.currentTarget.style.backgroundColor = styles.button.backgroundColor}
-          >
-            Print
-          </button>
-          <button 
-            onClick={handlePrintAll} 
-            style={styles.button}
-            onMouseOver={(e) => e.currentTarget.style.backgroundColor = styles.buttonHover.backgroundColor} 
-            onMouseOut={(e) => e.currentTarget.style.backgroundColor = styles.button.backgroundColor}
-          >
-            Print All
-          </button>
-          <button 
-            onClick={handleClearAll} 
-            style={styles.button}
-            onMouseOver={(e) => e.currentTarget.style.backgroundColor = styles.buttonHover.backgroundColor} 
-            onMouseOut={(e) => e.currentTarget.style.backgroundColor = styles.button.backgroundColor}
-          >
-            Clear All
-          </button>
-
-          <button 
-      onClick={handleClearCurrentPage} 
-      style={styles.button}
-      onMouseOver={(e) => e.currentTarget.style.backgroundColor = styles.buttonHover.backgroundColor} 
-      onMouseOut={(e) => e.currentTarget.style.backgroundColor = styles.button.backgroundColor}
-    >
-      Clear Current Page
-    </button> 
-    </div>
+      <div className="sidebar">
+        <div style={styles.sidebar}>
+          <div className="no-print" style={styles.header}>
+            <label>Barcode Id</label>
+            <Select
+              options={barcodeOptions}
+              value={selectedBarcode}
+              onChange={(selectedOption) => {
+                setSelectedBarcode(selectedOption);
+                setSearchTerm(selectedOption.value); // Display itemCode in the input
+              }}
+              onInputChange={(inputValue) => {
+                setSearchTerm(inputValue); // Update search term on input change
+                fetchBarcodes(inputValue); // Call fetchBarcodes with the input value
+              }}
+              placeholder="Search for Barcode"
+              styles={{ control: (base) => ({ ...base, width: '200px' }) }} // Fixed width for the select input
+            />
+            <label>Quantity</label>
+            <input
+              type="number"
+              ref={quantityRef}
+              value={quantity}
+              onChange={(e) => setQuantity(Math.max(1, e.target.value))} // Ensure quantity is at least 1
+              min="1"
+              style={styles.input}
+            />
+            <button 
+              onClick={handleGenerateBarcode} 
+              style={styles.button}
+              onMouseOver={(e) => e.currentTarget.style.backgroundColor = styles.buttonHover.backgroundColor} 
+              onMouseOut={(e) => e.currentTarget.style.backgroundColor = styles.button.backgroundColor}
+            >
+              Generate Barcode
+            </button>
+            <button 
+              onClick={handlePrint} 
+              style={styles.button}
+              onMouseOver={(e) => e.currentTarget.style.backgroundColor = styles.buttonHover.backgroundColor} 
+              onMouseOut={(e) => e.currentTarget.style.backgroundColor = styles.button.backgroundColor}
+            >
+              Print
+            </button>
+            <button 
+              onClick={handlePrintAll} 
+              style={styles.button}
+              onMouseOver={(e) => e.currentTarget.style.backgroundColor = styles.buttonHover.backgroundColor} 
+              onMouseOut={(e) => e.currentTarget.style.backgroundColor = styles.button.backgroundColor}
+            >
+              Print All
+            </button>
+            <button 
+              onClick={handleClearAll} 
+              style={styles.button}
+              onMouseOver={(e) => e.currentTarget.style.backgroundColor = styles.buttonHover.backgroundColor} 
+              onMouseOut={(e) => e.currentTarget.style.backgroundColor = styles.button.backgroundColor}
+            >
+              Clear All
+            </button>
+            <button 
+              onClick={handleClearCurrentPage} 
+              style={styles.button}
+              onMouseOver={(e) => e.currentTarget.style.backgroundColor = styles.buttonHover.backgroundColor} 
+              onMouseOut={(e) => e.currentTarget.style.backgroundColor = styles.button.backgroundColor}
+            >
+              Clear Current Page
+            </button>
+          </div>
+          {/* Render Pagination Inside the Sidebar */}
+          <div className="no-print" style={styles.paginationWrapper}>
+            {renderPageNavigation()}
+          </div>
         </div>
-        {renderPageNavigation()}
       </div>
       <div id="printableArea" style={styles.page}>
         {renderGrid()}
       </div>
     </div>
   );
+  
 };
 
 const styles = {
@@ -475,6 +472,7 @@ const styles = {
     maxHeight: '100vh',
     overflowY: 'auto',
     overflowX: 'hidden',
+    paddingBottom: '50px', 
   },
   sidebar: {
     display: 'flex',
@@ -541,16 +539,13 @@ const styles = {
     width: '100%',
     color: 'gray',
   },
-  pagination: {
-    display: 'flex',
-    justifyContent: 'space-around',
-    marginTop: '20px',
-  },
+ 
   pagination: {
     display: 'grid',
-    gridTemplateColumns: 'repeat(auto-fill, minmax(50px, 1fr))', 
+    gridTemplateColumns: 'repeat(3, 1fr)', // Create exactly 3 equal-width columns
     gap: '10px', 
     marginTop: '20px',
+    justifyContent: 'center', // Ensure the buttons are centered if fewer than 3 per row
   },
   button: {
     padding: '10px 20px',
