@@ -4,6 +4,7 @@ import './NewBillContainer.css';
 import { API_BASE_URL } from '../Config.js';
 import Modal from 'react-bootstrap/Modal';
 import Button from 'react-bootstrap/Button';
+import Select from 'react-select';
 import BillPopup from './BillPopup'; 
 
 
@@ -34,11 +35,13 @@ const InterCompanyTranfer = ({ userData }) => {
   const [isTableFocused, setIsTableFocused] = useState(false); 
   const [showPopup, setShowPopup] = useState(false);
   const [someState, setSomeState] = useState(false); 
-  const [allSchools, setAllSchools] = useState([]);
   const [filteredSchools, setFilteredSchools] = useState([]);
   const [isAutofilled, setIsAutofilled] = useState(false); // To control if autofill happens
 
   const [suggestions, setSuggestions] = useState([]);
+  
+  const [allSchools, setAllSchools] = useState([]);
+  const selectedSchoolRef = useRef(null); // Renamed to avoid collision
 
 
   const [customItem, setCustomItem] = useState({
@@ -52,25 +55,63 @@ const InterCompanyTranfer = ({ userData }) => {
     amount: 0,
   });
 
-  useEffect(() => {
-    const fetchAllSchools = async () => {
-      try {
-        const response = await axios.get(`${API_BASE_URL}/filter/getSchool`);
-        setAllSchools(response.data);
-      } catch (error) {
-        console.error('Error fetching school names:', error);
-      }
-    };
+  const fetchAllSchools = async () => {
+    try {
+        const user = JSON.parse(sessionStorage.getItem('user'));
+        const storeId = user?.storeId;
+        const response = await axios.get(`${API_BASE_URL}/user/filter/getSchool`, {
+            params: {
+                storeId: storeId,
+            },
+        });
 
+        if (Array.isArray(response.data)) {
+            const schoolOptions = response.data.map((school) => ({
+                value: school, // Assuming school is the name
+                label: school, // Same for label
+            }));
+            setAllSchools(schoolOptions);
+        } else {
+            console.error('Expected an array of schools, but got:', response.data);
+        }
+    } catch (error) {
+        console.error('Error fetching school names:', error);
+    }
+};
+
+const handleSelectChange = (selectedOption) => {
+    // Update state with the selected option's value
+    setSchoolName(selectedOption ? selectedOption.value : ''); // Ensure it's a string
+};
+  useEffect(() => {
     fetchAllSchools();
   }, []);
 
-  // Fetch items based on search term (for manual search)
+    // Function to handle focus change
+    const handleSelectFocus = () => {
+      setIsTableFocused(false); // Set table focus to false when Select is focused
+    };
+  
+    const handleSelectBlur = () => {
+      setIsTableFocused(true); // Set table focus back to true when Select is blurred
+    }
+
   useEffect(() => {
-    if (!isBarcodeMode && searchTerm.trim() !== '') {
+    if (searchTerm.trim() !== '') {
       const fetchItems = async () => {
         try {
-          const response = await axios.get(`${API_BASE_URL}/getAllItems?searchTerm=${searchTerm}`);
+         
+          const user = JSON.parse(sessionStorage.getItem("user"));
+          const storeId = user ? user.storeId : '';
+  
+          // Make API call with searchTerm and storeId
+          const response = await axios.get(`${API_BASE_URL}/inventory/getAllItems`, {
+            params: {
+              searchTerm: searchTerm,
+              storeId: storeId, 
+            }
+          });
+  
           setSearchResults(response.data || []); // Set search results or empty array
           setSelectedIndex(-1);
         } catch (error) {
@@ -78,9 +119,12 @@ const InterCompanyTranfer = ({ userData }) => {
           setSearchResults([]);
         }
       };
+  
       fetchItems();
     }
   }, [searchTerm, isBarcodeMode]);
+
+  
 
   const handleCustomItemChange = (e) => {
     const { name, value } = e.target;
@@ -101,8 +145,14 @@ const InterCompanyTranfer = ({ userData }) => {
     if (isBarcodeMode && barcode.trim() !== '') {
       const fetchItemByBarcode = async () => {
         try {
+          const user = JSON.parse(sessionStorage.getItem('user'));
+          const storeId = user?.storeId; // Retrieve storeId from user data
+    
           const response = await axios.get(`${API_BASE_URL}/search/item_code`, {
-            params: { barcode: barcode.trim() },
+            params: {
+              barcode: barcode.trim(),
+              storeId: storeId // Include storeId as a query parameter
+            }
           });
           if (response.data) {
             addItemToBill(response.data);
@@ -191,9 +241,6 @@ const InterCompanyTranfer = ({ userData }) => {
         break;
     }
   };
-
-
-
 
   const handleClickOutside = (event) => {
     if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
@@ -317,11 +364,18 @@ const InterCompanyTranfer = ({ userData }) => {
       return; // Prevent API call
     }
 
+    if (!schoolName) {
+      alert("School Name is required")
+      
+      return; // Prevent API call if validation fails
+  }
+
+
+
 
     const billData = {
       userId: userData.userId,
       customerName: customerName,
-      customerMobileNo: customerMobileNo,
       paymentMode: paymentMode,
       schoolName: schoolName,
       item_count: selectedItems.length,
@@ -338,7 +392,7 @@ const InterCompanyTranfer = ({ userData }) => {
     };
 
     try {
-      const response = await axios.post(`${API_BASE_URL}/intercompany/billRequest`, billData, { responseType: 'arraybuffer' });
+      const response = await axios.post(`${API_BASE_URL}/user/intercompany/billRequest`, billData, { responseType: 'arraybuffer' });
       const pdfBlob = new Blob([response.data], { type: 'application/pdf' });
       const pdfUrl = URL.createObjectURL(pdfBlob);
 
@@ -629,16 +683,19 @@ const InterCompanyTranfer = ({ userData }) => {
 
 
     <div className="school-name-input">
-      <label>
-        School Name:
-        <input
-          type="text"
-          name="schoolName"
-          value={schoolName}
-          onChange={handleSchoolNameChange}
-          required
-        />
-      </label>
+    <label>
+    School Name:
+    <Select
+        options={allSchools}
+        onFocus={handleSelectFocus} // Handle focus on Select
+        onBlur={handleSelectBlur} // Handle blur on Select
+        ref={selectedSchoolRef} // Use the renamed reference
+        value={allSchools.find(school => school.value === schoolName) || null} // Set the selected value correctly
+        onChange={handleSelectChange} // Update state on selection
+        placeholder="Select a school"
+        styles={{ control: (base) => ({ ...base, width: '200px' }) }} // Fixed width for the select input
+    />
+</label>
     </div>
    
   </div>

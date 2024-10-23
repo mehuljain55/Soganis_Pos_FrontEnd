@@ -3,12 +3,15 @@ import './CustomerOrder.css';
 import { API_BASE_URL } from '../Config.js';
 
 const CustomerOrder = () => {
+    const user = JSON.parse(sessionStorage.getItem('user'));
+    const storeId = user?.storeId || '';
     const [order, setOrder] = useState({
         customerName: '',
         mobileNo: '',
         deliveryDate: '',
         totalAmount: 0,
         advancePayment: 0,
+        storeId: storeId,
         orders: [{ schoolName: '', itemType: '', description: '', size: '', quantity: 0, price: 0, amount: 0 }]
     });
     const [schools, setSchools] = useState([]);
@@ -16,15 +19,24 @@ const CustomerOrder = () => {
     const [showModal, setShowModal] = useState(false);
 
     useEffect(() => {
-        fetch(`${API_BASE_URL}/filter/getSchool`)
-            .then(response => response.json())
-            .then(data => setSchools(data))
-            .catch(error => console.error('Error fetching school names:', error));
-
-        fetch(`${API_BASE_URL}/filter/item_type`)
-            .then(response => response.json())
-            .then(data => setItemTypes(data))
-            .catch(error => console.error('Error fetching item types:', error));
+        const userData = JSON.parse(sessionStorage.getItem('user'));
+        const storeId = userData?.storeId; 
+    
+        if (storeId) {
+            // Fetch school names
+            fetch(`${API_BASE_URL}/user/filter/getSchool?storeId=${storeId}`)
+                .then((response) => response.json())
+                .then((data) => setSchools(data))
+                .catch((error) => console.error('Error fetching school names:', error));
+    
+            // Fetch item types
+            fetch(`${API_BASE_URL}/user/filter/item_type?storeId=${storeId}`)
+                .then((response) => response.json())
+                .then((data) => setItemTypes(data))
+                .catch((error) => console.error('Error fetching item types:', error));
+        } else {
+            console.error('Store ID not found in session storage');
+        }
     }, []);
 
     const handleInputChange = (e, index, field) => {
@@ -52,7 +64,15 @@ const CustomerOrder = () => {
     };
 
     const handleConfirm = () => {
-        fetch(`${API_BASE_URL}/customer_order_details`, {
+        const user = JSON.parse(sessionStorage.getItem('user'));
+        const storeId = user?.storeId; // Retrieve storeId from user data
+
+        const updatedOrder = {
+            ...order,
+            storeId: storeId // Include storeId in the order object
+        };
+    
+        fetch(`${API_BASE_URL}/user/customer_order_details`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'

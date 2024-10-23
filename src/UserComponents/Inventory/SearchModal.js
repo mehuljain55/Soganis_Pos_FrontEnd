@@ -31,8 +31,14 @@ const SearchModal = ({ isOpen, onClose }) => {
   useEffect(() => {
     const fetchItems = async () => {
       try {
-        const response = await axios.get(`${API_BASE_URL}/getAllItems`, {
-          params: { searchTerm }
+        const user = JSON.parse(sessionStorage.getItem("user"));
+        const storeId = user ? user.storeId : '';
+
+        const response = await axios.get(`${API_BASE_URL}/inventory/getAllItems`, {
+          params: {
+            searchTerm: searchTerm,
+            storeId: storeId,
+          }
         });
         setSearchResults(response.data || []); // Set search results or empty array
         setSelectedIndex(-1);

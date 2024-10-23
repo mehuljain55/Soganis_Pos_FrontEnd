@@ -70,37 +70,64 @@ const FilterSalesPage = () => {
   // Fetch schools when the school filter is selected
   useEffect(() => {
     if (filters.school) {
-      axios.get(`${API_BASE_URL}/filter/getSchool`)
+      const userData = JSON.parse(sessionStorage.getItem('user'));
+      const storeId = userData?.storeId; // Retrieve storeId from user data
+      if (storeId) {
+        // Make API call with storeId as a query parameter
+        axios.get(`${API_BASE_URL}/user/filter/getSchool`, {
+          params: { storeId: storeId }
+        })
         .then(response => {
           setSchools(response.data);
         })
         .catch(error => {
           console.error('Error fetching schools:', error);
         });
+      } else {
+        console.error('Store ID not found in user data');
+      }
     }
   }, [filters.school]);
 
   // Fetch items when the item filter is selected and populate based on school code
   useEffect(() => {
     if (filters.item) {
+
+      const userData = JSON.parse(sessionStorage.getItem('user'));
+      const storeId = userData?.storeId; // Retrieve storeId from user data
+
+      if (!storeId) {
+        console.error('Store ID not found in user data');
+        return;
+      }
+  
       if (selectedFilters.school) {
-        axios.get(`${API_BASE_URL}/filter/school/item_type`, { params: { schoolCode: selectedFilters.school } })
-          .then(response => {
-            setFilteredItems(response.data);
-          })
-          .catch(error => {
-            console.error('Error fetching filtered items:', error);
-          });
+        axios.get(`${API_BASE_URL}/user/filter/school/item_type`, {
+          params: { 
+            schoolCode: selectedFilters.school, 
+            storeId: storeId 
+          }
+        })
+        .then(response => {
+          setFilteredItems(response.data);
+        })
+        .catch(error => {
+          console.error('Error fetching filtered items:', error);
+        });
+  
+      // If no school is selected, show an error message
       } else if (filters.item && filters.school && !selectedFilters.school) {
         setErrorMessage('Please select a school first.');
       } else {
-        axios.get(`${API_BASE_URL}/filter/item_type`)
-          .then(response => {
-            setItems(response.data);
-          })
-          .catch(error => {
-            console.error('Error fetching items:', error);
-          });
+        axios.get(`${API_BASE_URL}/user/filter/item_type`, {
+          params: { storeId: storeId } 
+        })
+        .then(response => {
+          setItems(response.data);
+        })
+        .catch(error => {
+          console.error('Error fetching items:', error);
+        });
       }
     }
   }, [filters.item, selectedFilters.school]);
@@ -108,11 +135,18 @@ const FilterSalesPage = () => {
   const fetchSalesData = () => {
     let url = `${API_BASE_URL}/report/findReportAll`; // Default URL for all reports
     const params = {};
+    const user = JSON.parse(sessionStorage.getItem("user"));
+    const storeId = user ? user.storeId : '';
+
+    if (storeId) {
+      params.storeId = storeId;
+    }
   
     // Check if Date Range filter is selected
     if (filters.dateRange) {
       params.startDate = selectedFilters.dateRange.startDate;
       params.endDate = selectedFilters.dateRange.endDate;
+      
     }
   
     // Check if School filter is selected
@@ -127,19 +161,19 @@ const FilterSalesPage = () => {
   
     // Determine the URL based on the filters
     if (filters.dateRange && filters.school && filters.item) {
-      url = `${API_BASE_URL}/report/school_item_type_date`;
+      url = `${API_BASE_URL}/sales/report/school_item_type_date`;
     } else if (filters.dateRange && filters.school) {
-      url = `${API_BASE_URL}/report/school_code_and_date`;
+      url = `${API_BASE_URL}/sales/report/school_code_and_date`;
     } else if (filters.dateRange && filters.item) {
-      url = `${API_BASE_URL}/report/item_code_and_date`;
+      url = `${API_BASE_URL}/sales/report/item_code_and_date`;
     } else if (filters.school && filters.item) {
-      url = `${API_BASE_URL}/report/school_and_item_type`;
+      url = `${API_BASE_URL}/sales/report/school_and_item_type`;
     } else if (filters.dateRange) {
-      url = `${API_BASE_URL}/report/sales_date`;
+      url = `${API_BASE_URL}/sales/report/sales_date`;
     } else if (filters.school) {
-      url = `${API_BASE_URL}/report/school_code`;
+      url = `${API_BASE_URL}/sales/report/school_code`;
     } else if (filters.item) {
-      url = `${API_BASE_URL}/report/item_code`;
+      url = `${API_BASE_URL}/sales/report/item_code`;
     }
   
     // Make the API call
@@ -163,41 +197,7 @@ const FilterSalesPage = () => {
     }
   };
 
-  // Handle Export functionality
-  const handleExport = () => {
-    let url = `${API_BASE_URL}/report/export`; // Default URL for export
-    const params = {};
   
-    // Check if Date Range filter is selected
-    if (filters.dateRange) {
-      params.startDate = selectedFilters.dateRange.startDate;
-      params.endDate = selectedFilters.dateRange.endDate;
-    }
-  
-    // Check if School filter is selected
-    if (filters.school && selectedFilters.school) {
-      params.schoolCode = selectedFilters.school;
-    }
-  
-    // Check if Item filter is selected
-    if (filters.item && selectedFilters.item) {
-      params.itemCode = selectedFilters.item;
-    }
-  
-    axios.get(url, { params, responseType: 'blob' })
-      .then(response => {
-        const url = window.URL.createObjectURL(new Blob([response.data]));
-        const link = document.createElement('a');
-        link.href = url;
-        link.setAttribute('download', 'sales_report.xlsx'); // Use the desired file name here
-        document.body.appendChild(link);
-        link.click();
-        link.remove();
-      })
-      .catch(error => {
-        console.error('Error exporting data:', error);
-      });
-  };
 
   return (
     <div className="filter-sales-page">

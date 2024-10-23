@@ -29,7 +29,10 @@ const [exchangeAmount, setExchangeAmount] = useState(0);
     };
 
     const fetchBill = () => {
-        axios.get(`${API_BASE_URL}/getBill/${billNo}`)
+        const user = JSON.parse(sessionStorage.getItem('user')); 
+        const storeId = user ? user.storeId : ''; 
+    
+        axios.get(`${API_BASE_URL}/user/getBill/${billNo}/${storeId}`)
             .then(response => {
                 setBillData(response.data);
                 setSelectedItems([]);
@@ -40,6 +43,7 @@ const [exchangeAmount, setExchangeAmount] = useState(0);
                 console.error('Error fetching bill data:', error);
             });
     };
+    
 
     const handleQuantityChange = (sno, value) => {
         const parsedValue = parseInt(value, 10);
@@ -91,7 +95,7 @@ const [exchangeAmount, setExchangeAmount] = useState(0);
             return_quantity: returnQuantities[item.sno],
         }));
 
-        axios.post(`${API_BASE_URL}/return_stock/bill`, itemsToReturn)
+        axios.post(`${API_BASE_URL}/user/return_stock/bill`, itemsToReturn)
             .then(response => {
                 if (response.data === 'success') {
                     setPopupMessage('Item returned');
@@ -155,7 +159,7 @@ const [exchangeAmount, setExchangeAmount] = useState(0);
     };
     
     const confirmDefect = () => {
-        axios.post(`${API_BASE_URL}/stock/defect`, {
+        axios.post(`${API_BASE_URL}/user/stock/defect`, {
             sno: defectItem.sno,
             barcodedId: defectItem.itemBarcodeID,
             return_quantity: defectQuantity,

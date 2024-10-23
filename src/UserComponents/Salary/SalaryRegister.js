@@ -8,13 +8,23 @@ const SalaryRegister = () => {
   const [rows, setRows] = useState([{ userId: '', description: '', type: 'SELECT', date: new Date().toISOString().split('T')[0], amount: 0, hours: 0 }]);
   const [errorRows, setErrorRows] = useState([]);
   const [showPopup, setShowPopup] = useState(false);
-  const [popupStatus, setPopupStatus] = useState(null); // 'success' or 'failed'
-
+  const [popupStatus, setPopupStatus] = useState(null);
   useEffect(() => {
     const fetchUserList = async () => {
       try {
-        const response = await axios.get(`${API_BASE_URL}/getUserList`);
-        setUserList(response.data);
+
+        const userData = JSON.parse(sessionStorage.getItem('user'));
+        const storeId = userData?.storeId; // Retrieve storeId from userData
+  
+        if (storeId) {
+          // Make API call with storeId as a query parameter
+          const response = await axios.get(`${API_BASE_URL}/user/getUserList`, {
+            params: { storeId: storeId },
+          });
+          setUserList(response.data);
+        } else {
+          console.error('Store ID not found in user data');
+        }
       } catch (error) {
         console.error('Error fetching user list:', error);
       }
@@ -65,7 +75,7 @@ const SalaryRegister = () => {
 
   const fetchAmount = async (userId, type, hours) => {
     try {
-      const response = await axios.get(`${API_BASE_URL}/getUserSalaryAmount`, {
+      const response = await axios.get(`${API_BASE_URL}/user/getUserSalaryAmount`, {
         params: {
           userId,
           type,
@@ -95,7 +105,7 @@ const SalaryRegister = () => {
   
     try {
       // Make the POST request to your backend endpoint
-      const response = await axios.post(`${API_BASE_URL}/salary/update`, filteredRows);
+      const response = await axios.post(`${API_BASE_URL}/user/salary/update`, filteredRows);
   
       console.log('Update response:', response.data); // Log response from the server
   

@@ -8,7 +8,10 @@ const OrderView = () => {
     const [expandedOrders, setExpandedOrders] = useState({});
 
     const fetchOrders = () => {
-        fetch(`${API_BASE_URL}/view/customer_order_details?status=${status}`, {
+        const user = JSON.parse(sessionStorage.getItem('user'));
+        const storeId = user?.storeId; // Retrieve storeId from user data
+    
+        fetch(`${API_BASE_URL}/user/view/customer_order_details?status=${status}&storeId=${storeId}`, {
             method: 'POST',
         })
             .then(response => response.json())
@@ -34,8 +37,8 @@ const OrderView = () => {
 
     const updateOrderStatus = (orderId, statusType) => {
         const url = statusType === 'DELIVERED'
-            ? `${API_BASE_URL}/update/customer_order_details/delivered?orderId=${orderId}`
-            : `${API_BASE_URL}/update/customer_order_details/cancelled?orderId=${orderId}`;
+            ? `${API_BASE_URL}/user/update/customer_order_details/delivered?orderId=${orderId}`
+            : `${API_BASE_URL}/user/update/customer_order_details/cancelled?orderId=${orderId}`;
         
         fetch(url, {
             method: 'POST'
