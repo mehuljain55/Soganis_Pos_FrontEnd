@@ -440,26 +440,6 @@ const handleSelectChange = (selectedOption) => {
     setCustomerName(e.target.value);
   };
 
-  const handleSchoolNameChange = (e) => {
-    const inputValue = e.target.value;
-    setSchoolName(inputValue);
-   
-    // Only attempt to autofill when 3 or more characters are entered
-    if (inputValue.length >= 3) {
-      const matchingSchool = allSchools.find((school) =>
-        school.toLowerCase().startsWith(inputValue.toLowerCase())
-      );
-
-      // If there's a match and autofill hasn't happened yet
-      if (matchingSchool && !isAutofilled) {
-        setSchoolName(matchingSchool);
-        setIsAutofilled(true); // Set autofill to true to avoid overwriting
-        setTimeout(() => {
-          e.target.setSelectionRange(inputValue.length, matchingSchool.length);
-        }, 0); // Allow time for the input value to update
-      }
-    }
-  };
 
   
 
