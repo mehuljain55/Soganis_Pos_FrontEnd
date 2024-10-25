@@ -11,38 +11,90 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
+  position: relative; 
+  z-index: 1; 
+}
+
+.menu-toggle {
+  background: none;
+  border: none; 
+  color: white; 
+  font-size: 24px; 
+  cursor: pointer; 
 }
 
 .main-content-wrapper {
   display: flex;
   flex: 1;
+  transition: margin-left 0.3s ease; 
+  position: relative; 
 }
 
 .sidebar {
-  width: 200px;
+  width: 250px; 
   background-color: #f8f9fa;
-  padding: 20px;
+  padding: 10px;
   display: flex;
   flex-direction: column;
+  position: absolute; 
+  top: 0px; 
+  left: -260px; 
+  transition: left 0.3s ease; 
+  z-index: 1000; 
+  overflow-y: auto; /* Allow scrolling if content overflows */
+}
+
+.sidebar.open {
+  left: 0; 
 }
 
 .sidebar button {
-  margin-bottom: 10px;
-  padding: 10px;
-  width: 100%;
-  background-color: #007bff;
-  color: white;
-  border: none;
-  cursor: pointer;
-  text-align: left;
+  margin: 2px 0; /* Add margin between buttons */
+  padding: 10px; /* Add padding for better touch targets */
+  background: #007bff; /* Button background color */
+  color: white; /* Button text color */
+  border: none; /* Remove border */
+  border-radius: 4px; /* Add border radius */
+  cursor: pointer; /* Change cursor to pointer */
+  transition: background-color 0.2s; /* Add transition for hover effect */
 }
 
 .sidebar button:hover {
-  background-color: #0056b3;
+  background-color: #0056b3; /* Darker background on hover */
 }
 
 .main-content {
-  flex: 1;
-  padding: 20px;
-  background-color: #e9ecef;
+  flex: 1; 
+  padding: 20px; 
+  background-color: #e9ecef; 
+  overflow-y: auto; 
+}
+
+/* Button styles */
+.refresh-button {
+  background: none; 
+  border: none; 
+  cursor: pointer; 
+  color: white; 
+}
+
+/* Close Button */
+.close-button {
+  background: none; 
+  border: none; 
+  color: #dc3545; 
+  font-size: 24px; 
+  cursor: pointer; 
+  align-self: flex-end; 
+}
+
+/* Mobile Styles */
+@media (max-width: 768px) {
+  .sidebar {
+    width: 70%; /* Sidebar width for mobile */
+  }
+
+  .main-content-wrapper.shifted {
+    margin-left: 70%; /* Shift the main content for mobile */
+  }
 }
