@@ -14,6 +14,7 @@ import Bill from './UserComponents/Billing/Bill';
 import { API_BASE_URL } from './UserComponents/Config.js';
 import StoreComponent from './UserComponents/Store/StoreComponent'; // Importing StoreComponent
 import StoreLogin from './UserComponents/Store/StoreLogin'; // Importing StoreLogin
+import Invoice from './UserComponents/Invoice/Invoice'; // Importing StoreLogin
 
 import './App.css'; 
 
@@ -66,6 +67,7 @@ function App() {
     <Routes>
           <Route path="/store/login" element={<StoreLogin />} />
           <Route path="/store/dashboard" element={<StoreComponent />} />
+          <Route path="/invoice" element={<Invoice />} />
 
           {/* Conditional rendering based on userData for main app routes */}
           {!userData ? (
