@@ -85,7 +85,7 @@ const Invoice = () => {
                     </select>
                 </div>
                 <button className="customer-invoice__fetch-button" onClick={fetchBillingDetails}>
-                    Fetch Billing Details
+                   Get Bill
                 </button>
 
                 {errorMessage && <p className="customer-invoice__error-message">{errorMessage}</p>}
