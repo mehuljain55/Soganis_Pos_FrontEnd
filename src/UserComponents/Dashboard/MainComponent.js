@@ -98,12 +98,15 @@ const MainComponent = ({ userData }) => {
             <LogoutButton onClick={handleLogout} />
           </div>
         )}
-      </div>
+       
+<button className="menu-toggle" onClick={toggleSidebar}>
+  <span className="menu-text">Menu</span>
+  <span className="menu-icon">
+    <FontAwesomeIcon icon={faBars} />
+  </span>
+</button>
 
-      {/* Menu Toggle Button */}
-      <button className="menu-toggle" onClick={toggleSidebar}>
-         Menu
-      </button>
+      </div>
 
       {/* Sidebar Navigation and Main Content */}
       <div className={`main-content-wrapper ${isSidebarOpen ? 'shifted' : ''}`}>
@@ -146,6 +149,5 @@ const MainComponent = ({ userData }) => {
     </div>
   );
 };
-
 
 export default MainComponent;

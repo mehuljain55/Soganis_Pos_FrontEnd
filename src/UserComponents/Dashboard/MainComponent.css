@@ -1,3 +1,5 @@
+/* MainComponent.css */
+
 /* Container Layout */
 .container-fluid {
   display: flex;
@@ -18,25 +20,40 @@
   flex-wrap: wrap; /* Allow items to wrap on small screens */
 }
 
+/* Menu Toggle Button */
 .menu-toggle {
-  background: 0b9aed;
+  background: transparent;
   border: none;
   color: white;
-  font-size: 16px; /* Smaller font size for a smaller button */
+  font-size: 16px; /* Adjust font size as necessary */
   cursor: pointer;
-  position: absolute; /* Position it absolutely */
-  top: 85px; /* Adjust this value based on the height of the top bar */
-  left: 20px; /* Adjust the left spacing */
-  z-index: 2; /* Ensure it appears above other content */
-  padding: 5px 10px; /* Add padding for a smaller button */
-  border-radius: 4px; /* Optional: rounded corners */
+  margin-left: auto; /* Push it to the right */
+  display: flex;
+  align-items: center; /* Center align text and icon */
+  z-index: 2; /* Ensure it is above other content */
 }
 
-/* Optional: Add hover effect for better user experience */
-.menu-toggle:hover {
-  background: blue; /* Change background on hover */
+/* Show the menu icon only on mobile */
+.menu-icon {
+  display: none; /* Hide icon by default */
 }
 
+/* Show text only on PC */
+.menu-text {
+  display: block; /* Show text by default */
+}
+
+/* Adjust display for mobile */
+@media (max-width: 768px) {
+  .menu-text {
+    display: none; /* Hide text on mobile */
+  }
+
+  .menu-icon {
+    display: block; /* Show icon on mobile */
+    font-size: 20px; /* Adjust icon size as necessary */
+  }
+}
 
 /* User Info */
 .user-info {
@@ -56,7 +73,7 @@
 .sidebar {
   width: 250px;
   background-color: #f8f9fa;
-  padding: 10px 10px 10px 10px; /* Add padding to all sides */
+  padding: 10px; /* Add padding to all sides */
   padding-top: 60px; /* Create space for the close button */
   display: flex;
   flex-direction: column;
@@ -82,16 +99,10 @@
 
 /* Mobile Sidebar Style - Fullscreen under Top Bar */
 @media (max-width: 768px) {
-  .menu-toggle {
-    top: 180px; /* Adjust position if necessary */
-    left: 10px; /* Adjust left spacing */
-    font-size: 20px; /* Smaller icon for mobile */
-  }
-
   .sidebar {
     width: 100%; /* Full width for mobile */
     height: calc(100% - 90px); /* Adjust height for top bar */
-    top: 180px; /* Align under top bar */
+    top: 90px; /* Align under top bar */
     padding-top: 20px; /* Less padding on top */
     padding: 10px; /* Reset padding for smaller screens */
     transform: translateX(-100%); /* Hidden by default */
@@ -101,10 +112,6 @@
   .main-content-wrapper {
     display: block; /* Block display for mobile */
     margin-left: 0; /* No margin shift on mobile */
-  }
-
-  .main-content {
-    padding-top: 20px; /* Less padding for mobile */
   }
 
   /* Open Sidebar on mobile */

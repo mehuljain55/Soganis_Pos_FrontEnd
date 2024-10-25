@@ -1,0 +1,55 @@
+/* src/components/UserCashCollection.css */
+.user-cash-collection {
+    padding: 20px;
+    font-family: Arial, sans-serif;
+  }
+  
+  .table-responsive {
+    overflow-x: auto; /* Allows horizontal scrolling on smaller screens */
+  }
+  
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 0 auto;
+  }
+  
+  th, td {
+    padding: 12px;
+    text-align: left;
+    border: 1px solid #ddd;
+  }
+  
+  th {
+    background-color: #f4f4f4;
+  }
+  
+  @media (max-width: 768px) {
+    th, td {
+      display: block;
+      width: 100%;
+    }
+  
+    th {
+      position: absolute;
+      top: -9999px;
+      left: -9999px;
+    }
+  
+    td {
+      text-align: right;
+      position: relative;
+      padding-left: 50%; /* Space for label */
+    }
+  
+    td::before {
+      content: attr(data-label); /* Use data-label for headers */
+      position: absolute;
+      left: 0;
+      width: 50%;
+      padding-left: 10px;
+      text-align: left;
+      font-weight: bold;
+    }
+  }
+  
