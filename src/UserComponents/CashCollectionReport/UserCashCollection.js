@@ -2,6 +2,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { API_BASE_URL } from '../Config.js';
+import './UserCashCollection.css'; // Import the CSS file for styling
 
 const UserCashCollection = () => {
   const [userCashCollection, setUserCashCollection] = useState([]);
@@ -11,10 +12,9 @@ const UserCashCollection = () => {
     const fetchUserCashCollection = async () => {
       try {
         const userData = JSON.parse(sessionStorage.getItem('user'));
-        const storeId = userData?.storeId; // Retrieve storeId from user data
-  
+        const storeId = userData?.storeId;
+
         if (storeId) {
-          // Make API call with storeId as a query parameter
           const response = await axios.get(`${API_BASE_URL}/user/getUserCashCollection`, {
             params: { storeId: storeId },
           });
@@ -27,10 +27,10 @@ const UserCashCollection = () => {
         setError(err);
       }
     };
-  
+
     fetchUserCashCollection();
   }, []);
-  
+
   const formatDate = (dateString) => {
     const options = { day: '2-digit', month: '2-digit', year: 'numeric' };
     return new Date(dateString).toLocaleDateString('en-GB', options);
@@ -45,40 +45,40 @@ const UserCashCollection = () => {
   }
 
   return (
-    <div>
+    <div className="user-cash-collection">
       <h2>User Cash Collection</h2>
-      <table>
-        <thead>
-          <tr>
-            <th>User ID</th>
-            <th>Collection Date</th>
-            <th>User Name</th>
-            <th>Cash Collection</th>
-            <th>Cash Returned</th>
-            <th>Total</th>
-            
-          </tr>
-        </thead>
-        <tbody>
-          {userCashCollection.map((item) => (
-            <tr key={`${item.userId}-${item.collection_date}`}>
-              <td>{item.userId}</td>
-              <td>{formatDate(item.collection_date)}</td>
-              <td>{item.userName}</td>
-              <td>{item.cash_collection}</td>
-              <td>{item.cash_return}</td>
-              <td>{item.final_cash_collection}</td>
-              
+      <div className="table-responsive">
+        <table>
+          <thead>
+            <tr>
+              <th>User ID</th>
+              <th>Collection Date</th>
+              <th>User Name</th>
+              <th>Cash Collection</th>
+              <th>Cash Returned</th>
+              <th>Total</th>
             </tr>
-          ))}
-        </tbody>
-        <tfoot>
-          <tr>
-            <td colSpan="5"><strong>Today's Total Sale</strong></td>
-            <td><strong>{calculateTotalCashCollection()}</strong></td>
-          </tr>
-        </tfoot>
-      </table>
+          </thead>
+          <tbody>
+            {userCashCollection.map((item) => (
+              <tr key={`${item.userId}-${item.collection_date}`}>
+                <td>{item.userId}</td>
+                <td>{formatDate(item.collection_date)}</td>
+                <td>{item.userName}</td>
+                <td>{item.cash_collection}</td>
+                <td>{item.cash_return}</td>
+                <td>{item.final_cash_collection}</td>
+              </tr>
+            ))}
+          </tbody>
+          <tfoot>
+            <tr>
+              <td colSpan="5"><strong>Today's Total Sale</strong></td>
+              <td><strong>{calculateTotalCashCollection()}</strong></td>
+            </tr>
+          </tfoot>
+        </table>
+      </div>
     </div>
   );
 };
