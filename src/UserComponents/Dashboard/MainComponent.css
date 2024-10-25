@@ -1,13 +1,11 @@
 /* MainComponent.css */
 
-/* Container Layout */
 .container-fluid {
   display: flex;
   flex-direction: column;
   height: 100vh;
 }
 
-/* Top Bar */
 .top-bar {
   background-color: #0b9aed;
   color: white;
@@ -17,109 +15,97 @@
   align-items: center;
   z-index: 1;
   position: relative;
-  flex-wrap: wrap; /* Allow items to wrap on small screens */
+  flex-wrap: wrap; 
 }
 
-/* Menu Toggle Button */
 .menu-toggle {
   background: transparent;
   border: none;
   color: white;
-  font-size: 20px; /* Size for the hamburger icon */
+  font-size: 20px; 
   cursor: pointer;
-  margin-left: auto; /* Push it to the right on mobile */
-  display: none; /* Hide by default on desktop */
+  margin-left: auto; 
+  display: none;
 }
 
-/* Desktop Menu Button */
 .desktop-menu-toggle {
   background:  rgb(94, 190, 228);;
   border: none;
   color: white;
-  font-size: 16px; /* Size for the Menu text */
+  font-size: 16px;
   cursor: pointer;
-  margin-left: 20px; /* Add some space to the left */
+  margin-left: 20px; 
 }
 
 /* User Info */
 .user-info {
   display: flex;
   align-items: center;
-  flex-wrap: wrap; /* Allow user info to wrap */
+  flex-wrap: wrap; 
 }
 
-/* Main Content Wrapper */
 .main-content-wrapper {
   display: flex;
   flex: 1;
   transition: margin-left 0.3s ease;
 }
 
-/* Sidebar Style */
 .sidebar {
   width: 250px;
   background-color: #f8f9fa;
-  padding: 10px; /* Add padding to all sides */
-  padding-top: 60px; /* Create space for the close button */
+  padding: 10px; 
+  padding-top: 60px;
   display: flex;
   flex-direction: column;
   position: fixed;
-  top: 85px; /* Start below the top bar */
+  top: 85px; 
   left: 0;
   transform: translateX(-100%);
   transition: transform 0.3s ease;
   z-index: 2;
   overflow-y: auto;
-  border-right: 1px solid #ccc; /* Add border to the right */
+  border-right: 1px solid #ccc;
 }
 
-/* Sidebar Open State */
 .sidebar.open {
   transform: translateX(0);
 }
 
-/* Adjust main content margin based on sidebar state */
 .main-content-wrapper.shifted {
   margin-left: 250px;
 }
 
-/* Mobile Sidebar Style - Fullscreen under Top Bar */
 @media (max-width: 768px) {
   .sidebar {
-    width: 100%; /* Full width for mobile */
-    height: calc(100% - 90px); /* Adjust height for top bar */
-    top: 90px; /* Align under top bar */
-    padding-top: 20px; /* Less padding on top */
-    padding: 10px; /* Reset padding for smaller screens */
-    transform: translateX(-100%); /* Hidden by default */
+    width: 100%; 
+    height: calc(100% - 90px); 
+    top: 90px; 
+    padding-top: 20px;
+    padding: 10px;
+    transform: translateX(-100%); 
   }
 
-  /* Avoid Content Shift on Mobile */
   .main-content-wrapper {
-    display: block; /* Block display for mobile */
-    margin-left: 0; /* No margin shift on mobile */
+    display: block; 
+    margin-left: 0; 
   }
 
-  /* Open Sidebar on mobile */
   .sidebar.open {
-    transform: translateX(0); /* Show the sidebar */
+    transform: translateX(0); 
   }
 
-  /* Show menu icon on mobile */
   .menu-toggle {
-    display: block; /* Show the menu icon on mobile */
-  }
+    display: block;  }
 
-  /* Hide desktop menu button */
+ 
   .desktop-menu-toggle {
-    display: none; /* Hide text on mobile */
+    display: none; 
   }
 }
 
-/* Sidebar Button Style */
 .sidebar .sidebar-buttons {
   display: flex;
-  flex-direction: column; /* Stack buttons vertically */
+  flex-direction: column; 
 }
 
 .sidebar button {
@@ -134,12 +120,10 @@
   transition: background-color 0.2s;
 }
 
-/* Sidebar Button Hover Effect */
 .sidebar button:hover {
   background-color: #0056b3;
 }
 
-/* Main Content Styling */
 .main-content {
   flex: 1;
   padding: 20px;
@@ -147,7 +131,6 @@
   overflow-y: auto;
 }
 
-/* Refresh Button Style */
 .refresh-button {
   background: none;
   border: none;
@@ -156,27 +139,24 @@
   margin-left: 10px;
 }
 
-/* Cash Collection Styling */
 .cash-collection {
   display: flex;
-  align-items: center; /* Align items in the cash collection */
+  align-items: center;
 }
 
-/* Close Button */
 .main-component-close-button {
   background-color: red !important; 
-  font-size: 18px !important; /* Smaller font size */
+  font-size: 18px !important; 
   cursor: pointer !important;
-  position: absolute !important; /* Position it absolutely */
-  top: 0px !important; /* Align it near the top */
-  right: 10px !important; /* Align it to the right */
-  padding: 5px !important; /* Optional: add some padding */
-  border: none !important; /* Remove any border */
-  border-radius: 4px !important; /* Optional: rounded corners */
-  z-index: 3 !important; /* Ensure it’s above other elements */
+  position: absolute !important; 
+  top: 0px !important; 
+  right: 10px !important;
+  padding: 5px !important; 
+  border: none !important; 
+  border-radius: 4px !important;
+  z-index: 3 !important; 
 }
 
-/* Close Button Hover Effect */
 .main-component-close-button:hover {
   background-color: darkred;
 }
