@@ -18,14 +18,25 @@
   flex-wrap: wrap; /* Allow items to wrap on small screens */
 }
 
-/* Menu Toggle Button */
 .menu-toggle {
-  background: none;
+  background: 0b9aed;
   border: none;
   color: white;
-  font-size: 24px;
+  font-size: 16px; /* Smaller font size for a smaller button */
   cursor: pointer;
+  position: absolute; /* Position it absolutely */
+  top: 85px; /* Adjust this value based on the height of the top bar */
+  left: 20px; /* Adjust the left spacing */
+  z-index: 2; /* Ensure it appears above other content */
+  padding: 5px 10px; /* Add padding for a smaller button */
+  border-radius: 4px; /* Optional: rounded corners */
 }
+
+/* Optional: Add hover effect for better user experience */
+.menu-toggle:hover {
+  background: blue; /* Change background on hover */
+}
+
 
 /* User Info */
 .user-info {
@@ -45,7 +56,8 @@
 .sidebar {
   width: 250px;
   background-color: #f8f9fa;
-  padding: 10px;
+  padding: 10px 10px 10px 10px; /* Add padding to all sides */
+  padding-top: 60px; /* Create space for the close button */
   display: flex;
   flex-direction: column;
   position: fixed;
@@ -70,20 +82,34 @@
 
 /* Mobile Sidebar Style - Fullscreen under Top Bar */
 @media (max-width: 768px) {
+  .menu-toggle {
+    top: 180px; /* Adjust position if necessary */
+    left: 10px; /* Adjust left spacing */
+    font-size: 20px; /* Smaller icon for mobile */
+  }
+
   .sidebar {
-    width: 100%;
-    height: calc(100% - 180px); /* Adjust height for top bar */
+    width: 100%; /* Full width for mobile */
+    height: calc(100% - 90px); /* Adjust height for top bar */
     top: 180px; /* Align under top bar */
+    padding-top: 20px; /* Less padding on top */
+    padding: 10px; /* Reset padding for smaller screens */
+    transform: translateX(-100%); /* Hidden by default */
   }
 
   /* Avoid Content Shift on Mobile */
   .main-content-wrapper {
-    display: block;
-    margin-left: 0;
+    display: block; /* Block display for mobile */
+    margin-left: 0; /* No margin shift on mobile */
   }
 
   .main-content {
-    padding-top: 60px; /* Add padding for content below the top bar */
+    padding-top: 20px; /* Less padding for mobile */
+  }
+
+  /* Open Sidebar on mobile */
+  .sidebar.open {
+    transform: translateX(0); /* Show the sidebar */
   }
 }
 
@@ -96,6 +122,7 @@
 .sidebar button {
   margin: 5px 0;
   padding: 10px;
+  margin-top: 2px;
   background: #007bff;
   color: white;
   border: none;
@@ -120,8 +147,15 @@
 /* Close Button */
 .main-component-close-button {
   background-color: red !important; 
-  font-size: 24px;
-  cursor: pointer;
+  font-size: 18px !important; /* Smaller font size */
+  cursor: pointer !important;
+  position: absolute !important; /* Position it absolutely */
+  top: 0px !important; /* Align it near the top */
+  right: 10px !important; /* Align it to the right */
+  padding: 5px !important; /* Optional: add some padding */
+  border: none !important; /* Remove any border */
+  border-radius: 4px !important; /* Optional: rounded corners */
+  z-index: 3 !important; /* Ensure it’s above other elements */
 }
 
 /* Close Button Hover Effect */

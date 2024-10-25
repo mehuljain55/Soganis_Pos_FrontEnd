@@ -25,7 +25,7 @@ const MainComponent = ({ userData }) => {
   const [selectedMenuItem, setSelectedMenuItem] = useState('');
   const [todayCashCollection, setTodayCashCollection] = useState(null);
   const [isSearchModalOpen, setIsSearchModalOpen] = useState(false);
-  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const user = JSON.parse(sessionStorage.getItem("user"));
   const navigate = useNavigate(); 
 
@@ -85,9 +85,6 @@ const MainComponent = ({ userData }) => {
       {/* Top Bar */}
       <div className="top-bar">
         <h1>SOGANI NX</h1>
-        <button className="menu-toggle" onClick={toggleSidebar}>
-          <FontAwesomeIcon icon={faBars} />
-        </button>
         {userData && (
           <div className="user-info">
             <span>User: {userData.sname}</span>
@@ -103,12 +100,14 @@ const MainComponent = ({ userData }) => {
         )}
       </div>
 
+      {/* Menu Toggle Button */}
+      <button className="menu-toggle" onClick={toggleSidebar}>
+         Menu
+      </button>
+
       {/* Sidebar Navigation and Main Content */}
       <div className={`main-content-wrapper ${isSidebarOpen ? 'shifted' : ''}`}>
         <div className={`sidebar ${isSidebarOpen ? 'open' : ''}`}>
-          <button className="main-component-close-button" onClick={toggleSidebar}>
-            <FontAwesomeIcon icon={faTimes} /> Close
-          </button>
           <div className="sidebar-buttons">
             <button onClick={() => handleMenuItemClick('New Bill')}>New Bill</button>
             <button onClick={() => handleMenuItemClick('Returns')}>Return/Exchange</button>
@@ -147,5 +146,6 @@ const MainComponent = ({ userData }) => {
     </div>
   );
 };
+
 
 export default MainComponent;
