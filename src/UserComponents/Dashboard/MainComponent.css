@@ -25,34 +25,20 @@
   background: transparent;
   border: none;
   color: white;
-  font-size: 16px; /* Adjust font size as necessary */
+  font-size: 20px; /* Size for the hamburger icon */
   cursor: pointer;
-  margin-left: auto; /* Push it to the right */
-  display: flex;
-  align-items: center; /* Center align text and icon */
-  z-index: 2; /* Ensure it is above other content */
+  margin-left: auto; /* Push it to the right on mobile */
+  display: none; /* Hide by default on desktop */
 }
 
-/* Show the menu icon only on mobile */
-.menu-icon {
-  display: none; /* Hide icon by default */
-}
-
-/* Show text only on PC */
-.menu-text {
-  display: block; /* Show text by default */
-}
-
-/* Adjust display for mobile */
-@media (max-width: 768px) {
-  .menu-text {
-    display: none; /* Hide text on mobile */
-  }
-
-  .menu-icon {
-    display: block; /* Show icon on mobile */
-    font-size: 20px; /* Adjust icon size as necessary */
-  }
+/* Desktop Menu Button */
+.desktop-menu-toggle {
+  background:  rgb(94, 190, 228);;
+  border: none;
+  color: white;
+  font-size: 16px; /* Size for the Menu text */
+  cursor: pointer;
+  margin-left: 20px; /* Add some space to the left */
 }
 
 /* User Info */
@@ -78,7 +64,7 @@
   display: flex;
   flex-direction: column;
   position: fixed;
-  top: 90px; /* Start below the top bar */
+  top: 85px; /* Start below the top bar */
   left: 0;
   transform: translateX(-100%);
   transition: transform 0.3s ease;
@@ -118,6 +104,16 @@
   .sidebar.open {
     transform: translateX(0); /* Show the sidebar */
   }
+
+  /* Show menu icon on mobile */
+  .menu-toggle {
+    display: block; /* Show the menu icon on mobile */
+  }
+
+  /* Hide desktop menu button */
+  .desktop-menu-toggle {
+    display: none; /* Hide text on mobile */
+  }
 }
 
 /* Sidebar Button Style */
@@ -151,6 +147,21 @@
   overflow-y: auto;
 }
 
+/* Refresh Button Style */
+.refresh-button {
+  background: none;
+  border: none;
+  color: white;
+  cursor: pointer;
+  margin-left: 10px;
+}
+
+/* Cash Collection Styling */
+.cash-collection {
+  display: flex;
+  align-items: center; /* Align items in the cash collection */
+}
+
 /* Close Button */
 .main-component-close-button {
   background-color: red !important; 
@@ -168,19 +179,4 @@
 /* Close Button Hover Effect */
 .main-component-close-button:hover {
   background-color: darkred;
-}
-
-/* Refresh Button Style */
-.refresh-button {
-  background: none;
-  border: none;
-  color: white;
-  cursor: pointer;
-  margin-left: 10px;
-}
-
-/* Cash Collection Styling */
-.cash-collection {
-  display: flex;
-  align-items: center; /* Align items in the cash collection */
 }

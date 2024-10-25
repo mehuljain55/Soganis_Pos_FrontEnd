@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom'; 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faSyncAlt, faBars, faTimes } from '@fortawesome/free-solid-svg-icons'; 
+import { faSyncAlt, faBars } from '@fortawesome/free-solid-svg-icons'; 
 import { useSwipeable } from 'react-swipeable';
 import './MainComponent.css'; 
 
@@ -98,15 +98,16 @@ const MainComponent = ({ userData }) => {
             <LogoutButton onClick={handleLogout} />
           </div>
         )}
-       
-<button className="menu-toggle" onClick={toggleSidebar}>
-  <span className="menu-text">Menu</span>
-  <span className="menu-icon">
-    <FontAwesomeIcon icon={faBars} />
-  </span>
-</button>
-
+        {/* Menu Toggle Button (Visible only on mobile) */}
+        <button className="menu-toggle" onClick={toggleSidebar}>
+          <FontAwesomeIcon icon={faBars} />
+        </button>
       </div>
+
+      {/* Menu Text for Desktop */}
+      <button className="desktop-menu-toggle" onClick={toggleSidebar}>
+        Menu
+      </button>
 
       {/* Sidebar Navigation and Main Content */}
       <div className={`main-content-wrapper ${isSidebarOpen ? 'shifted' : ''}`}>
