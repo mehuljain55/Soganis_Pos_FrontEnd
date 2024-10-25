@@ -8,6 +8,7 @@ const Invoice = () => {
     const [storeId, setStoreId] = useState('');
     const [billingData, setBillingData] = useState([]);
     const [errorMessage, setErrorMessage] = useState('');
+    const [mobileError, setMobileError] = useState('');
     const [stores, setStores] = useState([]);
 
     useEffect(() => {
@@ -22,7 +23,24 @@ const Invoice = () => {
         fetchStores();
     }, []);
 
+    const handleMobileChange = (e) => {
+        const value = e.target.value;
+        const isValid = /^[0-9]*$/.test(value); // Allow only numbers
+
+        if (isValid && value.length <= 10) {
+            setMobileNo(value);
+            setMobileError('');
+        } else {
+            setMobileError('Mobile number must be a valid 10-digit number.');
+        }
+    };
+
     const fetchBillingDetails = async () => {
+        if (mobileNo.length !== 10) {
+            setMobileError('Mobile number must be exactly 10 digits.');
+            return;
+        }
+
         try {
             const response = await axios.get(`${API_BASE_URL}/invoice/customerBillingList`, {
                 params: { mobileNo, storeId }
@@ -65,8 +83,9 @@ const Invoice = () => {
                         id="mobileNo"
                         className="customer-invoice__input-field"
                         value={mobileNo}
-                        onChange={(e) => setMobileNo(e.target.value)}
+                        onChange={handleMobileChange}
                     />
+                    {mobileError && <p className="customer-invoice__error-message">{mobileError}</p>}
                 </div>
                 <div className="customer-invoice__form-group">
                     <label htmlFor="storeId" className="customer-invoice__label">Store:</label>
