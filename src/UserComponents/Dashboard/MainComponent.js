@@ -43,6 +43,11 @@ const MainComponent = ({ userData }) => {
 
   const handleMenuItemClick = (menuItem) => {
     setSelectedMenuItem(menuItem);
+    
+    // Close sidebar on mobile after selecting an option
+    if (window.innerWidth <= 768) {
+      setIsSidebarOpen(false);
+    }
   };
 
   const handleShortcutKey = (event) => { 
@@ -62,10 +67,6 @@ const MainComponent = ({ userData }) => {
 
   const handleLogout = useLogout();
 
-  useEffect(() => {
-    fetchTodayCashCollection();
-  }, []);
-
   // Toggle Sidebar
   const toggleSidebar = () => {
     setIsSidebarOpen(prev => !prev);
@@ -75,8 +76,8 @@ const MainComponent = ({ userData }) => {
   const swipeHandlers = useSwipeable({
     onSwipedRight: () => setIsSidebarOpen(true),
     onSwipedLeft: () => setIsSidebarOpen(false),
-    preventDefaultTouchmoveEvent: true, // Prevent default touch behavior
-    trackMouse: true, // Enable mouse swipe for testing
+    preventDefaultTouchmoveEvent: true,
+    trackMouse: true,
   });
 
   return (
@@ -88,16 +89,16 @@ const MainComponent = ({ userData }) => {
           <FontAwesomeIcon icon={faBars} />
         </button>
         {userData && (
-          <div>
+          <div className="user-info">
             <span>User: {userData.sname}</span>
             <span>Shop: {userData.storeId}</span>
-            <span style={{ marginLeft: '20px' }}>
+            <span className="cash-collection">
               Today Cash Collection: {todayCashCollection}
               <button className="refresh-button" onClick={fetchTodayCashCollection}>
                 <FontAwesomeIcon icon={faSyncAlt} />
               </button>
             </span>
-            <LogoutButton onClick={handleLogout} style={{ color: 'white', backgroundColor: 'red', padding: '5px 10px', border: 'none', cursor: 'pointer' }} />
+            <LogoutButton onClick={handleLogout} />
           </div>
         )}
       </div>
@@ -105,22 +106,24 @@ const MainComponent = ({ userData }) => {
       {/* Sidebar Navigation and Main Content */}
       <div className={`main-content-wrapper ${isSidebarOpen ? 'shifted' : ''}`}>
         <div className={`sidebar ${isSidebarOpen ? 'open' : ''}`}>
-          <button className="close-button" onClick={toggleSidebar}>
-            <FontAwesomeIcon icon={faTimes} />
+          <button className="main-component-close-button" onClick={toggleSidebar}>
+            <FontAwesomeIcon icon={faTimes} /> Close
           </button>
-          <button onClick={() => handleMenuItemClick('New Bill')}>New Bill</button>
-          <button onClick={() => handleMenuItemClick('Returns')}>Return/Exchange</button>
-          <button onClick={() => handleMenuItemClick('Inter Company Transaction')}>Inter Company</button>
-          <button onClick={() => handleMenuItemClick('Add Order')}>Customer Order Book</button>
-          <button onClick={() => handleMenuItemClick('View Order')}>View Order Book</button>
-          <button onClick={() => handleMenuItemClick('View Stock')}>View Stock</button>
-          <button onClick={() => handleMenuItemClick('Purchase Order')}>Purchase Order</button>
-          <button onClick={() => handleMenuItemClick('Cash Collection')}>Cash Collection</button>
-          <button onClick={() => handleMenuItemClick('View Sales Report')}>Sale Report</button>
-          <button onClick={() => handleMenuItemClick('Salary Register')}>Salary Register</button>
-          <button onClick={() => navigate('/barcode')}>Open Barcode</button>
-          <button onClick={() => handleMenuItemClick('Update Inventory')}>Update Inventory</button>
-          <button onClick={() => window.open('/add_item', '_blank')}>Add Inventory</button>
+          <div className="sidebar-buttons">
+            <button onClick={() => handleMenuItemClick('New Bill')}>New Bill</button>
+            <button onClick={() => handleMenuItemClick('Returns')}>Return/Exchange</button>
+            <button onClick={() => handleMenuItemClick('Inter Company Transaction')}>Inter Company</button>
+            <button onClick={() => handleMenuItemClick('Add Order')}>Customer Order Book</button>
+            <button onClick={() => handleMenuItemClick('View Order')}>View Order Book</button>
+            <button onClick={() => handleMenuItemClick('View Stock')}>View Stock</button>
+            <button onClick={() => handleMenuItemClick('Purchase Order')}>Purchase Order</button>
+            <button onClick={() => handleMenuItemClick('Cash Collection')}>Cash Collection</button>
+            <button onClick={() => handleMenuItemClick('View Sales Report')}>Sale Report</button>
+            <button onClick={() => handleMenuItemClick('Salary Register')}>Salary Register</button>
+            <button onClick={() => navigate('/barcode')}>Open Barcode</button>
+            <button onClick={() => handleMenuItemClick('Update Inventory')}>Update Inventory</button>
+            <button onClick={() => window.open('/add_item', '_blank')}>Add Inventory</button>
+          </div>
         </div>
 
         <main className="main-content">

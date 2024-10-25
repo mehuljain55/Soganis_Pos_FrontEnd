@@ -1,9 +1,11 @@
+/* Container Layout */
 .container-fluid {
   display: flex;
   flex-direction: column;
   height: 100vh;
 }
 
+/* Top Bar */
 .top-bar {
   background-color: #0b9aed;
   color: white;
@@ -11,90 +13,133 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  position: relative; 
-  z-index: 1; 
+  z-index: 1;
+  position: relative;
+  flex-wrap: wrap; /* Allow items to wrap on small screens */
 }
 
+/* Menu Toggle Button */
 .menu-toggle {
   background: none;
-  border: none; 
-  color: white; 
-  font-size: 24px; 
-  cursor: pointer; 
+  border: none;
+  color: white;
+  font-size: 24px;
+  cursor: pointer;
 }
 
+/* User Info */
+.user-info {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap; /* Allow user info to wrap */
+}
+
+/* Main Content Wrapper */
 .main-content-wrapper {
   display: flex;
   flex: 1;
-  transition: margin-left 0.3s ease; 
-  position: relative; 
+  transition: margin-left 0.3s ease;
 }
 
+/* Sidebar Style */
 .sidebar {
-  width: 250px; 
+  width: 250px;
   background-color: #f8f9fa;
   padding: 10px;
   display: flex;
   flex-direction: column;
-  position: absolute; 
-  top: 0px; 
-  left: -260px; 
-  transition: left 0.3s ease; 
-  z-index: 1000; 
-  overflow-y: auto; /* Allow scrolling if content overflows */
+  position: fixed;
+  top: 90px; /* Start below the top bar */
+  left: 0;
+  transform: translateX(-100%);
+  transition: transform 0.3s ease;
+  z-index: 2;
+  overflow-y: auto;
+  border-right: 1px solid #ccc; /* Add border to the right */
 }
 
+/* Sidebar Open State */
 .sidebar.open {
-  left: 0; 
+  transform: translateX(0);
+}
+
+/* Adjust main content margin based on sidebar state */
+.main-content-wrapper.shifted {
+  margin-left: 250px;
+}
+
+/* Mobile Sidebar Style - Fullscreen under Top Bar */
+@media (max-width: 768px) {
+  .sidebar {
+    width: 100%;
+    height: calc(100% - 180px); /* Adjust height for top bar */
+    top: 180px; /* Align under top bar */
+  }
+
+  /* Avoid Content Shift on Mobile */
+  .main-content-wrapper {
+    display: block;
+    margin-left: 0;
+  }
+
+  .main-content {
+    padding-top: 60px; /* Add padding for content below the top bar */
+  }
+}
+
+/* Sidebar Button Style */
+.sidebar .sidebar-buttons {
+  display: flex;
+  flex-direction: column; /* Stack buttons vertically */
 }
 
 .sidebar button {
-  margin: 2px 0; /* Add margin between buttons */
-  padding: 10px; /* Add padding for better touch targets */
-  background: #007bff; /* Button background color */
-  color: white; /* Button text color */
-  border: none; /* Remove border */
-  border-radius: 4px; /* Add border radius */
-  cursor: pointer; /* Change cursor to pointer */
-  transition: background-color 0.2s; /* Add transition for hover effect */
+  margin: 5px 0;
+  padding: 10px;
+  background: #007bff;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.2s;
 }
 
+/* Sidebar Button Hover Effect */
 .sidebar button:hover {
-  background-color: #0056b3; /* Darker background on hover */
+  background-color: #0056b3;
 }
 
+/* Main Content Styling */
 .main-content {
-  flex: 1; 
-  padding: 20px; 
-  background-color: #e9ecef; 
-  overflow-y: auto; 
-}
-
-/* Button styles */
-.refresh-button {
-  background: none; 
-  border: none; 
-  cursor: pointer; 
-  color: white; 
+  flex: 1;
+  padding: 20px;
+  background-color: #e9ecef;
+  overflow-y: auto;
 }
 
 /* Close Button */
-.close-button {
-  background: none; 
-  border: none; 
-  color: #dc3545; 
-  font-size: 24px; 
-  cursor: pointer; 
-  align-self: flex-end; 
+.main-component-close-button {
+  background-color: red !important; 
+  font-size: 24px;
+  cursor: pointer;
 }
 
-/* Mobile Styles */
-@media (max-width: 768px) {
-  .sidebar {
-    width: 70%; /* Sidebar width for mobile */
-  }
+/* Close Button Hover Effect */
+.main-component-close-button:hover {
+  background-color: darkred;
+}
 
-  .main-content-wrapper.shifted {
-    margin-left: 70%; /* Shift the main content for mobile */
-  }
+/* Refresh Button Style */
+.refresh-button {
+  background: none;
+  border: none;
+  color: white;
+  cursor: pointer;
+  margin-left: 10px;
+}
+
+/* Cash Collection Styling */
+.cash-collection {
+  display: flex;
+  align-items: center; /* Align items in the cash collection */
 }
