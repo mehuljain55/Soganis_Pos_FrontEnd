@@ -44,7 +44,6 @@ const MainComponent = ({ userData }) => {
   const handleMenuItemClick = (menuItem) => {
     setSelectedMenuItem(menuItem);
     
-    // Close sidebar on mobile after selecting an option
     if (window.innerWidth <= 768) {
       setIsSidebarOpen(false);
     }
@@ -67,12 +66,10 @@ const MainComponent = ({ userData }) => {
 
   const handleLogout = useLogout();
 
-  // Toggle Sidebar
   const toggleSidebar = () => {
     setIsSidebarOpen(prev => !prev);
   };
 
-  // Swipe functionality for mobile
   const swipeHandlers = useSwipeable({
     onSwipedRight: () => setIsSidebarOpen(true),
     onSwipedLeft: () => setIsSidebarOpen(false),
@@ -82,7 +79,6 @@ const MainComponent = ({ userData }) => {
 
   return (
     <div className="container-fluid" {...swipeHandlers}>
-      {/* Top Bar */}
       <div className="top-bar">
         <h1>SOGANI NX</h1>
         {userData && (
@@ -98,18 +94,15 @@ const MainComponent = ({ userData }) => {
             <LogoutButton onClick={handleLogout} />
           </div>
         )}
-        {/* Menu Toggle Button (Visible only on mobile) */}
         <button className="menu-toggle" onClick={toggleSidebar}>
           <FontAwesomeIcon icon={faBars} />
         </button>
       </div>
 
-      {/* Menu Text for Desktop */}
       <button className="desktop-menu-toggle" onClick={toggleSidebar}>
         Menu
       </button>
 
-      {/* Sidebar Navigation and Main Content */}
       <div className={`main-content-wrapper ${isSidebarOpen ? 'shifted' : ''}`}>
         <div className={`sidebar ${isSidebarOpen ? 'open' : ''}`}>
           <div className="sidebar-buttons">
