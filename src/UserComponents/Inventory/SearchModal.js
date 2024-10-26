@@ -56,12 +56,18 @@ const SearchModal = ({ isOpen, onClose }) => {
 
   const handlePlaceOrder = async (barcodedId) => {
     try {
-      const response = await fetch(`${API_BASE_URL}/create_order`, {
+      const user = JSON.parse(sessionStorage.getItem('user'));
+      const storeId = user?.storeId;
+    
+      const response = await fetch(`${API_BASE_URL}/user/create_order`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded',
         },
-        body: new URLSearchParams({ barcodedId }),
+        body: new URLSearchParams({
+          barcodedId: barcodedId,  // Send barcodedId
+          storeId: storeId         // Send storeId as well
+        }),
       });
 
       if (!response.ok) {

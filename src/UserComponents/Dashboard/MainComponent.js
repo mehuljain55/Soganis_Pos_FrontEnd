@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faSyncAlt, faBars } from '@fortawesome/free-solid-svg-icons';
+import { faSyncAlt, faBars, faSignOutAlt } from '@fortawesome/free-solid-svg-icons';
 import { useSwipeable } from 'react-swipeable';
 import './MainComponent.css';
 
@@ -26,7 +26,7 @@ const MainComponent = ({ userData }) => {
   const [selectedMenuItem, setSelectedMenuItem] = useState('');
   const [todayCashCollection, setTodayCashCollection] = useState(null);
   const [isSearchModalOpen, setIsSearchModalOpen] = useState(false);
-  const [isSidebarOpen, setIsSidebarOpen] = useState(false); // default to closed for mobile
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false); // Sidebar initially closed
 
   const user = JSON.parse(sessionStorage.getItem("user"));
   const navigate = useNavigate();
@@ -46,7 +46,7 @@ const MainComponent = ({ userData }) => {
   const handleMenuItemClick = (menuItem) => {
     setSelectedMenuItem(menuItem);
     if (window.innerWidth <= 768) {
-      setIsSidebarOpen(false); // Close sidebar after selecting menu item on mobile
+      setIsSidebarOpen(false); // Close sidebar after menu selection on mobile
     }
   };
 
@@ -68,7 +68,7 @@ const MainComponent = ({ userData }) => {
   const handleLogout = useLogout();
 
   const toggleSidebar = () => {
-    setIsSidebarOpen(prev => !prev);
+    setIsSidebarOpen(!isSidebarOpen);
   };
 
   const swipeHandlers = useSwipeable({
@@ -81,18 +81,20 @@ const MainComponent = ({ userData }) => {
   return (
     <div className="container-fluid" {...swipeHandlers}>
       <div className="top-bar">
-        <h1>SOGANI NX</h1>
+        <h1 className="brand-heading">SOGANI NX</h1>
         {userData && (
           <div className="user-info">
             <span>User: {userData.sname}</span>
             <span>Shop: {userData.storeId}</span>
             <span className="cash-collection">
-              Today Cash Collection: {todayCashCollection}
+              <span>Today Cash Collection: {todayCashCollection}</span>
               <button className="refresh-button" onClick={fetchTodayCashCollection}>
                 <FontAwesomeIcon icon={faSyncAlt} />
               </button>
             </span>
-            <LogoutButton onClick={handleLogout} />
+            <button className="logout-button" onClick={handleLogout}>
+              <FontAwesomeIcon icon={faSignOutAlt} />
+            </button>
           </div>
         )}
         <button className="menu-toggle" onClick={toggleSidebar}>
@@ -100,55 +102,23 @@ const MainComponent = ({ userData }) => {
         </button>
       </div>
 
-      <button className="desktop-menu-toggle" onClick={toggleSidebar}>
-        Menu
-      </button>
-
       <div className={`main-content-wrapper ${isSidebarOpen ? 'shifted' : ''}`}>
         <div className={`sidebar ${isSidebarOpen ? 'open' : ''}`}>
           <div className="list-group">
-            <button className="list-group-item list-group-item-action btn btn-primary btn-block mb-2" onClick={() => handleMenuItemClick('New Bill')}>
-              New Bill
-            </button>
-            <button className="list-group-item list-group-item-action btn btn-primary btn-block mb-2" onClick={() => handleMenuItemClick('Returns')}>
-              Return/Exchange
-            </button>
-            <button className="list-group-item list-group-item-action btn btn-primary btn-block mb-2" onClick={() => handleMenuItemClick('Inter Company Transaction')}>
-              Inter Company
-            </button>
-            <button className="list-group-item list-group-item-action btn btn-primary btn-block mb-2" onClick={() => handleMenuItemClick('Add Order')}>
-              Customer Order Book
-            </button>
-            <button className="list-group-item list-group-item-action btn btn-primary btn-block mb-2" onClick={() => handleMenuItemClick('View Order')}>
-              View Order Book
-            </button>
-            <button className="list-group-item list-group-item-action btn btn-primary btn-block mb-2" onClick={() => handleMenuItemClick('View Stock')}>
-              View Stock
-            </button>
-            <button className="list-group-item list-group-item-action btn btn-primary btn-block mb-2" onClick={() => handleMenuItemClick('Purchase Order')}>
-              Purchase Order
-            </button>
-            <button className="list-group-item list-group-item-action btn btn-primary btn-block mb-2" onClick={() => handleMenuItemClick('Cash Collection')}>
-              Cash Collection
-            </button>
-            <button className="list-group-item list-group-item-action btn btn-primary btn-block mb-2" onClick={() => handleMenuItemClick('View Sales Report')}>
-              Sale Report
-            </button>
-            <button className="list-group-item list-group-item-action btn btn-primary btn-block mb-2" onClick={() => handleMenuItemClick('School Sales')}>
-              School Report
-            </button>
-            <button className="list-group-item list-group-item-action btn btn-primary btn-block mb-2" onClick={() => handleMenuItemClick('Salary Register')}>
-              Salary Register
-            </button>
-            <button className="list-group-item list-group-item-action btn btn-primary btn-block mb-2" onClick={() => navigate('/barcode')}>
-              Open Barcode
-            </button>
-            <button className="list-group-item list-group-item-action btn btn-primary btn-block mb-2" onClick={() => handleMenuItemClick('Update Inventory')}>
-              Update Inventory
-            </button>
-            <button className="list-group-item list-group-item-action btn btn-primary btn-block mb-2" onClick={() => window.open('/add_item', '_blank')}>
-              Add Inventory
-            </button>
+            <button className="list-group-item" onClick={() => handleMenuItemClick('New Bill')}>New Bill</button>
+            <button className="list-group-item" onClick={() => handleMenuItemClick('Returns')}>Return/Exchange</button>
+            <button className="list-group-item" onClick={() => handleMenuItemClick('Inter Company Transaction')}>Inter Company</button>
+            <button className="list-group-item" onClick={() => handleMenuItemClick('Add Order')}>Customer Order Book</button>
+            <button className="list-group-item" onClick={() => handleMenuItemClick('View Order')}>View Order Book</button>
+            <button className="list-group-item" onClick={() => handleMenuItemClick('View Stock')}>View Stock</button>
+            <button className="list-group-item" onClick={() => handleMenuItemClick('Purchase Order')}>Purchase Order</button>
+            <button className="list-group-item" onClick={() => handleMenuItemClick('Cash Collection')}>Cash Collection</button>
+            <button className="list-group-item" onClick={() => handleMenuItemClick('View Sales Report')}>Sale Report</button>
+            <button className="list-group-item" onClick={() => handleMenuItemClick('School Sales')}>School Report</button>
+            <button className="list-group-item" onClick={() => handleMenuItemClick('Salary Register')}>Salary Register</button>
+            <button className="list-group-item" onClick={() => navigate('/barcode')}>Open Barcode</button>
+            <button className="list-group-item" onClick={() => handleMenuItemClick('Update Inventory')}>Update Inventory</button>
+            <button className="list-group-item" onClick={() => window.open('/add_item', '_blank')}>Add Inventory</button>
           </div>
         </div>
 
