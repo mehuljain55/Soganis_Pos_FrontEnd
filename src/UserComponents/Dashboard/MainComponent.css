@@ -1,5 +1,3 @@
-/* MainComponent.css */
-
 .container-fluid {
   display: flex;
   flex-direction: column;
@@ -13,150 +11,90 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  z-index: 1;
-  position: relative;
-  flex-wrap: wrap; 
 }
 
-.menu-toggle {
-  background: transparent;
-  border: none;
-  color: white;
-  font-size: 20px; 
-  cursor: pointer;
-  margin-left: auto; 
-  display: none;
-}
-
-.desktop-menu-toggle {
-  background:  rgb(94, 190, 228);;
-  border: none;
-  color: white;
-  font-size: 16px;
-  cursor: pointer;
-  margin-left: 20px; 
-}
-
-/* User Info */
 .user-info {
   display: flex;
   align-items: center;
-  flex-wrap: wrap; 
+  gap: 15px;
+}
+
+.menu-toggle,
+.desktop-menu-toggle {
+  background: none;
+  border: none;
+  font-size: 18px;
+  margin: 10px;
+  padding: 10px 15px;
+  cursor: pointer;
+  display: none; /* Hide by default */
+}
+
+@media (max-width: 768px) {
+  .menu-toggle {
+    display: block; /* Show the mobile menu toggle */
+  }
+  .desktop-menu-toggle {
+    display: none; /* Hide desktop menu toggle */
+  }
+}
+
+.sidebar {
+  position: fixed; /* Positioning fixed for both desktop and mobile */
+  top: 85px; /* Below the top bar */
+  left: -250px; /* Hide the sidebar off-screen */
+  width: 200px; /* Fixed width for desktop */
+  height: calc(100% - 85px);
+  background-color: #f8f9fa;
+  padding: 10px;
+  z-index: 2;
+  overflow-y: auto;
+  transition: left 0.3s ease-in-out; /* Smooth transition */
+  box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+}
+
+.sidebar.open {
+  left: 0; /* Show sidebar when open */
 }
 
 .main-content-wrapper {
   display: flex;
-  flex: 1;
-  transition: margin-left 0.3s ease;
-}
-
-.sidebar {
-  width: 250px;
-  background-color: #f8f9fa;
-  padding: 10px; 
-  padding-top: 60px;
-  display: flex;
-  flex-direction: column;
-  position: fixed;
-  top: 85px; 
-  left: 0;
-  transform: translateX(-100%);
-  transition: transform 0.3s ease;
-  z-index: 2;
-  overflow-y: auto;
-  border-right: 1px solid #ccc;
-}
-
-.sidebar.open {
-  transform: translateX(0);
+  transition: margin-left 0.3s ease-in-out;
+  flex-grow: 1;
 }
 
 .main-content-wrapper.shifted {
-  margin-left: 250px;
+  margin-left: 250px; /* Shift content when sidebar is open (for desktop) */
 }
 
-@media (max-width: 768px) {
-  .sidebar {
-    width: 100%; 
-    height: calc(100% - 90px); 
-    top: 90px; 
-    padding-top: 20px;
-    padding: 10px;
-    transform: translateX(-100%); 
-  }
-
-  .main-content-wrapper {
-    display: block; 
-    margin-left: 0; 
-  }
-
-  .sidebar.open {
-    transform: translateX(0); 
-  }
-
-  .menu-toggle {
-    display: block;  }
-
- 
-  .desktop-menu-toggle {
-    display: none; 
-  }
-}
-
-.sidebar .sidebar-buttons {
+.list-group {
+  margin-top: 20px;
   display: flex;
-  flex-direction: column; 
+  flex-direction: column; /* Ensures buttons stack vertically */
 }
 
-.sidebar button {
-  margin: 5px 0;
-  padding: 10px;
-  margin-top: 2px;
-  background: #007bff;
-  color: white;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  transition: background-color 0.2s;
-}
-
-.sidebar button:hover {
-  background-color: #0056b3;
+.list-group-item {
+  margin-bottom: 10px;
 }
 
 .main-content {
-  flex: 1;
+  flex-grow: 1;
   padding: 20px;
-  background-color: #e9ecef;
-  overflow-y: auto;
 }
 
-.refresh-button {
-  background: none;
-  border: none;
-  color: white;
-  cursor: pointer;
-  margin-left: 10px;
-}
+/* Mobile Specific Styles */
+@media (max-width: 768px) {
+  .sidebar {
+    width: 100%; /* Full width on mobile */
+    height: calc(100% - 85px);
+    left: -100%; /* Hide the sidebar off-screen */
+  }
 
-.cash-collection {
-  display: flex;
-  align-items: center;
-}
+  .sidebar.open {
+    left: 0; /* Show sidebar when open */
+  }
 
-.main-component-close-button {
-  background-color: red !important; 
-  font-size: 18px !important; 
-  cursor: pointer !important;
-  position: absolute !important; 
-  top: 0px !important; 
-  right: 10px !important;
-  padding: 5px !important; 
-  border: none !important; 
-  border-radius: 4px !important;
-  z-index: 3 !important; 
-}
-
-.main-component-close-button:hover {
-  background-color: darkred;
+  .main-content-wrapper {
+    margin-left: 0; /* Do not shift content on mobile */
+  }
 }

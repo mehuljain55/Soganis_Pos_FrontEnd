@@ -1,33 +1,35 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { useNavigate } from 'react-router-dom'; 
+import { useNavigate } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faSyncAlt, faBars } from '@fortawesome/free-solid-svg-icons'; 
+import { faSyncAlt, faBars } from '@fortawesome/free-solid-svg-icons';
 import { useSwipeable } from 'react-swipeable';
-import './MainComponent.css'; 
+import './MainComponent.css';
 
-import NewBillContainer from '../Billing/NewBillContainer.js'; 
-import InterCompanyTranfer from '../Billing/InterCompanyTranfer.js'; 
-import BillDetails from '../Billing/BillDetails.js'; 
+import NewBillContainer from '../Billing/NewBillContainer.js';
+import InterCompanyTranfer from '../Billing/InterCompanyTranfer.js';
+import BillDetails from '../Billing/BillDetails.js';
 import Salary from '../Salary/Salary.js';
-import UserCashCollection from '../CashCollectionReport/UserCashCollection.js'; 
-import FilterPage from '../Inventory/FilterPage.js'; 
-import SearchModal from '../Inventory/SearchModal.js'; 
-import FilterSalesPage from '../SalesReport/FilterSalesPage.js'; 
-import CustomerOrder from '../OrderBook/CustomerOrder.js'; 
-import OrderView from '../OrderBook/OrderView.js'; 
+import UserCashCollection from '../CashCollectionReport/UserCashCollection.js';
+import FilterPage from '../Inventory/FilterPage.js';
+import SearchModal from '../Inventory/SearchModal.js';
+import FilterSalesPage from '../SalesReport/FilterSalesPage.js';
+import CustomerOrder from '../OrderBook/CustomerOrder.js';
+import OrderView from '../OrderBook/OrderView.js';
 import PurchaseOrderBook from '../OrderBook/PurchaseOrderBook.js';
-import AddInventoryItem from '../Inventory/AddInventoryItem.js'; 
+import AddInventoryItem from '../Inventory/AddInventoryItem.js';
+import SchoolSalesReport from '../SalesReport/SchoolSalesReport.js';
 import { API_BASE_URL } from '../Config.js';
-import { LogoutButton, useLogout } from '../Login/LogoutPage.js'; 
+import { LogoutButton, useLogout } from '../Login/LogoutPage.js';
 
 const MainComponent = ({ userData }) => {
   const [selectedMenuItem, setSelectedMenuItem] = useState('');
   const [todayCashCollection, setTodayCashCollection] = useState(null);
   const [isSearchModalOpen, setIsSearchModalOpen] = useState(false);
-  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false); // default to closed for mobile
+
   const user = JSON.parse(sessionStorage.getItem("user"));
-  const navigate = useNavigate(); 
+  const navigate = useNavigate();
 
   const fetchTodayCashCollection = async () => {
     try {
@@ -43,24 +45,23 @@ const MainComponent = ({ userData }) => {
 
   const handleMenuItemClick = (menuItem) => {
     setSelectedMenuItem(menuItem);
-    
     if (window.innerWidth <= 768) {
-      setIsSidebarOpen(false);
+      setIsSidebarOpen(false); // Close sidebar after selecting menu item on mobile
     }
   };
 
-  const handleShortcutKey = (event) => { 
+  const handleShortcutKey = (event) => {
     if (event.ctrlKey && event.key === 'f') {
-      event.preventDefault(); 
+      event.preventDefault();
       setIsSearchModalOpen(true);
     }
   };
 
   useEffect(() => {
     fetchTodayCashCollection();
-    window.addEventListener('keydown', handleShortcutKey); 
+    window.addEventListener('keydown', handleShortcutKey);
     return () => {
-      window.removeEventListener('keydown', handleShortcutKey); 
+      window.removeEventListener('keydown', handleShortcutKey);
     };
   }, []);
 
@@ -105,20 +106,49 @@ const MainComponent = ({ userData }) => {
 
       <div className={`main-content-wrapper ${isSidebarOpen ? 'shifted' : ''}`}>
         <div className={`sidebar ${isSidebarOpen ? 'open' : ''}`}>
-          <div className="sidebar-buttons">
-            <button onClick={() => handleMenuItemClick('New Bill')}>New Bill</button>
-            <button onClick={() => handleMenuItemClick('Returns')}>Return/Exchange</button>
-            <button onClick={() => handleMenuItemClick('Inter Company Transaction')}>Inter Company</button>
-            <button onClick={() => handleMenuItemClick('Add Order')}>Customer Order Book</button>
-            <button onClick={() => handleMenuItemClick('View Order')}>View Order Book</button>
-            <button onClick={() => handleMenuItemClick('View Stock')}>View Stock</button>
-            <button onClick={() => handleMenuItemClick('Purchase Order')}>Purchase Order</button>
-            <button onClick={() => handleMenuItemClick('Cash Collection')}>Cash Collection</button>
-            <button onClick={() => handleMenuItemClick('View Sales Report')}>Sale Report</button>
-            <button onClick={() => handleMenuItemClick('Salary Register')}>Salary Register</button>
-            <button onClick={() => navigate('/barcode')}>Open Barcode</button>
-            <button onClick={() => handleMenuItemClick('Update Inventory')}>Update Inventory</button>
-            <button onClick={() => window.open('/add_item', '_blank')}>Add Inventory</button>
+          <div className="list-group">
+            <button className="list-group-item list-group-item-action btn btn-primary btn-block mb-2" onClick={() => handleMenuItemClick('New Bill')}>
+              New Bill
+            </button>
+            <button className="list-group-item list-group-item-action btn btn-primary btn-block mb-2" onClick={() => handleMenuItemClick('Returns')}>
+              Return/Exchange
+            </button>
+            <button className="list-group-item list-group-item-action btn btn-primary btn-block mb-2" onClick={() => handleMenuItemClick('Inter Company Transaction')}>
+              Inter Company
+            </button>
+            <button className="list-group-item list-group-item-action btn btn-primary btn-block mb-2" onClick={() => handleMenuItemClick('Add Order')}>
+              Customer Order Book
+            </button>
+            <button className="list-group-item list-group-item-action btn btn-primary btn-block mb-2" onClick={() => handleMenuItemClick('View Order')}>
+              View Order Book
+            </button>
+            <button className="list-group-item list-group-item-action btn btn-primary btn-block mb-2" onClick={() => handleMenuItemClick('View Stock')}>
+              View Stock
+            </button>
+            <button className="list-group-item list-group-item-action btn btn-primary btn-block mb-2" onClick={() => handleMenuItemClick('Purchase Order')}>
+              Purchase Order
+            </button>
+            <button className="list-group-item list-group-item-action btn btn-primary btn-block mb-2" onClick={() => handleMenuItemClick('Cash Collection')}>
+              Cash Collection
+            </button>
+            <button className="list-group-item list-group-item-action btn btn-primary btn-block mb-2" onClick={() => handleMenuItemClick('View Sales Report')}>
+              Sale Report
+            </button>
+            <button className="list-group-item list-group-item-action btn btn-primary btn-block mb-2" onClick={() => handleMenuItemClick('School Sales')}>
+              School Report
+            </button>
+            <button className="list-group-item list-group-item-action btn btn-primary btn-block mb-2" onClick={() => handleMenuItemClick('Salary Register')}>
+              Salary Register
+            </button>
+            <button className="list-group-item list-group-item-action btn btn-primary btn-block mb-2" onClick={() => navigate('/barcode')}>
+              Open Barcode
+            </button>
+            <button className="list-group-item list-group-item-action btn btn-primary btn-block mb-2" onClick={() => handleMenuItemClick('Update Inventory')}>
+              Update Inventory
+            </button>
+            <button className="list-group-item list-group-item-action btn btn-primary btn-block mb-2" onClick={() => window.open('/add_item', '_blank')}>
+              Add Inventory
+            </button>
           </div>
         </div>
 
@@ -133,13 +163,12 @@ const MainComponent = ({ userData }) => {
           {selectedMenuItem === 'Cash Collection' && <UserCashCollection />}
           {selectedMenuItem === 'View Stock' && <FilterPage />}
           {selectedMenuItem === 'View Sales Report' && <FilterSalesPage />}
+          {selectedMenuItem === 'School Sales' && <SchoolSalesReport />}
           {selectedMenuItem === 'Update Inventory' && <AddInventoryItem />}
         </main>
       </div>
-      <SearchModal
-        isOpen={isSearchModalOpen}
-        onClose={() => setIsSearchModalOpen(false)}
-      />
+
+      <SearchModal isOpen={isSearchModalOpen} onClose={() => setIsSearchModalOpen(false)} />
     </div>
   );
 };

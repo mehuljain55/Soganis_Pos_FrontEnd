@@ -12,9 +12,10 @@ import PurchaseOrderBook from './UserComponents/OrderBook/PurchaseOrderBook';
 import BarcodePrintPage from './UserComponents/Billing/BarcodePrintPage';
 import Bill from './UserComponents/Billing/Bill';
 import { API_BASE_URL } from './UserComponents/Config.js';
-import StoreComponent from './UserComponents/Store/StoreComponent'; // Importing StoreComponent
-import StoreLogin from './UserComponents/Store/StoreLogin'; // Importing StoreLogin
-import Invoice from './UserComponents/Invoice/Invoice'; // Importing StoreLogin
+import StoreComponent from './UserComponents/Store/StoreComponent'; 
+import StoreLogin from './UserComponents/Store/StoreLogin'; 
+import Invoice from './UserComponents/Invoice/Invoice'; 
+import SchoolSalesReport from './UserComponents/SalesReport/SchoolSalesReport'; 
 
 import './App.css'; 
 
@@ -84,6 +85,8 @@ function App() {
               <Route path="/bill" element={<Bill />} />
               <Route path="/add_item" element={<AddItemStock />} />
               <Route path="/inventory/update" element={<AddInventoryItem />} />
+              <Route path="/sales/school_sales" element={<SchoolSalesReport />} />
+          
             </>
           )}
         </Routes>
