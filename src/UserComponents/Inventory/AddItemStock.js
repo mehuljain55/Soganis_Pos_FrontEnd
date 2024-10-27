@@ -14,9 +14,6 @@ const AddItemStock = () => {
   const inputRefs = useRef([]);
   const fileInputRef = useRef(null); // Reference to the file input
 
-  useEffect(() => {
-    fetchItemCategoryAndType();
-  }, []);
 
   const fetchItemCategoryAndType = async () => {
     try {
@@ -36,6 +33,10 @@ const AddItemStock = () => {
     }
   };
   
+  useEffect(() => {
+    fetchItemCategoryAndType();
+  }, []);
+
 
   const removeItemRow = (index) => {
     const updatedItems = items.filter((_, i) => i !== index);
