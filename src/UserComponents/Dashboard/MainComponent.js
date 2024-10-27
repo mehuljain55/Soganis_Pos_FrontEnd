@@ -19,6 +19,7 @@ import OrderView from '../OrderBook/OrderView.js';
 import PurchaseOrderBook from '../OrderBook/PurchaseOrderBook.js';
 import AddInventoryItem from '../Inventory/AddInventoryItem.js';
 import SchoolSalesReport from '../SalesReport/SchoolSalesReport.js';
+import AddItemStock from '../Inventory/AddItemStock.js';
 import { API_BASE_URL } from '../Config.js';
 import { LogoutButton, useLogout } from '../Login/LogoutPage.js';
 
@@ -26,7 +27,7 @@ const MainComponent = ({ userData }) => {
   const [selectedMenuItem, setSelectedMenuItem] = useState('');
   const [todayCashCollection, setTodayCashCollection] = useState(null);
   const [isSearchModalOpen, setIsSearchModalOpen] = useState(false);
-  const [isSidebarOpen, setIsSidebarOpen] = useState(false); // Sidebar initially closed
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false); 
 
   const user = JSON.parse(sessionStorage.getItem("user"));
   const navigate = useNavigate();
@@ -118,7 +119,7 @@ const MainComponent = ({ userData }) => {
             <button className="list-group-item" onClick={() => handleMenuItemClick('Salary Register')}>Salary Register</button>
             <button className="list-group-item" onClick={() => navigate('/barcode')}>Open Barcode</button>
             <button className="list-group-item" onClick={() => handleMenuItemClick('Update Inventory')}>Update Inventory</button>
-            <button className="list-group-item" onClick={() => window.open('/add_item', '_blank')}>Add Inventory</button>
+            <button className="list-group-item" onClick={() => handleMenuItemClick('Add Inventory')}>Add Inventory</button>
           </div>
         </div>
 
@@ -135,6 +136,7 @@ const MainComponent = ({ userData }) => {
           {selectedMenuItem === 'View Sales Report' && <FilterSalesPage />}
           {selectedMenuItem === 'School Sales' && <SchoolSalesReport />}
           {selectedMenuItem === 'Update Inventory' && <AddInventoryItem />}
+          {selectedMenuItem === 'Add Inventory' && <AddItemStock />}
         </main>
       </div>
 
