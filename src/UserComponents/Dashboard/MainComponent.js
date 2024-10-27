@@ -87,7 +87,7 @@ const MainComponent = ({ userData }) => {
             <span>User: {userData.sname}</span>
             <span>Shop: {userData.storeId}</span>
             <span className="cash-collection">
-              <span>Today Cash Collection: {todayCashCollection}</span>
+              <span>Cash Collection: {todayCashCollection}</span>
               <button className="refresh-button" onClick={fetchTodayCashCollection}>
                 <FontAwesomeIcon icon={faSyncAlt} />
               </button>
