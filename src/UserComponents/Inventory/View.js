@@ -9,7 +9,6 @@ const View = ({ data,onUpdateSuccess }) => {
   const [isEditingQuantity, setIsEditingQuantity] = useState(false);
   const [isEditingPrice, setIsEditingPrice] = useState(false);
 
-  // Refs to store input elements for navigation
   const inputRefs = useRef({});
 
   const handleSearch = (event) => {
@@ -32,8 +31,8 @@ const View = ({ data,onUpdateSuccess }) => {
           'Content-Type': 'application/x-www-form-urlencoded',
         },
         body: new URLSearchParams({
-          barcodedId: barcodedId,  // Send barcodedId
-          storeId: storeId         // Send storeId as well
+          barcodedId: barcodedId,  
+          storeId: storeId         
         }),
       });
     
@@ -63,27 +62,23 @@ const View = ({ data,onUpdateSuccess }) => {
 
   const handleUpdate = async () => {
     try {
-      // Fetch user from local storage
       const user = JSON.parse(sessionStorage.getItem('user'));
       if (!user) {
         alert('User not found in local storage.');
         return;
       }
   
-      // Map the data into the expected format
       const itemAddModel = Object.keys(editableData).map((id) => ({
         barcodedId: id,
         price: editableData[id]?.price || data.find((item) => item.itemBarcodeID === id)?.price,
         quantity: editableData[id]?.quantity || data.find((item) => item.itemBarcodeID === id)?.quantity,
       }));
   
-      // Create the inventory update model with both items and user
       const inventoryUpdateModel = {
         itemAddModel: itemAddModel,
         user: user
       };
   
-      // API request
       const response = await fetch(`${API_BASE_URL}/inventory/update_inventory`, {
         method: 'POST',
         headers: {
@@ -143,17 +138,14 @@ const View = ({ data,onUpdateSuccess }) => {
         newRow = rowIndex < filteredData.length - 1 ? rowIndex + 1 : rowIndex;
       } else if (e.key === 'ArrowRight') {
         if (columnIndex > 0) {
-          // Move left if not the first column
           newCol = columnIndex - 1;
         }
       } else if (e.key === 'ArrowLeft') {
         if (columnIndex < 1) {
-          // Move right if not the last editable column
           newCol = columnIndex + 1;
         }
       }
   
-      // Construct next field based on new column index and field type
       const nextField = newCol === 0 ? 'quantity' : 'price';
       const nextRef = inputRefs.current[`${newRow}-${newCol}-${nextField}`];
       if (nextRef) {
