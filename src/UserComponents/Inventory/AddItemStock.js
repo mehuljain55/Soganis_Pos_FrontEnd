@@ -41,7 +41,30 @@ const AddItemStock = () => {
   const removeItemRow = (index) => {
     const updatedItems = items.filter((_, i) => i !== index);
     setItems(updatedItems);
+  
+    // Update validation errors to remove any errors for the deleted row
+    const updatedErrors = { ...validationErrors };
+    const newValidationErrors = {};
+  
+    // Reassign validation errors to correct indices after the row is removed
+    Object.keys(updatedErrors).forEach((key) => {
+      const rowIndex = parseInt(key.match(/\d+/)[0], 10); // Extract row index from key
+  
+      // Only keep errors that are for rows other than the deleted one
+      if (rowIndex !== index) {
+        if (rowIndex > index) {
+          // Decrement the error index for rows that were after the deleted row
+          newValidationErrors[`itemCode${rowIndex - 1}`] = updatedErrors[key];
+        } else {
+          // Keep the errors for rows before the deleted one unchanged
+          newValidationErrors[key] = updatedErrors[key];
+        }
+      }
+    });
+  
+    setValidationErrors(newValidationErrors);
   };
+  
   
 
   const handleKeyDown = (e, rowIndex, fieldIndex) => {
@@ -105,7 +128,15 @@ const AddItemStock = () => {
     const updatedItems = [...items];
     updatedItems[rowIndex][fieldName] = e.target.value;
     setItems(updatedItems);
+  
+    // Remove the specific validation error when the user edits the field
+    if (validationErrors[`itemCode${rowIndex}`] && fieldName === 'itemCode') {
+      const updatedErrors = { ...validationErrors };
+      delete updatedErrors[`itemCode${rowIndex}`];
+      setValidationErrors(updatedErrors);
+    }
   };
+  
 
   const checkItemCode = async (itemCode) => {
     try {
@@ -150,13 +181,22 @@ const AddItemStock = () => {
     const isValid = await validateItems();
     if (isValid) {
       try {
-        const response = await axios.post(`${API_BASE_URL}/inventory/stock/add`, items);
+        const user = JSON.parse(sessionStorage.getItem("user"));
+        const storeId = user ? user.storeId : '';
+        const response = await axios.post(
+          `${API_BASE_URL}/inventory/stock/add?storeId=${storeId}`,
+          items
+        );
         console.log('API response:', response.data);
       } catch (error) {
         console.error('Error submitting data:', error);
       }
     }
+    else{
+      alert("Duplicate or Invalid Item");
+    }
   };
+  
 
   const getHighestMatch = (value, options) => {
     if (!value) return '';
@@ -212,12 +252,15 @@ const AddItemStock = () => {
         };
       });
   
-      setItems(parsedItems);
+      // Filter out rows where itemCode is blank
+      const filteredItems = parsedItems.filter(item => item.itemCode.trim() !== '');
+  
+      setItems(filteredItems);
     };
   
     reader.readAsBinaryString(file);
   };
-
+  
   return (
     <div className="add-item-stock">
       <h2>Add Item Stock</h2>
