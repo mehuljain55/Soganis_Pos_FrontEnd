@@ -187,12 +187,19 @@ const AddItemStock = () => {
           `${API_BASE_URL}/inventory/stock/add?storeId=${storeId}`,
           items
         );
-        console.log('API response:', response.data);
+  
+        if (response.data === 'Success') {
+          alert('Item Submitted Successfully');
+          clearItemRows();  // Call clearItemRows if the response is success
+        } else {
+          alert('Error: ' + response.data);  // Handle other possible responses
+        }
+  
       } catch (error) {
         console.error('Error submitting data:', error);
+        alert('An error occurred while submitting the item');
       }
-    }
-    else{
+    } else {
       alert("Duplicate or Invalid Item");
     }
   };
