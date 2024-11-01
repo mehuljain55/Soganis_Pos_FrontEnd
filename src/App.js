@@ -16,6 +16,7 @@ import StoreComponent from './UserComponents/Store/StoreComponent';
 import StoreLogin from './UserComponents/Store/StoreLogin'; 
 import Invoice from './UserComponents/Invoice/Invoice'; 
 import SchoolSalesReport from './UserComponents/SalesReport/SchoolSalesReport'; 
+import SalesReportGraph from './UserComponents/SalesReport/SalesReportGraph'; 
 
 import './App.css'; 
 
@@ -86,6 +87,7 @@ function App() {
               <Route path="/add_item" element={<AddItemStock />} />
               <Route path="/inventory/update" element={<AddInventoryItem />} />
               <Route path="/sales/school_sales" element={<SchoolSalesReport />} />
+              <Route path="/sales/report" element={<SalesReportGraph />} />
           
             </>
           )}

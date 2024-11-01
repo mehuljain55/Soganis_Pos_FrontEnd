@@ -41,7 +41,7 @@ const SchoolSalesReport = () => {
 
     return (
         <div className="school-sales-report">
-            <h2 className="report-title">Sales Report by School Name</h2>
+            <h2 className="report-title">Sales School Summary</h2>
             <div className="date-inputs">
                 <input
                     type="date"

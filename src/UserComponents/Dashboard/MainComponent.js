@@ -28,6 +28,7 @@ const MainComponent = ({ userData }) => {
   const [todayCashCollection, setTodayCashCollection] = useState(null);
   const [isSearchModalOpen, setIsSearchModalOpen] = useState(false);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false); 
+   const[storeName,setStoreName]=useState('');
 
   const user = JSON.parse(sessionStorage.getItem("user"));
   const navigate = useNavigate();
@@ -50,6 +51,17 @@ const MainComponent = ({ userData }) => {
       setIsSidebarOpen(false); // Close sidebar after menu selection on mobile
     }
   };
+
+  const fetchStore = async()=>{
+    const store = await axios.get(`${API_BASE_URL}/store/getStoreName`, {
+      params: { storeId: user.storeId }
+    });
+    setStoreName(store.data);
+  }
+
+  useEffect(() => {
+    fetchStore(); 
+  }, []);
 
   const handleShortcutKey = (event) => {
     if (event.ctrlKey && event.key === 'f') {
@@ -82,7 +94,7 @@ const MainComponent = ({ userData }) => {
   return (
     <div className="container-fluid" {...swipeHandlers}>
       <div className="top-bar">
-        <h1 className="brand-heading">SOGANI NX</h1>
+        <h1 className="brand-heading">{storeName}</h1>
         {userData && (
           <div className="user-info">
             <span>User: {userData.sname}</span>
