@@ -4,7 +4,9 @@ import './ExchangeBill.css';
 import { API_BASE_URL } from '../Config.js';
 import Modal from 'react-bootstrap/Modal';
 import Button from 'react-bootstrap/Button';
+import Select from 'react-select'; // Import Select
 import BillPopup from './BillPopup'; // Import the popup component
+
 
 
 const ExchangeBill = ({ userData,itemsToExchange, exchangeAmount, onClose }) => {
@@ -35,8 +37,10 @@ const ExchangeBill = ({ userData,itemsToExchange, exchangeAmount, onClose }) => 
   const [showPopup, setShowPopup] = useState(false);
   const [someState, setSomeState] = useState(false); 
  
+
   const [allSchools, setAllSchools] = useState([]);
-  const [isAutofilled, setIsAutofilled] = useState(false); // To control if autofill happens
+  const selectedSchoolRef = useRef(null); // Renamed to avoid collision
+
 
 
 
@@ -51,25 +55,55 @@ const ExchangeBill = ({ userData,itemsToExchange, exchangeAmount, onClose }) => 
     amount: 0,
   });
 
-  useEffect(() => {
-    const fetchAllSchools = async () => {
-      try {
-        const response = await axios.get(`${API_BASE_URL}/filter/getSchool`);
-        setAllSchools(response.data);
-      } catch (error) {
-        console.error('Error fetching school names:', error);
-      }
-    };
+  const fetchAllSchools = async () => {
+    try {
+        const user = JSON.parse(sessionStorage.getItem('user'));
+        const storeId = user?.storeId;
+        const response = await axios.get(`${API_BASE_URL}/user/filter/getSchool`, {
+            params: {
+                storeId: storeId,
+            },
+        });
 
+        if (Array.isArray(response.data)) {
+            const schoolOptions = response.data.map((school) => ({
+                value: school, // Assuming school is the name
+                label: school, // Same for label
+            }));
+            setAllSchools(schoolOptions);
+        } else {
+            console.error('Expected an array of schools, but got:', response.data);
+        }
+    } catch (error) {
+        console.error('Error fetching school names:', error);
+    }
+};
+
+const handleSelectChange = (selectedOption) => {
+    // Update state with the selected option's value
+    setSchoolName(selectedOption ? selectedOption.value : ''); // Ensure it's a string
+};
+  useEffect(() => {
     fetchAllSchools();
   }, []);
 
-  // Fetch items based on search term (for manual search)
+ 
   useEffect(() => {
-    if (!isBarcodeMode && searchTerm.trim() !== '') {
+    if (searchTerm.trim() !== '') {
       const fetchItems = async () => {
         try {
-          const response = await axios.get(`${API_BASE_URL}/getAllItems?searchTerm=${searchTerm}`);
+         
+          const user = JSON.parse(sessionStorage.getItem("user"));
+          const storeId = user ? user.storeId : '';
+  
+          // Make API call with searchTerm and storeId
+          const response = await axios.get(`${API_BASE_URL}/inventory/getAllItems`, {
+            params: {
+              searchTerm: searchTerm,
+              storeId: storeId, 
+            }
+          });
+  
           setSearchResults(response.data || []); // Set search results or empty array
           setSelectedIndex(-1);
         } catch (error) {
@@ -77,6 +111,7 @@ const ExchangeBill = ({ userData,itemsToExchange, exchangeAmount, onClose }) => 
           setSearchResults([]);
         }
       };
+  
       fetchItems();
     }
   }, [searchTerm, isBarcodeMode]);
@@ -93,15 +128,28 @@ const ExchangeBill = ({ userData,itemsToExchange, exchangeAmount, onClose }) => 
   };
 
   
-  
+  const handleSelectFocus = () => {
+    setIsTableFocused(false); // Set table focus to false when Select is focused
+  };
+
+  const handleSelectBlur = () => {
+    setIsTableFocused(true); // Set table focus back to true when Select is blurred
+  }
+
 
   
   useEffect(() => {
     if (isBarcodeMode && barcode.trim() !== '') {
       const fetchItemByBarcode = async () => {
         try {
+          const user = JSON.parse(sessionStorage.getItem('user'));
+          const storeId = user?.storeId; // Retrieve storeId from user data
+    
           const response = await axios.get(`${API_BASE_URL}/search/item_code`, {
-            params: { barcode: barcode.trim() },
+            params: {
+              barcode: barcode.trim(),
+              storeId: storeId // Include storeId as a query parameter
+            }
           });
           if (response.data) {
             addItemToBill(response.data);
@@ -312,8 +360,11 @@ const ExchangeBill = ({ userData,itemsToExchange, exchangeAmount, onClose }) => 
   };
 
   const handleSubmit = async () => {
+    const user = JSON.parse(sessionStorage.getItem("user"));
+    const storeId = user ? user.storeId : '';
+
     const billData = {
-      userId: userData.userId,
+      userId: user.userId,
       customerName: customerName,
       customerMobileNo: customerMobileNo,
       paymentMode: paymentMode,
@@ -338,14 +389,17 @@ const ExchangeBill = ({ userData,itemsToExchange, exchangeAmount, onClose }) => 
       price: item.price,
       return_quantity: item.return_quantity,
     }));
+
+    const userData = JSON.parse(sessionStorage.getItem('user'));
   
     const requestData = {
       bill: billData,
       itemModel: exchangeData,
+      user: userData,
     };
   
     try {
-      const response = await axios.post(`${API_BASE_URL}/exchange/billRequest`, requestData, {
+      const response = await axios.post(`${API_BASE_URL}/user/exchange/billRequest`, requestData, {
         responseType: 'arraybuffer',
       });
   
@@ -386,34 +440,8 @@ const ExchangeBill = ({ userData,itemsToExchange, exchangeAmount, onClose }) => 
     setCustomerName(e.target.value);
   };
 
-  const handleSchoolNameChange = (e) => {
-    const inputValue = e.target.value;
-    setSchoolName(inputValue);
-    setIsAutofilled(false); // Reset autofill control
 
-    // Only attempt to autofill when 3 or more characters are entered
-    if (inputValue.length >= 3) {
-      const matchingSchool = allSchools.find((school) =>
-        school.toLowerCase().startsWith(inputValue.toLowerCase())
-      );
-
-      // If there's a match and autofill hasn't happened yet
-      if (matchingSchool && !isAutofilled) {
-        setSchoolName(matchingSchool);
-        setIsAutofilled(true); // Set autofill to true to avoid overwriting
-        setTimeout(() => {
-          e.target.setSelectionRange(inputValue.length, matchingSchool.length);
-        }, 0); // Allow time for the input value to update
-      }
-    }
-  };
-
-  const handleSchoolKeyDown = (e) => {
-    // Handle backspace or typing to cancel autofill
-    if (isAutofilled && (e.key === 'Backspace' || e.key.length === 1)) {
-      setIsAutofilled(false); // Disable autofill if user types or backspaces
-    }
-  };
+  
 
   const handleMobileNoChange = (e) => {
     setCustomerMobileNo(e.target.value);
@@ -623,6 +651,19 @@ const ExchangeBill = ({ userData,itemsToExchange, exchangeAmount, onClose }) => 
 
       {/* Customer Details */}
       <div className="customer-details">
+      <label>
+    School Name:
+    <Select
+        options={allSchools}
+        onFocus={handleSelectFocus} // Handle focus on Select
+        onBlur={handleSelectBlur} // Handle blur on Select
+        ref={selectedSchoolRef} // Use the renamed reference
+        value={allSchools.find(school => school.value === schoolName) || null} // Set the selected value correctly
+        onChange={handleSelectChange} // Update state on selection
+        placeholder="Select a school"
+        styles={{ control: (base) => ({ ...base, width: '200px' }) }} // Fixed width for the select input
+    />
+</label>
        <h5>Credit Available: {exchangeAmount}</h5>
      
       <h5>Exchange Items</h5>

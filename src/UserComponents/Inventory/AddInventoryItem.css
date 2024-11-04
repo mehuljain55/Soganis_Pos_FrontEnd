@@ -1,0 +1,136 @@
+/* Container styling for the main page */
+.container {
+  max-width: 800px;
+  margin: 20px auto;
+  padding: 20px;
+  font-family: Arial, sans-serif;
+  background-color: #f9f9f9;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+/* Form styling */
+.form-container {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 20px; /* Space below the form */
+}
+
+input[type="file"] {
+  padding: 5px;
+  font-size: 14px;
+}
+
+/* Button styling */
+button {
+  background-color: #007bff;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  cursor: pointer;
+  border-radius: 5px;
+  transition: background-color 0.3s ease;
+}
+
+button:hover {
+  background-color: #0056b3; /* Darker blue for hover effect */
+}
+
+/* Refresh button specific styles */
+.refresh-button {
+  background-color: #f44336;
+}
+
+.refresh-button:hover {
+  background-color: #e53935; /* Darker red for hover effect */
+}
+
+/* Table container with scroll */
+.table-container {
+  margin-top: 20px;
+  max-height: 400px; /* Set a max-height for the table to enable scrolling */
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+/* Styled table */
+.styled-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 25px 0;
+  font-size: 16px; /* Adjusted font size for better readability */
+  text-align: left;
+}
+
+/* Table header styling */
+.styled-table th {
+  background-color: #4CAF50;
+  color: white;
+  padding: 12px 15px;
+  text-transform: uppercase; /* Capitalize table headers */
+}
+
+/* Table body row styling */
+.styled-table td {
+  padding: 12px 15px;
+  border: 1px solid #ddd;
+  transition: background-color 0.3s ease; /* Smooth transition for hover effect */
+}
+
+/* Row nth-child styling for alternate background */
+.styled-table tr:nth-child(even) {
+  background-color: #f2f2f2; /* Light grey for even rows */
+}
+
+.styled-table tr:nth-child(odd) {
+  background-color: #ffffff; /* White for odd rows */
+}
+
+/* Table row hover effect */
+.styled-table tr:hover {
+  background-color: #ddd; /* Grey on hover */
+}
+
+/* Set table width manually and adjust table cell width */
+.styled-table th:nth-child(1),
+.styled-table td:nth-child(1) {
+  width: 20%; /* School Code */
+}
+
+.styled-table th:nth-child(2),
+.styled-table td:nth-child(2) {
+  width: 20%; /* Item Code */
+}
+
+.styled-table th:nth-child(3),
+.styled-table td:nth-child(3) {
+  width: 20%; /* Size */
+}
+
+.styled-table th:nth-child(4),
+.styled-table td:nth-child(4) {
+  width: 20%; /* Color */
+}
+
+.styled-table th:nth-child(5),
+.styled-table td:nth-child(5) {
+  width: 20%; /* Quantity */
+}
+
+/* Responsive design for smaller screens */
+@media (max-width: 600px) {
+  .container {
+    padding: 15px; /* Reduce padding for small screens */
+  }
+
+  button {
+    padding: 8px 15px; /* Smaller button for small screens */
+    font-size: 14px; /* Adjust button font size */
+  }
+
+  .styled-table th, .styled-table td {
+    padding: 10px; /* Adjust padding for table cells */
+    font-size: 14px; /* Smaller font size in table for mobile */
+  }
+}

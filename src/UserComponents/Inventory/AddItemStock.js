@@ -5,7 +5,8 @@ import './AddItemStock.css'; // Import the CSS file
 import { API_BASE_URL } from "../Config.js";
 
 const AddItemStock = () => {
-  const initialItemState = { itemCode: '', itemName: '', itemType: '', itemSize: '', itemColor: '', itemCategory: '', price: '', wholeSalePrice: '', quantity: 0, description: '' };
+  const user = JSON.parse(sessionStorage.getItem("user"));
+  const initialItemState = { itemCode: '',itemName: '',itemType: '',itemSize: '',itemColor: '',itemCategory: '',price: '',wholeSalePrice: '', quantity: 0,description: '',groupId: '',storeId: user ? user.storeId : ''};
   const [items, setItems] = useState([initialItemState]);
   const [itemCategoryOptions, setItemCategoryOptions] = useState([]);
   const [itemTypeOptions, setItemTypeOptions] = useState([]);
@@ -13,21 +14,29 @@ const AddItemStock = () => {
   const inputRefs = useRef([]);
   const fileInputRef = useRef(null); // Reference to the file input
 
-  useEffect(() => {
-    fetchItemCategoryAndType();
-  }, []);
 
-  // Function to fetch item categories and types
   const fetchItemCategoryAndType = async () => {
     try {
-      const categoryResponse = await axios.get(`${API_BASE_URL}/search/school_list`);
-      const typeResponse = await axios.get(`${API_BASE_URL}/search/item_list`);
+      const storeId = user ? user.storeId : '';
+  
+      const categoryResponse = await axios.get(`${API_BASE_URL}/inventory/search/school_list`, {
+        params: { storeId }
+      });
+      const typeResponse = await axios.get(`${API_BASE_URL}/inventory/search/item_list`, {
+        params: { storeId }
+      });
+  
       setItemCategoryOptions(categoryResponse.data);
       setItemTypeOptions(typeResponse.data);
     } catch (error) {
       console.error('Error fetching categories and types:', error);
     }
   };
+  
+  useEffect(() => {
+    fetchItemCategoryAndType();
+  }, []);
+
 
   const removeItemRow = (index) => {
     const updatedItems = items.filter((_, i) => i !== index);
@@ -36,14 +45,12 @@ const AddItemStock = () => {
   
 
   const handleKeyDown = (e, rowIndex, fieldIndex) => {
-    // Check if inputRefs.current is initialized
     if (!inputRefs.current || !inputRefs.current[rowIndex]) {
       return; // Exit if the current row does not exist
     }
   
     switch (e.key) {
       case 'ArrowRight':
-        // Move right if we're not at the last field in the current row
         if (fieldIndex < inputRefs.current[rowIndex].length - 1) {
           const nextField = inputRefs.current[rowIndex][fieldIndex + 1];
           if (nextField) {
@@ -53,7 +60,6 @@ const AddItemStock = () => {
         break;
   
       case 'ArrowLeft':
-        // Move left if we're not at the first field in the current row
         if (fieldIndex > 0) {
           const prevField = inputRefs.current[rowIndex][fieldIndex - 1];
           if (prevField) {
@@ -63,7 +69,6 @@ const AddItemStock = () => {
         break;
   
       case 'ArrowDown':
-        // Move down if we're not at the last row
         if (rowIndex < inputRefs.current.length - 1) {
           const nextRowField = inputRefs.current[rowIndex + 1][fieldIndex];
           if (nextRowField) {
@@ -73,7 +78,6 @@ const AddItemStock = () => {
         break;
   
       case 'ArrowUp':
-        // Move up if we're not at the first row
         if (rowIndex > 0) {
           const prevRowField = inputRefs.current[rowIndex - 1][fieldIndex];
           if (prevRowField) {
@@ -93,8 +97,8 @@ const AddItemStock = () => {
   };
 
   const clearItemRows = () => {
-    setItems([initialItemState]); // Reset to a single empty row
-    fileInputRef.current.value = ''; // Clear the file input
+    setItems([initialItemState]); 
+    fileInputRef.current.value = '';
   };
 
   const handleInputChange = (e, rowIndex, fieldName) => {
@@ -105,13 +109,19 @@ const AddItemStock = () => {
 
   const checkItemCode = async (itemCode) => {
     try {
-      const response = await axios.get(`${API_BASE_URL}/check/item_code`, { params: { itemCode } });
+      const storeId = user ? user.storeId : '';
+  
+      const response = await axios.get(`${API_BASE_URL}/inventory/check/item_code`, { 
+        params: { itemCode, storeId } 
+      });
+      
       return response.data;
     } catch (error) {
       console.error('Error checking item code:', error);
       return 'Error';
     }
   };
+  
 
   const validateItems = async () => {
     const newValidationErrors = {};
@@ -140,7 +150,7 @@ const AddItemStock = () => {
     const isValid = await validateItems();
     if (isValid) {
       try {
-        const response = await axios.post(`${API_BASE_URL}/stock/add`, items);
+        const response = await axios.post(`${API_BASE_URL}/inventory/stock/add`, items);
         console.log('API response:', response.data);
       } catch (error) {
         console.error('Error submitting data:', error);
@@ -151,10 +161,8 @@ const AddItemStock = () => {
   const getHighestMatch = (value, options) => {
     if (!value) return '';
   
-    // Normalize the value
     const normalizedValue = value.toLowerCase();
   
-    // Find the best match from the options
     let bestMatch = '';
     let highestMatchScore = 0;
   
@@ -162,7 +170,6 @@ const AddItemStock = () => {
       const normalizedOption = option.toLowerCase();
       let matchScore = 0;
   
-      // Calculate match score (simple similarity check)
       if (normalizedOption.includes(normalizedValue)) {
         matchScore = normalizedValue.length / normalizedOption.length;
       }
@@ -176,7 +183,6 @@ const AddItemStock = () => {
     return bestMatch;
   };
   
-  // Handle Excel file upload and parse it
   const handleFileUpload = (e) => {
     const file = e.target.files[0];
     const reader = new FileReader();
@@ -187,7 +193,6 @@ const AddItemStock = () => {
       const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
       const excelRows = XLSX.utils.sheet_to_json(firstSheet, { header: 1 });
   
-      // Map the Excel data to items with highest match
       const parsedItems = excelRows.slice(1).map((row) => {
         const itemType = row[2] || '';
         const itemCategory = row[5] || '';
@@ -202,7 +207,8 @@ const AddItemStock = () => {
           price: row[6] || '',
           wholeSalePrice: row[7] || '',
           quantity: row[8] || 0,
-          description: row[9] || ''
+          description: row[9] || '',
+          groupId: row[10] || ''
         };
       });
   
@@ -240,6 +246,8 @@ const AddItemStock = () => {
             <th>Wholesale Price</th>
             <th>Quantity</th>
             <th>Barcode Description</th>
+            <th>Group ID</th>
+            
             <th>Action</th>
           </tr>
         </thead>
@@ -340,6 +348,16 @@ const AddItemStock = () => {
                   onKeyDown={(e) => handleKeyDown(e, rowIndex, 9)}
                   placeholder="Description"
                 />
+              </td>
+
+              <td>
+              <input
+                  value={item.groupId}
+                  onChange={(e) => handleInputChange(e, rowIndex, 'groupId')}
+                  onKeyDown={(e) => handleKeyDown(e, rowIndex, 10)}
+                  placeholder="Group Id"
+                />
+              
               </td>
               <td>
         <button onClick={() => removeItemRow(rowIndex)} className="remove-button">Remove</button>

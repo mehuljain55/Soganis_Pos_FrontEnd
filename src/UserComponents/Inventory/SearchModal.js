@@ -31,8 +31,14 @@ const SearchModal = ({ isOpen, onClose }) => {
   useEffect(() => {
     const fetchItems = async () => {
       try {
-        const response = await axios.get(`${API_BASE_URL}/getAllItems`, {
-          params: { searchTerm }
+        const user = JSON.parse(sessionStorage.getItem("user"));
+        const storeId = user ? user.storeId : '';
+
+        const response = await axios.get(`${API_BASE_URL}/inventory/getAllItems`, {
+          params: {
+            searchTerm: searchTerm,
+            storeId: storeId,
+          }
         });
         setSearchResults(response.data || []); // Set search results or empty array
         setSelectedIndex(-1);
@@ -50,12 +56,18 @@ const SearchModal = ({ isOpen, onClose }) => {
 
   const handlePlaceOrder = async (barcodedId) => {
     try {
-      const response = await fetch(`${API_BASE_URL}/create_order`, {
+      const user = JSON.parse(sessionStorage.getItem('user'));
+      const storeId = user?.storeId;
+    
+      const response = await fetch(`${API_BASE_URL}/user/create_order`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded',
         },
-        body: new URLSearchParams({ barcodedId }),
+        body: new URLSearchParams({
+          barcodedId: barcodedId,  // Send barcodedId
+          storeId: storeId         // Send storeId as well
+        }),
       });
 
       if (!response.ok) {

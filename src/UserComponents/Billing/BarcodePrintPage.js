@@ -1,22 +1,41 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
+import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
+import Select from 'react-select';
 import { API_BASE_URL } from '../Config.js';
+import { width } from '@fortawesome/free-solid-svg-icons/fa0';
 
 const BarcodePrintPage = () => {
+  
+  const userData = JSON.parse(sessionStorage.getItem('user'));
+  const storeId = userData?.storeId; 
   const [images, setImages] = useState([]);
-  const [barcode, setBarcode] = useState('');
   const [draggedIndex, setDraggedIndex] = useState(null);
   const [quantity, setQuantity] = useState(1);
+  const [searchTerm, setSearchTerm] = useState(''); 
+  const [barcodeOptions, setBarcodeOptions] = useState([]);
+  const [selectedBarcode, setSelectedBarcode] = useState(null);
+ 
   const [currentPage, setCurrentPage] = useState(0);
+  const barcodeRef = useRef(null);
+  const quantityRef = useRef(null);
+  
   const imagesPerPage = 40;
+  
 
+  
   const handleGenerateBarcode = async () => {
-    if (!barcode || quantity < 1) return;
-
+     if (!selectedBarcode || quantity < 1) return;
+  
     try {
-      const response = await fetch(`${API_BASE_URL}/generate_barcodes?itemCode=${barcode}`);
+      const userData = JSON.parse(sessionStorage.getItem('user'));
+      const storeId = userData?.storeId; 
+      const response = await fetch(`${API_BASE_URL}/user/generate_barcodes?itemCode=${selectedBarcode.value}&storeId=${storeId}`);
       const blob = await response.blob();
       const imageUrl = URL.createObjectURL(blob);
+   
 
+    
       setImages((prevImages) => {
         const newImages = [...prevImages];
         for (let i = 0; i < quantity; i++) {
@@ -24,11 +43,91 @@ const BarcodePrintPage = () => {
         }
         return newImages;
       });
+  
     } catch (error) {
       console.error('Error generating barcode:', error);
     }
   };
 
+
+  const handleGenerateBarcodeInventoryUpdate = async () => {
+    if (!selectedBarcode || quantity < 1) return;
+  
+    try {
+      const userData = JSON.parse(sessionStorage.getItem('user'));
+      const storeId = userData?.storeId;
+  
+      // Generate barcode
+      const barcodeResponse = await fetch(`${API_BASE_URL}/user/generate_barcodes?itemCode=${selectedBarcode.value}&storeId=${storeId}`);
+      const blob = await barcodeResponse.blob();
+      const imageUrl = URL.createObjectURL(blob);
+  
+      // Call the stock update API
+      const stockUpdateResponse = await fetch(`${API_BASE_URL}/inventory/stock_update`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          itemCode: selectedBarcode.value,
+          qty: quantity,
+          storeId: storeId,
+        }),
+      });
+
+      const stockUpdateMessage = await stockUpdateResponse.text();
+      alert(stockUpdateMessage);
+  
+     
+  
+      // Set images for the barcode
+      setImages((prevImages) => {
+        const newImages = [...prevImages];
+        for (let i = 0; i < quantity; i++) {
+          newImages.push(imageUrl);
+        }
+        return newImages;
+      });
+  
+    } catch (error) {
+      console.error('Error generating barcode or updating stock:', error);
+    }
+  };
+  
+ 
+  
+ 
+
+  const fetchBarcodes = async (searchTerm) => {
+    if (!storeId) {
+      console.error('Store ID is not available.');
+      return;
+    }
+
+    try {
+      const response = await axios.get(`${API_BASE_URL}/inventory/getAllItemCode`, {
+        params: {
+          storeId,
+          searchTerm,         },
+      });
+      const options = response.data.map(item => ({
+        value: item.itemCode,
+        label: item.description || item.itemCode,
+      }));
+      setBarcodeOptions(options);
+    } catch (error) {
+      console.error('Error fetching barcodes:', error);
+    }
+  };
+
+  useEffect(() => {
+    if (searchTerm) {
+      fetchBarcodes(searchTerm);
+    } else {
+      setBarcodeOptions([]); 
+    }
+  }, [storeId, searchTerm]);
+  
   const handleDeleteImage = (index) => {
     setImages((prevImages) => {
       const updatedImages = [...prevImages];
@@ -37,9 +136,84 @@ const BarcodePrintPage = () => {
     });
   };
 
+
   const handlePrint = () => {
-    window.print();
-  };
+    const startIndex = currentPage * imagesPerPage;
+    const endIndex = startIndex + imagesPerPage;
+
+    const printWindow = window.open('', '_blank', 'width=800,height=600');
+    printWindow.document.write(`
+      <html>
+        <head>
+          <title>Print Barcodes</title>
+          <style>
+            @media print {
+              @page {
+                size: A4;
+                margin: 0; /* Remove default margins */
+              }
+              body {
+                margin: 0;
+                padding: 0;
+                background: white; /* Set background color to white for print */
+              }
+              #printableArea {
+                display: grid;
+                grid-template-columns: repeat(4, 1fr); /* 4 columns */
+                grid-template-rows: repeat(10, 112px); /* 10 rows with specific height */
+                width: 794px; /* Ensure exact A4 width for print */
+                height: 1123px; /* Ensure exact A4 height for print */
+                margin: 0;
+                padding: 0;
+                overflow: hidden; /* Prevent any scrolling during print */
+              }
+              .imageWrapper {
+                display: flex; /* Center images */
+                justify-content: center;
+                align-items: center;
+                height: 112px; /* Height for each row */
+                border: none !important; /* Ensure no border during print */
+              }
+              img {
+                max-width: 100%;
+                max-height: 100%;
+                display: block;
+              }
+              .emptySlot {
+                display: none; /* Hide the placeholder text */
+              }
+              * {
+                margin: 0;
+                padding: 0;
+                box-sizing: border-box;
+              }
+            }
+          </style>
+        </head>
+        <body>
+          <div id="printableArea">
+            ${Array.from({ length: imagesPerPage }).map((_, index) => {
+                const imageIndex = startIndex + index; 
+                const image = images[imageIndex]; 
+                return `
+                  <div class="imageWrapper">
+                    ${image ? `<img src="${image}" alt="Barcode" />` : '<div class="emptySlot"></div>'}
+                  </div>
+                `;
+              }).join('')}
+          </div>
+        </body>
+      </html>
+    `);
+
+    printWindow.document.close(); 
+
+    printWindow.onload = () => {
+      printWindow.print(); 
+      printWindow.close(); 
+    };
+};
+
 
   const handleDragStart = (index) => {
     setDraggedIndex(index);
@@ -47,10 +221,96 @@ const BarcodePrintPage = () => {
 
   const handleClearAll = () => {
     setImages([]);
+    setCurrentPage(0); 
   };
+
+  const handleClearCurrentPage = () => {
+    const startIndex = currentPage * imagesPerPage;
+    const endIndex = startIndex + imagesPerPage;
+  
+    setImages((prevImages) => {
+      const updatedImages = [...prevImages];
+      updatedImages.splice(startIndex, imagesPerPage); // Remove all images from the current page
+      return updatedImages;
+    });
+};
+
+  
+  
 
   const handleDragOver = (event) => {
     event.preventDefault();
+  };
+
+  const handlePrintAll = () => {
+    const printWindow = window.open('', '_blank', 'width=800,height=600');
+    printWindow.document.write(`
+      <html>
+      <head>
+        <title>Print Barcodes</title>
+        <style>
+          @media print {
+            @page {
+              size: A4;
+              margin: 0; /* Remove default margins */
+            }
+            body {
+              margin: 0;
+              padding: 0;
+            }
+            .page {
+              width: 794px; /* A4 width in pixels at 96 DPI */
+              height: 1123px; /* A4 height in pixels at 96 DPI */
+              display: grid;
+              grid-template-columns: repeat(4, 1fr); /* 4 columns */
+              grid-template-rows: repeat(10, 1fr); /* 10 rows */
+              page-break-after: always; /* New page after each */
+              background-color: white; /* Ensure background is white */
+            }
+            .imageWrapper {
+              display: flex;
+              justify-content: center;
+              align-items: center;
+              border: none; /* Hide grid lines */
+            }
+            img {
+              max-width: 100%;
+              max-height: 100%;
+            }
+          }
+        </style>
+      </head>
+      <body>
+    `);
+
+    const validImages = images.filter(image => image && image !== 'placeholder');
+    const totalPages = Math.ceil(validImages.length / imagesPerPage);
+    console.log('Total pages:', totalPages);
+
+
+    for (let page = 0; page < totalPages; page++) {
+      printWindow.document.write('<div class="page">');
+      const currentImages = validImages.slice(page * imagesPerPage, (page + 1) * imagesPerPage);
+      currentImages.forEach(image => {
+        printWindow.document.write(`
+          <div class="imageWrapper">
+            <img src="${image}" alt="Barcode" />
+          </div>
+        `);
+      });
+      printWindow.document.write('</div>');
+    }
+
+    printWindow.document.write(`
+      </body>
+      </html>
+    `);
+    printWindow.document.close();
+
+    printWindow.onload = () => {
+      printWindow.print();
+      printWindow.close();
+    };
   };
 
   const handleDrop = (index) => {
@@ -116,10 +376,49 @@ const BarcodePrintPage = () => {
           }}
         >
           {index + 1}
+
         </button>
+        
       ))}
     </div>
   );
+  
+
+  const handleKeyDown = (event) => {
+    if (event.key === 'Enter') {
+      if (document.activeElement === barcodeRef.current) {
+        quantityRef.current.focus();
+        event.preventDefault(); 
+      }else if (document.activeElement === quantityRef.current) {
+        // Generate barcode when Enter is pressed in the quantity input
+        handleGenerateBarcode();
+        event.preventDefault(); 
+      }
+    
+    } else if (event.key === 'ArrowDown') {
+      event.preventDefault(); // Prevent the default scrolling behavior
+      if (document.activeElement === barcodeRef.current) {
+        quantityRef.current.focus();
+      } else if (document.activeElement === quantityRef.current) {
+        barcodeRef.current.focus();
+      }
+    } else if (event.key === 'ArrowUp') {
+      event.preventDefault();
+      if (document.activeElement === quantityRef.current) {
+        barcodeRef.current.focus();
+      } else if (document.activeElement === barcodeRef.current) {
+        quantityRef.current.focus();
+      }
+    }
+  };
+
+  useEffect(() => {
+    document.addEventListener('keydown', handleKeyDown);
+    return () => {
+      document.removeEventListener('keydown', handleKeyDown);
+    };
+  }, []);
+
 
   useEffect(() => {
     const styleSheet = document.createElement("style");
@@ -131,192 +430,229 @@ const BarcodePrintPage = () => {
       document.head.removeChild(styleSheet);
     };
   }, []);
-
   return (
     <div style={styles.container}>
-      <div className="no-print" style={styles.header}>
-        <input
-          type="text"
-          placeholder="Enter barcode"
-          value={barcode}
-          onChange={(e) => setBarcode(e.target.value)}
-          style={styles.input}
-        />
-        <input
-          type="number"
-          placeholder="Quantity"
-          value={quantity}
-          onChange={(e) => setQuantity(Number(e.target.value))}
-          style={styles.input}
-        />
-        <button 
-          onClick={handleGenerateBarcode} 
-          style={styles.button}
-          onMouseOver={(e) => e.currentTarget.style.backgroundColor = styles.buttonHover.backgroundColor} 
-          onMouseOut={(e) => e.currentTarget.style.backgroundColor = styles.button.backgroundColor}
-        >
-          Generate Barcode
-        </button>
-        <button 
-          onClick={handlePrint} 
-          style={styles.button}
-          onMouseOver={(e) => e.currentTarget.style.backgroundColor = styles.buttonHover.backgroundColor} 
-          onMouseOut={(e) => e.currentTarget.style.backgroundColor = styles.button.backgroundColor}
-        >
-          Print
-        </button>
-        <button 
-          onClick={handleClearAll} 
-          style={styles.button}
-          onMouseOver={(e) => e.currentTarget.style.backgroundColor = styles.buttonHover.backgroundColor} 
-          onMouseOut={(e) => e.currentTarget.style.backgroundColor = styles.button.backgroundColor}
-        >
-          Clear All
-        </button>
-      </div>
+      <div className="sidebar">
+        <div style={styles.sidebar}>
+          <div className="no-print" style={styles.header}>
+            <label>Barcode Id</label>
+            <Select
+              options={barcodeOptions}
+              value={selectedBarcode}
+              onChange={(selectedOption) => {
+                setSelectedBarcode(selectedOption);
+                setSearchTerm(selectedOption.value); // Display itemCode in the input
+              }}
+              onInputChange={(inputValue) => {
+                setSearchTerm(inputValue); // Update search term on input change
+                fetchBarcodes(inputValue); // Call fetchBarcodes with the input value
+              }}
+              placeholder="Search for Barcode"
+              styles={{ control: (base) => ({ ...base, width: '200px' }) }} // Fixed width for the select input
+            />
+            <label>Quantity</label>
+            <input
+              type="number"
+              ref={quantityRef}
+              value={quantity}
+              onChange={(e) => setQuantity(Math.max(1, e.target.value))} // Ensure quantity is at least 1
+              min="1"
+              style={styles.input}
+            />
+            <button 
+              onClick={handleGenerateBarcode} 
+              style={styles.button}
+              onMouseOver={(e) => e.currentTarget.style.backgroundColor = styles.buttonHover.backgroundColor} 
+              onMouseOut={(e) => e.currentTarget.style.backgroundColor = styles.button.backgroundColor}
+            >
+              Generate Barcode
+            </button>
 
+            <button 
+              onClick={handleGenerateBarcodeInventoryUpdate} 
+              style={styles.button}
+              onMouseOver={(e) => e.currentTarget.style.backgroundColor = styles.buttonHover.backgroundColor} 
+              onMouseOut={(e) => e.currentTarget.style.backgroundColor = styles.button.backgroundColor}
+            >
+              Generate Barcode & Update Inventory
+            </button>
+            <button 
+              onClick={handlePrint} 
+              style={styles.button}
+              onMouseOver={(e) => e.currentTarget.style.backgroundColor = styles.buttonHover.backgroundColor} 
+              onMouseOut={(e) => e.currentTarget.style.backgroundColor = styles.button.backgroundColor}
+            >
+              Print
+            </button>
+            <button 
+              onClick={handlePrintAll} 
+              style={styles.button}
+              onMouseOver={(e) => e.currentTarget.style.backgroundColor = styles.buttonHover.backgroundColor} 
+              onMouseOut={(e) => e.currentTarget.style.backgroundColor = styles.button.backgroundColor}
+            >
+              Print All
+            </button>
+            <button 
+              onClick={handleClearAll} 
+              style={styles.button}
+              onMouseOver={(e) => e.currentTarget.style.backgroundColor = styles.buttonHover.backgroundColor} 
+              onMouseOut={(e) => e.currentTarget.style.backgroundColor = styles.button.backgroundColor}
+            >
+              Clear All
+            </button>
+            <button 
+              onClick={handleClearCurrentPage} 
+              style={styles.button}
+              onMouseOver={(e) => e.currentTarget.style.backgroundColor = styles.buttonHover.backgroundColor} 
+              onMouseOut={(e) => e.currentTarget.style.backgroundColor = styles.button.backgroundColor}
+            >
+              Clear Current Page
+            </button>
+          </div>
+          {/* Render Pagination Inside the Sidebar */}
+          <div className="no-print" style={styles.paginationWrapper}>
+            {renderPageNavigation()}
+          </div>
+        </div>
+      </div>
       <div id="printableArea" style={styles.page}>
         {renderGrid()}
       </div>
-
-      {renderPageNavigation()}
     </div>
   );
+  
 };
 
 const styles = {
   container: {
     display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-    padding: '20px',
-    overflowY: 'auto', // Allow vertical scrolling
-    maxHeight: '100vh', // Set max height to viewport height for scrolling
+    maxHeight: '100vh',
+    overflowY: 'auto',
     overflowX: 'hidden',
+    paddingBottom: '50px', 
+  },
+  sidebar: {
+    display: 'flex',
+    flexDirection: 'column',
+    padding: '20px',
+    width: '250px', // Fixed width for sidebar
+    borderRight: '1px solid lightgray',
+    position: 'fixed', // Sidebar stays fixed on the screen
+    top: 0, // Align with the top of the page
+    left: 0, // Align with the left side of the page
+    height: '100vh', // Ensure sidebar covers the full height of the screen
+    backgroundColor: '#fff', // Ensure the background remains white
+    zIndex: 1000, // Ensure it stays above the main content
+    overflowY: 'auto', // Allow scrolling within the sidebar if content overflows
   },
   header: {
     marginBottom: '20px',
     display: 'flex',
+    flexDirection: 'column', // Stack inputs vertically
     gap: '10px',
-    alignItems: 'center',
+    alignItems: 'flex-start',
   },
   page: {
-    width: '794px',
-    height: '1123px',
-    backgroundColor: 'white',
+    width: '794px', // A4 width in pixels
+    height: '1123px', // A4 height in pixels
     display: 'grid',
     gridTemplateColumns: 'repeat(4, 1fr)',
     gridTemplateRows: 'repeat(10, 1fr)',
-    rowGap: '0',
-    columnGap: '0',
-    boxSizing: 'border-box',
-    overflowY: 'auto', // Allow scrolling inside the page area
-    overflowX: 'hidden',
-    marginBottom: '20px', // Space between pages if there are multiple
+    padding: '20px', // Add padding for spacing
+    marginLeft: '270px', // Adjust this to be slightly larger than the sidebar width
   },
   imageWrapper: {
-    position: 'relative',
-    width: '100%',
-    height: '100%',
+    border: '1px solid lightgray',
+    margin: '5px',
+    padding: '5px',
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
-    margin: 0,
-    border: '1px solid lightgray',
+    flexDirection: 'column',
+    height: '100%', // Make it fill the grid cell
+    position: 'relative', // Set relative positioning
   },
   image: {
     maxWidth: '100%',
     maxHeight: '100%',
-    display: 'block',
-  },
-  placeholder: {
-    fontSize: '12px',
-    color: 'gray',
   },
   deleteButton: {
-    position: 'absolute',
-    top: '5px',
-    right: '5px',
-    background: 'red',
-    color: 'white',
+    position: 'absolute', // Position absolute to the wrapper
+    top: '5px', // Adjust top positioning
+    right: '5px', // Adjust right positioning
+    background: 'none',
     border: 'none',
-    borderRadius: '50%',
-    width: '20px',
-    height: '20px',
-    fontSize: '14px',
+    color: 'red',
+    fontSize: '20px',
     cursor: 'pointer',
+    marginTop: '5px',
   },
-  input: {
-    padding: '8px 12px',
-    fontSize: '16px',
-    border: '1px solid #ccc',
-    borderRadius: '4px',
-    boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
-    width: '200px',
+  placeholder: {
+    height: '100px', // Set a fixed height for empty slots
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    border: '1px dashed gray',
+    width: '100%',
+    color: 'gray',
+  },
+ 
+  pagination: {
+    display: 'grid',
+    gridTemplateColumns: 'repeat(3, 1fr)', // Create exactly 3 equal-width columns
+    gap: '10px', 
+    marginTop: '20px',
+    justifyContent: 'center', // Ensure the buttons are centered if fewer than 3 per row
   },
   button: {
-    padding: '8px 12px',
-    fontSize: '16px',
+    padding: '10px 20px',
     backgroundColor: '#007bff',
-    color: 'white',
+    color: '#fff',
     border: 'none',
     borderRadius: '4px',
+    width:'250px',
     cursor: 'pointer',
-    transition: 'background-color 0.3s ease',
   },
   buttonHover: {
     backgroundColor: '#0056b3',
   },
-  pagination: {
-    marginTop: '10px', // Reduced margin
-    paddingBottom: '40px', // Added padding to create space below the pagination
-    display: 'flex',
-    gap: '10px',
-    justifyContent: 'center',
-    position: 'relative', // Position it relative to the page container
-  },
-  pageButton: {
-    padding: '6px 12px', // Slightly smaller button padding for a more compact look
-    fontSize: '14px', // Reduced font size for better fit
-    border: '1px solid #ccc',
-    borderRadius: '4px',
-    cursor: 'pointer',
-    backgroundColor: '#ccc',
-    color: '#000',
-  },
 };
-
-
 const printStyles = `
 @media print {
   @page {
     size: A4;
+    margin: 0; /* Remove default margins */
+  }
+
+  body {
     margin: 0;
+    padding: 0;
   }
-  body * {
-    visibility: hidden;
-  }
-  #printableArea, #printableArea * {
-    visibility: visible;
-  }
-  #printableArea {
-    position: absolute;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    background: white;
-    overflow: visible; /* Ensure no scrollbars are visible */
-    border: none; /* Ensure no borders are printed */
-  }
+
   .no-print {
-    display: none; /* Hide elements that should not be printed */
+    display: none !important; /* Ensure elements with 'no-print' class are hidden */
   }
+
+  #printableArea {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    grid-template-rows: repeat(10, 1fr);
+    width: 794px; /* Ensure exact A4 width for print */
+    height: 1100px; /* Ensure exact A4 height for print */
+    margin: 0;
+    padding: 0;
+    background: white; /* Set background color to white for print */
+    overflow: hidden; /* Prevent any scrolling during print */
+  }
+
   .imageWrapper {
-    border: none !important; /* Ensure no borders are printed around images */
+    border: none !important; /* Hide grid lines during print */
   }
-  img {
-    border: none !important; /* Ensure no borders are printed around images */
+
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
   }
 }
 `;

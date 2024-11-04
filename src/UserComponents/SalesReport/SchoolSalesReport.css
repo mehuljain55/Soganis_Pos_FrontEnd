@@ -1,0 +1,91 @@
+.school-sales-report {
+    padding: 20px;
+    font-family: Arial, sans-serif;
+}
+
+.school-sales-report h2 {
+    font-size: 24px;
+    color: #333;
+    margin-bottom: 20px;
+}
+
+.school-sales-report .d-flex {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.school-sales-report input[type="date"] {
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.school-sales-report .btn {
+    padding: 8px 15px; /* Adjust button size */
+    background-color: #4CAF50; /* Green background */
+    color: white; /* White text */
+    border: none; /* Remove border */
+    border-radius: 4px; /* Rounded corners */
+    cursor: pointer; /* Pointer cursor */
+}
+
+.school-sales-report .btn:hover {
+    background-color: #45a049; /* Darker green on hover */
+}
+
+.school-sales-report__table {
+    width: 100%; /* Full width */
+    border-collapse: collapse; /* Collapse borders */
+}
+
+.school-sales-report__table th,
+.school-sales-report__table td {
+    padding: 12px;
+    border: 1px solid #ddd; /* Light gray border */
+    text-align: left; /* Align text to the left */
+}
+
+.school-sales-report__table th {
+    background-color: #f2f2f2; /* Light gray background for header */
+    color: #333; /* Dark text color */
+}
+
+.school-sales-report__table tr:nth-child(even) {
+    background-color: #f9f9f9; /* Light gray for even rows */
+}
+
+.school-sales-report__table tr:nth-child(odd) {
+    background-color: #fff; /* White for odd rows */
+}
+
+.school-sales-report__table .btn {
+    padding: 5px 10px; /* Smaller button size */
+    font-size: 12px; /* Smaller font size */
+}
+
+/* Responsive table adjustments */
+.table-responsive {
+    overflow-x: auto; /* Enables horizontal scrolling */
+}
+
+@media (max-width: 768px) {
+    .school-sales-report h2 {
+        font-size: 20px; /* Smaller font on mobile */
+    }
+
+    .school-sales-report .d-flex {
+        flex-wrap: wrap; /* Allow wrapping */
+    }
+
+    .school-sales-report input[type="date"],
+    .school-sales-report .btn {
+        flex: 1; /* Grow to fill available space */
+        min-width: 120px; /* Minimum width */
+        margin-bottom: 10px; /* Margin between elements */
+    }
+
+    .school-sales-report__table {
+        width: 100%; /* Make table responsive */
+    }
+}

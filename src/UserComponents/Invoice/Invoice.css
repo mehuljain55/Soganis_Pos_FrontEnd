@@ -1,0 +1,97 @@
+.customer-invoice {
+    font-family: Arial, sans-serif;
+    padding: 20px;
+    max-width: 800px;
+    margin: 0 auto;
+    background-color: #f9f9f9;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.customer-invoice__heading {
+    text-align: center;
+    color: #333;
+}
+
+.customer-invoice__form-container {
+    margin-top: 20px;
+    padding: 15px;
+    background-color: #fff;
+    border-radius: 5px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.customer-invoice__form-group {
+    margin-bottom: 20px; /* Add space between form groups */
+    display: flex;
+    flex-direction: column; /* Stack items vertically */
+}
+
+.customer-invoice__label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+    color: #555;
+}
+
+.customer-invoice__input-field {
+    width: 100%; /* Full width */
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 16px;
+    margin-top: 5px; /* Space between label and input */
+}
+
+.customer-invoice__fetch-button {
+    width: 100%; /* Full width button */
+    background-color: #4CAF50;
+    color: white;
+    padding: 12px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+.customer-invoice__fetch-button:hover {
+    background-color: #45a049;
+}
+
+.customer-invoice__error-message {
+    color: red;
+    margin-top: 10px;
+}
+
+.customer-invoice__table-container {
+    margin-top: 20px;
+    overflow-x: auto; /* Enables horizontal scrolling for smaller screens */
+}
+
+.customer-invoice__billing-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.customer-invoice__billing-table th, .customer-invoice__billing-table td {
+    padding: 10px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+}
+
+.customer-invoice__billing-table th {
+    background-color: #f2f2f2;
+}
+
+.customer-invoice__download-button {
+    background-color: #007BFF;
+    color: white;
+    padding: 8px 12px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.customer-invoice__download-button:hover {
+    background-color: #0056b3;
+}
