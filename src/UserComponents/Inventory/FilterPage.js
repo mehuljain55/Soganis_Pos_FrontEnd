@@ -90,7 +90,7 @@ const FilterPage = () => {
     } else if (selectedFilter === "filter2" && selectedItemType) {
       // Fetch data based on the selected item type for Filter 2
       axios
-        .get(`${API_BASE_URL}/filter/item_list_type`, {
+        .get(`${API_BASE_URL}/user/filter/item_list_type`, {
           params: {
             itemType: selectedItemType,
             storeId: storeId,

@@ -15,6 +15,8 @@ const BarcodePrintPage = () => {
   const [searchTerm, setSearchTerm] = useState(''); 
   const [barcodeOptions, setBarcodeOptions] = useState([]);
   const [selectedBarcode, setSelectedBarcode] = useState(null);
+  const [showDropdown, setShowDropdown] = useState(false);
+  const [highlightedIndex, setHighlightedIndex] = useState(-1); // Track the current highlighted option
  
   const [currentPage, setCurrentPage] = useState(0);
   const barcodeRef = useRef(null);
@@ -120,13 +122,24 @@ const BarcodePrintPage = () => {
     }
   };
 
+
   useEffect(() => {
     if (searchTerm) {
       fetchBarcodes(searchTerm);
+      setShowDropdown(true);
     } else {
-      setBarcodeOptions([]); 
+      setBarcodeOptions([]);
+      setShowDropdown(false);
     }
-  }, [storeId, searchTerm]);
+  }, [searchTerm]);
+
+  const handleBarcodeSelect = (itemCode) => {
+    setSelectedBarcode({ value: itemCode });
+    setSearchTerm(itemCode); 
+    setShowDropdown(false);
+  };
+
+
   
   const handleDeleteImage = (index) => {
     setImages((prevImages) => {
@@ -384,19 +397,40 @@ const BarcodePrintPage = () => {
   );
   
 
+  const handleDropdownKeyDown = (e) => {
+    if (e.key === 'ArrowDown') {
+      e.preventDefault();
+      setHighlightedIndex((prevIndex) =>
+        prevIndex < barcodeOptions.length - 1 ? prevIndex + 1 : 0
+      );
+    } else if (e.key === 'ArrowUp') {
+      e.preventDefault();
+      setHighlightedIndex((prevIndex) =>
+        prevIndex > 0 ? prevIndex - 1 : barcodeOptions.length - 1
+      );
+    } else if (e.key === 'Enter') {
+      e.preventDefault();
+      if (highlightedIndex >= 0 && highlightedIndex < barcodeOptions.length) {
+        handleBarcodeSelect(barcodeOptions[highlightedIndex].value);
+      }
+    }
+  };
+
+  // Integrate handleDropdownKeyDown into handleKeyDown
   const handleKeyDown = (event) => {
-    if (event.key === 'Enter') {
+    if (document.activeElement === barcodeRef.current) {
+      // Call dropdown navigation if barcodeRef is focused
+      handleDropdownKeyDown(event);
+    } else if (event.key === 'Enter') {
       if (document.activeElement === barcodeRef.current) {
         quantityRef.current.focus();
         event.preventDefault(); 
-      }else if (document.activeElement === quantityRef.current) {
-        // Generate barcode when Enter is pressed in the quantity input
+      } else if (document.activeElement === quantityRef.current) {
         handleGenerateBarcode();
         event.preventDefault(); 
       }
-    
     } else if (event.key === 'ArrowDown') {
-      event.preventDefault(); // Prevent the default scrolling behavior
+      event.preventDefault();
       if (document.activeElement === barcodeRef.current) {
         quantityRef.current.focus();
       } else if (document.activeElement === quantityRef.current) {
@@ -411,6 +445,7 @@ const BarcodePrintPage = () => {
       }
     }
   };
+
 
   useEffect(() => {
     document.addEventListener('keydown', handleKeyDown);
@@ -435,21 +470,37 @@ const BarcodePrintPage = () => {
       <div className="sidebar">
         <div style={styles.sidebar}>
           <div className="no-print" style={styles.header}>
-            <label>Barcode Id</label>
-            <Select
-              options={barcodeOptions}
-              value={selectedBarcode}
-              onChange={(selectedOption) => {
-                setSelectedBarcode(selectedOption);
-                setSearchTerm(selectedOption.value); // Display itemCode in the input
-              }}
-              onInputChange={(inputValue) => {
-                setSearchTerm(inputValue); // Update search term on input change
-                fetchBarcodes(inputValue); // Call fetchBarcodes with the input value
-              }}
+          <label>Barcode Id</label>
+            <input
+              type="text"
+              ref={barcodeRef}
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
               placeholder="Search for Barcode"
-              styles={{ control: (base) => ({ ...base, width: '200px' }) }} // Fixed width for the select input
+              style={styles.input}
+              onFocus={() => setShowDropdown(true)}
+              onBlur={() => setTimeout(() => setShowDropdown(false), 200)}
             />
+            {showDropdown && barcodeOptions.length > 0 && (
+              <div style={styles.dropdown}>
+                {barcodeOptions.map((option, index) => (
+                  <div
+                    key={option.value}
+                    style={{
+                      ...styles.dropdownItem,
+                      backgroundColor: highlightedIndex === index ? '#007bff' : '#fff',
+                      color: highlightedIndex === index ? '#fff' : '#000',
+                    }}
+                    onMouseEnter={() => setHighlightedIndex(index)}
+                    onMouseLeave={() => setHighlightedIndex(-1)}
+                    onMouseDown={() => handleBarcodeSelect(option.value)}
+                  >
+                    {option.label}
+                  </div>
+                ))}
+              </div>
+            )}
+
             <label>Quantity</label>
             <input
               type="number"
@@ -611,6 +662,20 @@ const styles = {
     border: 'none',
     borderRadius: '4px',
     width:'250px',
+    cursor: 'pointer',
+  },
+  dropdown: {
+    position: 'absolute',
+    backgroundColor: '#fff', // White background
+    border: '1px solid #ccc',
+    top: '80px', // Place dropdown r
+    width: '50px',
+    maxHeight: '200px', // Fixed height for the dropdown container
+    overflowY: 'auto', // Allows scrolling within the container
+    zIndex: 1000,
+  },
+  dropdownItem: {
+    padding: '8px',
     cursor: 'pointer',
   },
   buttonHover: {
