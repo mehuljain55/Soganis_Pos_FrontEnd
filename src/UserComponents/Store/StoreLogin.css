@@ -1,0 +1,12 @@
+.main-page{
+    height: 100vh;
+    width: 100vw;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.error{
+    background-color: red;
+    color: white;
+}
