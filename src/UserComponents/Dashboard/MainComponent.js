@@ -97,22 +97,28 @@ const MainComponent = ({ userData }) => {
         <h1 className="brand-heading">{storeName}</h1>
         {userData && (
           <div className="user-info">
-            <span>User: {userData.sname}</span>
-            <span>Shop: {userData.storeId}</span>
+            <div className='abc'>
+            <div>User: {userData.sname}</div>
+            <div>Shop: {userData.storeId}</div>
+            </div>
+
             <span className="cash-collection">
               <span>Cash Collection: {todayCashCollection}</span>
               <button className="refresh-button" onClick={fetchTodayCashCollection}>
                 <FontAwesomeIcon icon={faSyncAlt} />
               </button>
             </span>
-            <button className="logout-button" onClick={handleLogout}>
-              <FontAwesomeIcon icon={faSignOutAlt} />
-            </button>
+            
           </div>
         )}
+        <div>
         <button className="menu-toggle" onClick={toggleSidebar}>
           <FontAwesomeIcon icon={faBars} />
         </button>
+        <button className="logout-button" onClick={handleLogout}>
+              <FontAwesomeIcon icon={faSignOutAlt} />
+        </button>
+        </div>
       </div>
 
       <div className={`main-content-wrapper ${isSidebarOpen ? 'shifted' : ''}`}>

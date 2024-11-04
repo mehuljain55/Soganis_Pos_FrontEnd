@@ -98,6 +98,19 @@
   margin-bottom: 10px;
   cursor: pointer;
 }
+.abc {
+  width: 100px;
+  display: flex;
+  flex-direction: column;
+  text-align: left;
+}
+
+.cash-collection{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+}
 
 /* Mobile Specific Styles */
 @media (max-width: 768px) {
@@ -144,4 +157,8 @@
   .cash-collection span {
     display: block;
   }
+
 }
+
+
+
