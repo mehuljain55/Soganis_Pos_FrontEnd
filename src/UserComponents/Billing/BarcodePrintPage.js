@@ -3,6 +3,7 @@ import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import Select from 'react-select';
 import { API_BASE_URL } from '../Config.js';
+import { width } from '@fortawesome/free-solid-svg-icons/fa0';
 
 const BarcodePrintPage = () => {
   
@@ -47,6 +48,53 @@ const BarcodePrintPage = () => {
       console.error('Error generating barcode:', error);
     }
   };
+
+
+  const handleGenerateBarcodeInventoryUpdate = async () => {
+    if (!selectedBarcode || quantity < 1) return;
+  
+    try {
+      const userData = JSON.parse(sessionStorage.getItem('user'));
+      const storeId = userData?.storeId;
+  
+      // Generate barcode
+      const barcodeResponse = await fetch(`${API_BASE_URL}/user/generate_barcodes?itemCode=${selectedBarcode.value}&storeId=${storeId}`);
+      const blob = await barcodeResponse.blob();
+      const imageUrl = URL.createObjectURL(blob);
+  
+      // Call the stock update API
+      const stockUpdateResponse = await fetch(`${API_BASE_URL}/inventory/stock_update`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          itemCode: selectedBarcode.value,
+          qty: quantity,
+          storeId: storeId,
+        }),
+      });
+
+      const stockUpdateMessage = await stockUpdateResponse.text();
+      alert(stockUpdateMessage);
+  
+     
+  
+      // Set images for the barcode
+      setImages((prevImages) => {
+        const newImages = [...prevImages];
+        for (let i = 0; i < quantity; i++) {
+          newImages.push(imageUrl);
+        }
+        return newImages;
+      });
+  
+    } catch (error) {
+      console.error('Error generating barcode or updating stock:', error);
+    }
+  };
+  
+ 
   
  
 
@@ -419,6 +467,15 @@ const BarcodePrintPage = () => {
             >
               Generate Barcode
             </button>
+
+            <button 
+              onClick={handleGenerateBarcodeInventoryUpdate} 
+              style={styles.button}
+              onMouseOver={(e) => e.currentTarget.style.backgroundColor = styles.buttonHover.backgroundColor} 
+              onMouseOut={(e) => e.currentTarget.style.backgroundColor = styles.button.backgroundColor}
+            >
+              Generate Barcode & Update Inventory
+            </button>
             <button 
               onClick={handlePrint} 
               style={styles.button}
@@ -553,6 +610,7 @@ const styles = {
     color: '#fff',
     border: 'none',
     borderRadius: '4px',
+    width:'250px',
     cursor: 'pointer',
   },
   buttonHover: {
