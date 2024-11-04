@@ -471,9 +471,9 @@ const handleInputChange = (e) => {
               <input
                 ref={inputRef}
                 type="text"
-                value={searchTerm} // Display the current search term
-                onChange={handleInputChange} // Handle input changes separately
-                onKeyDown={handleKeyDown} // Handle keyboard events
+                value={searchTerm} 
+                onChange={handleInputChange} 
+                onKeyDown={handleKeyDown} 
                 placeholder="Search for Barcode"
                 style={styles.input}
               />
@@ -482,11 +482,11 @@ const handleInputChange = (e) => {
                   {barcodeOptions.map((option, index) => (
                     <div
                       key={option.value}
-                      ref={el => itemRefs.current[index] = el} // Assign ref to each dropdown item
-                      style={{ ...styles.dropdownItem, ...(focusedIndex === index ? styles.dropdownItemHover : {}) }} // Highlight focused item
-                      onClick={() => handleSelectBarcode(option.value)} // Set selected value directly
+                      ref={el => itemRefs.current[index] = el} 
+                      style={{ ...styles.dropdownItem, ...(focusedIndex === index ? styles.dropdownItemHover : {}) }} 
+                      onClick={() => handleSelectBarcode(option.value)}
                     >
-                      {option.label} {/* Show the label for each option */}
+                      {option.label} 
                     </div>
                   ))}
                 </div>
