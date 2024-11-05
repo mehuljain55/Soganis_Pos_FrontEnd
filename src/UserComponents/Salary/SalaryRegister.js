@@ -137,7 +137,7 @@ const SalaryRegister = () => {
       <table>
         <thead>
           <tr>
-            <th>User ID</th>
+            <th>Employee Name</th>
             <th>Description</th>
             <th>Type</th>
             <th>Hours</th>

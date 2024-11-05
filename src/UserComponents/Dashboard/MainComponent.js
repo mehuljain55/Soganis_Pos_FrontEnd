@@ -148,7 +148,7 @@ const MainComponent = ({ userData }) => {
           {selectedMenuItem === 'View Sales Report' && <FilterSalesPage />}
           {selectedMenuItem === 'School Sales' && <SchoolSalesReport />}
           {selectedMenuItem === 'Update Inventory' && <AddInventoryItem />}
-          {selectedMenuItem === 'Add Inventory' && <AddItemStock />}
+          {selectedMenuItem === 'Add New Item' && <AddItemStock />}
         </main>
       </div>
 
