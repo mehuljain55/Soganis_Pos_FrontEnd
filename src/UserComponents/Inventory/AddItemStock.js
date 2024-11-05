@@ -150,8 +150,9 @@ const AddItemStock = () => {
     const isValid = await validateItems();
     if (isValid) {
       try {
-        const response = await axios.post(`${API_BASE_URL}/inventory/stock/add`, items);
-        console.log('API response:', response.data);
+        const storeId = user ? user.storeId : '';
+        const response = await axios.post(`${API_BASE_URL}/inventory/stock/add?storeId=${storeId}`,items);
+        alert('Item added:', response.data);
       } catch (error) {
         console.error('Error submitting data:', error);
       }
