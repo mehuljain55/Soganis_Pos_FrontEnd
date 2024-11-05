@@ -152,7 +152,9 @@ const AddItemStock = () => {
       try {
         const storeId = user ? user.storeId : '';
         const response = await axios.post(`${API_BASE_URL}/inventory/stock/add?storeId=${storeId}`,items);
-        alert('Item added:', response.data);
+        alert(`Item added: ${JSON.stringify(response.data)}`); // Use template literals to format the message
+        clearItemRows();
+        fetchItemCategoryAndType();
       } catch (error) {
         console.error('Error submitting data:', error);
       }
@@ -220,7 +222,7 @@ const AddItemStock = () => {
   };
 
   return (
-    <div className="add-item-stock">
+    <div className='add-stock-cont'>
       <h2>Add Item Stock</h2>
       <div className="actionBtns">
       <button className="clear-button" onClick={clearItemRows}>Clear Items</button>
@@ -234,6 +236,7 @@ const AddItemStock = () => {
       />
  </div>
 
+ <div className="add-item-stock">
       <table className="item-stock-table">
         <thead>
           <tr>
@@ -367,7 +370,9 @@ const AddItemStock = () => {
           ))}
         </tbody>
       </table>
-      <div className="actionBtns">
+  
+    </div>
+    <div className="actionBtns">
               <button className="add-row-button" onClick={addItemRow}>Add Item</button>
               <button className="submit-button" onClick={handleSubmit}>Submit</button>
 
