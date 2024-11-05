@@ -44,18 +44,17 @@ const SalesReport = ({ data }) => {
 
   return (
     <div className="sales-report">
-      <h5>Sales Report </h5>
+      <h5>Consolidated Sales Report </h5>
       <div className="table-container">
         {filteredData.length > 0 ? (
           <table>
             <thead>
               <tr>
-                <th>Item Barcode ID</th>
+                <th>Bill Type</th>
                 <th>Description</th>
                 <th>Item Type</th>
                 <th>Item Color</th>
                 <th>Size</th>
-               
                 <th>Sell Price</th>
                 <th>Quantity</th>
                 <th>Amount</th>
@@ -64,7 +63,7 @@ const SalesReport = ({ data }) => {
             <tbody>
               {filteredData.map((item, index) => (
                 <tr key={index}>
-                  <td>{item.itemBarcodeID}</td>
+                  <td>{item.billType}</td>
                   <td>{item.description}</td>
                   <td>{item.itemType}</td>
                   <td>{item.itemColor}</td>

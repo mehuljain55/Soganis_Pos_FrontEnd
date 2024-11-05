@@ -90,6 +90,7 @@ const [exchangeAmount, setExchangeAmount] = useState(0);
         const itemsToReturn = selectedItems.map(item => ({
             sno: item.sno,
             barcodedId: item.itemBarcodeID,
+            
             price:item.sellPrice,
             userId:userData.userId,
             return_quantity: returnQuantities[item.sno],
@@ -167,7 +168,6 @@ const [exchangeAmount, setExchangeAmount] = useState(0);
             userId: userData.userId // Make sure `userId` is defined
         })
         .then(response => {
-            // Handle successful defect submission
             setShowPopup({ message: 'Item defected successfully!', type: 'success' });
             setIsDefectModalOpen(false);
             fetchBill(); 
@@ -309,6 +309,7 @@ const [exchangeAmount, setExchangeAmount] = useState(0);
                             <thead>
                                 <tr>
                                     <th>Barcode ID</th>
+                                    <th>Bill Type</th>
                                     <th>Name</th>
                                     <th>Category</th>
                                     <th>Price</th>
@@ -319,8 +320,11 @@ const [exchangeAmount, setExchangeAmount] = useState(0);
                                 {selectedItems.map((item) => (
                                     <tr key={item.sno}>
                                         <td>{item.itemBarcodeID}</td>
+                                        <td>{item.billCategory}</td>
                                         <td>{item.itemType}</td>
                                         <td>{item.itemCategory}</td>
+                                     
+                                        
                                         <td>{item.sellPrice}</td>
                                         <td>
                                             <input

@@ -145,7 +145,7 @@ const handleSelectChange = (selectedOption) => {
           const user = JSON.parse(sessionStorage.getItem('user'));
           const storeId = user?.storeId; // Retrieve storeId from user data
     
-          const response = await axios.get(`${API_BASE_URL}/search/item_code`, {
+          const response = await axios.get(`${API_BASE_URL}/user/search/item_code`, {
             params: {
               barcode: barcode.trim(),
               storeId: storeId // Include storeId as a query parameter
@@ -683,6 +683,7 @@ const handleSelectChange = (selectedOption) => {
           {itemsToExchange.map((item, index) => (
             <tr key={index}>
               <td>{item.sno}</td>
+              <td> {item.billCategory} </td>
               <td>{item.itemType}</td>
               <td> {item.itemCategory}</td>   
               <td>{item.price}</td>

@@ -56,26 +56,19 @@ tr:nth-child(even) {
     background-color: #cbcbcb;
 }
 
-.view-sales-filter-data-table-wrapper th:nth-child(1), 
-.view-sales-filter-data-table-wrapper td:nth-child(1) { width: 80px; } /* S.No */
-.view-sales-filter-data-table-wrapper th:nth-child(2), 
-.view-sales-filter-data-table-wrapper td:nth-child(2) { width: 120px; } /* Item Code */
-.view-sales-filter-data-table-wrapper th:nth-child(3), 
+.view-sales-filter-data-table-wrapper td:nth-child(1) { width: 40px; } /* S.No */
+.view-sales-filter-data-table-wrapper td:nth-child(2) { width: 100px; } /* Item Code */
+
 .view-sales-filter-data-table-wrapper td:nth-child(3) { width: 200px; } /* Item Name */
-.view-sales-filter-data-table-wrapper th:nth-child(4), 
+
 .view-sales-filter-data-table-wrapper td:nth-child(4) { width: 150px; } /* Item Type */
-.view-sales-filter-data-table-wrapper th:nth-child(5), 
 .view-sales-filter-data-table-wrapper td:nth-child(5) { width: 300px; } /* Item Color */
-.view-sales-filter-data-table-wrapper th:nth-child(6), 
 .view-sales-filter-data-table-wrapper td:nth-child(6) { width: 100px; } /* Item Size */
-.view-sales-filter-data-table-wrapper th:nth-child(7), 
 .view-sales-filter-data-table-wrapper td:nth-child(7) { width: 150px; } /* Item Category */
-.view-sales-filter-data-table-wrapper th:nth-child(8), 
 .view-sales-filter-data-table-wrapper td:nth-child(8) { width: 100px; } /* Price */
-.view-sales-filter-data-table-wrapper th:nth-child(9), 
 .view-sales-filter-data-table-wrapper td:nth-child(9) { width: 80px; } /* Quantity */
-.view-sales-filter-data-table-wrapper th:nth-child(10), 
-.view-sales-filter-data-table-wrapper td:nth-child(10) { width: 120px; } /* Group ID */
+.view-sales-filter-data-table-wrapper td:nth-child(10) { width: 60px; } /* Group ID */
+.view-sales-filter-data-table-wrapper td:nth-child(11) { width: 120px; } /* Group ID */
 
 .filter-page-radio{
     display: flex;
