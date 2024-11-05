@@ -32,12 +32,11 @@ const NewBillContainer = ({ userData }) => {
   const [isTableFocused, setIsTableFocused] = useState(false); 
   const [showPopup, setShowPopup] = useState(false);
   const [someState, setSomeState] = useState(false); 
-  const [loading, setLoading] = useState(false); // Loading state
+  const [loading, setLoading] = useState(false);
  
 
   const [allSchools, setAllSchools] = useState([]);
-  const selectedSchoolRef = useRef(null); // Renamed to avoid collision
-
+  const selectedSchoolRef = useRef(null); 
   const [customItem, setCustomItem] = useState({
     itemBarcodeID: 'SG9999999',
     itemType: '',
@@ -597,8 +596,10 @@ const handleSelectChange = (selectedOption) => {
             placeholder="Search by item code"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            onFocus={() => {
+            onFocus={(e) => {
+              setSearchTerm(e.target.value); // Ensure searchTerm is set on focus
               setDropdownOpen(true);
+            
             }}
             onKeyDown={handleArrowNavigation}
           />

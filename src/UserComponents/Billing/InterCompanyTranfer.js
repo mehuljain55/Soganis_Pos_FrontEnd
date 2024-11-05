@@ -599,7 +599,8 @@ const handleSelectChange = (selectedOption) => {
               placeholder="Search by item code"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              onFocus={() => {
+              onFocus={(e) => {
+                setSearchTerm(e.target.value); // Ensure searchTerm is set on focus
                 setDropdownOpen(true);
               }}
               onKeyDown={handleArrowNavigation}

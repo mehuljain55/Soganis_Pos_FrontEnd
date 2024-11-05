@@ -113,7 +113,20 @@ const FilterPage = () => {
       .catch((error) =>
         console.error("Error fetching data for Filter 3:", error)
       );
+    }else if (selectedFilter === "filter4") {
+      axios
+      .get(`${API_BASE_URL}/user/filter/getAllItems`, {
+        params: {
+          storeId: storeId,
+        },
+      })
+      .then((response) => setData(response.data))
+      .catch((error) => console.error("Error fetching data:", error));
     }
+
+
+
+
   }, [selectedFilter, selectedSchool, selectedItemType]);
 
   const handleFilterChange = (event) => {
@@ -168,7 +181,18 @@ const FilterPage = () => {
       })
       .then((response) => setData(response.data))
       .catch((error) => console.error("Error fetching data:", error));
+    }else if (selectedFilter === "filter4") {
+      axios
+      .get(`${API_BASE_URL}/user/filter/getAllItems`, {
+        params: {
+
+          storeId: storeId,
+        },
+      })
+      .then((response) => setData(response.data))
+      .catch((error) => console.error("Error fetching data:", error));
     }
+
   };
 
   return (
@@ -211,6 +235,19 @@ const FilterPage = () => {
           />
           <label htmlFor="filter3">School</label>
         </div>
+
+        <div className="filter-page-radio-option">
+          <input
+            type="radio"
+            id="filter4"
+            name="filter"
+            value="filter4"
+            checked={selectedFilter === "filter4"}
+            onChange={handleFilterChange}
+          />
+          <label htmlFor="filter4">All Items</label>
+        </div>
+
       </div>
 
       <div className="filter-page-radio-output">
@@ -278,9 +315,18 @@ const FilterPage = () => {
                   {school}
                 </option>
               ))}
-            </select>
+            </select>   
           </div>
         )}
+
+          {selectedFilter === "filter4" && (
+          <div>
+            <label htmlFor="All Items">All Items</label>
+               
+          </div>
+        )}
+
+
 
         {/* Display the View component if data is available */}
         {data.length > 0 && <View data={data} onUpdateSuccess={refreshData} />}
