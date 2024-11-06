@@ -36,6 +36,8 @@
     padding: 8px;
     text-align: center;
   }
+
+
   
   /* Set specific column widths using nth-child */
   .item-stock-table th:nth-child(1),
@@ -139,13 +141,104 @@
     padding: 5px 10px;
     cursor: pointer;
     border-radius: 3px;
+    font-size: 1rem;
+
   }
   
   .remove-button:hover {
     background-color: #d32f2f; /* Darker red */
   }
   
-
-  .actionBtns button{
-    margin: 10px;
+  
+  .actionBtns {
+    display: flex;                 /* Align items in a row */
+    justify-content: center;       /* Center-align the action buttons and file upload */
+    align-items: center;           /* Vertically center the items */
+    width: 100%;
   }
+  
+  .actionBtns-left {
+    margin-left: 400px;
+    display: flex;                 /* Flexbox container for the Clear, Refresh buttons, and file input */
+    gap: 10px;                     /* Space between the items */
+    align-items: center;           /* Vertically align the items */
+  }
+  
+  .clear-button, .refresh-button {
+    
+    padding: 10px 20px;
+    background-color: #007bff;     /* Green color */
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 0.8rem;
+
+  }
+  
+  .clear-button:hover, .refresh-button:hover {
+    background-color: #45a049;    /* Darker green on hover */
+  }
+  
+  .upload-button {
+    padding: 10px;
+  }
+  
+  .download-btn-container {
+    margin-left: auto;             /* Push the download button container to the far right */
+  }
+  
+  .download-button {
+    background-color: #007BFF;    /* Blue color for the 'Download Format' button */
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    font-size: 0.8rem;
+
+    border-radius: 5px;
+    cursor: pointer;
+    
+  }
+  
+  .download-button:hover {
+    background-color: #0056b3;     /* Darker blue on hover */
+  }
+  
+  
+
+  .add-item-stock-btn {
+    display: flex;                /* Use flexbox to align the buttons in a row */
+    justify-content: center;      /* Center the buttons horizontally */
+    align-items: center;          /* Center the buttons vertically */
+    gap: 10px;                    /* Add space between the buttons */
+    width: 100%;                  /* Ensure the container takes up the full width */
+  }
+  
+  .add-row-button {
+    background-color: #007BFF;    /* Blue color for the 'Add Item' button */
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    
+    
+  }
+  
+  .add-row-button:hover {
+    background-color: #0056b3;    /* Darker blue on hover */
+  }
+  
+  .submit-button {
+    background-color: #4CAF50;    /* Green color for the 'Submit' button */
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  
+  .submit-button:hover {
+    background-color: #0056b3;    /* Darker green on hover */
+  }
+  

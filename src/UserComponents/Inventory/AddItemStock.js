@@ -28,6 +28,7 @@ const AddItemStock = () => {
   
       setItemCategoryOptions(categoryResponse.data);
       setItemTypeOptions(typeResponse.data);
+      clearItemRows();
     } catch (error) {
       console.error('Error fetching categories and types:', error);
     }
@@ -89,6 +90,32 @@ const AddItemStock = () => {
       default:
         break;
     }
+  };
+  
+
+  const downloadExcelFormat = () => {
+    fetch(`${API_BASE_URL}/inventory/download/stock_add_list`, {
+      method: 'GET',
+    })
+      .then((response) => {
+        if (response.ok) {
+          return response.blob(); // Get the file as a blob
+        }
+        throw new Error('Network response was not ok.');
+      })
+      .then((blob) => {
+        // Create a URL for the file and trigger download
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'New Stock List.xlsx'; // Set the download file name to "New Stock List"
+        document.body.appendChild(a);
+        a.click();
+        a.remove(); // Clean up the anchor element
+      })
+      .catch((error) => {
+        console.error('There was an issue with the download:', error);
+      });
   };
   
   
@@ -225,16 +252,24 @@ const AddItemStock = () => {
     <div className='add-stock-cont'>
       <h2>Add Item Stock</h2>
       <div className="actionBtns">
-      <button className="clear-button" onClick={clearItemRows}>Clear Items</button>
-      <button className="refresh-button" onClick={fetchItemCategoryAndType}>Refresh</button>
-      <input
-        type="file"
-        accept=".xlsx, .xls"
-        onChange={handleFileUpload}
-        className="upload-button"
-        ref={fileInputRef} // Reference for resetting the file input
-      />
- </div>
+  <div className="actionBtns-left">
+    <button className="clear-button" onClick={clearItemRows}>Clear Items</button>
+    <button className="refresh-button" onClick={fetchItemCategoryAndType}>Refresh</button>
+    <input
+      type="file"
+      accept=".xlsx, .xls"
+      onChange={handleFileUpload}
+      className="upload-button"
+      ref={fileInputRef} // Reference for resetting the file input
+    />
+  </div>
+
+  <div className="download-btn-container">
+    <button className="download-button" onClick={downloadExcelFormat}>Download Format</button>
+  </div>
+</div>
+
+
 
  <div className="add-item-stock">
       <table className="item-stock-table">
@@ -372,11 +407,11 @@ const AddItemStock = () => {
       </table>
   
     </div>
-    <div className="actionBtns">
-              <button className="add-row-button" onClick={addItemRow}>Add Item</button>
-              <button className="submit-button" onClick={handleSubmit}>Submit</button>
+    <div className="add-item-stock-btn">
+  <button className="add-row-button" onClick={addItemRow}>Add Item</button>
+  <button className="submit-button" onClick={handleSubmit}>Submit</button>
+</div>
 
-      </div>
     </div>
   );
 };
