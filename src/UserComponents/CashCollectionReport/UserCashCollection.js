@@ -1,35 +1,32 @@
-// src/components/UserCashCollection.js
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import axios from 'axios';
 import { API_BASE_URL } from '../Config.js';
-import './UserCashCollection.css'; // Import the CSS file for styling
+import './UserCashCollection.css';
 
 const UserCashCollection = () => {
   const [userCashCollection, setUserCashCollection] = useState([]);
   const [error, setError] = useState(null);
+  const [startDate, setStartDate] = useState('');
+  const [endDate, setEndDate] = useState('');
 
-  useEffect(() => {
-    const fetchUserCashCollection = async () => {
-      try {
-        const userData = JSON.parse(sessionStorage.getItem('user'));
-        const storeId = userData?.storeId;
+  const fetchUserCashCollection = async () => {
+    try {
+      const userData = JSON.parse(sessionStorage.getItem('user'));
+      const storeId = userData?.storeId;
 
-        if (storeId) {
-          const response = await axios.get(`${API_BASE_URL}/user/getUserCashCollection`, {
-            params: { storeId: storeId },
-          });
-          setUserCashCollection(response.data);
-          console.log(response.data);
-        } else {
-          console.error('Store ID not found in user data');
-        }
-      } catch (err) {
-        setError(err);
+      if (storeId && startDate && endDate) {
+        const response = await axios.get(`${API_BASE_URL}/user/getUserCashCollection`, {
+          params: { storeId, startDate, endDate },
+        });
+        setUserCashCollection(response.data);
+        console.log(response.data);  // Log the fetched data here
+      } else {
+        console.error('Store ID, start date, or end date not found');
       }
-    };
-
-    fetchUserCashCollection();
-  }, []);
+    } catch (err) {
+      setError(err);
+    }
+  };
 
   const formatDate = (dateString) => {
     const options = { day: '2-digit', month: '2-digit', year: 'numeric' };
@@ -40,6 +37,14 @@ const UserCashCollection = () => {
     return userCashCollection.reduce((total, item) => total + item.final_cash_collection, 0);
   };
 
+  const handleFetchClick = () => {
+    if (startDate && endDate) {
+      setUserCashCollection([]); // Clear data before new fetch
+      setError(null);
+      fetchUserCashCollection(); // Fetch data on button click
+    }
+  };
+
   if (error) {
     return <div>Error: {error.message}</div>;
   }
@@ -47,6 +52,22 @@ const UserCashCollection = () => {
   return (
     <div className="user-cash-collection">
       <h2>User Cash Collection</h2>
+      <div className="date-selection">
+        <label>Start Date: </label>
+        <input
+          type="date"
+          value={startDate}
+          onChange={(e) => setStartDate(e.target.value)}
+        />
+        <label>End Date: </label>
+        <input
+          type="date"
+          value={endDate}
+          onChange={(e) => setEndDate(e.target.value)}
+        />
+        <button onClick={handleFetchClick}>Fetch Data</button>
+      </div>
+
       <div className="table-responsive">
         <table>
           <thead>
@@ -73,7 +94,7 @@ const UserCashCollection = () => {
           </tbody>
           <tfoot>
             <tr>
-              <td colSpan="5"><strong>Today's Total Sale</strong></td>
+              <td colSpan="5"><strong>Total Sale</strong></td>
               <td><strong>{calculateTotalCashCollection()}</strong></td>
             </tr>
           </tfoot>
