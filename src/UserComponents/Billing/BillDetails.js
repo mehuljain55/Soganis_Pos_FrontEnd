@@ -3,6 +3,7 @@ import axios from 'axios';
 import { API_BASE_URL } from '../Config.js';
 import './BillDetails.css';
 import ExchangeBill from './ExchangeBill.js'; 
+import ExchangeBillWholesale from './ExchangeBillWholesale.js'; 
 
 
 const BillDetails = ({ userData }) => {
@@ -18,11 +19,12 @@ const BillDetails = ({ userData }) => {
     const [popupMessage, setPopupMessage] = useState('');
     const [popupType, setPopupType] = useState('');
     const [defectItem, setDefectItem] = useState(null);
-const [defectQuantity, setDefectQuantity] = useState(0);
-const [itemsToExchange, setItemsToExchange] = useState([]);
+    const [defectQuantity, setDefectQuantity] = useState(0);
+    const [itemsToExchange, setItemsToExchange] = useState([]);
+    const[billType,setBillType]=useState('');
 
-const [isDefectModalOpen, setIsDefectModalOpen] = useState(false);
-const [exchangeAmount, setExchangeAmount] = useState(0);
+    const [isDefectModalOpen, setIsDefectModalOpen] = useState(false);
+    const [exchangeAmount, setExchangeAmount] = useState(0);
 
     const handleInputChange = (event) => {
         setBillNo(event.target.value);
@@ -126,11 +128,15 @@ const [exchangeAmount, setExchangeAmount] = useState(0);
     };
 
     const handleExchange = () => {
+        if (selectedItems.length > 0) {
+            setBillType(selectedItems[0].billCategory);
+        }
         const exchangeItems = selectedItems.map(item => ({
             sno: item.sno,
             barcodedId: item.itemBarcodeID,
             price: item.sellPrice,
             itemType:item.itemType,
+            billCategory: item.billCategory,
             itemCategory:item.itemCategory,
             userId: userData.userId,
             return_quantity: returnQuantities[item.sno],
@@ -405,22 +411,27 @@ const [exchangeAmount, setExchangeAmount] = useState(0);
 {isExchangeModalOpen && (
     <>
         <div className="item-exchange-modal-overlay"></div>
+        
         <div className="item-exchange-modal-bill">
+        {billType === "Wholesale" ? (
+            <ExchangeBillWholesale
+                userData={userData}
+                itemsToExchange={itemsToExchange}
+                exchangeAmount={exchangeAmount}
+                onClose={handleCloseExchangeModal}
+            />
+        ) : (
             <ExchangeBill
                 userData={userData}
                 itemsToExchange={itemsToExchange}
                 exchangeAmount={exchangeAmount}
                 onClose={handleCloseExchangeModal}
             />
-        </div>
+        )}
+    </div>
     </>
 )}
 
-
-
-
-
-           
 
             {showPopup && (
                 <Popup

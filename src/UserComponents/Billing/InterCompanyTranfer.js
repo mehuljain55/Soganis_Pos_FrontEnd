@@ -111,6 +111,8 @@ const handleSelectChange = (selectedOption) => {
   
           setSearchResults(response.data || []); // Set search results or empty array
           setSelectedIndex(-1);
+          setDropdownOpen(true);
+
         } catch (error) {
           console.error('Error fetching items:', error);
           setSearchResults([]);

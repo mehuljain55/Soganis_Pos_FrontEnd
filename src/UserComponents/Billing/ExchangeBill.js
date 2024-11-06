@@ -20,6 +20,7 @@ const ExchangeBill = ({ userData,itemsToExchange, exchangeAmount, onClose }) => 
   const [schoolName, setSchoolName] = useState('');
   const [selectedIndex, setSelectedIndex] = useState(-1);
   const [shiftPressTime, setShiftPressTime] = useState(null); 
+
     
   
   const [isBarcodeMode, setIsBarcodeMode] = useState(false);
@@ -36,7 +37,6 @@ const ExchangeBill = ({ userData,itemsToExchange, exchangeAmount, onClose }) => 
   const [isTableFocused, setIsTableFocused] = useState(false); 
   const [showPopup, setShowPopup] = useState(false);
   const [someState, setSomeState] = useState(false); 
- 
 
   const [allSchools, setAllSchools] = useState([]);
   const selectedSchoolRef = useRef(null); // Renamed to avoid collision
@@ -106,6 +106,7 @@ const handleSelectChange = (selectedOption) => {
   
           setSearchResults(response.data || []); // Set search results or empty array
           setSelectedIndex(-1);
+          setDropdownOpen(true);
         } catch (error) {
           console.error('Error fetching items:', error);
           setSearchResults([]);
@@ -672,6 +673,7 @@ const handleSelectChange = (selectedOption) => {
         <thead>
           <tr>
             <th>S.No</th>
+            <th>Bill Type</th>
             <th>Item Type</th>
             <th>School</th>
             <th>Price</th>
