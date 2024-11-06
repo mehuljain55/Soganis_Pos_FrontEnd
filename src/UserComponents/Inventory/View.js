@@ -1,5 +1,6 @@
 import React, { useState, useRef } from 'react';
 import './View.css';
+import axios from "axios";
 import { API_BASE_URL } from '../Config.js';
 
 const View = ({ data,onUpdateSuccess }) => {
@@ -60,6 +61,34 @@ const View = ({ data,onUpdateSuccess }) => {
     }));
   };
 
+  const handleExport = async () => {
+    try {
+      const response = await axios.post(`${API_BASE_URL}/inventory/export`, data, {
+        responseType: 'blob', // Important for binary data
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+
+      // Create a download link
+      const url = window.URL.createObjectURL(new Blob([response.data]));
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute('download', 'inventory.xlsx'); // Specify the file name
+      document.body.appendChild(link);
+      link.click();
+
+      // Cleanup
+      link.parentNode.removeChild(link);
+      window.URL.revokeObjectURL(url);
+
+      console.log('File downloaded successfully');
+    } catch (error) {
+      console.error('Error exporting data:', error);
+    }
+  };
+
+
   const handleUpdate = async () => {
     try {
       const user = JSON.parse(sessionStorage.getItem('user'));
@@ -67,6 +96,9 @@ const View = ({ data,onUpdateSuccess }) => {
         alert('User not found in local storage.');
         return;
       }
+
+
+  
   
       const itemAddModel = Object.keys(editableData).map((id) => ({
         barcodedId: id,
@@ -284,6 +316,12 @@ const View = ({ data,onUpdateSuccess }) => {
             </button>
           </div>
         )}
+         <button
+              onClick={handleExport}
+              className="sales-export-btn"
+            >
+              Export
+            </button>
       </div>
     </div>
   );
