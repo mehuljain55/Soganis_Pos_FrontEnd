@@ -130,8 +130,8 @@ const MainComponent = ({ userData }) => {
             <button className="list-group-item" onClick={() => handleMenuItemClick('School Sales')}>School Report</button>
             <button className="list-group-item" onClick={() => handleMenuItemClick('Salary Register')}>Salary Register</button>
             <button className="list-group-item" onClick={() => navigate('/barcode')}>Open Barcode</button>
-            <button className="list-group-item" onClick={() => handleMenuItemClick('Update Inventory')}>Update Inventory</button>
-            <button className="list-group-item" onClick={() => handleMenuItemClick('Add Inventory')}>Add Inventory</button>
+            <button className="list-group-item" onClick={() => handleMenuItemClick('Update Inventory')}>Add Inventory(Qty)</button>
+            <button className="list-group-item" onClick={() => handleMenuItemClick('Add New Item')}>Update Item List</button>
           </div>
         </div>
 

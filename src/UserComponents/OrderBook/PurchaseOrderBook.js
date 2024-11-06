@@ -1,88 +1,61 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { API_BASE_URL } from '../Config.js';
-import './PurchaseOrderBook.css'; // Import custom CSS for styling
-
+import './PurchaseOrderBook.css';
 
 const PurchaseOrderBook = () => {
   const [orders, setOrders] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [isPopupOpen, setIsPopupOpen] = useState(false);
+  const [customOrder, setCustomOrder] = useState({
+    description: '',
+    size: '',
+    color: '',
+    quantity: 0,
+    itemType: '',
+    school: ''
+  });
 
-  // Fetch the order list data from the API
   useEffect(() => {
+    fetchOrders();
+  }, []);
+
+  const fetchOrders = () => {
     setIsLoading(true);
     setError(null);
-
     const user = JSON.parse(sessionStorage.getItem('user'));
-    const storeId = user?.storeId; 
+    const storeId = user?.storeId;
 
     if (storeId) {
       axios.get(`${API_BASE_URL}/user/view-order`, {
-        params: {
-          storeId: storeId // Pass storeId as a query parameter
-        }
+        params: { storeId: storeId }
       })
       .then(response => {
-        setOrders(response.data); // Set the fetched orders to the state
-        setIsLoading(false); // Loading is done
+        setOrders(response.data);
+        setIsLoading(false);
       })
       .catch(error => {
-        setError(error.message); // Set error state if the request fails
-        setIsLoading(false); // Stop loading if there is an error
+        setError(error.message);
+        setIsLoading(false);
       });
     } else {
       setError("Store ID not found in user data.");
       setIsLoading(false);
     }
-  }, []);
+  };
 
-
-
-  const fetchOrders = () => {
-    setIsLoading(true);
-    setError(null);
-
-    const user = JSON.parse(sessionStorage.getItem('user'));
-    const storeId = user?.storeId; 
-
-    if (storeId) {
-        axios.get(`${API_BASE_URL}/user/view-order`, {
-            params: {
-                storeId: storeId // Pass storeId as a query parameter
-            }
-        })
-        .then(response => {
-            setOrders(response.data); // Set the orders from the response
-            console.log("Order");
-            console.log(orders);
-            setIsLoading(false);
-        })
-        .catch(error => {
-            setError(error.message);
-            setIsLoading(false);
-        });
-    } else {
-        console.error("storeId not found in user data.");
-        setError("Store ID not found.");
-        setIsLoading(false);
-    }
-};
-
-
-  // Handle quantity change
   const handleQuantityChange = (index, value) => {
     const newOrders = [...orders];
     newOrders[index].quantity = value;
     setOrders(newOrders);
   };
 
-  
   const handleDeleteOrder = (orderId) => {
     axios.post(`${API_BASE_URL}/inventory/order/delete_order`, null, { params: { orderId } })
       .then(response => {
         if (response.data === "Success") {
-          setOrders(orders.filter(order => order.orderId !== orderId)); // Remove the deleted order from the list
+          setOrders(orders.filter(order => order.orderId !== orderId));
           fetchOrders();
         }
       })
@@ -96,22 +69,14 @@ const PurchaseOrderBook = () => {
       alert('No orders to generate.');
       return;
     }
-  
-    
     const user = JSON.parse(sessionStorage.getItem('user'));
     if (!user) {
       alert('User not found in session storage.');
       return;
     }
-  
-    // Prepare order data including user information
-    const purchaseOrderModel = {
-      purchaseOrderBookList: orders, // Assuming `orders` contains the purchase order books
-      user: user 
-    };
-  
+    const purchaseOrderModel = { purchaseOrderBookList: orders, user: user };
     axios.post(`${API_BASE_URL}/inventory/generate_order`, purchaseOrderModel, {
-      responseType: 'blob' 
+      responseType: 'blob'
     })
     .then(response => {
       const url = window.URL.createObjectURL(new Blob([response.data]));
@@ -129,58 +94,104 @@ const PurchaseOrderBook = () => {
       alert('Failed to generate order: ' + error.message);
     });
   };
-  
-  if (isLoading) return <p>Loading...</p>;
-  if (error) return <p>Error: {error}</p>;
+
+  const handleAddCustomOrder = () => {
+    const user = JSON.parse(sessionStorage.getItem('user'));
+    const storeId = user?.storeId;
+    if (!storeId) {
+      alert('Store ID not found in session storage.');
+      return;
+    }
+    axios.post(`${API_BASE_URL}/user/purchase-order`, customOrder, {
+      params: { storeId: storeId }
+    })
+    .then(response => {
+      if (response.data === "Success") {
+        alert('Custom order added successfully!');
+        setIsPopupOpen(false);
+        fetchOrders();
+      }
+    })
+    .catch(error => {
+      alert('Failed to add custom order: ' + error.message);
+    });
+  };
+
+  const handleCustomOrderChange = (e) => {
+    setCustomOrder({ ...customOrder, [e.target.name]: e.target.value });
+  };
 
   return (
-
     <div>
-    <div className="purchase-order-book-container">
-      <h1>Purchase Order Book</h1>
-      <table className="purchase-order-book-table">
-        <thead>
-          <tr>
-            <th>Order ID</th>
-            <th>Description</th>
-            <th>Size</th>
-            <th>Current Stock</th>
-            <th>Quantity</th>
-            <th>Item Type</th>
-            <th>School</th>
-            <th>Action</th>
-          </tr>
-        </thead>
-        <tbody>
-          {orders.map((order, index) => (
-            <tr key={order.orderId}>
-              <td>{order.orderId}</td>
-              <td>{order.description}</td>
-              <td>{order.size}</td>
-              <td>{order.currentStock}</td>
-              <td>
-                <input
-                  type="number"
-                  value={order.quantity}
-                  onChange={(e) => handleQuantityChange(index, parseInt(e.target.value, 10))}
-                />
-              </td>
-              <td>{order.itemType}</td>
-              <td>{order.school}</td>
-              <td>
-                  <button 
-                    onClick={() => handleDeleteOrder(order.orderId)} 
-                    className="delete-order-button">
-                    Delete
-                  </button> {/* Delete button */}
-                </td>
+      <div className="purchase-order-container">
+        <h1 className="purchase-order-title">Purchase Order Book</h1>
+      
+        <table className="purchase-order-table">
+          <thead>
+            <tr>
+              <th>Order ID</th>
+              <th>Description</th>
+              <th>Size</th>
+              <th>Current Stock</th>
+              <th>Quantity</th>
+              <th>Item Type</th>
+              <th>School</th>
+              <th>Action</th>
             </tr>
-          ))}
-        </tbody>
-      </table>
-    </div>
-    <button onClick={handleGenerateOrder} className="generate-order-button">Generate Order</button>
-    
+          </thead>
+          <tbody>
+            {orders.map((order, index) => (
+              <tr key={order.orderId}>
+                <td>{order.orderId}</td>
+                <td>{order.description}</td>
+                <td>{order.size}</td>
+                <td>{order.currentStock}</td>
+                <td>
+                  <input
+                    type="number"
+                    value={order.quantity}
+                    onChange={(e) => handleQuantityChange(index, parseInt(e.target.value, 10))}
+                  />
+                </td>
+                <td>{order.itemType}</td>
+                <td>{order.school}</td>
+                <td>
+                  <button onClick={() => handleDeleteOrder(order.orderId)} className="purchase-order-delete-button">
+                    Delete
+                  </button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+       
+      </div>
+     
+      <div  className="purchase-order-action-btn">
+      <button onClick={handleGenerateOrder} className="purchase-order-button">Generate Order</button>
+      <button onClick={() => setIsPopupOpen(true)} className="purchase-order-button">Add Custom Order</button>
+      </div>
+      
+      {isPopupOpen && (
+        <div className="purchase-order-popup">
+          
+          <h2>Add Custom Order</h2>
+          <input type="text" name="description" placeholder="Description" onChange={handleCustomOrderChange} />    
+          <input type="text" name="size" placeholder="Size" onChange={handleCustomOrderChange} />
+          <input type="text" name="color" placeholder="Color" onChange={handleCustomOrderChange} />
+          <input type="number" name="quantity" placeholder="Quantity" onChange={handleCustomOrderChange} />
+          <input type="text" name="itemType" placeholder="Item Type" onChange={handleCustomOrderChange} />
+          <input type="text" name="school" placeholder="School" onChange={handleCustomOrderChange} />
+        
+          <div className="purchase-order-btn">
+        
+          <button onClick={handleAddCustomOrder}>Create Order</button>
+         
+ 
+          </div>
+          <button onClick={() => setIsPopupOpen(false)}>Cancel</button>
+        </div>
+      )}
     </div>
   );
 };

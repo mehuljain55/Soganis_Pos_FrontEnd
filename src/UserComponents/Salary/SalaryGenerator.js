@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-import { API_BASE_URL } from '../Config'; // Assuming you have a Config file for API base URL
-import './SalaryGenerator.css'; // Import your CSS file for styling
+import { API_BASE_URL } from '../Config'; 
+import './SalaryGenerator.css';
 
 const SalaryGenerator = () => {
   const [year, setYear] = useState(new Date().getFullYear());
-  const [month, setMonth] = useState(('0' + (new Date().getMonth() + 1)).slice(-2)); // default to current month in MM format
+  const [month, setMonth] = useState(('0' + (new Date().getMonth() + 1)).slice(-2));
   const [salaries, setSalaries] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -27,7 +27,7 @@ const SalaryGenerator = () => {
     const month_fy = `${month}_${year}`;
     try {
       const userData = JSON.parse(sessionStorage.getItem('userData'));
-      const storeId = userData?.storeId; // Retrieve storeId from user data
+      const storeId = userData?.storeId;
       const response = await axios.get(`${API_BASE_URL}/user/salary/generate`, {
         params: { month_fy, storeId }
       });
@@ -52,7 +52,7 @@ const SalaryGenerator = () => {
       const response = await axios.post(`${API_BASE_URL}/user/salary/paid`, salary);
       if (response.status === 200) {
         alert(`Status Update: ${response.data}`);
-        fetchSalaries(); // Refresh the data
+        fetchSalaries();
       } else {
         alert('Failed to update salary status');
       }

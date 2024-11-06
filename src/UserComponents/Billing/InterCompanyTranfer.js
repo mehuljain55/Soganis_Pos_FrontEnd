@@ -38,10 +38,10 @@ const InterCompanyTranfer = ({ userData }) => {
   const [filteredSchools, setFilteredSchools] = useState([]);
   
   const [suggestions, setSuggestions] = useState([]);
-  const [loading, setLoading] = useState(false); // Loading state
+  const [loading, setLoading] = useState(false);
   
   const [allSchools, setAllSchools] = useState([]);
-  const selectedSchoolRef = useRef(null); // Renamed to avoid collision
+  const selectedSchoolRef = useRef(null); 
 
 
   const [customItem, setCustomItem] = useState({
@@ -80,20 +80,18 @@ const InterCompanyTranfer = ({ userData }) => {
 };
 
 const handleSelectChange = (selectedOption) => {
-    // Update state with the selected option's value
     setSchoolName(selectedOption ? selectedOption.value : ''); // Ensure it's a string
 };
   useEffect(() => {
     fetchAllSchools();
   }, []);
 
-    // Function to handle focus change
     const handleSelectFocus = () => {
-      setIsTableFocused(false); // Set table focus to false when Select is focused
+      setIsTableFocused(false); 
     };
   
     const handleSelectBlur = () => {
-      setIsTableFocused(true); // Set table focus back to true when Select is blurred
+      setIsTableFocused(true); 
     }
 
   useEffect(() => {
@@ -104,7 +102,6 @@ const handleSelectChange = (selectedOption) => {
           const user = JSON.parse(sessionStorage.getItem("user"));
           const storeId = user ? user.storeId : '';
   
-          // Make API call with searchTerm and storeId
           const response = await axios.get(`${API_BASE_URL}/inventory/getAllItems`, {
             params: {
               searchTerm: searchTerm,

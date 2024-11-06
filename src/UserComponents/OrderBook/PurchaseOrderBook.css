@@ -1,36 +1,141 @@
-.purchase-order-book-container {
+/* Container for the entire Purchase Order Book */
+.purchase-order-container {
   padding: 20px;
   max-width: 1500px;
   max-height: 600px;
   overflow-y: auto;
+  background-color: #f8f9fa;
+  border-radius: 8px;
+  margin: auto;
 }
 
-.purchase-order-book-table-container {
+/* Container for the table with a fixed height and scrolling */
+.purchase-order-table-container {
   border: 1px solid #ccc;
+  border-radius: 8px;
+  overflow: hidden;
+  max-height: 400px; /* Fixed height for table container */
+  overflow-y: auto; /* Enables vertical scrolling */
 }
 
-.purchase-order-book-table {
+/* Table styling */
+.purchase-order-table {
   width: 100%;
   border-collapse: collapse;
+  font-family: Arial, sans-serif;
 }
 
-.purchase-order-book-table th,
-.purchase-order-book-table td {
+.purchase-order-table th,
+.purchase-order-table td {
   border: 1px solid #ccc;
-  padding: 10px;
+  padding: 12px;
   text-align: left;
+  font-size: 14px;
 }
 
-.generate-order-button {
+.purchase-order-table th {
+  background-color: #707070;
+  color: white;
+  font-weight: bold;
+  position: sticky;
+  top: 0; /* Keeps header visible on scroll */
+  z-index: 1;
+}
+
+.purchase-order-table td input[type="number"] {
+  width: 80px;
+  padding: 5px;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+}
+
+/* Generate Order Button styling */
+.purchase-order-generate-button {
   margin-top: 20px;
-  padding: 10px 20px;
+  padding: 12px 24px;
   background-color: #4CAF50;
   color: white;
   border: none;
   cursor: pointer;
   font-size: 16px;
+  font-weight: bold;
+  border-radius: 4px;
+  transition: background-color 0.3s;
 }
 
-.generate-order-button:hover {
+.purchase-order-generate-button:hover {
   background-color: #45a049;
+}
+
+/* Delete Order Button styling */
+.purchase-order-delete-button {
+  background-color: #dc3545;
+  color: white;
+  border: none;
+  padding: 8px 12px;
+  cursor: pointer;
+  border-radius: 4px;
+  transition: background-color 0.3s;
+}
+
+.purchase-order-delete-button:hover {
+  background-color: #c82333;
+}
+
+/* Popup styling */
+.purchase-order-popup {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: white;
+  padding: 20px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.1);
+  width: 500px;
+  height: 400px;
+}
+
+.purchase-order-popup h2 {
+  font-size: 18px;
+  margin-bottom: 15px;
+  color: #343a40;
+}
+
+.purchase-order-popup input,
+.purchase-order-popup button {
+  width: 380px;
+  padding: 10px;
+  margin-top: 8px;
+  font-size: 14px;
+  border-radius: 4px;
+}
+
+.purchase-order-action-btn {
+  display: flex;
+  gap: 12px; /* Space between buttons */
+  margin-top: 20px;
+  justify-content: center;
+}
+
+.purchase-order-popup button {
+  background-color: #28a745;
+  color: white;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.purchase-order-popup button:hover {
+  background-color: #218838;
+}
+
+/* Popup Cancel Button */
+.purchase-order-popup .popup-cancel-button {
+  background-color: #6c757d;
+}
+
+.purchase-order-popup .popup-cancel-button:hover {
+  background-color: #5a6268;
 }
