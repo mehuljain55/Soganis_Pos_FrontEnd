@@ -197,7 +197,7 @@ const FilterPage = () => {
 
   return (
     <div>
-      <h1>Filter Page</h1>
+      <h1>View Stock</h1>
 
       <div className="filter-page-radio">
         <div className="filter-page-radio-option">
