@@ -26,7 +26,7 @@ const SalaryGenerator = () => {
     setLoading(true);
     const month_fy = `${month}_${year}`;
     try {
-      const userData = JSON.parse(sessionStorage.getItem('userData'));
+      const userData = JSON.parse(sessionStorage.getItem('user'));
       const storeId = userData?.storeId;
       const response = await axios.get(`${API_BASE_URL}/user/salary/generate`, {
         params: { month_fy, storeId }

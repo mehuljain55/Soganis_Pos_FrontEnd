@@ -137,7 +137,7 @@
 }
 
 .result-section table th {
-  background-color: #f8f9fa;
+  background-color: #707070;
   font-weight: bold;
 }
 
@@ -180,3 +180,20 @@
 .result-section table td:nth-child(7) {
   width: 10%;
 }
+
+.result-section table th:nth-child(7),
+.result-section table td:nth-child(7) {
+  width: 10%;
+}
+
+.result-section table th:nth-child(8),
+.result-section table td:nth-child(8) {
+  width: 10%;
+}
+
+.result-section table th:nth-child(9),
+.result-section table td:nth-child(9) {
+  width: 20%;
+}
+
+

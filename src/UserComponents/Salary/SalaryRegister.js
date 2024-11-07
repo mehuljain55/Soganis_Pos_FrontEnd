@@ -94,6 +94,7 @@ const SalaryRegister = () => {
     setRows(updatedRows);
     setErrorRows(errorRows.filter((errIndex) => errIndex !== index)); // Remove error if row is deleted
   };
+
   const handleUpdate = async () => {
     // Filter out rows with empty userId or type set to 'SELECT' to prevent sending incomplete data
     const filteredRows = rows.filter(row => row.userId !== '' && row.type !== 'SELECT');
@@ -104,9 +105,12 @@ const SalaryRegister = () => {
     }
   
     try {
-      // Make the POST request to your backend endpoint
-      const response = await axios.post(`${API_BASE_URL}/user/salary/update`, filteredRows);
-  
+
+      const userData = JSON.parse(sessionStorage.getItem('user'));
+      const storeId = userData?.storeId;
+
+     const response = await axios.post(`${API_BASE_URL}/user/salary/update?storeId=${storeId}`, filteredRows);
+
       console.log('Update response:', response.data); // Log response from the server
   
       if (response.data === 'Success') {
