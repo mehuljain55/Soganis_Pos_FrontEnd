@@ -19,7 +19,7 @@ import OrderView from '../OrderBook/OrderView.js';
 import PurchaseOrderBook from '../OrderBook/PurchaseOrderBook.js';
 import AddInventoryItem from '../Inventory/AddInventoryItem.js';
 import SchoolSalesReport from '../SalesReport/SchoolSalesReport.js';
-import AddItemStock from '../Inventory/AddItemStock.js';
+import InventoryAdd from '../Inventory/InventoryAdd.js';
 import { API_BASE_URL } from '../Config.js';
 import { LogoutButton, useLogout } from '../Login/LogoutPage.js';
 
@@ -148,7 +148,7 @@ const MainComponent = ({ userData }) => {
           {selectedMenuItem === 'View Sales Report' && <FilterSalesPage />}
           {selectedMenuItem === 'School Sales' && <SchoolSalesReport />}
           {selectedMenuItem === 'Update Inventory' && <AddInventoryItem />}
-          {selectedMenuItem === 'Add New Item' && <AddItemStock />}
+          {selectedMenuItem === 'Add New Item' && <InventoryAdd />}
         </main>
       </div>
 
