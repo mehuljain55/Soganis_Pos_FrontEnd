@@ -22,6 +22,8 @@ const BillDetails = ({ userData }) => {
     const [defectQuantity, setDefectQuantity] = useState(0);
     const [itemsToExchange, setItemsToExchange] = useState([]);
     const[billType,setBillType]=useState('');
+    const [billList, setBillList] = useState([]);
+    const [showBillSelectionPopup, setShowBillSelectionPopup] = useState(false);
 
     const [isDefectModalOpen, setIsDefectModalOpen] = useState(false);
     const [exchangeAmount, setExchangeAmount] = useState(0);
@@ -31,20 +33,38 @@ const BillDetails = ({ userData }) => {
     };
 
     const fetchBill = () => {
-        const user = JSON.parse(sessionStorage.getItem('user')); 
-        const storeId = user ? user.storeId : ''; 
+        const user = JSON.parse(sessionStorage.getItem('user'));
+        const storeId = user ? user.storeId : '';
     
         axios.get(`${API_BASE_URL}/user/getBill/${billNo}/${storeId}`)
             .then(response => {
-                setBillData(response.data);
-                setSelectedItems([]);
-                setReturnedItems({});
-                setReturnQuantities({});
+                const data = response.data;
+    
+                if (data.type === "single") {
+                    setBillData(data.bill);  // Directly set bill data if it's a single bill
+                    setShowBillSelectionPopup(false);  // Ensure popup is closed if it was open
+                    setPopupMessage("");  // Clear any existing popup messages
+                    setSelectedItems([]);
+                } else if (data.type === "list") {
+                    setBillData(null);  // Clear any existing bill data
+                    setReturnedItems({});
+                    setReturnQuantities({});
+                    setBillList(data.billList);  // Store the list of bills for display in the popup
+                    setShowBillSelectionPopup(true);  // Open popup to show bill list
+                    setSelectedItems([]);
+                } else {
+                    alert("Bill not found");
+                }
             })
             .catch(error => {
                 console.error('Error fetching bill data:', error);
+                setPopupMessage("An error occurred while fetching the bill");
+                setPopupType("error");
+                setShowPopup(true);
             });
     };
+    
+    
     
 
     const handleQuantityChange = (sno, value) => {
@@ -108,7 +128,7 @@ const BillDetails = ({ userData }) => {
                     setPopupType('error');
                 }
                 setShowPopup(true);
-                fetchBill(); // Refetch bill data after return
+          
                 setReturnedItems(prevState => {
                     const newReturnedItems = { ...prevState };
                     itemsToReturn.forEach(item => {
@@ -118,6 +138,7 @@ const BillDetails = ({ userData }) => {
                 });
                 setIsModalOpen(false);
                 setSelectedItems([]);
+                fetchBill(); // Refetch bill data after return
             })
             .catch(error => {
                 console.error('Error returning items:', error);
@@ -127,6 +148,15 @@ const BillDetails = ({ userData }) => {
             });
     };
 
+    const handleSelectBill = (bill) => {
+        setBillData(bill);  // Set selected bill as billData
+        setShowBillSelectionPopup(false);
+          // Close the popup
+    };
+
+    const handleClosePopup = () => {
+        setShowPopup(false);
+    };
     const handleExchange = () => {
         if (selectedItems.length > 0) {
             setBillType(selectedItems[0].billCategory);
@@ -202,6 +232,39 @@ const BillDetails = ({ userData }) => {
         </div>
     );
 
+    const BillSelectionPopup = ({ billList, onClose, onSelectBill }) => (
+        <div className="bill-selection-popup">
+            <h3>Select a Bill</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Bill No</th>
+                        <th>Store ID</th>
+                        <th>User ID</th>
+                        <th>Date</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {billList.map((bill) => (
+                        <tr key={bill.billNo}>
+                            <td>{bill.billNo}</td>
+                            <td>{bill.storeId}</td>
+                            <td>{bill.userId}</td>
+                            <td>{bill.bill_date}</td>
+                            <td>
+                                <button onClick={() => onSelectBill(bill)}>View</button>
+                            </td>
+                        </tr>
+                    ))}
+                </tbody>
+            </table>
+            <button onClick={onClose}>Close</button>
+        </div>
+    );
+    
+
+
     return (
         <div className="bill-detail">
             <h1>Bill Details</h1>
@@ -216,7 +279,7 @@ const BillDetails = ({ userData }) => {
                 />
                 <button onClick={fetchBill}>Fetch Bill</button>
             </div>
-
+    
             {billData && (
                 <>
                     <table className="billdets-info">
@@ -238,7 +301,6 @@ const BillDetails = ({ userData }) => {
                                 <th>Serial No</th>
                                 <th>Item Barcode ID</th>
                                 <th>Description</th>
-                                
                                 <th>Item Type</th>
                                 <th>Item Color</th>
                                 <th>Item Size</th>
@@ -255,7 +317,6 @@ const BillDetails = ({ userData }) => {
                                     <td>{item.sno}</td>
                                     <td>{item.itemBarcodeID}</td>
                                     <td>{item.description}</td>
-                                    
                                     <td>{item.itemType}</td>
                                     <td>{item.itemColor}</td>
                                     <td>{item.itemSize}</td>
@@ -270,29 +331,24 @@ const BillDetails = ({ userData }) => {
                                             <span style={{ color: 'green' }}>Item Selected</span>
                                         ) : (
                                             <>
-                                                
-                                               
-                {item.status === "Returned" ? (
-                    <span>Item Returned</span>
-                ) : item.status === "Exchanged" ? (
-                    <span>Item Exchanged</span>
-                ): item.status === "Defected" ? (
-                    <span>Defected Item Returned</span>
-                ): item.quantity <= 0 ? (
-                    <span>Item Exchanged or returned</span>
-                ) : returnedItems[item.sno] ? (
-                    <button disabled>Item Returned</button>
-                ) : selectedItems.find(selectedItem => selectedItem.sno === item.sno) ? (
-                    <span style={{ color: 'green' }}>Item Selected</span>
-                ) : (
-                    <>
-                                <button onClick={() => handleSelectItem(item)}>Select</button>
-                                <button onClick={() => handleDefectItem(item)}>Defect</button>
-                            </>
-                    
-                )}
-                                            
-                                             
+                                                {item.status === "Returned" ? (
+                                                    <span>Item Returned</span>
+                                                ) : item.status === "Exchanged" ? (
+                                                    <span>Item Exchanged</span>
+                                                ) : item.status === "Defected" ? (
+                                                    <span>Defected Item Returned</span>
+                                                ) : item.quantity <= 0 ? (
+                                                    <span>Item Exchanged or returned</span>
+                                                ) : returnedItems[item.sno] ? (
+                                                    <button disabled>Item Returned</button>
+                                                ) : selectedItems.find(selectedItem => selectedItem.sno === item.sno) ? (
+                                                    <span style={{ color: 'green' }}>Item Selected</span>
+                                                ) : (
+                                                    <>
+                                                        <button onClick={() => handleSelectItem(item)}>Select</button>
+                                                        <button onClick={() => handleDefectItem(item)}>Defect</button>
+                                                    </>
+                                                )}
                                             </>
                                         )}
                                     </td>
@@ -303,10 +359,9 @@ const BillDetails = ({ userData }) => {
                     {selectedItems.length > 0 && (
                         <button onClick={() => setIsModalOpen(true)}>Return / Exchange </button>
                     )}
-                  
                 </>
             )}
-
+    
             {isModalOpen && (
                 <div className="bill-detail-return-modal">
                     <div className="bill-detail-return-modal-content">
@@ -329,8 +384,6 @@ const BillDetails = ({ userData }) => {
                                         <td>{item.billCategory}</td>
                                         <td>{item.itemType}</td>
                                         <td>{item.itemCategory}</td>
-                                     
-                                        
                                         <td>{item.sellPrice}</td>
                                         <td>
                                             <input
@@ -347,92 +400,84 @@ const BillDetails = ({ userData }) => {
                         <div>
                             <button onClick={confirmReturn}>Return</button>
                             <button onClick={handleExchange}>Exchange</button>
-                
-
-
                             <button onClick={() => setIsModalOpen(false)}>Cancel</button>
                         </div>
                     </div>
                 </div>
             )}
- {isDefectModalOpen && (
-    <div className="unique-defect-modal">
-        <div className="unique-defect-modal-content">
-            <h2>Defect Item</h2>
-            <table className="unique-defect-items-table">
-                <thead>
-                    <tr>
-                        <th>Barcode ID</th>
-                        <th>Name</th>
-                        <th>Category</th>
-                        <th>Price</th>
-                        <th>Defect Quantity</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>{defectItem.itemBarcodeID}</td>
-                        <td>{defectItem.itemType}</td>
-                        <td>{defectItem.itemCategory}</td>
-                        <td>{defectItem.sellPrice}</td>
-                        <td>
-                            <input
-                                type="number"
-                                value={defectQuantity}
-                                onChange={(e) => {
-                                    const newQuantity = Number(e.target.value);
-                                    if (newQuantity <= defectItem.quantity) {
-                                        setDefectQuantity(newQuantity);
-                                    } else {
-                                        // Optionally, provide feedback to the user
-                                        alert(`Defect quantity cannot exceed ${defectItem.quantity}`);
-                                        setDefectQuantity(defectItem.quantity);
-                                    }
-                                }}
+    
+            {isDefectModalOpen && (
+                <div className="unique-defect-modal">
+                    <div className="unique-defect-modal-content">
+                        <h2>Defect Item</h2>
+                        <table className="unique-defect-items-table">
+                            <thead>
+                                <tr>
+                                    <th>Barcode ID</th>
+                                    <th>Name</th>
+                                    <th>Category</th>
+                                    <th>Price</th>
+                                    <th>Defect Quantity</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>{defectItem.itemBarcodeID}</td>
+                                    <td>{defectItem.itemType}</td>
+                                    <td>{defectItem.itemCategory}</td>
+                                    <td>{defectItem.sellPrice}</td>
+                                    <td>
+                                        <input
+                                            type="number"
+                                            value={defectQuantity}
+                                            onChange={(e) => {
+                                                const newQuantity = Number(e.target.value);
+                                                if (newQuantity <= defectItem.quantity) {
+                                                    setDefectQuantity(newQuantity);
+                                                } else {
+                                                    alert(`Defect quantity cannot exceed ${defectItem.quantity}`);
+                                                    setDefectQuantity(defectItem.quantity);
+                                                }
+                                            }}
+                                        />
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <div className="unique-defect-amount">
+                            Amount: {defectItem.sellPrice * defectQuantity}
+                        </div>
+                        <div className="unique-defect-buttons">
+                            <button onClick={confirmDefect}>Confirm Defect</button>
+                            <button onClick={() => setIsDefectModalOpen(false)}>Cancel</button>
+                        </div>
+                    </div>
+                </div>
+            )}
+    
+            {isExchangeModalOpen && (
+                <>
+                    <div className="item-exchange-modal-overlay"></div>
+                    <div className="item-exchange-modal-bill">
+                        {billType === "Wholesale" ? (
+                            <ExchangeBillWholesale
+                                userData={userData}
+                                itemsToExchange={itemsToExchange}
+                                exchangeAmount={exchangeAmount}
+                                onClose={handleCloseExchangeModal}
                             />
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-            <div className="unique-defect-amount">
-             Amount: {defectItem.sellPrice * defectQuantity}
-            </div>
-        
-            <div className="unique-defect-buttons">
-                <button onClick={confirmDefect}>Confirm Defect</button>
-                <button onClick={() => setIsDefectModalOpen(false)}>Cancel</button>
-            </div>
-        </div>
-    </div>
-)}
-
-
-
-{isExchangeModalOpen && (
-    <>
-        <div className="item-exchange-modal-overlay"></div>
-        
-        <div className="item-exchange-modal-bill">
-        {billType === "Wholesale" ? (
-            <ExchangeBillWholesale
-                userData={userData}
-                itemsToExchange={itemsToExchange}
-                exchangeAmount={exchangeAmount}
-                onClose={handleCloseExchangeModal}
-            />
-        ) : (
-            <ExchangeBill
-                userData={userData}
-                itemsToExchange={itemsToExchange}
-                exchangeAmount={exchangeAmount}
-                onClose={handleCloseExchangeModal}
-            />
-        )}
-    </div>
-    </>
-)}
-
-
+                        ) : (
+                            <ExchangeBill
+                                userData={userData}
+                                itemsToExchange={itemsToExchange}
+                                exchangeAmount={exchangeAmount}
+                                onClose={handleCloseExchangeModal}
+                            />
+                        )}
+                    </div>
+                </>
+            )}
+    
             {showPopup && (
                 <Popup
                     message={popupMessage}
@@ -440,8 +485,15 @@ const BillDetails = ({ userData }) => {
                     onClose={() => setShowPopup(false)}
                 />
             )}
+    
+            {showBillSelectionPopup && (
+                <BillSelectionPopup
+                    billList={billList}
+                    onClose={() => setShowBillSelectionPopup(false)}
+                    onSelectBill={handleSelectBill}
+                />
+            )}
         </div>
     );
-};
-
+};    
 export default BillDetails;
