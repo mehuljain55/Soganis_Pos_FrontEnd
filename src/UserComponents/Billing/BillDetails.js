@@ -57,10 +57,8 @@ const BillDetails = ({ userData }) => {
                 }
             })
             .catch(error => {
-                console.error('Error fetching bill data:', error);
-                setPopupMessage("An error occurred while fetching the bill");
-                setPopupType("error");
-                setShowPopup(true);
+               alert('Error fetching bill data please try again');
+               
             });
     };
     
