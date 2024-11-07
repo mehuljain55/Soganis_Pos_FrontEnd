@@ -11,7 +11,7 @@ const Salary = () => {
       <h1>Salary Management</h1>
       <div className="menu-bar">
         <button className={view === 'register' ? 'active' : ''} onClick={() => setView('register')}>Salary Register</button>
-        <button className={view === 'generator' ? 'active' : ''} onClick={() => setView('generator')}>Salary Generator</button>
+        <button className={view === 'generator' ? 'active' : ''} onClick={() => setView('generator')}>Salary Viewer</button>
       </div>
       
       {view === 'register' && <SalaryRegister />}

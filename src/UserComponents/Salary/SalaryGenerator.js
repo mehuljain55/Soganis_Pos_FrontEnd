@@ -105,7 +105,7 @@ const SalaryGenerator = () => {
 
   return (
     <div className="salary-generator-container">
-      <h5>Generate User Monthly Salary</h5>
+      <h5>Salary View</h5>
       <div className="input-section">
         <select value={month} onChange={handleMonthChange}>
           {months.map(m => <option key={m.value} value={m.value}>{m.name}</option>)}
