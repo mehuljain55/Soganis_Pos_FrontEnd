@@ -598,12 +598,13 @@ const handleSelectChange = (selectedOption) => {
       <div className="search-bar-container">
       {/* Barcode input */}
       
-      <div className="search-bar"  ref={searchInputRef} tabIndex="0">
+      <div className="search-bar" tabIndex="0">
       <input
         type="text"
  
         placeholder="Search by item code"
         value={searchTerm}
+        ref={searchInputRef} 
         onChange={(e) => setSearchTerm(e.target.value)}
         onFocus={(e) => {
           setSearchTerm(e.target.value); // Ensure searchTerm is set on focus

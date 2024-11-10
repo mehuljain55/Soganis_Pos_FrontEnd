@@ -592,10 +592,11 @@ const handleSelectChange = (selectedOption) => {
       </div>
   
       <div className="search-bar-container">
-        <div className="search-bar" ref={searchInputRef} tabIndex="0">
+        <div className="search-bar" tabIndex="0">
           <input
             type="text"
             placeholder="Search by item code"
+            ref={searchInputRef}
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             onFocus={(e) => {
