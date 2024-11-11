@@ -389,12 +389,10 @@ const handleSelectChange = (selectedOption) => {
       return; // Prevent API call if validation fails
   }
 
-  if (!customerMobileNo) {
-    alert("Customer mobile no is required")
-
+  if (customerMobileNo && !/^\d{10}$/.test(customerMobileNo)) {
+    alert("Customer mobile number must be exactly 10 digits");
     return; // Prevent API call if validation fails
 }
-
     const billData = {
       userId: userData.userId,
       customerName: customerName,
