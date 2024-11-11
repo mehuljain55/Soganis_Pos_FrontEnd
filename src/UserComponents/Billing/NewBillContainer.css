@@ -197,6 +197,34 @@ h2 {
   background-color: #0056b3;
 }
 
+/* Discount Section Styling */
+.discount-section {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  margin-right: 20px;
+}
+
+.discount-section label {
+  font-size: 14px;
+  color: #333;
+  margin-bottom: 5px;
+}
+
+.discount-section input {
+  padding: 5px;
+  width: 80px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 14px;
+}
+
+.discount-section input:focus {
+  border-color: #007bff;
+  outline: none;
+  box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+}
+
 /* Center the item summary */
 .item-summary {
   position: absolute;
@@ -253,6 +281,9 @@ h2 {
   padding: 10px 20px;
   margin-right: 10px;
 }
+
+
+
 
 /* Modal styling */
 .modal {

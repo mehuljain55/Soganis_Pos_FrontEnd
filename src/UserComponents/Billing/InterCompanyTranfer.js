@@ -59,7 +59,7 @@ const InterCompanyTranfer = ({ userData }) => {
     try {
         const user = JSON.parse(sessionStorage.getItem('user'));
         const storeId = user?.storeId;
-        const response = await axios.get(`${API_BASE_URL}/user/filter/getSchool`, {
+        const response = await axios.get(`${API_BASE_URL}/user/filter/getSchoolNameandCode`, {
             params: {
                 storeId: storeId,
             },
@@ -67,8 +67,10 @@ const InterCompanyTranfer = ({ userData }) => {
 
         if (Array.isArray(response.data)) {
             const schoolOptions = response.data.map((school) => ({
-                value: school, // Assuming school is the name
-                label: school, // Same for label
+                value: `${school.schoolName} (${school.schoolCode})`, // Combined for display
+                label: `${school.schoolName} (${school.schoolCode})`, // Combined for display
+                schoolName: school.schoolName, // Separate property for easy access
+                schoolCode: school.schoolCode,
             }));
             setAllSchools(schoolOptions);
         } else {
@@ -79,9 +81,12 @@ const InterCompanyTranfer = ({ userData }) => {
     }
 };
 
+
 const handleSelectChange = (selectedOption) => {
-    setSchoolName(selectedOption ? selectedOption.value : ''); // Ensure it's a string
+  // Set only the school name without the code
+  setSchoolName(selectedOption ? selectedOption.schoolName : '');
 };
+
   useEffect(() => {
     fetchAllSchools();
   }, []);
@@ -668,15 +673,20 @@ const handleSelectChange = (selectedOption) => {
               <label>
                 School Name:
                 <Select
-                  options={allSchools}
-                  onFocus={handleSelectFocus}
-                  onBlur={handleSelectBlur}
-                  ref={selectedSchoolRef}
-                  value={allSchools.find(school => school.value === schoolName) || null}
-                  onChange={handleSelectChange}
-                  placeholder="Select a school"
-                  styles={{ control: (base) => ({ ...base, width: '200px' }) }}
-                />
+    options={allSchools}
+    onFocus={handleSelectFocus}
+    onBlur={handleSelectBlur}
+    ref={selectedSchoolRef}
+    value={allSchools.find((school) => school.schoolName === schoolName) || null}
+    onChange={handleSelectChange}
+    placeholder="Select a school"
+    styles={{ control: (base) => ({ ...base, width: '200px' }) }}
+    filterOption={(option, inputValue) => 
+        option.data.schoolName.toLowerCase().includes(inputValue.toLowerCase()) || 
+        option.data.schoolCode.toLowerCase().includes(inputValue.toLowerCase())
+    }
+/>
+
               </label>
             </div>
           </div>
