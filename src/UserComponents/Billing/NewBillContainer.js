@@ -344,6 +344,7 @@ const handleSelectChange = (selectedOption) => {
       total += item.amount;
     });
 
+    
     // Apply discount
     const discountAmount = (total * discountPercentage) / 100;
     total -= discountAmount;
@@ -422,7 +423,7 @@ const handleSelectChange = (selectedOption) => {
 
       setPdfData(pdfUrl);
       setShowPdfModal(true);
-
+      setDiscountPercentage(0);
       setSelectedItems([]);
       setCustomerName('');
       setCustomerMobileNo('');
