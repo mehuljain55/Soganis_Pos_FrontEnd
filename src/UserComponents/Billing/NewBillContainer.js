@@ -353,11 +353,12 @@ const handleSelectChange = (selectedOption) => {
     if (remainder < 5) {
       total = total - remainder + (remainder >= 2.5 ? 5 : 0);
     } else {
-      total = total - remainder + 10;
+      total = total - remainder + (remainder >= 7.5 ? 10 : 5);
     }
 
     return total;
-  };
+};
+
 
   const handleArrowNavigation = (e) => {
     if (e.key === 'ArrowDown') {
@@ -399,6 +400,7 @@ const handleSelectChange = (selectedOption) => {
       customerMobileNo: customerMobileNo,
       paymentMode: paymentMode,
       schoolName: schoolName,
+      discount:discountPercentage,
       item_count: selectedItems.length,
       bill: selectedItems.map((item) => ({
         itemBarcodeID: item.itemBarcodeID,
@@ -788,8 +790,11 @@ const handleSelectChange = (selectedOption) => {
         </div>
 
  
-        <div className="discount-section">
-        <label>
+        
+ 
+        <div className="payment-section">
+          <div className="payment-mode">
+          <label>
           Discount (%):
           </label>
           <input
@@ -804,18 +809,14 @@ const handleSelectChange = (selectedOption) => {
             placeholder="Enter discount percentage"
           />
    
-          
-        </div>
-        
- 
-        <div className="payment-section">
-          <div className="payment-mode">
             <label>
               Payment Mode:
               <select value={paymentMode} onChange={handlePaymentModeChange}>
                 <option value="Cash">Cash</option>
                 <option value="Card">Card</option>
                 <option value="UPI">UPI</option>
+                <option value="Partial">Partial</option>
+                
               </select>
             </label>
             <button id='submit-btn' onClick={handleSubmit}>Bill</button>
