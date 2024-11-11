@@ -9,6 +9,7 @@ import './MainComponent.css';
 import NewBillContainer from '../Billing/NewBillContainer.js';
 import InterCompanyTranfer from '../Billing/InterCompanyTranfer.js';
 import BillDetails from '../Billing/BillDetails.js';
+import BillViewer  from '../Billing/BillViewer .js';
 import Salary from '../Salary/Salary.js';
 import UserCashCollection from '../CashCollectionReport/UserCashCollection.js';
 import FilterPage from '../Inventory/FilterPage.js';
@@ -22,6 +23,7 @@ import SchoolSalesReport from '../SalesReport/SchoolSalesReport.js';
 import InventoryAdd from '../Inventory/InventoryAdd.js';
 import { API_BASE_URL } from '../Config.js';
 import { LogoutButton, useLogout } from '../Login/LogoutPage.js';
+
 
 const MainComponent = ({ userData }) => {
   const [selectedMenuItem, setSelectedMenuItem] = useState('');
@@ -121,6 +123,8 @@ const MainComponent = ({ userData }) => {
             <button className="list-group-item" onClick={() => handleMenuItemClick('New Bill')}>New Bill</button>
             <button className="list-group-item" onClick={() => handleMenuItemClick('Returns')}>Return/Exchange</button>
             <button className="list-group-item" onClick={() => handleMenuItemClick('Inter Company Transaction')}>Inter Company</button>
+            <button className="list-group-item" onClick={() => handleMenuItemClick('Recent Bills')}>Recent Bills</button>
+    
             <button className="list-group-item" onClick={() => handleMenuItemClick('Add Order')}>Customer Order Book</button>
             <button className="list-group-item" onClick={() => handleMenuItemClick('View Order')}>View Order Book</button>
             <button className="list-group-item" onClick={() => handleMenuItemClick('View Stock')}>View Stock</button>
@@ -132,6 +136,7 @@ const MainComponent = ({ userData }) => {
             <button className="list-group-item" onClick={() => navigate('/barcode')}>Open Barcode</button>
             <button className="list-group-item" onClick={() => handleMenuItemClick('Update Inventory')}>Add Inventory(Qty)</button>
             <button className="list-group-item" onClick={() => handleMenuItemClick('Add New Item')}>Update Item List</button>
+    
           </div>
         </div>
 
@@ -149,6 +154,7 @@ const MainComponent = ({ userData }) => {
           {selectedMenuItem === 'School Sales' && <SchoolSalesReport />}
           {selectedMenuItem === 'Update Inventory' && <AddInventoryItem />}
           {selectedMenuItem === 'Add New Item' && <InventoryAdd />}
+          {selectedMenuItem === 'Recent Bills' && <BillViewer  />}
         </main>
       </div>
 
