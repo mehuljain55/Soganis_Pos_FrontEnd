@@ -131,23 +131,29 @@ h2 {
   width: 4%;
 }
 
-.items-table th:nth-child(5), /* Price */
+.items-table th:nth-child(5), /* Discount */
 .items-table td:nth-child(5) {
   width: 5%;
 }
 
-.items-table th:nth-child(6), /* Quantity */
+
+.items-table th:nth-child(6), /* Price */
 .items-table td:nth-child(6) {
   width: 5%;
 }
 
-.items-table th:nth-child(7), /* Amount */
+.items-table th:nth-child(7), /* Quantity */
 .items-table td:nth-child(7) {
+  width: 5%;
+}
+
+.items-table th:nth-child(8), /* Amount */
+.items-table td:nth-child(8) {
   width: 8%;
 }
 
-.items-table th:nth-child(8), /* Actions */
-.items-table td:nth-child(8) {
+.items-table th:nth-child(9), /* Actions */
+.items-table td:nth-child(9) {
   width: 5%;
 }
 

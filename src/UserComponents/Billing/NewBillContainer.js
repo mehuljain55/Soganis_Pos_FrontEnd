@@ -263,24 +263,27 @@ const handleSelectChange = (selectedOption) => {
     if (existingItemIndex > -1) {
       const updatedItems = [...selectedItems];
       const existingItem = updatedItems[existingItemIndex];
+      
+      // Preserve the existing discountAmount or discount logic when the quantity increases
+      const discountAmount = existingItem.discountAmount || 0; // Keep the previous discount amount if it exists
       existingItem.quantity += 1;
-      existingItem.amount = existingItem.quantity * existingItem.price;
+      existingItem.amount = existingItem.quantity * existingItem.price * (1 - discountAmount / 100); // Apply discount to updated amount
+  
       setSelectedItems(updatedItems);
     } else {
       const newItem = {
         ...item,
         quantity: 1,
-        amount: item.price * 1,
+        amount: item.price * 1, // Default amount without discount
+        discountAmount: item.discountAmount || 0, // Preserve the discount value from the item
       };
       setSelectedItems([...selectedItems, newItem]);
     }
   
     if (!isBarcodeMode) {
       requestAnimationFrame(() => {
-          setSearchTerm('');
-          
-          searchInputRef.current.focus();
-        
+        setSearchTerm('');
+        searchInputRef.current.focus();
       });
       setDropdownOpen(false);
     }
@@ -297,6 +300,7 @@ const handleSelectChange = (selectedOption) => {
     }, 100); // Delay to ensure the item is added to the DOM
   };
   
+  
   const removeItemFromBill = (index) => {
     const updatedItems = [...selectedItems];
     updatedItems.splice(index, 1);
@@ -305,13 +309,18 @@ const handleSelectChange = (selectedOption) => {
 
   const handleQuantityChange = (index, quantity) => {
     const updatedItems = [...selectedItems];
-    updatedItems[index] = {
-      ...updatedItems[index],
-      quantity: quantity,
-      amount: quantity * updatedItems[index].price,
-    };
+    const existingItem = updatedItems[index];
+    
+    // Preserve the discountAmount when recalculating the amount
+    const discountAmount = existingItem.discountAmount || 0;  // Keep the previous discount amount if it exists
+    
+    // Calculate the new amount considering the discount
+    existingItem.quantity = quantity;
+    existingItem.amount = quantity * existingItem.price * (1 - discountAmount / 100); // Apply discount to updated amount
+    
     setSelectedItems(updatedItems);
   };
+  
 
   useEffect(() => {
     const handleKeyDown = (event) => {
@@ -375,50 +384,63 @@ const handleSelectChange = (selectedOption) => {
   };
 
   const handleSubmit = async () => {
-
-    
-
     if (selectedItems.length === 0) {
-      alert("The item list cannot be empty. Please add at least one item.")
+      alert("The item list cannot be empty. Please add at least one item.");
       return; // Prevent API call
     }
-
-    if (!schoolName) {
-      alert("School Name is required")
   
+    if (!schoolName) {
+      alert("School Name is required");
       return; // Prevent API call if validation fails
-  }
-
-  if (customerMobileNo && !/^\d{10}$/.test(customerMobileNo)) {
-    alert("Customer mobile number must be exactly 10 digits");
-    return; // Prevent API call if validation fails
-}
+    }
+  
+    if (customerMobileNo && !/^\d{10}$/.test(customerMobileNo)) {
+      alert("Customer mobile number must be exactly 10 digits");
+      return; // Prevent API call if validation fails
+    }
+  
+    // Recalculate amounts and apply discounts for all selected items
+    const updatedItems = selectedItems.map(item => {
+      const discountAmount = item.discountAmount || 0;
+      const discountedPrice = item.price * (1 - discountAmount / 100); // Calculate discounted price
+  
+      // Recalculate amount after discount
+      const amount = item.quantity * discountedPrice;
+      
+      return {
+        ...item,
+        discountedPrice,  // Store the discounted price
+        amount,           // Recalculate amount with the discounted price
+      };
+    });
+  
+    // Now create the bill data with recalculated discounted amounts
     const billData = {
       userId: userData.userId,
       customerName: customerName,
       customerMobileNo: customerMobileNo,
       paymentMode: paymentMode,
       schoolName: schoolName,
-      discount:discountPercentage,
-      item_count: selectedItems.length,
-      bill: selectedItems.map((item) => ({
+      discount: discountPercentage,
+      item_count: updatedItems.length,
+      bill: updatedItems.map((item) => ({
         itemBarcodeID: item.itemBarcodeID,
         itemType: item.itemType,
         itemColor: item.itemColor,
         itemSize: item.itemSize,
         itemCategory: item.itemCategory,
-        sellPrice: item.price,
+        sellPrice: item.discountAmount ? item.discountedPrice : item.price, 
         quantity: item.quantity,
-        total_amount: item.amount,
+        total_amount: item.amount,  // Send amount after discount
       })),
     };
-
+  
     try {
       setLoading(true); // Show loading animation
       const response = await axios.post(`${API_BASE_URL}/user/billRequest`, billData, { responseType: 'arraybuffer' });
       const pdfBlob = new Blob([response.data], { type: 'application/pdf' });
       const pdfUrl = URL.createObjectURL(pdfBlob);
-
+  
       setPdfData(pdfUrl);
       setShowPdfModal(true);
       setDiscountPercentage(0);
@@ -429,11 +451,12 @@ const handleSelectChange = (selectedOption) => {
       setSchoolName('');
     } catch (error) {
       console.error('Error generating bill:', error);
-    }finally{
+    } finally {
       setLoading(false); // Hide loading animation after completion
     }
   };
-
+  
+  
   const handlePrint = () => {
     if (pdfModalRef.current) {
       pdfModalRef.current.focus();
@@ -461,6 +484,26 @@ const handleSelectChange = (selectedOption) => {
   const handlePaymentModeChange = (e) => {
     setPaymentMode(e.target.value);
   };
+
+  const handleDiscountChange = (index, discountValue) => {
+    setSelectedItems((prevItems) => {
+      const updatedItems = [...prevItems];
+      const item = updatedItems[index];
+  
+      if (item.discount === "Yes") {
+        // Store the discount value in discountAmount, not affecting item.discount
+        item.discountAmount = discountValue;
+  
+        // Apply the discount to the amount, keeping the original price and quantity
+        const discountedPrice = item.price * (1 - discountValue / 100);
+        item.amount = discountedPrice * item.quantity; // Calculate the discounted amount
+  
+      }
+  
+      return updatedItems;
+    });
+  };
+  
 
   useEffect(() => {
     
@@ -729,6 +772,7 @@ const handleSelectChange = (selectedOption) => {
                 <th>Item Name</th>
                 <th>Color</th>
                 <th>Size</th>
+                <th>Discount</th>
                 <th>Price</th>
                 <th>Quantity</th>
                 <th>Amount</th>
@@ -742,6 +786,22 @@ const handleSelectChange = (selectedOption) => {
                   <td>{item.itemName}</td>
                   <td>{item.itemColor}</td>
                   <td>{item.itemSize}</td>
+                  <td>
+  {item.discount === "Yes" ? (
+    <input
+      type="number"
+      value={item.discountAmount || 0} // use discountAmount to store calculated discount, not modifying item.discount
+      onChange={(e) => handleDiscountChange(rowItemTableIndex, parseFloat(e.target.value))}
+      min="0"
+      max="100"
+      placeholder="Enter discount"
+    />
+  ) : (
+    "No"
+  )}
+</td>
+
+
                   <td>{item.price}</td>
                   <td>
                     <input
