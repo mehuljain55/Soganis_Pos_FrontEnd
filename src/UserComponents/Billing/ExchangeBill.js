@@ -367,6 +367,13 @@ const handleSelectChange = (selectedOption) => {
     const user = JSON.parse(sessionStorage.getItem("user"));
     const storeId = user ? user.storeId : '';
 
+    if (!schoolName) {
+      alert("School Name is required")
+      
+      return; // Prevent API call if validation fails
+  }
+
+
     const billData = {
       userId: user.userId,
       customerName: customerName,
