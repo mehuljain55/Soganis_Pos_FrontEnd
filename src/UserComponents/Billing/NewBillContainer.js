@@ -350,13 +350,10 @@ const handleSelectChange = (selectedOption) => {
   const calculateTotalAmount = () => {
     let total = 0;
     selectedItems.forEach((item) => {
-      total += item.amount;
+      const discount = discountPercentage > 0 ? discountPercentage : item.discountAmount || 0;
+      const discountedPrice = item.price * (1 - discount / 100);
+      total += discountedPrice * item.quantity;
     });
-
-    
-    // Apply discount
-    const discountAmount = (total * discountPercentage) / 100;
-    total -= discountAmount;
 
     // Round total to the nearest 5 or 10
     const remainder = total % 10;
@@ -367,7 +364,7 @@ const handleSelectChange = (selectedOption) => {
     }
 
     return total;
-};
+  };
 
 
   const handleArrowNavigation = (e) => {
@@ -486,24 +483,28 @@ const handleSelectChange = (selectedOption) => {
   };
 
   const handleDiscountChange = (index, discountValue) => {
+    if (discountPercentage > 0) {
+      setDiscountPercentage(0);  // Clear global discount if an item discount is set
+    }
     setSelectedItems((prevItems) => {
       const updatedItems = [...prevItems];
       const item = updatedItems[index];
-  
-      if (item.discount === "Yes") {
-        // Store the discount value in discountAmount, not affecting item.discount
-        item.discountAmount = discountValue;
-  
-        // Apply the discount to the amount, keeping the original price and quantity
-        const discountedPrice = item.price * (1 - discountValue / 100);
-        item.amount = discountedPrice * item.quantity; // Calculate the discounted amount
-  
-      }
-  
+      item.discountAmount = discountValue; // Apply discount amount only if discount is "Yes"
+      item.amount = item.price * (1 - discountValue / 100) * item.quantity;
       return updatedItems;
     });
   };
   
+  const handleGlobalDiscountChange = (value) => {
+    const discount = parseFloat(value) >= 0 ? parseFloat(value) : 0;
+    setDiscountPercentage(discount);
+    setSelectedItems((prevItems) =>
+      prevItems.map((item) => ({
+        ...item,
+        discountAmount: discount > 0 ? 0 : item.discountAmount, // Clear item discount if global discount is applied
+      }))
+    );
+  };
 
   useEffect(() => {
     
@@ -787,19 +788,14 @@ const handleSelectChange = (selectedOption) => {
                   <td>{item.itemColor}</td>
                   <td>{item.itemSize}</td>
                   <td>
-  {item.discount === "Yes" ? (
-    <input
-      type="number"
-      value={item.discountAmount || 0} // use discountAmount to store calculated discount, not modifying item.discount
-      onChange={(e) => handleDiscountChange(rowItemTableIndex, parseFloat(e.target.value))}
-      min="0"
-      max="100"
-      placeholder="Enter discount"
-    />
-  ) : (
-    "No"
-  )}
+  <input
+    type="number"
+    value={item.discountAmount || ''}
+    onChange={(e) => handleDiscountChange(rowItemTableIndex, parseFloat(e.target.value) || 0)}
+    disabled={item.discount !== 'Yes'}
+  />
 </td>
+
 
 
                   <td>{item.price}</td>
@@ -857,16 +853,13 @@ const handleSelectChange = (selectedOption) => {
           Discount (%):
           </label>
           <input
-            type="number"
-            value={discountPercentage}
-            onChange={(e) => {
-              const value = parseFloat(e.target.value);
-              setDiscountPercentage(value >= 0 ? value : 0); // Ensure non-negative value
-            }}
-            min="0"
-            max="100"
-            placeholder="Enter discount percentage"
-          />
+              type="number"
+              value={discountPercentage}
+              onChange={(e) => handleGlobalDiscountChange(e.target.value)}
+              min="0"
+              max="100"
+              placeholder="Enter  discount %"
+            />
    
             <label>
               Payment Mode:
