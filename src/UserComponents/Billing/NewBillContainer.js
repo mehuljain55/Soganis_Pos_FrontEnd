@@ -770,7 +770,6 @@ const handleSelectChange = (selectedOption) => {
     }
 />
 
-
             </label>
           </div>
         </div>
@@ -814,8 +813,6 @@ const handleSelectChange = (selectedOption) => {
   />
 </td>
 
-
-
                   <td>{item.price}</td>
                   <td>
                     <input
@@ -848,9 +845,6 @@ const handleSelectChange = (selectedOption) => {
         </div>
       </div>
   
-   
-       
-     
       {/* Summary */}
       <div className="summary">
         <div className="custom-btn">
@@ -861,10 +855,6 @@ const handleSelectChange = (selectedOption) => {
           <h4>Item Count: {selectedItems.length}</h4>
           
         </div>
-
- 
-        
- 
         <div className="payment-section">
           <div className="payment-mode">
           <label>

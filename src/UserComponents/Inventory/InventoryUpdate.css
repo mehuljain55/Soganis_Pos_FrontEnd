@@ -1,0 +1,81 @@
+.inventory-update-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 20px;
+  }
+  
+  .drop-zone {
+    border: 2px dashed #ccc;
+    padding: 20px;
+    width: 300px;
+    text-align: center;
+    cursor: pointer;
+    background-color: #f9f9f9;
+    margin-bottom: 10px;
+    transition: background-color 0.2s ease;
+  }
+  
+  .drop-zone.dragover {
+    border-color: #333;
+    background-color: #e0e0e0;
+  }
+  
+  .file-info {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px;
+    background-color: #f1f1f1;
+    border-radius: 5px;
+    width: 300px;
+    margin-bottom: 10px;
+  }
+  
+  .file-icon {
+    font-size: 24px;
+  }
+  
+  .file-name {
+    flex-grow: 1;
+    font-size: 14px;
+    color: #333;
+  }
+  
+  .button-group {
+    display: flex;
+    gap: 10px;
+    margin-top: 10px;
+  }
+  
+  .loading-animation {
+    margin-top: 10px;
+    color: #007bff;
+  }
+  
+  .response-box {
+    margin-top: 20px;
+    padding: 10px;
+    width: 80%;
+    max-width: 600px;
+    background-color: #f4f4f4;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    overflow-y: auto;
+  }
+  
+  pre {
+    white-space: pre-wrap;
+    word-wrap: break-word;
+  }
+  
+  a {
+    margin-top: 10px;
+    color: #007bff;
+    text-decoration: none;
+  }
+  
+  a:hover {
+    text-decoration: underline;
+  }
+  
