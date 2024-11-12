@@ -1,5 +1,5 @@
 // BillViewer.js
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { API_BASE_URL } from '../Config.js';
 import axios from 'axios';
 import './BillViewer.css';
@@ -11,6 +11,7 @@ const BillViewer = () => {
   const [error, setError] = useState('');
   const [selectedBill, setSelectedBill] = useState(null);
   const [pdfData, setPdfData] = useState(null);
+  const pdfIframeRef = useRef(null);
 
   const fetchBills = async () => {
     try {
@@ -56,6 +57,12 @@ const BillViewer = () => {
     } catch (error) {
       console.error('Error fetching PDF:', error);
       setError('An error occurred while fetching the PDF.');
+    }
+  };
+
+  const printPdf = () => {
+    if (pdfIframeRef.current) {
+      pdfIframeRef.current.contentWindow.print();
     }
   };
 
@@ -176,12 +183,20 @@ const BillViewer = () => {
         </div>
       )}
 
-      {pdfData && (
+{pdfData && (
         <div className="bill-view-print-pdf">
           <div className="bill-view-print-pdf-content">
-            <iframe src={pdfData} title="Bill PDF" width="100%" height="500px"></iframe>
-            <button onClick={() => window.print()}>Print</button>
-            <button onClick={closePdfModal}>Close</button>
+            <iframe
+              ref={pdfIframeRef}
+              src={pdfData}
+              title="Bill PDF"
+              width="100%"
+              height="500px"
+            ></iframe>
+            <div className="bill-viewer-print-controls">
+              <button onClick={printPdf}>Print</button>
+              <button onClick={closePdfModal}>Close</button>
+            </div>
           </div>
         </div>
       )}
