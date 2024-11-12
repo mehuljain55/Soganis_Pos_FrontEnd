@@ -116,6 +116,8 @@ const handleSelectChange = (selectedOption) => {
     }
   }, [searchTerm]);
   
+
+  
   useEffect(() => {
     setSelectedItems((prevItems) =>
       prevItems.map((item) => {
