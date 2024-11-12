@@ -113,10 +113,11 @@ const BillViewer = () => {
                   <td>{bill.billType}</td>
                   <td>{bill.schoolName}</td>
                   <td>{bill.final_amount}</td>
-                  <td>
-                    <button onClick={() => handleViewDetails(bill)}>View</button>
-                    <button onClick={() => handlePrintBill(bill.billNo)}>Print</button>
-                  </td>
+                  <td className="action-buttons">
+  <button onClick={() => handleViewDetails(bill)}>View</button>
+  <button onClick={() => handlePrintBill(bill.billNo)}>Print</button>
+</td>
+
                 </tr>
               ))}
             </tbody>

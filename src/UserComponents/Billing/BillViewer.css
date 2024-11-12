@@ -38,6 +38,27 @@
   color: white;
 }
 
+/* Action button container */
+.bill-viewer-table td.action-buttons {
+  display: flex;
+  gap: 10px; /* space between buttons */
+  padding: 8px; /* cell padding */
+}
+
+/* Style for each action button */
+.bill-viewer-table td.action-buttons button {
+  padding: 5px 10px; /* padding around button text */
+  border: none;
+  background-color: #4CAF50; /* Adjust color as needed */
+  color: white;
+  cursor: pointer;
+}
+
+.bill-viewer-table td.action-buttons button:hover {
+  background-color: #45a049; /* hover color */
+}
+
+
 .bill-viewer-table tbody tr:nth-child(odd) {
   background-color: #f2f2f2;
 }
