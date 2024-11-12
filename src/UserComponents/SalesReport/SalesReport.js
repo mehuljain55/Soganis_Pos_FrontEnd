@@ -1,20 +1,26 @@
-import React from 'react';
+import React, { useState } from 'react';
 import './SalesReport.css';
 import { API_BASE_URL } from "../Config.js";
 
 const SalesReport = ({ data }) => {
+  const [billTypeFilter, setBillTypeFilter] = useState('Both');
 
-  const filteredData = Array.isArray(data) ? data.filter(item => item.totalQuantity > 0) : [];
+  const handleFilterChange = (event) => {
+    setBillTypeFilter(event.target.value);
+  };
 
-  const totalAmountSum = filteredData.length > 0 ? filteredData.reduce((sum, item) => sum + item.totalAmount, 0) : 0;
+  const filteredData = Array.isArray(data)
+    ? data.filter(item => item.totalQuantity > 0 && (billTypeFilter === 'Both' || item.billType === billTypeFilter))
+    : [];
+
+  const totalAmountSum = filteredData.reduce((sum, item) => sum + item.totalAmount, 0);
 
   const handleExport = async () => {
-    
     if (filteredData.length === 0) {
       alert('No data to export.');
-      
       return;
     }
+
     try {
       const response = await fetch(`${API_BASE_URL}/sales/export`, {
         method: 'POST',
@@ -41,10 +47,20 @@ const SalesReport = ({ data }) => {
     }
   };
 
-
   return (
     <div className="sales-report">
-      <h5>Consolidated Sales Report </h5>
+      <h5>Consolidated Sales Report</h5>
+      
+      {/* Bill Type Filter Dropdown */}
+      <div className="filter-container">
+        <label htmlFor="billTypeFilter">Bill Type: </label>
+        <select id="billTypeFilter" value={billTypeFilter} onChange={handleFilterChange}>
+          <option value="Both">Both</option>
+          <option value="Wholesale">Wholesale</option>
+          <option value="Retail">Retail</option>
+        </select>
+      </div>
+
       <div className="table-container">
         {filteredData.length > 0 ? (
           <table>
@@ -55,7 +71,8 @@ const SalesReport = ({ data }) => {
                 <th>Item Type</th>
                 <th>Item Color</th>
                 <th>Size</th>
-                <th>Sell Price</th>
+                <th>Price</th>
+                <th>Avg Sell Price</th>
                 <th>Quantity</th>
                 <th>Amount</th>
               </tr>
@@ -68,7 +85,7 @@ const SalesReport = ({ data }) => {
                   <td>{item.itemType}</td>
                   <td>{item.itemColor}</td>
                   <td>{item.itemSize}</td>
-                  
+                  <td>{item.price}</td>
                   <td>{item.sellPrice}</td>
                   <td>{item.totalQuantity}</td>
                   <td>{item.totalAmount}</td>
@@ -80,10 +97,12 @@ const SalesReport = ({ data }) => {
           <p>No data available.</p>
         )}
       </div>
+
       {/* Display the sum of totalAmount outside of the scrollable container */}
       <div className="total-amount-sum">
         <strong>Total Amount : </strong> {totalAmountSum}
       </div>
+
       <button className="export-button" onClick={handleExport}>
         Export
       </button>

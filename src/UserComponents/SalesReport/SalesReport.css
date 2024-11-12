@@ -57,6 +57,7 @@
   width: 80px; /* Size */
 }
 
+
 .sales-report th:nth-child(6),
 .sales-report td:nth-child(6) {
   width: 100px; /* Sell Price */
@@ -64,11 +65,16 @@
 
 .sales-report th:nth-child(7),
 .sales-report td:nth-child(7) {
-  width: 100px; /* Quantity */
+  width: 100px; /* Sell Price */
 }
 
 .sales-report th:nth-child(8),
 .sales-report td:nth-child(8) {
+  width: 100px; /* Quantity */
+}
+
+.sales-report th:nth-child(9),
+.sales-report td:nth-child(9) {
   width: 120px; /* Amount */
 }
 
