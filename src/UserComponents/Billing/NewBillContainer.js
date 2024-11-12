@@ -116,6 +116,22 @@ const handleSelectChange = (selectedOption) => {
     }
   }, [searchTerm]);
   
+  useEffect(() => {
+    setSelectedItems((prevItems) =>
+      prevItems.map((item) => {
+        const itemDiscount = item.discount === 'Yes' ? item.discountAmount || 0 : 0;
+        const effectiveDiscount = discountPercentage > 0 ? discountPercentage : itemDiscount;
+        const discountedPrice = item.price * (1 - effectiveDiscount / 100);
+        const amount = discountedPrice * item.quantity;
+  
+        return {
+          ...item,
+          amount, // Update amount with the recalculated value
+        };
+      })
+    );
+  }, [discountPercentage]);
+  
 
   const handleCustomItemChange = (e) => {
     const { name, value } = e.target;
