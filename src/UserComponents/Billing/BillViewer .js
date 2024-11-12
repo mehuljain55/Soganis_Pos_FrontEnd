@@ -10,6 +10,7 @@ const BillViewer = () => {
   const [bills, setBills] = useState([]);
   const [error, setError] = useState('');
   const [selectedBill, setSelectedBill] = useState(null);
+  const [pdfData, setPdfData] = useState(null);
 
   const fetchBills = async () => {
     try {
@@ -37,6 +38,29 @@ const BillViewer = () => {
 
   const closePopup = () => {
     setSelectedBill(null);
+  };
+
+  const handlePrintBill = async (billNo) => {
+    try {
+      const user = JSON.parse(sessionStorage.getItem('user'));
+      const storeId = user?.storeId;
+
+      const response = await axios.get(`${API_BASE_URL}/invoice/getBill`, {
+        params: { billNo, storeId },
+        responseType: 'arraybuffer',
+      });
+
+      const pdfBlob = new Blob([response.data], { type: 'application/pdf' });
+      const pdfUrl = URL.createObjectURL(pdfBlob);
+      setPdfData(pdfUrl);
+    } catch (error) {
+      console.error('Error fetching PDF:', error);
+      setError('An error occurred while fetching the PDF.');
+    }
+  };
+
+  const closePdfModal = () => {
+    setPdfData(null);
   };
 
   return (
@@ -72,12 +96,10 @@ const BillViewer = () => {
                 <th>Bill No</th>
                 <th>Date</th>
                 <th>Customer Name</th>
-                
                 <th>Customer Mobile</th>
                 <th>Bill Type</th>
-                
                 <th>School</th>
-                
+                <th>Amount</th>
                 <th>Action</th>
               </tr>
             </thead>
@@ -85,16 +107,15 @@ const BillViewer = () => {
               {bills.map((bill) => (
                 <tr key={bill.billNo}>
                   <td>{bill.billNo}</td>
-                  <td>{bill.bill_date}</td> 
+                  <td>{bill.bill_date}</td>
                   <td>{bill.customerName}</td>
-                  
-               
                   <td>{bill.customerMobileNo}</td>
                   <td>{bill.billType}</td>
-                  
                   <td>{bill.schoolName}</td>
+                  <td>{bill.final_amount}</td>
                   <td>
                     <button onClick={() => handleViewDetails(bill)}>View</button>
+                    <button onClick={() => handlePrintBill(bill.billNo)}>Print</button>
                   </td>
                 </tr>
               ))}
@@ -150,6 +171,16 @@ const BillViewer = () => {
                 </tr>
               </tfoot>
             </table>
+          </div>
+        </div>
+      )}
+
+      {pdfData && (
+        <div className="bill-view-print-pdf">
+          <div className="bill-view-print-pdf-content">
+            <iframe src={pdfData} title="Bill PDF" width="100%" height="500px"></iframe>
+            <button onClick={() => window.print()}>Print</button>
+            <button onClick={closePdfModal}>Close</button>
           </div>
         </div>
       )}
