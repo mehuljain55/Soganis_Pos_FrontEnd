@@ -144,8 +144,3 @@
     100% { transform: rotate(360deg); }
   }
   
-  .edit-stock-container-status {
-    margin-top: 20px;
-    white-space: pre-wrap; /* To ensure text content is properly formatted */
-  }
-  
