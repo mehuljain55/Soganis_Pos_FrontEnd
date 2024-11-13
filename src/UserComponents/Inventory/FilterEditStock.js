@@ -12,6 +12,8 @@ const FilterEditStock = () => {
   const [filteredItemTypeList, setFilteredItemTypeList] = useState([]);
   const [data, setData] = useState([]); // State for storing fetched data
   const userData = JSON.parse(sessionStorage.getItem('user'));
+  const [containerKey, setContainerKey] = useState(0);
+  
   useEffect(() => {
 
     const storeId = userData?.storeId; 
@@ -27,6 +29,8 @@ const FilterEditStock = () => {
       console.error("Store ID not found in session storage");
     }
   }, []);
+
+  
 
   useEffect(() => {
     if (selectedFilter === "filter1" && selectedSchool) {
@@ -128,6 +132,13 @@ const FilterEditStock = () => {
 
 
   }, [selectedFilter, selectedSchool, selectedItemType]);
+
+  const resetFilters = () => {
+    setSelectedFilter("filter1"); // Reset to default filter
+    setSelectedSchool(""); // Clear school selection
+    setSelectedItemType(""); // Clear item type selection
+    setData([]); // Clear data
+  };
 
   const handleFilterChange = (event) => {
     setSelectedFilter(event.target.value);
@@ -326,10 +337,8 @@ const FilterEditStock = () => {
           </div>
         )}
 
-
-
-        {/* Display the View component if data is available */}
-        {data.length > 0 && <EditStock data={data} onUpdateSuccess={refreshData} />}
+      {data.length > 0 && <EditStock data={data} resetFilters={resetFilters} />}
+      
       </div>
     </div>
   );

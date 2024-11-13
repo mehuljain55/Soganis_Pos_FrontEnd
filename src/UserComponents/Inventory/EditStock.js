@@ -3,7 +3,7 @@ import './EditStock.css';
 import axios from "axios";
 import { API_BASE_URL } from '../Config.js';
 
-const EditStock = ({ data, onUpdateSuccess }) => {
+const EditStock = ({ data, resetFilters  }) => {
   const [searchTerm, setSearchTerm] = useState('');
   const [maxQuantity, setMaxQuantity] = useState('');
   const [editableData, setEditableData] = useState({});
@@ -22,6 +22,7 @@ const EditStock = ({ data, onUpdateSuccess }) => {
     setMaxQuantity(value ? parseInt(value, 10) : '');
   };
 
+  
   const handleFieldChange = (rowIndex, field, value) => {
     setEditableData((prev) => {
       const updatedData = { ...prev };
@@ -36,28 +37,45 @@ const EditStock = ({ data, onUpdateSuccess }) => {
     setIsUpdating(true); // Show the "Updating items..." animation
     setStatusMessage(''); // Clear previous status message
     setTableHidden(true); // Hide the table when submitting
-
+  
     const rowsToUpdate = Object.keys(editableData).map((rowIndex) => {
       const updatedRow = { ...data[rowIndex], ...editableData[rowIndex] };
       return updatedRow;
     });
-
+  
     try {
       const response = await axios.post(`${API_BASE_URL}/inventory/edit`, rowsToUpdate, {
         responseType: 'arraybuffer', // Ensure we handle the binary file response correctly
       });
-
-      // Convert the byte array to string
+  
+      // Convert the byte array to a Blob (text file)
+      const blob = new Blob([response.data], { type: 'text/plain' });
+      
+      // Create a link to download the Blob content
+      const downloadUrl = URL.createObjectURL(blob);
+  
+      // Create an anchor element and trigger a download
+      const link = document.createElement('a');
+      link.href = downloadUrl;
+      link.download = 'inventory_update.txt'; // The name of the downloaded file
+      link.click(); // Trigger the download
+  
+      // Optionally, revoke the URL after download is triggered to free up resources
+      URL.revokeObjectURL(downloadUrl);
+  
+      // Set status message from the response
       const content = new TextDecoder('utf-8').decode(response.data);
       setStatusMessage(content); // Set the content from the response
     } catch (error) {
       console.error("Error updating inventory:", error);
       setStatusMessage('Failed to update items. Please try again.');
     } finally {
-      setIsUpdating(false); // Hide the "Updating items..." animation
-      onUpdateSuccess();
+      setIsUpdating(false); 
+      resetFilters(); // Reset filters after the update
     }
   };
+  
+  
 
   const filteredData = data.filter((item) => {
     const matchesSearchTerm =
@@ -111,12 +129,7 @@ const EditStock = ({ data, onUpdateSuccess }) => {
           <p>Updating items...</p>
           <div className="spinner"></div> {/* Add a spinner or animation here */}
         </div>
-      ) : tableHidden ? (
-        <div className="edit-stock-container-status">
-          <h3>Status:</h3>
-          <pre>{statusMessage}</pre> {/* Display the content of the text file */}
-        </div>
-      ) : (
+      ): (
         <div className="edit-stock-container-table-wrapper">
           {filteredData.length > 0 ? (
             <table>
