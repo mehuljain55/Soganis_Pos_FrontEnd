@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import './View.css';
+import React, { useState, useRef } from 'react';
+import './EditStock.css';
 import axios from "axios";
 import { API_BASE_URL } from '../Config.js';
 
@@ -7,6 +7,11 @@ const EditStock = ({ data, onUpdateSuccess }) => {
   const [searchTerm, setSearchTerm] = useState('');
   const [maxQuantity, setMaxQuantity] = useState('');
   const [editableData, setEditableData] = useState({});
+  const [isUpdating, setIsUpdating] = useState(false); // Track if update is in progress
+  const [statusMessage, setStatusMessage] = useState(''); // To store the status message (text file content)
+  const [tableHidden, setTableHidden] = useState(false); // To control the visibility of the table
+  const [isSubmitButtonVisible, setIsSubmitButtonVisible] = useState(true); // Control visibility of the submit button
+  const inputRefs = useRef({});
 
   const handleSearch = (event) => {
     setSearchTerm(event.target.value.toLowerCase());
@@ -17,54 +22,40 @@ const EditStock = ({ data, onUpdateSuccess }) => {
     setMaxQuantity(value ? parseInt(value, 10) : '');
   };
 
-  const handleInputChange = (e, id, field) => {
-    const { value } = e.target;
-    setEditableData((prev) => ({
-      ...prev,
-      [id]: {
-        ...prev[id],
-        [field]: value,
-      },
-    }));
+  const handleFieldChange = (rowIndex, field, value) => {
+    setEditableData((prev) => {
+      const updatedData = { ...prev };
+      if (!updatedData[rowIndex]) updatedData[rowIndex] = {};
+      updatedData[rowIndex][field] = value;
+      return updatedData;
+    });
   };
 
-  const handleUpdate = async () => {
+  const handleSubmitChanges = async () => {
+    setIsSubmitButtonVisible(false); // Hide the submit button when submitting
+    setIsUpdating(true); // Show the "Updating items..." animation
+    setStatusMessage(''); // Clear previous status message
+    setTableHidden(true); // Hide the table when submitting
+
+    const rowsToUpdate = Object.keys(editableData).map((rowIndex) => {
+      const updatedRow = { ...data[rowIndex], ...editableData[rowIndex] };
+      return updatedRow;
+    });
+
     try {
-      const user = JSON.parse(sessionStorage.getItem('user'));
-      if (!user) {
-        alert('User not found in session storage.');
-        return;
-      }
-
-      // Prepare data with only edited fields
-      const itemAddModel = Object.keys(editableData).map((id) => ({
-        barcodedId: id,
-        ...editableData[id],
-      }));
-
-      const inventoryUpdateModel = {
-        itemAddModel: itemAddModel,
-        user: user
-      };
-
-      const response = await fetch(`${API_BASE_URL}/inventory/update_inventory`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(inventoryUpdateModel),
+      const response = await axios.post(`${API_BASE_URL}/inventory/edit`, rowsToUpdate, {
+        responseType: 'arraybuffer', // Ensure we handle the binary file response correctly
       });
 
-      if (response.ok) {
-        alert('Updates submitted successfully');
-        setEditableData({});
-        onUpdateSuccess();
-      } else {
-        alert('Failed to update inventory.');
-      }
+      // Convert the byte array to string
+      const content = new TextDecoder('utf-8').decode(response.data);
+      setStatusMessage(content); // Set the content from the response
     } catch (error) {
-      console.error('Error updating inventory:', error);
-      alert('An error occurred while updating the inventory.');
+      console.error("Error updating inventory:", error);
+      setStatusMessage('Failed to update items. Please try again.');
+    } finally {
+      setIsUpdating(false); // Hide the "Updating items..." animation
+      onUpdateSuccess();
     }
   };
 
@@ -85,126 +76,162 @@ const EditStock = ({ data, onUpdateSuccess }) => {
   });
 
   return (
-    <div className="view-sales-filter-data-container">
-      <div className="view-sales-filter-data-controls">
-        <button onClick={handleUpdate} className="view-sales-filter-data-submit-btn">
-          Submit Changes
-        </button>
-      </div>
-
-      <div className="view-sales-filter-data-search-bar-wrapper">
-        <input
-          type="text"
-          placeholder="Search..."
-          value={searchTerm}
-          onChange={handleSearch}
-          className="view-sales-filter-data-search-bar"
-        />
-        <input
-          type="number"
-          placeholder="Max Quantity"
-          value={maxQuantity}
-          onChange={handleQuantityFilter}
-          className="view-sales-filter-data-quantity-filter"
-        />
-      </div>
-
-      <div className="view-sales-filter-data-table-wrapper">
-        {filteredData.length > 0 ? (
-          <table>
-            <thead>
-              <tr>
-                <th>S.No</th>
-                <th>Item Code</th>
-                <th>Item Name</th>
-                <th>Item Type</th>
-                <th>Item Color</th>
-                <th>Item Size</th>
-                <th>Item Category</th>
-                <th>Price</th>
-                <th>Available Quantity</th>
-                <th>Group ID</th>
-                <th>Action</th>
-              </tr>
-            </thead>
-            <tbody>
-              {filteredData.map((item) => (
-                <tr key={item.itemBarcodeID}>
-                  <td>{item.sno}</td>
-                  <td>
-                    <input
-                      type="text"
-                      value={editableData[item.itemBarcodeID]?.itemCode || item.itemCode}
-                      onChange={(e) => handleInputChange(e, item.itemBarcodeID, 'itemCode')}
-                    />
-                  </td>
-                  <td>
-                    <input
-                      type="text"
-                      value={editableData[item.itemBarcodeID]?.itemName || item.itemName}
-                      onChange={(e) => handleInputChange(e, item.itemBarcodeID, 'itemName')}
-                    />
-                  </td>
-                  <td>
-                    <input
-                      type="text"
-                      value={editableData[item.itemBarcodeID]?.itemType || item.itemType}
-                      onChange={(e) => handleInputChange(e, item.itemBarcodeID, 'itemType')}
-                    />
-                  </td>
-                  <td>
-                    <input
-                      type="text"
-                      value={editableData[item.itemBarcodeID]?.itemColor || item.itemColor}
-                      onChange={(e) => handleInputChange(e, item.itemBarcodeID, 'itemColor')}
-                    />
-                  </td>
-                  <td>
-                    <input
-                      type="text"
-                      value={editableData[item.itemBarcodeID]?.itemSize || item.itemSize}
-                      onChange={(e) => handleInputChange(e, item.itemBarcodeID, 'itemSize')}
-                    />
-                  </td>
-                  <td>
-                    <input
-                      type="text"
-                      value={editableData[item.itemBarcodeID]?.itemCategory || item.itemCategory}
-                      onChange={(e) => handleInputChange(e, item.itemBarcodeID, 'itemCategory')}
-                    />
-                  </td>
-                  <td>
-                    <input
-                      type="number"
-                      value={editableData[item.itemBarcodeID]?.price || item.price}
-                      onChange={(e) => handleInputChange(e, item.itemBarcodeID, 'price')}
-                    />
-                  </td>
-                  <td>
-                    <input
-                      type="number"
-                      value={editableData[item.itemBarcodeID]?.quantity || item.quantity}
-                      onChange={(e) => handleInputChange(e, item.itemBarcodeID, 'quantity')}
-                    />
-                  </td>
-                  <td>
-                    <input
-                      type="text"
-                      value={editableData[item.itemBarcodeID]?.group_id || item.group_id}
-                      onChange={(e) => handleInputChange(e, item.itemBarcodeID, 'group_id')}
-                    />
-                  </td>
-                  <td>
-                    <button> Delete</button>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        ) : (
-          <p>No data found</p>
+    <div className="edit-stock-container">
+      <div className="edit-stock-container-controls">
+        {isSubmitButtonVisible && (
+          <button className="edit-stock-container-submit-btn" onClick={handleSubmitChanges} disabled={isUpdating}>
+            {isUpdating ? 'Updating items...' : 'Submit Changes'}
+          </button>
         )}
       </div>
+
+      {/* Show search controls if table is not hidden */}
+      {!tableHidden && (
+        <div className="edit-stock-container-search-bar-wrapper">
+          <input
+            type="text"
+            placeholder="Search..."
+            value={searchTerm}
+            onChange={handleSearch}
+            className="edit-stock-container-search-bar"
+          />
+          <input
+            type="number"
+            placeholder="Max Quantity"
+            value={maxQuantity}
+            onChange={handleQuantityFilter}
+            className="edit-stock-container-quantity-filter"
+          />
+        </div>
+      )}
+
+      {/* Display the animation or table content based on the update state */}
+      {isUpdating ? (
+        <div className="edit-stock-container-updating-animation">
+          <p>Updating items...</p>
+          <div className="spinner"></div> {/* Add a spinner or animation here */}
+        </div>
+      ) : tableHidden ? (
+        <div className="edit-stock-container-status">
+          <h3>Status:</h3>
+          <pre>{statusMessage}</pre> {/* Display the content of the text file */}
+        </div>
+      ) : (
+        <div className="edit-stock-container-table-wrapper">
+          {filteredData.length > 0 ? (
+            <table>
+              <thead>
+                <tr>
+                  <th>S.No</th>
+                  <th>Item Code</th>
+                  <th>Item Name</th>
+                  <th>Item Type</th>
+                  <th>Item Color</th>
+                  <th>Item Size</th>
+                  <th>Item Category</th>
+                  <th>Price</th>
+                  <th>Wholesale Price</th>
+                  <th>Available Quantity</th>
+                  <th>Group ID</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                {filteredData.map((item, rowIndex) => (
+                  <tr key={item.itemBarcodeID}>
+                    <td>{item.sno}</td>
+                    <td>
+                      <input
+                        type="text"
+                        value={editableData[rowIndex]?.itemCode || item.itemCode}
+                        onChange={(e) => handleFieldChange(rowIndex, 'itemCode', e.target.value)}
+                        className="edit-stock-container-input"
+                      />
+                    </td>
+                    <td>
+                      <input
+                        type="text"
+                        value={editableData[rowIndex]?.itemName || item.itemName}
+                        onChange={(e) => handleFieldChange(rowIndex, 'itemName', e.target.value)}
+                        className="edit-stock-container-input"
+                      />
+                    </td>
+                    <td>
+                      <input
+                        type="text"
+                        value={editableData[rowIndex]?.itemType || item.itemType}
+                        onChange={(e) => handleFieldChange(rowIndex, 'itemType', e.target.value)}
+                        className="edit-stock-container-input"
+                      />
+                    </td>
+                    <td>
+                      <input
+                        type="text"
+                        value={editableData[rowIndex]?.itemColor || item.itemColor}
+                        onChange={(e) => handleFieldChange(rowIndex, 'itemColor', e.target.value)}
+                        className="edit-stock-container-input"
+                      />
+                    </td>
+                    <td>
+                      <input
+                        type="text"
+                        value={editableData[rowIndex]?.itemSize || item.itemSize}
+                        onChange={(e) => handleFieldChange(rowIndex, 'itemSize', e.target.value)}
+                        className="edit-stock-container-input"
+                      />
+                    </td>
+                    <td>
+                      <input
+                        type="text"
+                        value={editableData[rowIndex]?.itemCategory || item.itemCategory}
+                        onChange={(e) => handleFieldChange(rowIndex, 'itemCategory', e.target.value)}
+                        className="edit-stock-container-input"
+                      />
+                    </td>
+                    <td>
+                      <input
+                        type="number"
+                        value={editableData[rowIndex]?.price || item.price}
+                        onChange={(e) => handleFieldChange(rowIndex, 'price', e.target.value)}
+                        className="edit-stock-container-input"
+                      />
+                    </td>
+                    <td>
+                      <input
+                        type="number"
+                        value={editableData[rowIndex]?.wholeSalePrice || item.wholeSalePrice}
+                        onChange={(e) => handleFieldChange(rowIndex, 'wholeSalePrice', e.target.value)}
+                        className="edit-stock-container-input"
+                      />
+                    </td>
+                    <td>
+                      <input
+                        type="number"
+                        value={editableData[rowIndex]?.quantity || item.quantity}
+                        onChange={(e) => handleFieldChange(rowIndex, 'quantity', e.target.value)}
+                        className="edit-stock-container-input"
+                      />
+                    </td>
+                    <td>
+                      <input
+                        type="text"
+                        value={editableData[rowIndex]?.group_id || item.group_id}
+                        onChange={(e) => handleFieldChange(rowIndex, 'group_id', e.target.value)}
+                        className="edit-stock-container-input"
+                      />
+                    </td>
+                    <td>
+                      <button className="edit-stock-container-delete-btn">Delete</button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          ) : (
+            <p>No data found</p>
+          )}
+        </div>
+      )}
     </div>
   );
 };

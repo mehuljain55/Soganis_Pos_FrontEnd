@@ -47,7 +47,7 @@
     border-radius: 4px;
 }
 
- th {
+th {
     background-color: #707070;
     color: white;
 }
@@ -58,19 +58,29 @@ tr:nth-child(even) {
 
 .view-sales-filter-data-table-wrapper td:nth-child(1) { width: 40px; } /* S.No */
 .view-sales-filter-data-table-wrapper td:nth-child(2) { width: 100px; } /* Item Code */
-
 .view-sales-filter-data-table-wrapper td:nth-child(3) { width: 200px; } /* Item Name */
-
 .view-sales-filter-data-table-wrapper td:nth-child(4) { width: 150px; } /* Item Type */
 .view-sales-filter-data-table-wrapper td:nth-child(5) { width: 300px; } /* Item Color */
 .view-sales-filter-data-table-wrapper td:nth-child(6) { width: 100px; } /* Item Size */
 .view-sales-filter-data-table-wrapper td:nth-child(7) { width: 150px; } /* Item Category */
-.view-sales-filter-data-table-wrapper td:nth-child(8) { width: 100px; } /* Price */
-.view-sales-filter-data-table-wrapper td:nth-child(9) { width: 80px; } /* Quantity */
-.view-sales-filter-data-table-wrapper td:nth-child(10) { width: 60px; } /* Group ID */
-.view-sales-filter-data-table-wrapper td:nth-child(11) { width: 120px; } /* Group ID */
+.view-sales-filter-data-table-wrapper td:nth-child(8) { width: 150px; } /* Price */
+.view-sales-filter-data-table-wrapper td:nth-child(9) { width: 150px; } /* Wholesale Price */
+.view-sales-filter-data-table-wrapper td:nth-child(10) { width: 80px; } /* Available Quantity */
+.view-sales-filter-data-table-wrapper td:nth-child(11) { width: 60px; } /* Added Quantity */
+.view-sales-filter-data-table-wrapper td:nth-child(12) { width: 120px; } /* Group ID */
+.view-sales-filter-data-table-wrapper td:nth-child(13) { width: 120px; } /* Group ID */
+/* Styling input fields inside table cells */
+.view-sales-filter-data-table-wrapper input[type="number"] {
+    width: 100%; /* Full width of the cell */
+    box-sizing: border-box; /* Include padding/border in width */
+    padding: 8px;
+    min-width: 100px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
 
-.filter-page-radio{
+/* Styling for radio button controls */
+.filter-page-radio {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -78,17 +88,19 @@ tr:nth-child(even) {
     font-size: 18px;
 }
 
-.filter-page-radio-output{
-    margin-top:20px ;
-
+.filter-page-radio-output {
+    margin-top: 20px;
 }
 
-.filter-page-radio-output label  ,select{
-    margin-right:10px ;
+.filter-page-radio-output label,
+.filter-page-radio-output select {
+    margin-right: 10px;
     font-size: 18px;
 }
 
-.view-sales-filter-data-controls , .view-sales-filter-data-actions{
+/* Controls and actions layout */
+.view-sales-filter-data-controls,
+.view-sales-filter-data-actions {
     display: flex;
     gap: 10px;
     align-items: center;

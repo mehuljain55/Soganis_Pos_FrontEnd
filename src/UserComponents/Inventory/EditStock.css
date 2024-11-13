@@ -1,0 +1,151 @@
+/* General container styles */
+.edit-stock-container {
+    padding: 20px;
+}
+
+.edit-stock-container-table-wrapper {
+    max-height: 300px;
+    overflow-y: auto;
+    overflow-x: auto;
+    border: 1px solid #ddd;
+    background-color: #fff;
+    margin-bottom: 10px;
+}
+
+.edit-stock-container-table-wrapper table {
+    width: 100%;
+    border-collapse: collapse;
+    word-wrap: break-word;
+}
+
+.edit-stock-container-table-wrapper thead {
+    background-color: #f4f4f4;
+    position: sticky;
+    top: 0;
+    z-index: 1;
+}
+
+.edit-stock-container-table-wrapper th,
+.edit-stock-container-table-wrapper td {
+    padding: 10px;
+    border: 1px solid #ddd;
+    text-align: left;
+    white-space: normal;
+}
+
+/* Setting width for each column using nth-child */
+.edit-stock-container-table-wrapper th:nth-child(1),
+.edit-stock-container-table-wrapper td:nth-child(1) {
+    width: 5%; /* S.No column */
+}
+
+.edit-stock-container-table-wrapper th:nth-child(2),
+.edit-stock-container-table-wrapper td:nth-child(2) {
+    width: 10%; /* Item Code column */
+}
+
+.edit-stock-container-table-wrapper th:nth-child(3),
+.edit-stock-container-table-wrapper td:nth-child(3) {
+    width: 15%; /* Item Name column */
+}
+
+.edit-stock-container-table-wrapper th:nth-child(4),
+.edit-stock-container-table-wrapper td:nth-child(4) {
+    width: 10%; /* Item Type column */
+}
+
+.edit-stock-container-table-wrapper th:nth-child(5),
+.edit-stock-container-table-wrapper td:nth-child(5) {
+    width: 10%; /* Item Color column */
+}
+
+.edit-stock-container-table-wrapper th:nth-child(6),
+.edit-stock-container-table-wrapper td:nth-child(6) {
+    width: 10%; /* Item Size column */
+}
+
+.edit-stock-container-table-wrapper th:nth-child(7),
+.edit-stock-container-table-wrapper td:nth-child(7) {
+    width: 10%; /* Item Category column */
+}
+
+.edit-stock-container-table-wrapper th:nth-child(8),
+.edit-stock-container-table-wrapper td:nth-child(8) {
+    width: 10%; /* Price column */
+}
+
+.edit-stock-container-table-wrapper th:nth-child(9),
+.edit-stock-container-table-wrapper td:nth-child(9) {
+    width: 10%; /* Available Quantity column */
+}
+
+.edit-stock-container-table-wrapper th:nth-child(10),
+.edit-stock-container-table-wrapper td:nth-child(10) {
+    width: 10%; /* Group ID column */
+}
+
+.edit-stock-container-table-wrapper th:nth-child(11),
+.edit-stock-container-table-wrapper td:nth-child(11) {
+    width: 10%; /* Action column */
+}
+
+/* Additional styles */
+.edit-stock-container-search-bar-wrapper {
+    display: flex;
+    gap: 10px;
+    margin: 20px 0; 
+    align-items: center;
+    justify-content: center;
+}
+
+.edit-stock-container-search-bar,
+.edit-stock-container-quantity-filter {
+    padding: 5px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+.edit-stock-container-input {
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    width: 100%;
+}
+
+.edit-stock-container-delete-btn {
+    padding: 5px 10px;
+    background-color: #f44336;
+    color: white;
+    border: none;
+    cursor: pointer;
+    border-radius: 4px;
+}
+
+.edit-stock-container-delete-btn:hover {
+    background-color: #d32f2f;
+}
+
+.edit-stock-container-updating-animation {
+    text-align: center;
+    margin-top: 20px;
+  }
+  
+  .spinner {
+    border: 4px solid rgba(255, 255, 255, 0.3);
+    border-radius: 50%;
+    border-top: 4px solid #000;
+    width: 40px;
+    height: 40px;
+    animation: spin 1s linear infinite;
+  }
+  
+  @keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
+  
+  .edit-stock-container-status {
+    margin-top: 20px;
+    white-space: pre-wrap; /* To ensure text content is properly formatted */
+  }
+  

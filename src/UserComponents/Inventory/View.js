@@ -103,6 +103,8 @@ const View = ({ data,onUpdateSuccess }) => {
       const itemAddModel = Object.keys(editableData).map((id) => ({
         barcodedId: id,
         price: editableData[id]?.price || data.find((item) => item.itemBarcodeID === id)?.price,
+        wholeSalePrice: editableData[id]?.wholeSalePrice || data.find((item) => item.itemBarcodeID === id)?.wholeSalePrice,
+        
         quantity: editableData[id]?.quantity || data.find((item) => item.itemBarcodeID === id)?.quantity,
       }));
   
@@ -165,26 +167,37 @@ const View = ({ data,onUpdateSuccess }) => {
       let newCol = columnIndex;
   
       if (e.key === 'ArrowUp') {
+        // Move up to the previous row, if possible
         newRow = rowIndex > 0 ? rowIndex - 1 : rowIndex;
       } else if (e.key === 'ArrowDown') {
+        // Move down to the next row, if possible
         newRow = rowIndex < filteredData.length - 1 ? rowIndex + 1 : rowIndex;
       } else if (e.key === 'ArrowRight') {
-        if (columnIndex > 0) {
-          newCol = columnIndex - 1;
-        }
+        // Move right within the row in a circular manner (Quantity -> Price -> Wholesale Price -> Quantity)
+        newCol = (columnIndex + 1) % 3; // Cycle forward
       } else if (e.key === 'ArrowLeft') {
-        if (columnIndex < 1) {
-          newCol = columnIndex + 1;
-        }
+        // Move left within the row in a circular manner (Wholesale Price -> Price -> Quantity -> Wholesale Price)
+        newCol = (columnIndex - 1 + 3) % 3; // Cycle backward
       }
   
-      const nextField = newCol === 0 ? 'quantity' : 'price';
+      // Define a map of column indices to field names
+      const fieldMap = {
+        0: 'quantity',       // First column for Quantity
+        1: 'price',          // Second column for Price
+        2: 'wholeSalePrice'  // Third column for Wholesale Price
+      };
+  
+      // Determine the field name based on the new column index
+      const nextField = fieldMap[newCol];
       const nextRef = inputRefs.current[`${newRow}-${newCol}-${nextField}`];
+      
+      // Set focus on the new input if it exists
       if (nextRef) {
         nextRef.focus();
       }
     }
   };
+  
   
   return (
     <div className="view-sales-filter-data-container">
@@ -221,83 +234,93 @@ const View = ({ data,onUpdateSuccess }) => {
       </div>
 
       <div className="view-sales-filter-data-table-wrapper">
-        {filteredData.length > 0 ? (
-          <table>
-            <thead>
-              <tr>
-                <th>S.No</th>
-                <th>Item Code</th>
-                <th>Item Name</th>
-                <th>Item Type</th>
-                <th>Item Color</th>
-                <th>Item Size</th>
-                <th>Item Category</th>
-                <th>Price</th>
+  {filteredData.length > 0 ? (
+    <table>
+      <thead>
+        <tr>
+          <th>S.No</th>
+          <th>Item Code</th>
+          <th>Item Name</th>
+          <th>Item Type</th>
+          <th>Item Color</th>
+          <th>Item Size</th>
+          <th>Item Category</th>
+          <th>Price</th>
+          <th>Wholesale Price</th>
+          <th>Available Quantity</th>
+          <th>Added Quantity</th>
+          <th>Group ID</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        {filteredData.map((item, rowIndex) => (
+          <tr key={rowIndex}>
+            <td>{item.sno}</td>
+            <td>{item.itemCode}</td>
+            <td>{item.itemName}</td>
+            <td>{item.itemType}</td>
+            <td>{item.itemColor}</td>
+            <td>{item.itemSize}</td>
+            <td>{item.itemCategory}</td>
+            <td>
+              {isEditingPrice ? (
+                <input
+                  type="number"
+                  value={editableData[item.itemBarcodeID]?.price ?? item.price}
+                  onChange={(e) => handleInputChange(e, item.itemBarcodeID, 'price')}
+                  ref={(el) => (inputRefs.current[`${rowIndex}-1-price`] = el)}
+                  onKeyDown={(e) => handleKeyDown(e, rowIndex, 1, 'price')}
+                />
+              ) : (
+                item.price
+              )}
+            </td>
+            <td>
+              {isEditingPrice ? (
+                <input
+                  type="number"
+                  value={editableData[item.itemBarcodeID]?.wholeSalePrice ?? item.wholeSalePrice}
+                  onChange={(e) => handleInputChange(e, item.itemBarcodeID, 'wholeSalePrice')}
+                  ref={(el) => (inputRefs.current[`${rowIndex}-2-wholeSalePrice`] = el)}
+                  onKeyDown={(e) => handleKeyDown(e, rowIndex, 2, 'wholeSalePrice')}
+                />
+              ) : (
+                item.wholeSalePrice
+              )}
+            </td>
+            <td>{item.quantity}</td>
+            <td>
+              {isEditingQuantity ? (
+                <input
+                  type="number"
+                  value={editableData[item.itemBarcodeID]?.quantity ?? 0}  // Set initial value to 0
+                  onChange={(e) => handleInputChange(e, item.itemBarcodeID, 'quantity')}
+                  ref={(el) => (inputRefs.current[`${rowIndex}-0-quantity`] = el)}
+                  onKeyDown={(e) => handleKeyDown(e, rowIndex, 0, 'quantity')}
+                />
+              ) : (
+                item.quantity
+              )}
+            </td>
+            <td>{item.group_id}</td>
+            <td>
+              <button
+                onClick={() => handlePlaceOrder(item.itemBarcodeID)}
+                className="view-sales-filter-data-place-order-btn"
+              >
+                Place Order
+              </button>
+            </td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  ) : (
+    <p>No data found</p>
+  )}
+</div>
 
-                <th>Available Quantity</th>
-                <th>Added Quantity</th>
-                
-                <th>Group ID</th>
-                <th>Action</th>
-              </tr>
-            </thead>
-            <tbody>
-              {filteredData.map((item, rowIndex) => (
-                <tr key={rowIndex}>
-                  <td>{item.sno}</td>
-                  <td>{item.itemCode}</td>
-                  <td>{item.itemName}</td>
-                  <td>{item.itemType}</td>
-                  <td>{item.itemColor}</td>
-                  <td>{item.itemSize}</td>
-                  <td>{item.itemCategory}</td>
-                  <td>
-                    {isEditingPrice ? (
-                      <input
-                        type="number"
-                        value={editableData[item.itemBarcodeID]?.price ?? item.price}
-                        onChange={(e) => handleInputChange(e, item.itemBarcodeID, 'price')}
-                        ref={(el) =>
-                          (inputRefs.current[`${rowIndex}-1-price`] = el)
-                        }
-                        onKeyDown={(e) => handleKeyDown(e, rowIndex, 1, 'price')}
-                      />
-                    ) : (
-                      item.price
-                    )}
-                  </td>
-                  <td>{item.quantity}</td>
-                  <td>
-                    {isEditingQuantity ? (
-                      <input
-                      type="number"
-                      value={editableData[item.itemBarcodeID]?.quantity ?? 0}  // Set initial value to 0
-                      onChange={(e) => handleInputChange(e, item.itemBarcodeID, 'quantity')}
-                      ref={(el) => (inputRefs.current[`${rowIndex}-0-quantity`] = el)}
-                      onKeyDown={(e) => handleKeyDown(e, rowIndex, 0, 'quantity')}
-                    />
-                    
-                    ) : (
-                      item.quantity
-                    )}
-                  </td>
-                  <td>{item.group_id}</td>
-                  <td>
-                    <button
-                      onClick={() => handlePlaceOrder(item.itemBarcodeID)}
-                      className="view-sales-filter-data-place-order-btn"
-                    >
-                      Place Order
-                    </button>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        ) : (
-          <p>No data found</p>
-        )}
-      </div>
 
       <div className="view-sales-filter-data-actions">
         {(isEditingQuantity || isEditingPrice) && (
