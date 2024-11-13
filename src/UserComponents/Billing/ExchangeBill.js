@@ -278,12 +278,14 @@ const handleSelectChange = (selectedOption) => {
       };
       setSelectedItems([...selectedItems, newItem]);
     }
+
+    setSearchTerm('');
+    setSearchResults([]);
+    setDropdownOpen(false);
   
     if (!isBarcodeMode) {
      
       requestAnimationFrame(() => {
-          setSearchTerm('');
-          setDropdownOpen(false);
           searchInputRef.current.focus();
       });
   

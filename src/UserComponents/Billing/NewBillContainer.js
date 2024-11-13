@@ -298,12 +298,15 @@ const handleSelectChange = (selectedOption) => {
       setSelectedItems([...selectedItems, newItem]);
     }
   
+    setSearchTerm('');
+    setSearchResults([]);
+    setDropdownOpen(false);
+
     if (!isBarcodeMode) {
       requestAnimationFrame(() => {
         setSearchTerm('');
         searchInputRef.current.focus();
       });
-      setDropdownOpen(false);
     }
   
     // Scroll to the latest item added
