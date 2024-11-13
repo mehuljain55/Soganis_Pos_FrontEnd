@@ -49,9 +49,8 @@ const MainComponent = ({ userData }) => {
 
   const handleMenuItemClick = (menuItem) => {
     setSelectedMenuItem(menuItem);
-    if (window.innerWidth <= 768) {
-      setIsSidebarOpen(false); // Close sidebar after menu selection on mobile
-    }
+    setIsSidebarOpen(false); // Close sidebar after menu selection on mobile
+    
   };
 
   const fetchStore = async()=>{
