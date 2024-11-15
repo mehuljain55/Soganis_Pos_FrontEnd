@@ -4,6 +4,8 @@ import { useNavigate } from 'react-router-dom';
 import Select from 'react-select';
 import { API_BASE_URL } from '../Config.js';
 import { width } from '@fortawesome/free-solid-svg-icons/fa0';
+import ItemCodeFetcher from './ItemCodeFetcher.js'; 
+
 
 const BarcodePrintPage = () => {
   
@@ -16,17 +18,14 @@ const BarcodePrintPage = () => {
   const [barcodeOptions, setBarcodeOptions] = useState([]);
   const [selectedBarcode, setSelectedBarcode] = useState(null);
   const [showDropdown, setShowDropdown] = useState(false);
-  const [focusedIndex, setFocusedIndex] = useState(0); // Track the index of the focused dropdown item
-  const inputRef = useRef(null); // Reference for the input field
-  const itemRefs = useRef([]); // Refs for each dropdown item
-  const dropdownRef = useRef(null); // Reference for the dropdown container
-
-
-
-
+  const [focusedIndex, setFocusedIndex] = useState(0);
+  const inputRef = useRef(null); 
+  const itemRefs = useRef([]); 
+  const dropdownRef = useRef(null); 
   const [currentPage, setCurrentPage] = useState(0);
   const barcodeRef = useRef(null);
   const quantityRef = useRef(null);
+  const [barcodeImages, setBarcodeImages] = useState([]);
   
   const imagesPerPage = 40;
   
@@ -104,7 +103,35 @@ const BarcodePrintPage = () => {
     }
   };
   
- 
+  const handleGenerateBarcodeList = async (finalList) => {
+    if (!finalList || finalList.length === 0) {
+      console.error('No items to generate barcodes');
+      return;
+    }
+
+    try {
+      const userData = JSON.parse(sessionStorage.getItem('user'));
+      const storeId = userData?.storeId;
+
+      const imagePromises = finalList.map(async ({ itemCode, quantity }) => {
+        const response = await fetch(
+          `${API_BASE_URL}/user/generate_barcodes?itemCode=${itemCode}&storeId=${storeId}`
+        );
+        const blob = await response.blob();
+        const imageUrl = URL.createObjectURL(blob);
+
+        // Generate multiple images based on quantity
+        return Array(quantity).fill(imageUrl);
+      });
+
+      const results = await Promise.all(imagePromises);
+
+      // Flatten the results and update state
+      setImages((prevImages) => [...prevImages, ...results.flat()]);
+    } catch (error) {
+      console.error('Error generating barcodes:', error);
+    }
+  };
   
  
 
@@ -551,6 +578,12 @@ const handleInputChange = (e) => {
               Clear Current Page
             </button>
           </div>
+
+          <div classname='right-side-bae'>
+          <ItemCodeFetcher
+        onFinalize={(finalList) => handleGenerateBarcodeList(finalList)}
+      />
+          </div>
           {/* Render Pagination Inside the Sidebar */}
           <div className="no-print" style={styles.paginationWrapper}>
             {renderPageNavigation()}
@@ -582,6 +615,20 @@ const styles = {
     position: 'fixed', // Sidebar stays fixed on the screen
     top: 0, // Align with the top of the page
     left: 0, // Align with the left side of the page
+    height: '100vh', // Ensure sidebar covers the full height of the screen
+    backgroundColor: '#fff', // Ensure the background remains white
+    zIndex: 1000, // Ensure it stays above the main content
+    overflowY: 'auto', // Allow scrolling within the sidebar if content overflows
+  },
+  rightSideBar: {
+    display: 'flex',
+    flexDirection: 'column',
+    padding: '20px',
+    width: '250px', // Fixed width for right sidebar
+    borderLeft: '1px solid lightgray',
+    position: 'fixed', // Sidebar stays fixed on the screen
+    top: 0, // Align with the top of the page
+    right: 0, // Align with the right side of the page
     height: '100vh', // Ensure sidebar covers the full height of the screen
     backgroundColor: '#fff', // Ensure the background remains white
     zIndex: 1000, // Ensure it stays above the main content

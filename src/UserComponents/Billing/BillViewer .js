@@ -1,4 +1,3 @@
-// BillViewer.js
 import React, { useState, useRef } from 'react';
 import { API_BASE_URL } from '../Config.js';
 import axios from 'axios';

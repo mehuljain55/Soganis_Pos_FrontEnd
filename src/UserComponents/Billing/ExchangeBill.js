@@ -322,8 +322,8 @@ const handleSelectChange = (selectedOption) => {
   useEffect(() => {
     const handleKeyDown = (event) => {
       if (event.ctrlKey && event.key === 's') {
-        event.preventDefault(); // Prevent the browser's default Save action
-        setShowPopup(true); // Show the custom popup
+        event.preventDefault(); 
+        setShowPopup(true); 
       }
     };
 

@@ -23,6 +23,7 @@ import SchoolSalesReport from '../SalesReport/SchoolSalesReport.js';
 import InventoryAdd from '../Inventory/InventoryAdd.js';
 import { API_BASE_URL } from '../Config.js';
 import { LogoutButton, useLogout } from '../Login/LogoutPage.js';
+import ItemCodeFetcher from '../Billing/ItemCodeFetcher.js';
 
 
 const MainComponent = ({ userData }) => {
@@ -135,8 +136,7 @@ const MainComponent = ({ userData }) => {
             <button className="list-group-item" onClick={() => navigate('/barcode')}>Open Barcode</button>
             <button className="list-group-item" onClick={() => handleMenuItemClick('Update Inventory')}>Add Inventory(Qty)</button>
             <button className="list-group-item" onClick={() => handleMenuItemClick('Add New Item')}>Update Item List</button>
-    
-          </div>
+            </div>
         </div>
 
         <main className="main-content">
@@ -154,6 +154,7 @@ const MainComponent = ({ userData }) => {
           {selectedMenuItem === 'Update Inventory' && <AddInventoryItem />}
           {selectedMenuItem === 'Add New Item' && <InventoryAdd />}
           {selectedMenuItem === 'Recent Bills' && <BillViewer  />}
+
         </main>
       </div>
 
