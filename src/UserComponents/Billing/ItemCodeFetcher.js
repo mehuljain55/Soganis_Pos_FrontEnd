@@ -78,6 +78,8 @@ const ItemCodeFetcher = ({ onFinalize }) => {
         quantity: parseInt(quantities[code], 10),
       }));
     onFinalize(finalList);
+    setItemCodes([]);
+      setQuantities({});
   };
   
   const handleListKeyDown = (event, code) => {
