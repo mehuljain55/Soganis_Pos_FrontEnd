@@ -52,10 +52,13 @@ const ItemCodeFetcher = ({ onFinalize }) => {
   }, [selectedSchool, selectedItemType, storeId]);
 
   const fetchItemCodes = () => {
-    if (selectedSchool && selectedItemType && selectedItemColor) {
+    if (selectedSchool && selectedItemType ) {
       axios
         .get(`${API_BASE_URL}/user/filter/school/item_code`, {
-          params: { schoolCode: selectedSchool, itemType: selectedItemType, itemColor: selectedItemColor, storeId },
+          params: { schoolCode: selectedSchool, 
+                    itemType: selectedItemType, 
+                    itemColor: selectedItemColor || "", 
+                    storeId },
         })
         .then((response) => setItemCodes(response.data))
         .catch((error) => console.error('Error fetching item codes:', error));
@@ -76,7 +79,33 @@ const ItemCodeFetcher = ({ onFinalize }) => {
       }));
     onFinalize(finalList);
   };
+  
+  const handleListKeyDown = (event, code) => {
+    event.stopPropagation(); // Prevent the parent container from overriding this event
+  
+    // Find the list of input elements
+    const inputElements = document.querySelectorAll('input[data-code]');
+    // Find the index of the current element
+    const currentIndex = Array.from(inputElements).findIndex((input) => input.dataset.code === code);
+  
+    if (event.key === 'ArrowDown') {
+      const nextElement = inputElements[currentIndex + 1];
+      if (nextElement) nextElement.focus();
+      event.preventDefault(); // Prevent default scrolling behavior
+    } else if (event.key === 'ArrowUp') {
+      const previousElement = inputElements[currentIndex - 1];
+      if (previousElement) previousElement.focus();
+      event.preventDefault(); // Prevent default scrolling behavior
+    } else if (event.key === 'Enter') {
+      event.preventDefault(); // Prevent default form submission or any unintended behavior
+      handleFinalize(); // Call the finalize function
+    }
+  };
+  
+  
+  
 
+  
   return (
     <div className="item-code-manager">
       <h1>Item Code Manager</h1>
@@ -118,15 +147,15 @@ const ItemCodeFetcher = ({ onFinalize }) => {
         >
           <option value="">Select Item Color</option>
           {itemColors.map((color) => (
-            <option key={color} value={color}>
-              {color}
-            </option>
+            <option key={color || 'no-color'} value={color}>
+            {color || 'No Color'}
+          </option>
           ))}
         </select>
       </div>
       <button
         onClick={fetchItemCodes}
-        disabled={!selectedSchool || !selectedItemType || !selectedItemColor}
+        disabled={!selectedSchool || !selectedItemType }
       >
         Fetch 
       </button>
@@ -144,12 +173,15 @@ const ItemCodeFetcher = ({ onFinalize }) => {
                 <tr key={code}>
                   <td>{code}</td>
                   <td>
-                    <input
-                      type="number"
-                      value={quantities[code] || ''}
-                      onChange={(e) => handleQuantityChange(code, e.target.value)}
-                      min="0"
-                    />
+                  <input
+  type="text" // Changed to text for custom validation
+  value={quantities[code] || ''}
+  onChange={(e) => handleQuantityChange(code, e.target.value.replace(/[^0-9]/g, ''))} // Allow only numbers
+  onKeyDown={(e) => handleListKeyDown(e, code)}
+  data-code={code}
+  inputMode="numeric" // Suggest numeric keyboard on mobile devices
+/>
+
                   </td>
                 </tr>
               ))}
