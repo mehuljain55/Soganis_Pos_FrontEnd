@@ -44,6 +44,17 @@ const InterCompanyTranfer = ({ userData }) => {
   const selectedSchoolRef = useRef(null); 
   const [storeList, setStoreList] = useState([]);
 
+  const handleDiscountChange = (index, discountValue) => {
+   
+    setSelectedItems((prevItems) => {
+      const updatedItems = [...prevItems];
+      const item = updatedItems[index];
+      item.discountAmount = discountValue; // Apply discount amount only if discount is "Yes"
+      item.amount = item.wholeSalePrice * (1 - discountValue / 100) * item.quantity;
+      return updatedItems;
+    });
+  };
+  
   
 
 
@@ -745,6 +756,7 @@ const handleSelectChange = (selectedOption) => {
                   <th>Item Name</th>
                   <th>Color</th>
                   <th>Size</th>
+                  <th>Discount</th>
                   <th>Price</th>
                   <th>Quantity</th>
                   <th>Amount</th>
@@ -758,6 +770,15 @@ const handleSelectChange = (selectedOption) => {
                     <td>{item.itemName}</td>
                     <td>{item.itemColor}</td>
                     <td>{item.itemSize}</td>
+                    
+                    <td>
+  <input
+    type="number"
+    value={item.discountAmount || ''}
+    onChange={(e) => handleDiscountChange(rowItemTableIndex, parseFloat(e.target.value) || 0)}
+    disabled={item.discount !== 'Yes'}
+  />
+</td>
                     <td>{item.wholeSalePrice}</td>
                     <td>
                       <input
