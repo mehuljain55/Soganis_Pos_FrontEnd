@@ -44,6 +44,7 @@ const NewBillContainer = ({ userData }) => {
   const [paymentEntries, setPaymentEntries] = useState([
     { id: 1, type: "Cash", value: 0 },
   ]);
+  const [transactionError, setTransactionError] = useState("");
 
   
  
@@ -429,21 +430,31 @@ const handleSelectChange = (selectedOption) => {
     }
   
     if (paymentMode === "Partial") {
+      const total = calculateTotalAmount();
       const { cash, upi, card } = transactionalModel;
       const nonZeroCount = [cash, upi, card].filter((value) => value > 0).length;
   
+      // Validate that at least two payment modes are used
       if (nonZeroCount < 2) {
+        setTransactionError("At least two payment methods must be used for partial payment.");
         setShowTransactionPopup(true);
         return;
       }
-    }
   
-    // Get updated transactional model from `handlePaymentUpdate` when paymentMode !== 'Partial'
-    let updatedTransactionalModel = transactionalModel; // Default to existing state
-    if (paymentMode !== "Partial") {
-      console.log("Payment change detected");
-      updatedTransactionalModel = handlePaymentUpdate(); // Take values from the function
-      console.log("Updated Transactional Model:", updatedTransactionalModel);
+      // Validate that the total sum matches the calculated total amount
+      const totalPayments = cash + upi + card;
+  
+      if (totalPayments > total) {
+        setTransactionError("The payment amount exceeds the total amount.");
+        setShowTransactionPopup(true);
+        return;
+      }
+  
+      if (totalPayments < total) {
+        setTransactionError("The payment amount is less than the total amount.");
+        setShowTransactionPopup(true);
+        return;
+      }
     }
   
     // Process items
@@ -482,21 +493,25 @@ const handleSelectChange = (selectedOption) => {
   
     const billingModel = {
       billing: billData,
-      transactionModel: updatedTransactionalModel, // Use the updated transactional model here
+      transactionModel: transactionalModel, // Use the transactional model directly
     };
   
     console.log("Final bill data");
     console.log(billingModel);
-
-
+  
+    // Make the API call
     try {
       setLoading(true);
-      const response = await axios.post(`${API_BASE_URL}/user/billRequest`, billingModel, { responseType: "arraybuffer" });
+      const response = await axios.post(`${API_BASE_URL}/user/billRequest`, billingModel, {
+        responseType: "arraybuffer",
+      });
       const pdfBlob = new Blob([response.data], { type: "application/pdf" });
       const pdfUrl = URL.createObjectURL(pdfBlob);
   
       setPdfData(pdfUrl);
       setShowPdfModal(true);
+  
+      // Reset form
       setDiscountPercentage(0);
       setSelectedItems([]);
       setCustomerName("");
@@ -509,6 +524,7 @@ const handleSelectChange = (selectedOption) => {
       setLoading(false);
       setTransactionalModel({ cash: 0, upi: 0, card: 0 });
       setPaymentEntries([{ id: 1, type: "Cash", value: 0 }]);
+      setTransactionError("");
     }
   };
   
@@ -1036,6 +1052,7 @@ const handleSelectChange = (selectedOption) => {
           <div className="popup-content">
             <h3>Payment Details</h3>
             <h3>Total Amount: {calculateTotalAmount().toFixed(2)} Rs</h3>
+            {transactionError && <div className="error-message">{transactionError}</div>}
             <table>
               <thead>
                 <tr>
