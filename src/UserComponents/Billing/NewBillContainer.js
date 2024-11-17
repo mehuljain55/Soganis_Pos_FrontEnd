@@ -34,6 +34,18 @@ const NewBillContainer = ({ userData }) => {
   const [someState, setSomeState] = useState(false); 
   const [loading, setLoading] = useState(false);
   const [discountPercentage, setDiscountPercentage] = useState(0);
+  const [showTransactionPopup, setShowTransactionPopup] = useState(false);
+ 
+  const [transactionalModel, setTransactionalModel] = useState({
+    cash: 0,
+    upi: 0,
+    card: 0,
+  });
+  const [paymentEntries, setPaymentEntries] = useState([
+    { id: 1, type: "Cash", value: 0 },
+  ]);
+
+  
  
 
   const [allSchools, setAllSchools] = useState([]);
@@ -192,13 +204,10 @@ const handleSelectChange = (selectedOption) => {
         const itemBottom = itemRect.bottom - dropdownTop;
         const visibleHeight = 150;
         
-        // Scroll the dropdown so the selected item is in view
         if (itemTop < 0) {
-          // Item is above the visible area
-          dropdown.scrollTop += itemTop - 15; // Adjust scrolling position to show the item
+          dropdown.scrollTop += itemTop - 15; 
         } else if (itemBottom > visibleHeight) {
-          // Item is below the visible area
-          dropdown.scrollTop += itemBottom - visibleHeight + 15; // Adjust scrolling position to show the item
+          dropdown.scrollTop += itemBottom - visibleHeight + 15; 
         }
       }
     }
@@ -212,15 +221,15 @@ const handleSelectChange = (selectedOption) => {
 
   const handlePopupConfirm = () => {
     setShowPopup(false);
-    handleSubmit(); // Call handleSubmit when confirmed
+    handleSubmit(); 
   };
 
   const handlePopupCancel = () => {
-    setShowPopup(false); // Close the popup without submitting
+    setShowPopup(false); 
   };
 
   const handleItemTableKeyDown = (e, rowItemTableIndex, colItemTableIndex) => {
-    if (!isTableFocused) return; // Only handle arrow keys when table is focused
+    if (!isTableFocused) return; 
 
     switch (e.key) {
       case 'ArrowUp':
@@ -249,6 +258,7 @@ const handleSelectChange = (selectedOption) => {
         break;
     }
   };
+  
 
   // Function to handle focus change
   const handleSelectFocus = () => {
@@ -387,7 +397,7 @@ const handleSelectChange = (selectedOption) => {
     return total;
   };
 
-
+  
   const handleArrowNavigation = (e) => {
     if (e.key === 'ArrowDown') {
       setSelectedIndex((prevIndex) => Math.min(prevIndex + 1, searchResults.length - 1));
@@ -402,37 +412,54 @@ const handleSelectChange = (selectedOption) => {
   };
 
   const handleSubmit = async () => {
+    // Validations
     if (selectedItems.length === 0) {
       alert("The item list cannot be empty. Please add at least one item.");
-      return; // Prevent API call
+      return;
     }
   
     if (!schoolName) {
       alert("School Name is required");
-      return; // Prevent API call if validation fails
+      return;
     }
   
     if (customerMobileNo && !/^\d{10}$/.test(customerMobileNo)) {
       alert("Customer mobile number must be exactly 10 digits");
-      return; // Prevent API call if validation fails
+      return;
     }
   
-    // Recalculate amounts and apply discounts for all selected items
-    const updatedItems = selectedItems.map(item => {
-      const discountAmount = item.discountAmount || 0;
-      const discountedPrice = item.price * (1 - discountAmount / 100); // Calculate discounted price
+    if (paymentMode === "Partial") {
+      const { cash, upi, card } = transactionalModel;
+      const nonZeroCount = [cash, upi, card].filter((value) => value > 0).length;
   
-      // Recalculate amount after discount
+      if (nonZeroCount < 2) {
+        setShowTransactionPopup(true);
+        return;
+      }
+    }
+  
+    // Get updated transactional model from `handlePaymentUpdate` when paymentMode !== 'Partial'
+    let updatedTransactionalModel = transactionalModel; // Default to existing state
+    if (paymentMode !== "Partial") {
+      console.log("Payment change detected");
+      updatedTransactionalModel = handlePaymentUpdate(); // Take values from the function
+      console.log("Updated Transactional Model:", updatedTransactionalModel);
+    }
+  
+    // Process items
+    const updatedItems = selectedItems.map((item) => {
+      const discountAmount = item.discountAmount || 0;
+      const discountedPrice = item.price * (1 - discountAmount / 100);
       const amount = item.quantity * discountedPrice;
-      
+  
       return {
         ...item,
-        discountedPrice,  // Store the discounted price
-        amount,           // Recalculate amount with the discounted price
+        discountedPrice,
+        amount,
       };
     });
   
-    // Now create the bill data with recalculated discounted amounts
+    // Prepare billing and transaction models
     const billData = {
       userId: userData.userId,
       customerName: customerName,
@@ -447,32 +474,44 @@ const handleSelectChange = (selectedOption) => {
         itemColor: item.itemColor,
         itemSize: item.itemSize,
         itemCategory: item.itemCategory,
-        sellPrice: item.discountAmount ? item.discountedPrice : item.price, 
+        sellPrice: item.discountAmount ? item.discountedPrice : item.price,
         quantity: item.quantity,
-        total_amount: item.amount,  // Send amount after discount
+        total_amount: item.amount,
       })),
     };
   
+    const billingModel = {
+      billing: billData,
+      transactionModel: updatedTransactionalModel, // Use the updated transactional model here
+    };
+  
+    console.log("Final bill data");
+    console.log(billingModel);
+
+
     try {
-      setLoading(true); // Show loading animation
-      const response = await axios.post(`${API_BASE_URL}/user/billRequest`, billData, { responseType: 'arraybuffer' });
-      const pdfBlob = new Blob([response.data], { type: 'application/pdf' });
+      setLoading(true);
+      const response = await axios.post(`${API_BASE_URL}/user/billRequest`, billingModel, { responseType: "arraybuffer" });
+      const pdfBlob = new Blob([response.data], { type: "application/pdf" });
       const pdfUrl = URL.createObjectURL(pdfBlob);
   
       setPdfData(pdfUrl);
       setShowPdfModal(true);
       setDiscountPercentage(0);
       setSelectedItems([]);
-      setCustomerName('');
-      setCustomerMobileNo('');
-      setPaymentMode('Cash');
-      setSchoolName('');
+      setCustomerName("");
+      setCustomerMobileNo("");
+      setPaymentMode("Cash");
+      setSchoolName("");
     } catch (error) {
-      console.error('Error generating bill:', error);
+      console.error("Error generating bill:", error);
     } finally {
-      setLoading(false); // Hide loading animation after completion
+      setLoading(false);
+      setTransactionalModel({ cash: 0, upi: 0, card: 0 });
+      setPaymentEntries([{ id: 1, type: "Cash", value: 0 }]);
     }
   };
+  
   
   
   const handlePrint = () => {
@@ -499,10 +538,116 @@ const handleSelectChange = (selectedOption) => {
     setCustomerMobileNo(e.target.value);
   };
 
+
+
   const handlePaymentModeChange = (e) => {
-    setPaymentMode(e.target.value);
+    const mode = e.target.value;
+    setPaymentMode(mode);
+    if(mode==="Partial")
+    {
+      setShowTransactionPopup(true);
+    }
+
   };
 
+  const handlePaymentUpdate = () => {
+    let updatedModel = {};
+    if (paymentMode === "Cash") {
+      updatedModel = { cash: calculateTotalAmount(), upi: 0, card: 0 };
+    } else if (paymentMode === "UPI") {
+      updatedModel = { cash: 0, upi: calculateTotalAmount(), card: 0 };
+    } else if (paymentMode === "Card") {
+      updatedModel = { cash: 0, upi: 0, card: calculateTotalAmount() };
+    }
+    console.log("Payment Mode:", paymentMode, "Updated Model:", updatedModel);
+    return updatedModel; // Return the computed value instead of updating state
+  };
+  
+
+  const handleAddRow = () => {
+    const totalAmount = calculateTotalAmount();
+    const currentSum = paymentEntries.reduce((sum, entry) => sum + entry.value, 0);
+    const remainingAmount = Math.max(totalAmount - currentSum, 0); // Ensure no negative values
+  
+    if (remainingAmount === 0) {
+      alert("The total payment is already covered. Cannot add more rows.");
+      return;
+    }
+  
+    setPaymentEntries([
+      ...paymentEntries,
+      { id: Date.now(), type: "", value: remainingAmount },
+    ]);
+  };
+  
+
+  const handleRemoveRow = (id) => {
+    setPaymentEntries(paymentEntries.filter((entry) => entry.id !== id));
+  };
+
+  const handleEntryChange = (id, field, value) => {
+    const updatedEntries = paymentEntries.map((entry) => {
+      if (entry.id === id) {
+        return { ...entry, [field]: field === "value" ? parseFloat(value) || 0 : value };
+      }
+      return entry;
+    });
+    setPaymentEntries(updatedEntries);
+  };
+
+  const getAvailableTypes = (currentId) => {
+    const selectedTypes = paymentEntries
+      .filter((entry) => entry.id !== currentId && entry.type !== "")
+      .map((entry) => entry.type);
+    const allTypes = ["Cash", "UPI", "Card"];
+    return allTypes.filter((type) => !selectedTypes.includes(type));
+  };
+
+  const handleTransactionSubmit = () => {
+    const total = paymentEntries.reduce((sum, entry) => sum + entry.value, 0);
+    const totalAmount = calculateTotalAmount();
+    let isValid = true;
+  
+    // Validate all entries
+    const updatedEntries = paymentEntries.map((entry) => {
+      const errors = {};
+      if (!entry.type) {
+        errors.type = "Payment type is required.";
+        isValid = false;
+      }
+      if (entry.value <= 0) {
+        errors.value = "Amount must be greater than 0.";
+        isValid = false;
+      }
+      return { ...entry, errors };
+    });
+  
+    setPaymentEntries(updatedEntries);
+  
+    // Check if the total matches
+    if (total !== totalAmount) {
+      alert(
+        `The total payment (${total.toFixed(
+          2
+        )} Rs) does not match the total amount (${totalAmount.toFixed(2)} Rs).`
+      );
+      isValid = false;
+    }
+  
+    if (!isValid) return; // Prevent submission if any entry is invalid
+  
+    // Initialize transactionalModel
+    const newTransactionalModel = { cash: 0, upi: 0, card: 0 };
+  
+    paymentEntries.forEach((entry) => {
+      newTransactionalModel[entry.type.toLowerCase()] += entry.value;
+    });
+  
+    setTransactionalModel(newTransactionalModel);
+    setShowTransactionPopup(false);
+   
+  };
+  
   const handleDiscountChange = (index, discountValue) => {
     if (discountPercentage > 0) {
       setDiscountPercentage(0);  // Clear global discount if an item discount is set
@@ -886,7 +1031,69 @@ const handleSelectChange = (selectedOption) => {
           </div>
         </div>
       </div>
-  
+      {showTransactionPopup && (
+        <div className="transaction-popup">
+          <div className="popup-content">
+            <h3>Payment Details</h3>
+            <h3>Total Amount: {calculateTotalAmount().toFixed(2)} Rs</h3>
+            <table>
+              <thead>
+                <tr>
+                  <th>Value (Rs)</th>
+                  <th>Type</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                {paymentEntries.map((entry, index) => (
+                  <tr key={entry.id}>
+                    <td>
+                      <input
+                        type="number"
+                        value={entry.value}
+                        onChange={(e) =>
+                          handleEntryChange(entry.id, "value", e.target.value)
+                        }
+                        min="0"
+                        placeholder="Enter amount"
+                        className={entry.errors?.value ? "error-field" : ""}
+                      />
+                      {entry.errors?.value && <span className="error-text">{entry.errors.value}</span>}
+                    </td>
+                    <td>
+                      <select
+                        value={entry.type}
+                        onChange={(e) =>
+                          handleEntryChange(entry.id, "type", e.target.value)
+                        }
+                        className={entry.errors?.type ? "error-field" : ""}
+                      >
+                        <option value="">Select Type</option>
+                        {getAvailableTypes(entry.id).map((type) => (
+                          <option key={type} value={type}>
+                            {type}
+                          </option>
+                        ))}
+                      </select>
+                      {entry.errors?.type && <span className="error-text">{entry.errors.type}</span>}
+                    </td>
+                    <td>
+                      {index > 0 && (
+                        <button onClick={() => handleRemoveRow(entry.id)}>Remove</button>
+                      )}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+            <button onClick={handleAddRow}>Add</button>
+            <div className="popup-actions">
+              <button onClick={handleTransactionSubmit}>Add payments</button>
+              <button onClick={() => setShowTransactionPopup(false)}>Cancel</button>
+            </div>
+          </div>
+        </div>
+      )}
       {showPopup && (
         <BillPopup
           onConfirm={handlePopupConfirm}

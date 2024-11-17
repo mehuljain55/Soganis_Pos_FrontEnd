@@ -15,7 +15,7 @@ const InterCompanyTranfer = ({ userData }) => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [customerName, setCustomerName] = useState('');
   const [customerMobileNo, setCustomerMobileNo] = useState('');
-  const [paymentMode, setPaymentMode] = useState('Cash');
+  const [paymentMode, setPaymentMode] = useState('Due');
   const [schoolName, setSchoolName] = useState('');
   const [selectedIndex, setSelectedIndex] = useState(-1);
   const [shiftPressTime, setShiftPressTime] = useState(null); 
@@ -42,6 +42,9 @@ const InterCompanyTranfer = ({ userData }) => {
   
   const [allSchools, setAllSchools] = useState([]);
   const selectedSchoolRef = useRef(null); 
+  const [storeList, setStoreList] = useState([]);
+
+  
 
 
   const [customItem, setCustomItem] = useState({
@@ -54,6 +57,36 @@ const InterCompanyTranfer = ({ userData }) => {
     quantity: 1,
     amount: 0,
   });
+
+
+
+    const fetchStores = async () => {
+      try {
+        const user = JSON.parse(sessionStorage.getItem("user"));
+        const storeId = user ? user.storeId : '';
+
+      
+        const response = await fetch(`${API_BASE_URL}/store/getStoreList?storeId=${storeId}`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        });
+
+        if (response.ok) {
+          const data = await response.json();
+          setStoreList(data); // Set the store list
+        } else {
+          console.error('Failed to fetch stores.');
+          setStoreList([]); // Handle empty or error response
+        }
+      } catch (error) {
+        console.error('Error fetching stores:', error);
+        setStoreList([]); // Handle fetch errors
+      }
+    };
+
+   
 
   const fetchAllSchools = async () => {
     try {
@@ -89,6 +122,7 @@ const handleSelectChange = (selectedOption) => {
 
   useEffect(() => {
     fetchAllSchools();
+    fetchStores();
   }, []);
 
     const handleSelectFocus = () => {
@@ -655,21 +689,23 @@ const handleSelectChange = (selectedOption) => {
         <div className="customer-details">
           <h5>Customer Details</h5>
           <div className="customer-details-box">
-            <label>
-              Company Name:
-              <select
-                name="customerName"
-                value={customerName}
-                onChange={handleNameChange}
-                onKeyDown={(e) => handleArrowKeyCustomerDetail(e, 'customerName')}
-                required
-              >
-                <option value="">Select Company</option>
-                <option value="Rajwada">Rajwada</option>
-                <option value="Vijay Nagar">Vijay Nagar</option>
-                <option value="Scheme 140">Scheme 140</option>
-              </select>
-            </label>
+          <label>
+      Company Name:
+      <select
+        name="customerName"
+        value={customerName}
+        onChange={handleNameChange}
+        onKeyDown={(e) => handleArrowKeyCustomerDetail(e, 'customerName')}
+        required
+      >
+        <option value="">Select Company</option>
+        {storeList.map((store) => (
+          <option key={store.storeId} value={store.storeId}>
+            {store.storeName}-{store.address}
+          </option>
+        ))}
+      </select>
+    </label>
   
             <div className="school-name-input">
               <label>
@@ -769,8 +805,8 @@ const handleSelectChange = (selectedOption) => {
                 Payment Mode:
                 <select value={paymentMode} onChange={handlePaymentModeChange}>
                   <option value="Cash">Cash</option>
-                  <option value="Card">Card</option>
                   <option value="UPI">UPI</option>
+                  <option value="Due">Due</option>
                 </select>
               </label>
               <button id='submit-btn' onClick={handleSubmit}>Bill</button>
