@@ -33,10 +33,11 @@ const UserCashCollection = () => {
     return new Date(dateString).toLocaleDateString('en-GB', options);
   };
 
-  const calculateTotalCashCollection = () => {
-    return userCashCollection.reduce((total, item) => total + item.final_cash_collection, 0);
-  };
+ 
 
+  const calculateTotal = (key) => {
+    return userCashCollection.reduce((total, item) => total + (item[key] || 0), 0).toFixed(2);
+  };
   const handleFetchClick = () => {
     if (startDate && endDate) {
       setUserCashCollection([]); // Clear data before new fetch
@@ -76,6 +77,9 @@ const UserCashCollection = () => {
               <th>Collection Date</th>
               <th>User Name</th>
               <th>Cash Collection</th>
+              <th>UPI Collection</th>
+              <th>Card Collection</th>
+              
               <th>Cash Returned</th>
               <th>Total</th>
             </tr>
@@ -87,15 +91,24 @@ const UserCashCollection = () => {
                 <td>{formatDate(item.collection_date)}</td>
                 <td>{item.userName}</td>
                 <td>{item.cash_collection}</td>
+                <td>{item.upi_collection}</td>
+             
+                <td>{item.card_collection}</td>
                 <td>{item.cash_return}</td>
+             
                 <td>{item.final_cash_collection}</td>
               </tr>
             ))}
           </tbody>
           <tfoot>
             <tr>
-              <td colSpan="5"><strong>Total Sale</strong></td>
-              <td><strong>{calculateTotalCashCollection()}</strong></td>
+           
+              <td colSpan="3"><strong>Total</strong></td>
+              <td><strong>{calculateTotal('cash_collection')}</strong></td>
+              <td><strong>{calculateTotal('upi_collection')}</strong></td>
+              <td><strong>{calculateTotal('card_collection')}</strong></td>
+              <td><strong>{calculateTotal('cash_return')}</strong></td>
+              <td><strong>{calculateTotal('final_cash_collection')}</strong></td>
             </tr>
           </tfoot>
         </table>
