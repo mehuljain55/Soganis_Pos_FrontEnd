@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { API_BASE_URL } from "../Config.js";
+import InventoryManager from './InventoryManager';
 import './InventoryUpdate.css';
+
 
 const InventoryUpdate = () => {
   const [file, setFile] = useState(null);
@@ -125,6 +127,10 @@ const InventoryUpdate = () => {
           Download Inventory Edit Status
         </a>
       )}
+
+      <div classname='download-excel'>
+                  <InventoryManager />   
+      </div>
     </div>
   );
 };
