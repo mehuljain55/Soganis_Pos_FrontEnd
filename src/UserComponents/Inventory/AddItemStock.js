@@ -153,9 +153,11 @@ const AddItemStock = () => {
   const validateItems = async () => {
     const newValidationErrors = {};
     const uniqueItemCodes = new Set();
-
+  
     for (let i = 0; i < items.length; i++) {
       const item = items[i];
+      
+      // Validate itemCode
       if (!item.itemCode.trim()) {
         newValidationErrors[`itemCode${i}`] = 'Item code is required';
       } else if (uniqueItemCodes.has(item.itemCode)) {
@@ -167,11 +169,27 @@ const AddItemStock = () => {
           newValidationErrors[`itemCode${i}`] = 'Item code already exists';
         }
       }
-    }
+  
+      // Validate itemCategory
+      if (!item.itemCategory.trim()) {
+        newValidationErrors[`itemCategory${i}`] = 'Item category is required';
+      } else if (!itemCategoryOptions.includes(item.itemCategory)) {
+        newValidationErrors[`itemCategory${i}`] = 'Invalid item category selected';
+      }
 
+      if (!item.itemType.trim()) {
+        newValidationErrors[`itemType${i}`] = 'Item type is required';
+      } else if (!itemTypeOptions.includes(item.itemType)) {
+        newValidationErrors[`itemType${i}`] = 'Invalid item type selected';
+      }
+
+      
+    }
+  
     setValidationErrors(newValidationErrors);
     return Object.keys(newValidationErrors).length === 0;
   };
+  
 
   const handleSubmit = async () => {
     const isValid = await validateItems();
@@ -216,37 +234,40 @@ const AddItemStock = () => {
   const handleFileUpload = (e) => {
     const file = e.target.files[0];
     const reader = new FileReader();
-  
+
     reader.onload = (evt) => {
-      const data = evt.target.result;
-      const workbook = XLSX.read(data, { type: 'binary' });
-      const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
-      const excelRows = XLSX.utils.sheet_to_json(firstSheet, { header: 1 });
-  
-      const parsedItems = excelRows.slice(1).map((row) => {
-        const itemType = row[2] || '';
-        const itemCategory = row[5] || '';
-  
-        return {
-          itemCode: row[0] || '',
-          itemName: row[1] || '',
-          itemType: getHighestMatch(itemType, itemTypeOptions),
-          itemSize: row[3] || '',
-          itemColor: row[4] || '',
-          itemCategory: getHighestMatch(itemCategory, itemCategoryOptions),
-          price: row[6] || '',
-          wholeSalePrice: row[7] || '',
-          quantity: row[8] || 0,
-          description: row[9] || '',
-          groupId: row[10] || ''
-        };
-      });
-  
-      setItems(parsedItems);
+        const data = evt.target.result;
+        const workbook = XLSX.read(data, { type: 'binary' });
+        const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
+        const excelRows = XLSX.utils.sheet_to_json(firstSheet, { header: 1 });
+
+        const parsedItems = excelRows.slice(1).map((row) => {
+            const toTrimmedString = (value) => (value !== undefined && value !== null ? String(value).trim() : "");
+
+            const itemType = toTrimmedString(row[2]);
+            const itemCategory = toTrimmedString(row[5]);
+
+            return {
+                itemCode: toTrimmedString(row[0]),
+                itemName: toTrimmedString(row[1]),
+                itemType: getHighestMatch(itemType, itemTypeOptions),
+                itemSize: toTrimmedString(row[3]),
+                itemColor: toTrimmedString(row[4]),
+                itemCategory: getHighestMatch(itemCategory, itemCategoryOptions),
+                price: toTrimmedString(row[6]),
+                wholeSalePrice: toTrimmedString(row[7]),
+                quantity: parseFloat(row[8]) || 0, // Parse quantity as a number
+                description: toTrimmedString(row[9]),
+                groupId: toTrimmedString(row[10])
+            };
+        });
+
+        setItems(parsedItems);
     };
-  
+
     reader.readAsBinaryString(file);
-  };
+};
+
 
   return (
     <div className='add-stock-cont'>
@@ -325,6 +346,9 @@ const AddItemStock = () => {
                     </option>
                   ))}
                 </select>
+                {validationErrors[`itemType${rowIndex}`] && (
+    <span className="error-message">{validationErrors[`itemType${rowIndex}`]}</span>
+  )}
               </td>
               <td>
                 <input
@@ -353,8 +377,12 @@ const AddItemStock = () => {
                     <option key={category} value={category}>
                       {category}
                     </option>
+                    
                   ))}
                 </select>
+                {validationErrors[`itemCategory${rowIndex}`] && (
+    <span className="error-message">{validationErrors[`itemCategory${rowIndex}`]}</span>
+  )}
               </td>
               <td>
                 <input
