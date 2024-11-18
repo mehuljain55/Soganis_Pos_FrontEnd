@@ -1038,7 +1038,7 @@ const handleSelectChange = (selectedOption) => {
               <select value={paymentMode} onChange={handlePaymentModeChange}>
                 <option value="Cash">Cash</option>
                 <option value="Card">Card</option>
-                <option value="UPI">UPI</option>
+                <option value="Upi">UPI</option>
                 <option value="Partial">Partial</option>
                 
               </select>
