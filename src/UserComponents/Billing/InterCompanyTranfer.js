@@ -412,17 +412,23 @@ const handleSelectChange = (selectedOption) => {
 
     if (selectedItems.length === 0) {
       alert("The item list cannot be empty. Please add at least one item.")
-      return; // Prevent API call
+      return; 
     }
 
     if (!schoolName) {
       alert("School Name is required")
       
-      return; // Prevent API call if validation fails
+      return; 
   }
 
 
 
+  if (!customerName || customerName.trim() === "") {
+    alert("Company Name is required. Please select a company.");
+    return; 
+  }
+
+  console.log(customerName);
 
     const billData = {
       userId: userData.userId,
@@ -442,6 +448,9 @@ const handleSelectChange = (selectedOption) => {
       })),
     };
 
+
+console.log(billData);
+
     try {
        setLoading(true); // Show loading animation{
       const response = await axios.post(`${API_BASE_URL}/user/intercompany/billRequest`, billData, { responseType: 'arraybuffer' });
@@ -456,7 +465,7 @@ const handleSelectChange = (selectedOption) => {
       setSelectedItems([]);
       setCustomerName('');
       setCustomerMobileNo('');
-      setPaymentMode('Cash');
+      setPaymentMode('Due');
       setSchoolName('');
     } catch (error) {
       console.error('Error generating bill:', error);
@@ -826,7 +835,9 @@ const handleSelectChange = (selectedOption) => {
                 Payment Mode:
                 <select value={paymentMode} onChange={handlePaymentModeChange}>
                   <option value="Cash">Cash</option>
-                  <option value="UPI">UPI</option>
+                  <option value="Upi">UPI</option>
+                  <option value="Card">Card</option>
+                 
                   <option value="Due">Due</option>
                 </select>
               </label>
