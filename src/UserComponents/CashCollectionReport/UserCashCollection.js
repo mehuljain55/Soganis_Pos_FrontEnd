@@ -80,7 +80,7 @@ const UserCashCollection = () => {
               <th>UPI Collection</th>
               <th>Card Collection</th>
               
-              <th>Cash Returned</th>
+              <th>Cash out</th>
               <th>Total</th>
             </tr>
           </thead>
