@@ -6,6 +6,8 @@ import Modal from 'react-bootstrap/Modal';
 import Button from 'react-bootstrap/Button';
 import Select from 'react-select';
 import BillPopup from './BillPopup'; 
+import printJS from "print-js";
+
 
 
 const InterCompanyTranfer = ({ userData }) => {
@@ -454,13 +456,14 @@ console.log(billData);
     try {
        setLoading(true); // Show loading animation{
       const response = await axios.post(`${API_BASE_URL}/user/intercompany/billRequest`, billData, { responseType: 'arraybuffer' });
-      
-      
       const pdfBlob = new Blob([response.data], { type: 'application/pdf' });
       const pdfUrl = URL.createObjectURL(pdfBlob);
 
-      setPdfData(pdfUrl);
-      setShowPdfModal(true);
+      printJS({
+        printable: pdfUrl,
+        type: "pdf",
+    
+      });
 
       setSelectedItems([]);
       setCustomerName('');
