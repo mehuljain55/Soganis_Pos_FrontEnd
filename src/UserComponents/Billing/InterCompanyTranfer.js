@@ -456,8 +456,6 @@ console.log(billData);
     try {
        setLoading(true); // Show loading animation{
       const response = await axios.post(`${API_BASE_URL}/user/intercompany/billRequest`, billData, { responseType: 'arraybuffer' });
-      
-      
       const pdfBlob = new Blob([response.data], { type: 'application/pdf' });
       const pdfUrl = URL.createObjectURL(pdfBlob);
 

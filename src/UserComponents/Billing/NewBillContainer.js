@@ -495,9 +495,7 @@ const handleSelectChange = (selectedOption) => {
       billing: billData,
       transactionModel: transactionalModel, // Use the transactional model directly
     };
-
   
-    // Make the API call
     try {
       setLoading(true);
       const response = await axios.post(`${API_BASE_URL}/user/billRequest`, billingModel, {
