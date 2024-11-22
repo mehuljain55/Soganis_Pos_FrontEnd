@@ -5,8 +5,8 @@ import { API_BASE_URL } from '../Config.js';
 import Modal from 'react-bootstrap/Modal';
 import Button from 'react-bootstrap/Button';
 import Select from 'react-select';
-import BillPopup from './BillPopup'; // Import the popup component
-
+import BillPopup from './BillPopup'; 
+import printJS from "print-js";
 
 const NewBillContainer = ({ userData }) => {
   const [selectedItems, setSelectedItems] = useState([]);
@@ -495,9 +495,7 @@ const handleSelectChange = (selectedOption) => {
       billing: billData,
       transactionModel: transactionalModel, // Use the transactional model directly
     };
-  
-    console.log("Final bill data");
-    console.log(billingModel);
+
   
     // Make the API call
     try {
@@ -508,8 +506,16 @@ const handleSelectChange = (selectedOption) => {
       const pdfBlob = new Blob([response.data], { type: "application/pdf" });
       const pdfUrl = URL.createObjectURL(pdfBlob);
   
-      setPdfData(pdfUrl);
-      setShowPdfModal(true);
+
+
+      printJS({
+        printable: pdfUrl,
+        type: "pdf",
+    
+      });
+
+
+     
   
       // Reset form
       setDiscountPercentage(0);

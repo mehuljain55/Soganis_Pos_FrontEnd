@@ -6,7 +6,7 @@ import Modal from 'react-bootstrap/Modal';
 import Button from 'react-bootstrap/Button';
 import Select from 'react-select'; // Import Select
 import BillPopup from './BillPopup'; // Import the popup component
-
+import printJS from "print-js";
 
 
 const ExchangeBill = ({ userData,itemsToExchange, exchangeAmount, onClose }) => {
@@ -419,8 +419,11 @@ const handleSelectChange = (selectedOption) => {
       const pdfBlob = new Blob([response.data], { type: 'application/pdf' });
       const pdfUrl = URL.createObjectURL(pdfBlob);
   
-      setPdfData(pdfUrl);
-      setShowPdfModal(true);
+      printJS({
+        printable: pdfUrl,
+        type: "pdf",
+    
+      });
   
       setSelectedItems([]);
       setCustomerName('');
