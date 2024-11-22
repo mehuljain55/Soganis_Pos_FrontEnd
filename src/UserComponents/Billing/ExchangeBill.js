@@ -415,7 +415,7 @@ const handleSelectChange = (selectedOption) => {
       const response = await axios.post(`${API_BASE_URL}/user/exchange/billRequest`, requestData, {
         responseType: 'arraybuffer',
       });
-  
+
       const pdfBlob = new Blob([response.data], { type: 'application/pdf' });
       const pdfUrl = URL.createObjectURL(pdfBlob);
   
@@ -424,7 +424,7 @@ const handleSelectChange = (selectedOption) => {
         type: "pdf",
     
       });
-  
+
       setSelectedItems([]);
       setCustomerName('');
       setCustomerMobileNo('');
