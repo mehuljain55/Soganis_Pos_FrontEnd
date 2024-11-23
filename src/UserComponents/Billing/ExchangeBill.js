@@ -352,6 +352,16 @@ const handleSelectChange = (selectedOption) => {
     return total;
   };
 
+  const calculateTotalQuantity = () => {
+    let total_quantity = 0;
+    selectedItems.forEach((item) => {
+      total_quantity=total_quantity+item.quantity;
+    });
+    
+    return total_quantity;
+  };
+
+
   const handleArrowNavigation = (e) => {
     if (e.key === 'ArrowDown') {
       setSelectedIndex((prevIndex) => Math.min(prevIndex + 1, searchResults.length - 1));
@@ -789,6 +799,7 @@ const handleSelectChange = (selectedOption) => {
   <div className="item-summary">
   <h3>Total Amount: {(calculateTotalAmount() - exchangeAmount).toFixed(2)} Rs</h3>
   <h4>Item Count: {selectedItems.length}</h4>
+  <h4>Total Quantity: {calculateTotalQuantity()}</h4>
   </div>
   <div className="payment-section">
     <div className="payment-mode">
