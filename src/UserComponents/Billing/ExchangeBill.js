@@ -798,8 +798,8 @@ const handleSelectChange = (selectedOption) => {
   </div>
   <div className="item-summary">
   <h3>Total Amount: {(calculateTotalAmount() - exchangeAmount).toFixed(2)} Rs</h3>
-  <h4>Item Count: {selectedItems.length}</h4>
   <h4>Total Quantity: {calculateTotalQuantity()}</h4>
+  
   </div>
   <div className="payment-section">
     <div className="payment-mode">
