@@ -49,32 +49,38 @@ const InventoryUpdate = () => {
     formData.append('storeId', storeId);
 
     try {
-      const response = await axios.post(`${API_BASE_URL}/inventory/edit/upload`, formData, {
-        headers: { 'Content-Type': 'multipart/form-data' },
-        responseType: 'blob',
-      });
+        const response = await axios.post(`${API_BASE_URL}/inventory/edit/upload`, formData, {
+            headers: { 'Content-Type': 'multipart/form-data' },
+            responseType: 'blob', // Ensure the response is in blob format
+        });
 
-      // Read the content of the response blob
-      const reader = new FileReader();
-      reader.onload = () => {
-        setFileContent(reader.result); // Set the file content to be displayed
-      };
-      reader.readAsText(response.data);
+        // Create a Blob object from the response
+        const blob = new Blob([response.data], { type: 'text/plain' });
+        
+        // Create a temporary URL for the blob
+        const url = window.URL.createObjectURL(blob);
+        
+        // Automatically trigger the file download
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = 'downloaded_file.txt'; // Specify the file name
+        document.body.appendChild(link); // Append the link to the document
+        link.click(); // Programmatically click the link
+        link.remove(); // Remove the link element from the document
+        
+        // Revoke the object URL after download
+        window.URL.revokeObjectURL(url);
 
-      // Prepare the download URL for the file
-      const blob = new Blob([response.data], { type: 'text/plain' });
-      const url = window.URL.createObjectURL(blob);
-      setDownloadUrl(url);
-
-      console.log('Upload successful:', response);
+        console.log('Upload successful:', response);
     } catch (error) {
-      console.error('Upload failed:', error);
+        console.error('Upload failed:', error);
     } finally {
-      setIsUploading(false);
-      setIsLoading(false);
-      setFile(null); // Clear the file after response is received
+        setIsUploading(false);
+        setIsLoading(false);
+        setFile(null); // Clear the file after response is received
     }
-  };
+};
+
 
   const handleClear = () => {
     setFile(null);

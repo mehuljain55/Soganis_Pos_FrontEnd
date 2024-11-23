@@ -466,9 +466,6 @@ const handleSelectChange = (selectedOption) => {
     setCustomerName(e.target.value);
   };
 
-
-  
-
   const handleMobileNoChange = (e) => {
     setCustomerMobileNo(e.target.value);
   };
