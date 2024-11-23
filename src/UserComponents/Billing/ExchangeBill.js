@@ -607,6 +607,7 @@ const handleSelectChange = (selectedOption) => {
       <div className="billing-container">
   <div className="billing-head">
     <h2>Exchange</h2>
+
   </div>
   <div className="barcode-input">
       <input
@@ -938,7 +939,7 @@ const handleSelectChange = (selectedOption) => {
   </Modal.Footer>
 </Modal>
 
-<button className="close-button" onClick={onClose}>Close</button>
+
     </div>
   );
 };
