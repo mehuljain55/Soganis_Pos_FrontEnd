@@ -607,7 +607,6 @@ const handleSelectChange = (selectedOption) => {
       <div className="billing-container">
   <div className="billing-head">
     <h2>Exchange</h2>
-
   </div>
   <div className="barcode-input">
       <input
@@ -799,8 +798,8 @@ const handleSelectChange = (selectedOption) => {
   </div>
   <div className="item-summary">
   <h3>Total Amount: {(calculateTotalAmount() - exchangeAmount).toFixed(2)} Rs</h3>
-  <h4>Item Count: {selectedItems.length}</h4>
   <h4>Total Quantity: {calculateTotalQuantity()}</h4>
+  
   </div>
   <div className="payment-section">
     <div className="payment-mode">
@@ -939,7 +938,7 @@ const handleSelectChange = (selectedOption) => {
   </Modal.Footer>
 </Modal>
 
-
+<button className="close-button" onClick={onClose}>Close</button>
     </div>
   );
 };
