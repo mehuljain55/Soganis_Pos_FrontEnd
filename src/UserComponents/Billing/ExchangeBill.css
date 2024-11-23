@@ -449,3 +449,7 @@ h2 {
   margin-left: auto; /* Ensures the input is aligned to the right */
 }
 
+
+.exchange-close-button{
+  margin-top: 25px !important;
+}

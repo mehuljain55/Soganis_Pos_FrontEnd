@@ -938,7 +938,7 @@ const handleSelectChange = (selectedOption) => {
   </Modal.Footer>
 </Modal>
 
-<button className="close-button" onClick={onClose}>Close</button>
+<button className="exchange-close-button" onClick={onClose}>Close</button>
     </div>
   );
 };
