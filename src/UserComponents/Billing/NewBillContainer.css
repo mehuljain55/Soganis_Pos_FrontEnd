@@ -235,6 +235,7 @@ h2 {
 .item-summary {
   position: absolute;
   left: 50%;
+  margin-top: 50px;
   transform: translateX(-50%);
   text-align: center;
 }

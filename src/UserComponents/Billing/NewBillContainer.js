@@ -386,6 +386,7 @@ const handleSelectChange = (selectedOption) => {
       const discountedPrice = item.price * (1 - discount / 100);
       total += discountedPrice * item.quantity;
     });
+    
 
     // Round total to the nearest 5 or 10
     const remainder = total % 10;
@@ -397,6 +398,16 @@ const handleSelectChange = (selectedOption) => {
 
     return total;
   };
+
+  const calculateTotalQuantity = () => {
+    let total_quantity = 0;
+    selectedItems.forEach((item) => {
+      total_quantity=total_quantity+item.quantity;
+    });
+    
+    return total_quantity;
+  };
+
 
   
   const handleArrowNavigation = (e) => {
@@ -1021,10 +1032,12 @@ const handleSelectChange = (selectedOption) => {
         <div className="item-summary">
           <h3>Total Amount: {calculateTotalAmount().toFixed(2)} Rs</h3>
           <h4>Item Count: {selectedItems.length}</h4>
+          <h4>Total Quantity: {calculateTotalQuantity()}</h4>
           
         </div>
         <div className="payment-section">
           <div className="payment-mode">
+          
           <label>
           Discount (%):
           </label>
