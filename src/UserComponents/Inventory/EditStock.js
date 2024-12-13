@@ -7,9 +7,9 @@ const EditStock = ({ data, resetFilters  }) => {
   const [searchTerm, setSearchTerm] = useState('');
   const [maxQuantity, setMaxQuantity] = useState('');
   const [editableData, setEditableData] = useState({});
-  const [isUpdating, setIsUpdating] = useState(false); // Track if update is in progress
-  const [statusMessage, setStatusMessage] = useState(''); // To store the status message (text file content)
-  const [tableHidden, setTableHidden] = useState(false); // To control the visibility of the table
+  const [isUpdating, setIsUpdating] = useState(false); 
+  const [statusMessage, setStatusMessage] = useState('');
+  const [tableHidden, setTableHidden] = useState(false);
   const [isSubmitButtonVisible, setIsSubmitButtonVisible] = useState(true); // Control visibility of the submit button
   const inputRefs = useRef({});
 
@@ -62,8 +62,7 @@ const EditStock = ({ data, resetFilters  }) => {
   
       // Optionally, revoke the URL after download is triggered to free up resources
       URL.revokeObjectURL(downloadUrl);
-  
-      // Set status message from the response
+
       const content = new TextDecoder('utf-8').decode(response.data);
       setStatusMessage(content); // Set the content from the response
     } catch (error) {
