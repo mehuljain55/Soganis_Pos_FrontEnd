@@ -69,6 +69,32 @@ const BillViewer = () => {
     setPdfData(null);
   };
 
+  const handleDeleteBill = async (billNo) => {
+    try {
+      const user = JSON.parse(sessionStorage.getItem('user'));
+      const storeId = user?.storeId;
+
+      const response = await axios.post(`${API_BASE_URL}/user/cancelBill`, null, {
+        params: { billNo, storeId },
+      });
+
+      if (response.data === 'Success') {
+        alert('Bill successfully canceled.');
+        fetchBills(); // Refresh bills after deletion
+      } else {
+        alert('Failed to cancel the bill.');
+      }
+    } catch (error) {
+      console.error('Error canceling bill:', error);
+      alert('An error occurred while canceling the bill.');
+    }
+  };
+
+  const isToday = (dateString) => {
+    const today = new Date().toISOString().split('T')[0];
+    return dateString === today;
+  };
+
   return (
     <div className="bill-viewer">
       <h1>Bill Viewer</h1>
@@ -120,10 +146,12 @@ const BillViewer = () => {
                   <td>{bill.schoolName}</td>
                   <td>{bill.final_amount}</td>
                   <td className="action-buttons">
-  <button onClick={() => handleViewDetails(bill)}>View</button>
-  <button onClick={() => handlePrintBill(bill.billNo)}>Print</button>
-</td>
-
+                    <button onClick={() => handleViewDetails(bill)}>View</button>
+                    <button onClick={() => handlePrintBill(bill.billNo)}>Print</button>
+                    {bill.status === 'Fresh' && isToday(bill.bill_date) && (
+                      <button onClick={() => handleDeleteBill(bill.billNo)}>Delete</button>
+                    )}
+                  </td>
                 </tr>
               ))}
             </tbody>
@@ -134,12 +162,20 @@ const BillViewer = () => {
       {selectedBill && (
         <div className="bill-viewer-popup">
           <div className="bill-viewer-popup-content">
-            <button className="bill-viewer-close-popup" onClick={closePopup}>Close</button>
+            <button className="bill-viewer-close-popup" onClick={closePopup}>
+              Close
+            </button>
             <h2>Bill Details</h2>
             <div className="bill-viewer-details">
-              <p><strong>Bill No:</strong> {selectedBill.billNo}</p>
-              <p><strong>Date:</strong> {selectedBill.bill_date}</p>
-              <p><strong>Customer Mobile:</strong> {selectedBill.customerMobileNo}</p>
+              <p>
+                <strong>Bill No:</strong> {selectedBill.billNo}
+              </p>
+              <p>
+                <strong>Date:</strong> {selectedBill.bill_date}
+              </p>
+              <p>
+                <strong>Customer Mobile:</strong> {selectedBill.customerMobileNo}
+              </p>
             </div>
             <h3>Items</h3>
             <table className="bill-viewer-popup-table">
@@ -173,8 +209,12 @@ const BillViewer = () => {
               </tbody>
               <tfoot>
                 <tr>
-                  <td colSpan="8" style={{ textAlign: 'right' }}><strong>Total Amount:</strong></td>
-                  <td><strong>{selectedBill.final_amount}</strong></td>
+                  <td colSpan="8" style={{ textAlign: 'right' }}>
+                    <strong>Total Amount:</strong>
+                  </td>
+                  <td>
+                    <strong>{selectedBill.final_amount}</strong>
+                  </td>
                 </tr>
               </tfoot>
             </table>
@@ -182,7 +222,7 @@ const BillViewer = () => {
         </div>
       )}
 
-{pdfData && (
+      {pdfData && (
         <div className="bill-view-print-pdf">
           <div className="bill-view-print-pdf-content">
             <iframe

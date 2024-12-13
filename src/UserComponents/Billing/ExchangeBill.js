@@ -9,7 +9,7 @@ import BillPopup from './BillPopup'; // Import the popup component
 import printJS from "print-js";
 
 
-const ExchangeBill = ({ userData,itemsToExchange, exchangeAmount, onClose }) => {
+const ExchangeBill = ({ userData,itemsToExchange, exchangeAmount,billNo, onClose }) => {
   const [selectedItems, setSelectedItems] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [searchResults, setSearchResults] = useState([]);
@@ -416,11 +416,14 @@ const handleSelectChange = (selectedOption) => {
     const userData = JSON.parse(sessionStorage.getItem('user'));
   
     const requestData = {
+      billNo:billNo,
       bill: billData,
       itemModel: exchangeData,
       user: userData,
     };
   
+console.log(requestData);
+
     try {
       const response = await axios.post(`${API_BASE_URL}/user/exchange/billRequest`, requestData, {
         responseType: 'arraybuffer',

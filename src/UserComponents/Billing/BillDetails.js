@@ -32,6 +32,29 @@ const BillDetails = ({ userData }) => {
         setBillNo(event.target.value);
     };
 
+   const resetPage=() =>{
+    setBillNo('');
+    setBillData(null);
+    setReturnedItems({});
+    setReturnQuantities({});
+    setSelectedItems([]);
+    setShowPopup(false);
+    setPopupMessage('');
+    setPopupType('');
+    setDefectItem(null);
+    setDefectQuantity(0);
+    setItemsToExchange([]);
+    setBillType('');
+    setBillList([]);
+    setShowBillSelectionPopup(false);
+    setIsDefectModalOpen(false);
+    setIsModalOpen(false);
+    setIsExchangeModalOpen(false);
+    setExchangeAmount(0);
+
+   }
+
+
     const fetchBill = () => {
         const user = JSON.parse(sessionStorage.getItem('user'));
         const storeId = user ? user.storeId : '';
@@ -62,6 +85,36 @@ const BillDetails = ({ userData }) => {
             });
     };
     
+    
+    const handleDeleteBill = () => {
+        const user = JSON.parse(sessionStorage.getItem('user'));
+        const storeId = user ? user.storeId : '';
+    
+        if (window.confirm('Are you sure you want to delete this bill?')) {
+            axios.post(`${API_BASE_URL}/user/cancelBill`, null, {
+                params: {
+                    billNo: billData.billNo,
+                    storeId: storeId,
+                },
+            })
+            .then(response => {
+                if (response.data === 'success') {
+                    alert(response.data);
+                    resetPage();
+                    
+                } else {
+                    alert(response.data);
+                    resetPage();
+                }
+            })
+            .catch(error => {
+                console.error('Error deleting bill:', error);
+                setPopupMessage('An error occurred. Please try again.');
+                setPopupType('error');
+                setShowPopup(true);
+            });
+        }
+    };
     
     
 
@@ -282,15 +335,23 @@ const BillDetails = ({ userData }) => {
                 <>
                     <table className="billdets-info">
                         <tr>
-                            <td><p><strong>Bill No:</strong> {billData.billNo}</p></td>
+                            <td>
+                                <p><strong>Bill No:</strong> {billData.billNo}</p>
+            
+                            </td>
                             <td><p><strong>Cashier:</strong> {billData.userId}</p></td>
                             <td><p><strong>Bill Date:</strong> {billData.bill_date}</p></td>
+                            <td>  <p><strong>Status</strong> {billData.status}</p></td>
                         </tr>
                         <tr>
                             <td><p><strong>Customer Name:</strong> {billData.customerName || 'N/A'}</p></td>
                             <td><p><strong>Payment Mode:</strong> {billData.paymentMode}</p></td>
+                            
                             <td><p><strong>Final Amount:</strong> {billData.final_amount}</p></td>
+                            <td><p><strong>Bill Type</strong> {billData.billType}</p></td>
+                            
                         </tr>
+                      
                     </table>
                     <h2>Items</h2>
                     <table className="bill-detail-table">
@@ -357,6 +418,11 @@ const BillDetails = ({ userData }) => {
                     {selectedItems.length > 0 && (
                         <button onClick={() => setIsModalOpen(true)}>Return / Exchange </button>
                     )}
+                   
+                    { billData.status === 'Fresh' && billData.final_amount > 0 && (
+    <button onClick={handleDeleteBill}>Delete Bill</button>
+)}
+
                 </>
             )}
     
@@ -462,6 +528,7 @@ const BillDetails = ({ userData }) => {
                                 userData={userData}
                                 itemsToExchange={itemsToExchange}
                                 exchangeAmount={exchangeAmount}
+                                billNo={billData.billNo}
                                 onClose={handleCloseExchangeModal}
                             />
                         ) : (
@@ -469,6 +536,7 @@ const BillDetails = ({ userData }) => {
                                 userData={userData}
                                 itemsToExchange={itemsToExchange}
                                 exchangeAmount={exchangeAmount}
+                                billNo={billData.billNo}
                                 onClose={handleCloseExchangeModal}
                             />
                         )}

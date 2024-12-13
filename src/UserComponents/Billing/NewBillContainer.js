@@ -73,8 +73,8 @@ const NewBillContainer = ({ userData }) => {
         alert("Item is empty");
         return;
       }
-    if (!customerName.trim()) {
-      alert('Customer name is required to hold a bill.');
+    if (!schoolName.trim()) {
+      alert('School name is required to hold a bill.');
       return;
     }
 
@@ -1149,7 +1149,7 @@ const handleSelectChange = (selectedOption) => {
     {heldBills.map((bill, index) => (
       <div key={index} className="continue-bill-wrapper">
         <button className="continue-bill-button" onClick={() => handleLoadBill(index)}>
-          Continue Bill - {bill.customerName || `Unnamed (${index + 1})`}
+          Continue Bill-((${index + 1})) - {bill.schoolName || `Unnamed (${index + 1})`}
         </button>
         <span
           className="discard-bill"
