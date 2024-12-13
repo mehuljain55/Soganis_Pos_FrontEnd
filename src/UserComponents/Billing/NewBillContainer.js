@@ -68,11 +68,17 @@ const NewBillContainer = ({ userData }) => {
   });
 
   const handleHoldBill = () => {
+    if(selectedItems.length<=0)
+      {
+        alert("Item is empty");
+        return;
+      }
     if (!customerName.trim()) {
       alert('Customer name is required to hold a bill.');
       return;
     }
-  
+
+   
     const newBill = {
       selectedItems,
       customerName,
@@ -1021,24 +1027,7 @@ const handleSelectChange = (selectedOption) => {
 
       </div>
 
-      <div className="hold-bill-section">
-  <button className="hold-bill-button" onClick={handleHoldBill}>Hold Bill</button>
-  <div className="continue-bills-container">
-    {heldBills.map((bill, index) => (
-      <div key={index} className="continue-bill-wrapper">
-        <button className="continue-bill-button" onClick={() => handleLoadBill(index)}>
-          Continue Bill - {bill.customerName || `Unnamed (${index + 1})`}
-        </button>
-        <span
-          className="discard-bill"
-          onClick={(e) => { e.stopPropagation(); handleDiscardBill(index); }}
-        >
-          ×
-        </span>
-      </div>
-    ))}
-  </div>
-</div>
+
 
 
   
@@ -1154,6 +1143,25 @@ const handleSelectChange = (selectedOption) => {
 
       </div>
 
+      <div className="hold-bill-section">
+  <button className="hold-bill-button" onClick={handleHoldBill}>Hold Bill</button>
+  <div className="continue-bills-container">
+    {heldBills.map((bill, index) => (
+      <div key={index} className="continue-bill-wrapper">
+        <button className="continue-bill-button" onClick={() => handleLoadBill(index)}>
+          Continue Bill - {bill.customerName || `Unnamed (${index + 1})`}
+        </button>
+        <span
+          className="discard-bill"
+          onClick={(e) => { e.stopPropagation(); handleDiscardBill(index); }}
+        >
+          ×
+        </span>
+      </div>
+    ))}
+  </div>
+</div>
+
       {showTransactionPopup && (
         <div className="transaction-popup">
           <div className="popup-content">
@@ -1218,6 +1226,8 @@ const handleSelectChange = (selectedOption) => {
           </div>
         </div>
       )}
+
+
       {showPopup && (
         <BillPopup
           onConfirm={handlePopupConfirm}
