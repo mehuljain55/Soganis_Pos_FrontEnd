@@ -62,6 +62,65 @@ const NewBillContainer = ({ userData }) => {
     amount: 0,
   });
 
+  const [heldBills, setHeldBills] = useState(() => {
+    const bills = JSON.parse(sessionStorage.getItem('heldBills')) || [];
+    return bills;
+  });
+
+  const handleHoldBill = () => {
+    if (!customerName.trim()) {
+      alert('Customer name is required to hold a bill.');
+      return;
+    }
+  
+    const newBill = {
+      selectedItems,
+      customerName,
+      customerMobileNo,
+      schoolName,
+      discountPercentage,
+      paymentMode,
+    };
+  
+    if (heldBills.length < 2) {
+      const updatedBills = [...heldBills, newBill];
+      sessionStorage.setItem('heldBills', JSON.stringify(updatedBills));
+      setHeldBills(updatedBills);
+  
+      // Clear current bill state to start a new bill
+      resetBillState();
+    } else {
+      alert('You can only hold a maximum of 2 bills.');
+    }
+  };
+  
+  const handleLoadBill = (billIndex) => {
+    const billToLoad = heldBills[billIndex];
+    if (billToLoad) {
+      // Load the bill into the current state
+      setSelectedItems(billToLoad.selectedItems);
+      setCustomerName(billToLoad.customerName);
+      setCustomerMobileNo(billToLoad.customerMobileNo);
+      setSchoolName(billToLoad.schoolName);
+      setDiscountPercentage(billToLoad.discountPercentage);
+      setPaymentMode(billToLoad.paymentMode);
+  
+      // Remove loaded bill from session storage
+      const updatedBills = heldBills.filter((_, index) => index !== billIndex);
+      sessionStorage.setItem('heldBills', JSON.stringify(updatedBills));
+      setHeldBills(updatedBills);
+    }
+  };
+  
+  const resetBillState = () => {
+    setSelectedItems([]);
+    setCustomerName('');
+    setCustomerMobileNo('');
+    setSchoolName('');
+    setDiscountPercentage(0);
+    setPaymentMode('Cash');
+  };
+
   const fetchAllSchools = async () => {
     try {
         const user = JSON.parse(sessionStorage.getItem('user'));
@@ -611,6 +670,13 @@ const handleSelectChange = (selectedOption) => {
     ]);
   };
   
+  const handleDiscardBill = (billIndex) => {
+    // Remove the bill from the heldBills array
+    const updatedBills = heldBills.filter((_, index) => index !== billIndex);
+    sessionStorage.setItem('heldBills', JSON.stringify(updatedBills));
+    setHeldBills(updatedBills);
+  };
+  
 
   const handleRemoveRow = (id) => {
     setPaymentEntries(paymentEntries.filter((entry) => entry.id !== id));
@@ -952,7 +1018,29 @@ const handleSelectChange = (selectedOption) => {
             </label>
           </div>
         </div>
+
       </div>
+
+      <div className="hold-bill-section">
+  <button className="hold-bill-button" onClick={handleHoldBill}>Hold Bill</button>
+  <div className="continue-bills-container">
+    {heldBills.map((bill, index) => (
+      <div key={index} className="continue-bill-wrapper">
+        <button className="continue-bill-button" onClick={() => handleLoadBill(index)}>
+          Continue Bill - {bill.customerName || `Unnamed (${index + 1})`}
+        </button>
+        <span
+          className="discard-bill"
+          onClick={(e) => { e.stopPropagation(); handleDiscardBill(index); }}
+        >
+          ×
+        </span>
+      </div>
+    ))}
+  </div>
+</div>
+
+
   
       {/* Billing Items Table */}
       <div
@@ -1063,7 +1151,9 @@ const handleSelectChange = (selectedOption) => {
             <button id='submit-btn' onClick={handleSubmit}>Bill</button>
           </div>
         </div>
+
       </div>
+
       {showTransactionPopup && (
         <div className="transaction-popup">
           <div className="popup-content">

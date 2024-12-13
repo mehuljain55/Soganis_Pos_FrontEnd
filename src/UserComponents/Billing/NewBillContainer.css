@@ -554,3 +554,115 @@ h2 {
   margin-bottom: 10px;
   font-weight: bold;
 }
+
+/* Style for the hold-bill-section */
+.hold-bill-section {
+  display: flex;
+  justify-content: space-between; /* Space between the buttons */
+  align-items: center;
+  gap: 20px; /* Space between Hold Bill button and Continue Bill container */
+  padding: 20px;
+  width: 100%; /* Ensures the section takes the full width of its container */
+}
+
+/* Style for the hold-bill-section */
+.hold-bill-section {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
+  padding: 20px;
+  width: 100%;
+}
+
+
+/* Style for the hold-bill-section */
+.hold-bill-section {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
+  padding: 20px;
+  width: 100%;
+}
+
+/* Style for the Hold Bill button */
+.hold-bill-button {
+  font-size: 16px;
+  padding: 10px 20px;
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.hold-bill-button:hover {
+  background-color: #45a049;
+}
+
+.hold-bill-button:focus {
+  outline: none;
+}
+
+/* Container for Continue Bill buttons */
+.continue-bills-container {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+/* Wrapper for each Continue Bill button and discard icon */
+.continue-bill-wrapper {
+  position: relative;
+}
+
+/* Style for Continue Bill buttons */
+.continue-bill-button {
+  font-size: 14px;
+  padding: 8px 30px 8px 18px; /* Adjusted padding to make space for the cross */
+  background-color: #f0ad4e;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  display: inline-flex;
+  align-items: center;
+}
+
+/* Ensure the text doesn't overlap the icon */
+.continue-bill-button span {
+  margin-left: 8px; /* Space between the text and the cross */
+}
+
+.continue-bill-button:hover {
+  background-color: #ec971f;
+}
+
+.continue-bill-button:focus {
+  outline: none;
+}
+
+/* Style for the discard (X) icon */
+.discard-bill {
+  position: absolute;
+  top: -2px; /* Fine-tune position */
+  right: -2px; /* Fine-tune position */
+  font-size: 18px;
+  color: white;
+  background-color: rgba(0, 0, 0, 0.5);
+  border-radius: 50%;
+  width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.discard-bill:hover {
+  background-color: rgba(0, 0, 0, 0.7);
+}
