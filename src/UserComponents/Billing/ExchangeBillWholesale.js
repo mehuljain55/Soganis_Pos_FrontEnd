@@ -9,7 +9,7 @@ import BillPopup from './BillPopup.js'; // Import the popup component
 
 
 
-const ExchangeBillWholesale = ({ userData,itemsToExchange, exchangeAmount, onClose }) => {
+const ExchangeBillWholesale = ({ userData,itemsToExchange, exchangeAmount,billNo, onClose }) => {
   const [selectedItems, setSelectedItems] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [searchResults, setSearchResults] = useState([]);
@@ -394,6 +394,7 @@ const handleSelectChange = (selectedOption) => {
     const userData = JSON.parse(sessionStorage.getItem('user'));
   
     const requestData = {
+      billNo:billNo,
       bill: billData,
       itemModel: exchangeData,
       user: userData,
@@ -743,7 +744,7 @@ const handleSelectChange = (selectedOption) => {
                     onKeyDown={(e) => {
                       handleItemTableKeyDown(e, rowItemTableIndex, 4); // Handle arrow keys for table navigation
                       if (e.key === 'ArrowUp' || e.key === 'ArrowDown') {
-                        e.preventDefault(); // Prevent default behavior of incrementing/decrementing quantity
+                        e.preventDefault(); 
                       }
                     }}
                     min="1"
