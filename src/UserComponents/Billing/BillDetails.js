@@ -12,7 +12,7 @@ const BillDetails = ({ userData }) => {
     const [returnedItems, setReturnedItems] = useState({});
     const [currentDate, setCurrentDate] = useState(new Date().toISOString().split('T')[0]);
     const [isModalOpen, setIsModalOpen] = useState(false);
-    const [isExchangeModalOpen, setIsExchangeModalOpen] = useState(false); // New state for exchange modal
+    const [isExchangeModalOpen, setIsExchangeModalOpen] = useState(false); 
     const [returnQuantities, setReturnQuantities] = useState({});
     const [selectedItems, setSelectedItems] = useState([]);
     const [showPopup, setShowPopup] = useState(false);

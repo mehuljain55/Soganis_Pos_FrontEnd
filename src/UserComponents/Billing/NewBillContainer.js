@@ -418,7 +418,6 @@ const handleSelectChange = (selectedOption) => {
     setSelectedItems(updatedItems);
   };
   
-
   useEffect(() => {
     const handleKeyDown = (event) => {
       if (event.ctrlKey && event.key === 's') {
@@ -434,10 +433,6 @@ const handleSelectChange = (selectedOption) => {
     };
   }, []);
 
-
-
-  
-  
   useEffect(() => {
     if (dropdownOpen && searchResults.length > 0 && dropdownRef.current) {
       dropdownRef.current.firstChild.focus();
@@ -452,7 +447,6 @@ const handleSelectChange = (selectedOption) => {
       total += discountedPrice * item.quantity;
     });
     
-
     // Round total to the nearest 5 or 10
     const remainder = total % 10;
     if (remainder < 5) {
@@ -460,7 +454,6 @@ const handleSelectChange = (selectedOption) => {
     } else {
       total = total - remainder + (remainder >= 7.5 ? 10 : 5);
     }
-
     return total;
   };
 
@@ -473,8 +466,6 @@ const handleSelectChange = (selectedOption) => {
     return total_quantity;
   };
 
-
-  
   const handleArrowNavigation = (e) => {
     if (e.key === 'ArrowDown') {
       setSelectedIndex((prevIndex) => Math.min(prevIndex + 1, searchResults.length - 1));
@@ -580,17 +571,11 @@ const handleSelectChange = (selectedOption) => {
       const pdfBlob = new Blob([response.data], { type: "application/pdf" });
       const pdfUrl = URL.createObjectURL(pdfBlob);
   
-
-
       printJS({
         printable: pdfUrl,
         type: "pdf",
     
       });
-
-
-     
-  
       // Reset form
       setDiscountPercentage(0);
       setSelectedItems([]);
@@ -608,8 +593,7 @@ const handleSelectChange = (selectedOption) => {
     }
   };
   
-  
-  
+    
   const handlePrint = () => {
     if (pdfModalRef.current) {
       pdfModalRef.current.focus();
@@ -627,14 +611,10 @@ const handleSelectChange = (selectedOption) => {
     setCustomerName(e.target.value);
   };
 
- 
-
 
   const handleMobileNoChange = (e) => {
     setCustomerMobileNo(e.target.value);
   };
-
-
 
   const handlePaymentModeChange = (e) => {
     const mode = e.target.value;
@@ -793,7 +773,6 @@ const handleSelectChange = (selectedOption) => {
       itemSize: customItem.itemSize,
       itemCategory: customItem.itemCategory,
       itemName: `${customItem.itemCategory} ${customItem.itemType}`,
-
       quantity: customItem.quantity,
       price:customItem.sellPrice,
       amount:(customItem.quantity)*(customItem.sellPrice),
@@ -889,7 +868,6 @@ const handleSelectChange = (selectedOption) => {
       window.removeEventListener('keydown', handleKeyDown);
     };
   }, [shiftPressTime]); // Track shiftPressTime changes
-
 
 
   return (
@@ -1020,17 +998,12 @@ const handleSelectChange = (selectedOption) => {
         option.data.schoolCode.toLowerCase().includes(inputValue.toLowerCase())
     }
 />
-
             </label>
           </div>
         </div>
 
       </div>
 
-
-
-
-  
       {/* Billing Items Table */}
       <div
         className="items-table-container"
@@ -1149,7 +1122,7 @@ const handleSelectChange = (selectedOption) => {
     {heldBills.map((bill, index) => (
       <div key={index} className="continue-bill-wrapper">
         <button className="continue-bill-button" onClick={() => handleLoadBill(index)}>
-          Continue Bill-((${index + 1})) - {bill.schoolName || `Unnamed (${index + 1})`}
+          Continue Bill-{index + 1} - {bill.schoolName || `Unnamed (${index + 1})`}
         </button>
         <span
           className="discard-bill"
@@ -1226,7 +1199,6 @@ const handleSelectChange = (selectedOption) => {
           </div>
         </div>
       )}
-
 
       {showPopup && (
         <BillPopup
