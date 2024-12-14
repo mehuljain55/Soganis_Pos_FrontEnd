@@ -20,12 +20,8 @@ const ExchangeBill = ({ userData,itemsToExchange, exchangeAmount,billNo, onClose
   const [schoolName, setSchoolName] = useState('');
   const [selectedIndex, setSelectedIndex] = useState(-1);
   const [shiftPressTime, setShiftPressTime] = useState(null); 
-
-    
-  
   const [isBarcodeMode, setIsBarcodeMode] = useState(false);
   const [barcode, setBarcode] = useState('');
-
   const searchInputRef = useRef(null);
   const barcodeInputRef = useRef(null);
   const dropdownRef = useRef(null);
@@ -37,12 +33,8 @@ const ExchangeBill = ({ userData,itemsToExchange, exchangeAmount,billNo, onClose
   const [isTableFocused, setIsTableFocused] = useState(false); 
   const [showPopup, setShowPopup] = useState(false);
   const [someState, setSomeState] = useState(false); 
-
   const [allSchools, setAllSchools] = useState([]);
   const selectedSchoolRef = useRef(null); // Renamed to avoid collision
-
-
-
 
   const [customItem, setCustomItem] = useState({
     itemBarcodeID: 'SG9999999',
