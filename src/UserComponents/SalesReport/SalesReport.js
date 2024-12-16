@@ -75,6 +75,8 @@ const SalesReport = ({ data }) => {
                 <th>Avg Sell Price</th>
                 <th>Quantity</th>
                 <th>Amount</th>
+                <th>Item Desc</th>
+             
               </tr>
             </thead>
             <tbody>
@@ -89,6 +91,8 @@ const SalesReport = ({ data }) => {
                   <td>{item.sellPrice}</td>
                   <td>{item.totalQuantity}</td>
                   <td>{item.totalAmount}</td>
+                  <td>{item.desc}</td>
+             
                 </tr>
               ))}
             </tbody>
