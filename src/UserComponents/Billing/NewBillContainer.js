@@ -523,6 +523,13 @@ const handleSelectChange = (selectedOption) => {
         return;
       }
     }
+
+    if (paymentMode === 'Due') {
+      if (!customerMobileNo?.trim() || !customerName?.trim()) {
+        alert("Customer mobile number and name are required for 'Due' payment mode.");
+        return; // Prevent API call
+      }
+    }
   
     // Process items
     const updatedItems = selectedItems.map((item) => {
