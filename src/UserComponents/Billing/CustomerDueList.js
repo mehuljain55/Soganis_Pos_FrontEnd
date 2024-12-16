@@ -8,7 +8,6 @@ const CustomerDueList = () => {
   const [filteredList, setFilteredList] = useState([]);
   const [error, setError] = useState('');
   const [filter, setFilter] = useState('');
-  const [selectedPaymentMode, setSelectedPaymentMode] = useState('');
 
   // Fetch the customer due list
   const fetchCustomerList = async () => {
@@ -19,8 +18,15 @@ const CustomerDueList = () => {
       const response = await axios.get(`${API_BASE_URL}/user/dueList`, {
         params: { storeId },
       });
-      setCustomerDueList(response.data);
-      setFilteredList(response.data);
+
+      // Add a paymentMode field to each due item
+      const updatedData = response.data.map((item) => ({
+        ...item,
+        paymentMode: '',
+      }));
+
+      setCustomerDueList(updatedData);
+      setFilteredList(updatedData);
       setError('');
     } catch (error) {
       if (error.response && error.response.status === 404) {
@@ -51,8 +57,17 @@ const CustomerDueList = () => {
     setFilteredList(filtered);
   };
 
+  const handlePaymentModeChange = (sno, mode) => {
+    const updatedList = filteredList.map((item) =>
+      item.sno === sno ? { ...item, paymentMode: mode } : item
+    );
+    setFilteredList(updatedList);
+  };
+
   const handlePayment = async (paymentId) => {
-    if (!selectedPaymentMode) {
+    const selectedDue = filteredList.find((item) => item.sno === paymentId);
+
+    if (!selectedDue?.paymentMode) {
       alert('Please select a payment mode.');
       return;
     }
@@ -60,10 +75,10 @@ const CustomerDueList = () => {
     try {
       const user = JSON.parse(sessionStorage.getItem('user'));
       const storeId = user?.storeId;
-      
+
       const paymentModel = {
-        paymentId:paymentId,
-        paymentMode: selectedPaymentMode,
+        paymentId,
+        paymentMode: selectedDue.paymentMode,
         storeId,
       };
 
@@ -121,9 +136,10 @@ const CustomerDueList = () => {
                   <td>
                     <select
                       className="customer-due-list-payment-mode"
-                      onChange={(e) => setSelectedPaymentMode(e.target.value)}
+                      value={dues.paymentMode}
+                      onChange={(e) => handlePaymentModeChange(dues.sno, e.target.value)}
                     >
-                      <option value="" disabled selected>
+                      <option value="" disabled>
                         Select
                       </option>
                       <option value="Cash">Cash</option>
