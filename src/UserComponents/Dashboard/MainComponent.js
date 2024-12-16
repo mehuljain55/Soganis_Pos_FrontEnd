@@ -24,6 +24,7 @@ import InventoryAdd from '../Inventory/InventoryAdd.js';
 import { API_BASE_URL } from '../Config.js';
 import { LogoutButton, useLogout } from '../Login/LogoutPage.js';
 import ItemCodeFetcher from '../Billing/ItemCodeFetcher.js';
+import CustomerDueList from '../Billing/CustomerDueList.js';
 
 
 const MainComponent = ({ userData }) => {
@@ -124,6 +125,7 @@ const MainComponent = ({ userData }) => {
             <button className="list-group-item" onClick={() => handleMenuItemClick('Returns')}>Return/Exchange</button>
             <button className="list-group-item" onClick={() => handleMenuItemClick('Inter Company Transaction')}>Inter Company</button>
             <button className="list-group-item" onClick={() => handleMenuItemClick('Recent Bills')}>Recent Bills</button>
+            <button className="list-group-item" onClick={() => handleMenuItemClick('Customer Due List')}>Customer Due List</button>
     
             <button className="list-group-item" onClick={() => handleMenuItemClick('Add Order')}>Customer Order Book</button>
             <button className="list-group-item" onClick={() => handleMenuItemClick('View Order')}>View Order Book</button>
@@ -154,6 +156,7 @@ const MainComponent = ({ userData }) => {
           {selectedMenuItem === 'Update Inventory' && <AddInventoryItem />}
           {selectedMenuItem === 'Add New Item' && <InventoryAdd />}
           {selectedMenuItem === 'Recent Bills' && <BillViewer  />}
+          {selectedMenuItem === 'Customer Due List' && <CustomerDueList  />}
 
         </main>
       </div>
