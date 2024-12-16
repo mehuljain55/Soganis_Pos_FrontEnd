@@ -78,6 +78,11 @@
   width: 120px; /* Amount */
 }
 
+.sales-report th:nth-child(10),
+.sales-report td:nth-child(10) {
+  width: 120px; /* Item Description */
+}
+
 .total-amount-sum {
   margin-top: 10px;
   font-size: 16px;

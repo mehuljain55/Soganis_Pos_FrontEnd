@@ -1106,6 +1106,8 @@ const handleSelectChange = (selectedOption) => {
                 <option value="Cash">Cash</option>
                 <option value="Card">Card</option>
                 <option value="Upi">UPI</option>
+                <option value="Due">Due</option>
+                
                 <option value="Partial">Partial</option>
                 
               </select>
