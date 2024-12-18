@@ -1,25 +1,29 @@
-/* BillViewer.css */
-
 .bill-viewer {
   padding: 20px;
   max-width: 1200px;
   margin: auto;
+  font-family: Arial, sans-serif;
 }
 
 .bill-viewer-filters {
   display: flex;
+  flex-wrap: wrap;
   gap: 10px;
   margin-bottom: 20px;
+  align-items: center;
 }
 
 .bill-viewer-error {
   color: red;
   font-weight: bold;
+  margin-top: 10px;
 }
 
 .bill-viewer-table-container {
   overflow-x: auto;
   max-height: 400px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
 }
 
 .bill-viewer-table {
@@ -27,47 +31,77 @@
   border-collapse: collapse;
 }
 
-.bill-viewer-table th, .bill-viewer-table td {
+.bill-viewer-table th,
+.bill-viewer-table td {
   border: 1px solid #ddd;
   padding: 8px;
   text-align: left;
 }
 
 .bill-viewer-table th {
-  background-color: #707070;
+  background-color: #2c3e50;
   color: white;
 }
-
-/* Action button container */
-.bill-viewer-table td.action-buttons {
-  display: flex;
-  gap: 10px; /* space between buttons */
-  padding: 8px; /* cell padding */
-}
-
-/* Style for each action button */
-.bill-viewer-table td.action-buttons button {
-  padding: 5px 10px; /* padding around button text */
-  border: none;
-  background-color: #4CAF50; /* Adjust color as needed */
-  color: white;
-  cursor: pointer;
-}
-
-.bill-viewer-table td.action-buttons button:hover {
-  background-color: #45a049; /* hover color */
-}
-
 
 .bill-viewer-table tbody tr:nth-child(odd) {
-  background-color: #f2f2f2;
+  background-color: #f9f9f9;
 }
 
 .bill-viewer-table tbody tr:nth-child(even) {
   background-color: #ffffff;
 }
 
-/* Popup styling */
+/* Action buttons in table */
+.bill-viewer-table td.action-buttons {
+  display: flex;
+  gap: 8px;
+}
+
+.bill-viewer-table td.action-buttons button {
+  padding: 6px 12px;
+  border: none;
+  background-color: #87ceeb; /* Light blue */
+  color: white;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.bill-viewer-table td.action-buttons button:hover {
+  background-color: #4682b4; /* Dark blue on hover */
+}
+
+.bill-viewer-table td.action-buttons button:active {
+  background-color: #4169e1; /* Darker blue on click */
+}
+
+/* Date range buttons */
+.date-range-buttons {
+  margin-top: 10px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.date-range-buttons button {
+  padding: 8px 16px;
+  background-color: #87ceeb; /* Light blue */
+  color: white;
+  border: none;
+  border-radius: 4px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.date-range-buttons button:hover {
+  background-color: #4682b4; /* Dark blue */
+}
+
+.date-range-buttons button:active {
+  background-color: #4169e1; /* Darker blue */
+}
+
 .bill-viewer-popup {
   position: fixed;
   top: 50%;
@@ -81,11 +115,12 @@
   max-width: 800px;
   max-height: 90%;
   overflow-y: auto;
-  padding: 20px;
+  border-radius: 6px;
 }
 
 .bill-viewer-popup-content {
   position: relative;
+  padding: 20px;
 }
 
 .bill-viewer-close-popup {
@@ -95,7 +130,8 @@
   background-color: #f44336;
   color: white;
   border: none;
-  padding: 5px 10px;
+  border-radius: 4px;
+  padding: 6px 12px;
   cursor: pointer;
 }
 
@@ -105,34 +141,19 @@
   margin-top: 20px;
 }
 
-.bill-viewer-popup-table th, .bill-viewer-popup-table td {
+.bill-viewer-popup-table th,
+.bill-viewer-popup-table td {
   border: 1px solid #ddd;
   padding: 8px;
 }
 
 .bill-viewer-popup-table th {
-  background-color: #707070;
+  background-color: #2c3e50;
   color: white;
 }
 
 .bill-viewer-popup-table tfoot {
   font-weight: bold;
-}
-
-/* Responsive adjustments */
-@media (max-width: 768px) {
-  .bill-viewer-filters {
-    flex-direction: column;
-  }
-
-  .bill-viewer-popup {
-    width: 95%;
-    padding: 10px;
-  }
-
-  .bill-viewer-table, .bill-viewer-popup-table {
-    font-size: 12px;
-  }
 }
 
 .bill-view-print-pdf {
@@ -159,4 +180,60 @@
 .bill-view-print-pdf-content button {
   margin-top: 10px;
   margin-right: 10px;
+  padding: 8px 14px;
+  border: none;
+  background-color: #87ceeb;
+  color: white;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
 }
+
+.bill-view-print-pdf-content button:hover {
+  background-color: #4682b4;
+}
+
+.bill-view-print-pdf-content button:active {
+  background-color: #4169e1;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .bill-viewer-filters {
+    flex-direction: column;
+  }
+
+  .bill-viewer-popup {
+    width: 95%;
+    padding: 10px;
+  }
+
+  .bill-viewer-table,
+  .bill-viewer-popup-table {
+    font-size: 12px;
+  }
+
+  .date-range-buttons button {
+    font-size: 12px;
+  }
+}
+
+.bill-viewer-filter-button {
+  padding: 8px 16px;
+  background-color: #007bff; /* Light blue */
+  color: white;
+  border: none;
+  border-radius: 4px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.bill-viewer-filter-button.active {
+  background-color: #2000ac; /* Dark blue for active state */
+}
+
+.bill-viewer-filter-button:hover {
+  background-color: #003fb4; /* Slightly darker on hover */
+}
+

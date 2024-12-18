@@ -1,7 +1,9 @@
-import React, { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
+
 import { API_BASE_URL } from '../Config.js';
 import axios from 'axios';
 import './BillViewer.css';
+import { format } from 'date-fns';
 
 const BillViewer = () => {
   const [startDate, setStartDate] = useState('');
@@ -10,9 +12,16 @@ const BillViewer = () => {
   const [error, setError] = useState('');
   const [selectedBill, setSelectedBill] = useState(null);
   const [pdfData, setPdfData] = useState(null);
+  const [activeFilter, setActiveFilter] = useState('Today');
   const pdfIframeRef = useRef(null);
 
+
   const fetchBills = async () => {
+    if (activeFilter === 'Custom Date') {
+      if (!startDate || !endDate) {
+        return;
+      }
+    }
     try {
       const user = JSON.parse(sessionStorage.getItem('user'));
       const storeId = user?.storeId;
@@ -28,9 +37,81 @@ const BillViewer = () => {
       } else {
         setError('An error occurred while fetching bills.');
       }
-      setBills([]);
     }
   };
+
+
+  useEffect(() => {
+    setBills([]);
+    if (startDate && endDate) {
+      fetchBills();
+    }
+  }, [startDate, endDate]); 
+
+  const handleDateFilter = async (filter) => {
+    const today = new Date();
+    let calculatedStartDate = '';
+    let calculatedEndDate = format(today, 'yyyy-MM-dd');
+  
+    switch (filter) {
+      case 'Today':
+        calculatedStartDate = calculatedEndDate;
+        break;
+  
+      case 'This Week':
+        const startOfWeek = new Date(today.setDate(today.getDate() - today.getDay()));
+        calculatedStartDate = format(startOfWeek, 'yyyy-MM-dd');
+        break;
+  
+      case 'This Month':
+        calculatedStartDate = format(new Date(today.getFullYear(), today.getMonth(), 1), 'yyyy-MM-dd');
+        calculatedEndDate = format(
+          new Date(today.getFullYear(), today.getMonth() + 1, 0),
+          'yyyy-MM-dd'
+        );
+        break;
+  
+      case 'Previous Month':
+        const prevMonthStart = new Date(today.getFullYear(), today.getMonth() - 1, 1);
+        const prevMonthEnd = new Date(today.getFullYear(), today.getMonth(), 0);
+        calculatedStartDate = format(prevMonthStart, 'yyyy-MM-dd');
+        calculatedEndDate = format(prevMonthEnd, 'yyyy-MM-dd');
+        break;
+  
+      case 'This Quarter':
+        const quarterStartMonth = Math.floor(today.getMonth() / 3) * 3;
+        const quarterEndMonth = quarterStartMonth + 2;
+        calculatedStartDate = format(new Date(today.getFullYear(), quarterStartMonth, 1), 'yyyy-MM-dd');
+        calculatedEndDate = format(
+          new Date(today.getFullYear(), quarterEndMonth + 1, 0),
+          'yyyy-MM-dd'
+        );
+        break;
+  
+      case 'This FY':
+        const currentFYStartMonth = today.getMonth() >= 3 ? 3 : -9;
+        calculatedStartDate = format(new Date(today.getFullYear(), currentFYStartMonth, 1), 'yyyy-MM-dd');
+        calculatedEndDate = format(
+          new Date(today.getFullYear() + (currentFYStartMonth === -9 ? -1 : 1), 2, 31),
+          'yyyy-MM-dd'
+        );
+        break;
+
+        case 'Custom Date':
+          setStartDate('');
+          setEndDate('');
+          break;
+      default:
+        return; // Custom Date, no auto-calculation
+    }
+  
+    // Update state and fetch bills immediately with calculated dates
+    setStartDate(calculatedStartDate);
+    setEndDate(calculatedEndDate);
+    setActiveFilter(filter);
+  };
+  
+  
 
   const handleViewDetails = (bill) => {
     setSelectedBill(bill);
@@ -99,23 +180,41 @@ const BillViewer = () => {
     <div className="bill-viewer">
       <h1>Bill Viewer</h1>
       <div className="bill-viewer-filters">
-        <label>
-          Start Date:
-          <input
-            type="date"
-            value={startDate}
-            onChange={(e) => setStartDate(e.target.value)}
-          />
-        </label>
-        <label>
-          End Date:
-          <input
-            type="date"
-            value={endDate}
-            onChange={(e) => setEndDate(e.target.value)}
-          />
-        </label>
-        <button onClick={fetchBills}>View Bills</button>
+        {['Today', 'This Week', 'This Month', 'Previous Month', 'This Quarter', 'This FY', 'Custom Date'].map(
+          (filter) => (
+            <button
+              key={filter}
+              className={`bill-viewer-filter-button ${activeFilter === filter ? 'active' : ''}`}
+              onClick={() => handleDateFilter(filter)}
+            >
+              {filter}
+            </button>
+          )
+        )}
+        
+        {activeFilter === 'Custom Date' && (
+        <div className="custom-date-picker">
+          <div className="date-inputs">
+            <label>
+              Start Date:
+              <input
+                type="date"
+                value={startDate}
+                onChange={(e) => setStartDate(e.target.value)}
+              />
+            </label>
+            <label>
+              End Date:
+              <input
+                type="date"
+                value={endDate}
+                onChange={(e) => setEndDate(e.target.value)}
+              />
+            </label>
+          </div>
+          
+        </div>
+      )}
       </div>
 
       {error && <p className="bill-viewer-error">{error}</p>}
@@ -139,7 +238,7 @@ const BillViewer = () => {
               {bills.map((bill) => (
                 <tr key={bill.billNo}>
                   <td>{bill.billNo}</td>
-                  <td>{bill.bill_date}</td>
+                  <td>{format(new Date(bill.bill_date), 'dd MMM yyyy')}</td>
                   <td>{bill.customerName}</td>
                   <td>{bill.customerMobileNo}</td>
                   <td>{bill.billType}</td>
