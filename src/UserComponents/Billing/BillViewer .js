@@ -40,13 +40,13 @@ const BillViewer = () => {
     }
   };
 
-  
+
   useEffect(() => {
     setBills([]);
     if (startDate && endDate) {
       fetchBills();
     }
-  }, [startDate, endDate]); // Run the effect whenever startDate or endDate changes
+  }, [startDate, endDate]); 
 
   const handleDateFilter = async (filter) => {
     const today = new Date();
