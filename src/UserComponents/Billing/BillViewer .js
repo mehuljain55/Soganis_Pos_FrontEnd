@@ -40,6 +40,7 @@ const BillViewer = () => {
     }
   };
 
+  
   useEffect(() => {
     setBills([]);
     if (startDate && endDate) {
