@@ -48,6 +48,10 @@ const BillViewer = () => {
     }
   }, [startDate, endDate]); 
 
+  useEffect(() => {
+    handleDateFilter('Today');
+  }, []); 
+
   const handleDateFilter = async (filter) => {
     const today = new Date();
     let calculatedStartDate = '';
@@ -178,7 +182,7 @@ const BillViewer = () => {
 
   return (
     <div className="bill-viewer">
-      <h1>Bill Viewer</h1>
+      <h1>Recent Bills</h1>
       <div className="bill-viewer-filters">
         {['Today', 'This Week', 'This Month', 'Previous Month', 'This Quarter', 'This FY', 'Custom Date'].map(
           (filter) => (
@@ -215,6 +219,21 @@ const BillViewer = () => {
           
         </div>
       )}
+    {activeFilter !== 'Custom Date' && (
+  <div className="custom-date-show">
+    <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "8px" }}>
+      <label style={{ fontWeight: "bold", minWidth: "100px" }}>Start Date:</label>
+      <span>{startDate ? format(new Date(startDate), 'dd MMM yyyy') : 'Invalid Date'}</span>
+    </div>
+    <div style={{ display: "flex", justifyContent: "space-between" }}>
+      <label style={{ fontWeight: "bold", minWidth: "100px" }}>  End Date:</label>
+      <span>{endDate ? format(new Date(endDate), 'dd MMM yyyy') : 'Invalid Date'}</span>
+    </div>
+  </div>
+)}
+
+
+
       </div>
 
       {error && <p className="bill-viewer-error">{error}</p>}
