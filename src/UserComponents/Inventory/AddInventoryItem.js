@@ -22,6 +22,7 @@ function AddInventoryItem() {
 
   const handleClearFile = () => {
     setFile(null);
+    setItems([]);
   };
 
   const handleQuantityChange = (index, newQuantity) => {
@@ -240,6 +241,7 @@ function AddInventoryItem() {
               <button onClick={handleClearFile} style={{ backgroundColor: "#f44336" }}>
                 Clear
               </button>
+              <button onClick={handleSubmit}>Show</button>
             </div>
           ) : (
             <div>
@@ -258,7 +260,7 @@ function AddInventoryItem() {
                 accept=".xlsx"
                 style={{ display: "none" }}
               />
-              <button onClick={handleSubmit}>Upload</button>
+          
             </div>
           )}
         </div>
