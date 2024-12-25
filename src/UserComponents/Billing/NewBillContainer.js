@@ -458,13 +458,15 @@ const handleSelectChange = (selectedOption) => {
   };
 
   const calculateTotalQuantity = () => {
-    let total_quantity = 0;
+    let total_quantity = 0; // Use let for reassignment
     selectedItems.forEach((item) => {
-      total_quantity=total_quantity+item.quantity;
+      total_quantity += Number(item.quantity); // Convert item.quantity to a number
     });
-    
+  
     return total_quantity;
   };
+  
+  
 
   const handleArrowNavigation = (e) => {
     if (e.key === 'ArrowDown') {
