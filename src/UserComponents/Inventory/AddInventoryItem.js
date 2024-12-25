@@ -10,9 +10,18 @@ function AddInventoryItem() {
   const [groupList, setGroupList] = useState([]);
   const [storeId, setStoreId] = useState('');
   const [selectedGroup, setSelectedGroup] = useState("");
+  const [groupDataList, setGroupDataList] = useState([]);
+  const [selectGroupData, setSelectedGroupData] = useState("");
 
   const handleFileChange = (e) => {
-    setFile(e.target.files[0]);
+    const file = e.target.files[0];
+    if (file) {
+      setFile(file);
+    }
+  };
+
+  const handleClearFile = () => {
+    setFile(null);
   };
 
   const handleQuantityChange = (index, newQuantity) => {
@@ -80,7 +89,19 @@ function AddInventoryItem() {
     fetchGroupList();
   }, []);
 
-  const handleDownloadGroupData = async () => {
+  useEffect(() => {
+    const fetchGroupDataList = async () => {
+      try {
+        const response = await axios.get(`${API_BASE_URL}/inventory/groupDataList`);
+        setGroupDataList(response.data);
+      } catch (err) {
+        console.error("Failed to fetch group list:", err);
+      }
+    };
+    fetchGroupDataList();
+  }, []);
+
+  const handleDownloadGroupWiseData = async () => {
     if (!selectedGroup) {
       alert("Please select a group before downloading!");
       return;
@@ -112,6 +133,43 @@ function AddInventoryItem() {
       alert("Error downloading Excel. Please try again.");
     }
   };
+
+
+  const handleDownloadGroupData = async () => {
+    if (!selectGroupData) {
+      alert("Please select a group before downloading!");
+      return;
+    }
+
+    try {
+      const user = JSON.parse(sessionStorage.getItem("user")); // Fetch user data
+      const response = await axios.post(
+        `${API_BASE_URL}/inventory/format/group/groupData?itemType=${selectGroupData}`,
+        user,
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+          responseType: "blob",
+        }
+      );
+
+      const url = window.URL.createObjectURL(new Blob([response.data]));
+      const link = document.createElement("a");
+      link.href = url;
+      link.setAttribute("download", `${selectGroupData}.xlsx`); // Dynamic file name
+      document.body.appendChild(link);
+      link.click();
+      link.parentNode.removeChild(link);
+      alert("Excel downloaded successfully!");
+    } catch (err) {
+      console.error("Failed to download group data:", err);
+      alert("Error downloading Excel. Please try again.");
+    }
+  };
+
+
+
 
   const handleRefresh = () => {
     setFile(null);
@@ -152,122 +210,154 @@ function AddInventoryItem() {
     }
   };
   
-  
+  const handleFileDrop = (e) => {
+    e.preventDefault();
+    const file = e.dataTransfer.files[0];
+    if (file) {
+      setFile(file);
+    }
+  };
 
   return (
-    <div>
-       <h1>Inventory Management</h1>
-      
-    {/* Section for Group Format Dropdown */}
-    <div>
-        <h2>Download Format</h2>
-        <div style={{ marginBottom: "10px" }}>
-          <label htmlFor="groupDropdown" style={{ marginRight: "10px" }}>
-            Select Item:
-          </label>
+    <div className="item-add-inventory-update-container">
+      <h1 style={{ textAlign: "center", marginBottom: "30px" }}>Inventory Management</h1>
+  
+  
+      <div className="item-add-inventory-update-grid">
+        {/* Section 1: Upload Excel */}
+        <div className="item-add-inventory-update-section">
+          <h2>Upload Excel File</h2>
+          {file ? (
+            <div>
+              <div className="file-info">
+                <img
+                  src="https://upload.wikimedia.org/wikipedia/commons/8/86/Microsoft_Excel_2013_logo.svg"
+                  alt="Excel Icon"
+                  style={{ width: "50px", marginRight: "10px" }}
+                />
+                <span>{file.name}</span>
+              </div>
+              <button onClick={handleClearFile} style={{ backgroundColor: "#f44336" }}>
+                Clear
+              </button>
+            </div>
+          ) : (
+            <div>
+              <div
+                className="item-add-inventory-update-drag-area"
+                onDrop={handleFileDrop}
+                onDragOver={(e) => e.preventDefault()}
+                onClick={() => document.getElementById("fileInput").click()}
+              >
+                Drag & Drop File Here or Click to Upload
+              </div>
+              <input
+                id="fileInput"
+                type="file"
+                onChange={handleFileChange}
+                accept=".xlsx"
+                style={{ display: "none" }}
+              />
+              <button onClick={handleSubmit}>Upload</button>
+            </div>
+          )}
+        </div>
+  
+        {/* Section 2: Download Item Data */}
+        <div className="item-add-inventory-update-section">
+          <h2>Download Item Data</h2>
+          <label htmlFor="itemDropdown">Select Item:</label>
           <select
-  id="groupDropdown"
-  value={selectedGroup}
-  onChange={(e) => setSelectedGroup(e.target.value)}
-  style={{ padding: "5px" }}
->
-  <option value="">-- Select Group --</option>
-  {groupList.map((group) => {
-    // Filter out empty items and join with commas
-    const groupDetails = [
-      group.item1,
-      group.item2,
-      group.item3,
-      group.item4,
-      group.item5,
-      group.item6,
-    ]
-      .filter((item) => item && item.trim() !== "") // Exclude empty or whitespace items
-      .join(", "); // Join non-empty items with commas
-
-    return (
-      <option key={group.sno} value={group.sno}>
-        Group {group.sno} - {groupDetails || "No Items"}
-      </option>
-    );
-  })}
-</select>
-
-          <button
-            onClick={handleDownloadGroupData}
-            style={{
-              marginLeft: "10px",
-              padding: "5px 10px",
-              backgroundColor: "#4CAF50",
-              color: "white",
-              border: "none",
-              cursor: "pointer",
-            }}
+            id="itemDropdown"
+            value={selectedGroup}
+            onChange={(e) => setSelectedGroup(e.target.value)}
           >
-            Download
-          </button>
+            <option value="">-- Select Item --</option>
+            {groupList.map((group) => {
+              const groupDetails = [
+                group.item1,
+                group.item2,
+                group.item3,
+                group.item4,
+                group.item5,
+                group.item6,
+              ]
+                .filter((item) => item && item.trim() !== "")
+                .join(", ");
+  
+              return (
+                <option key={group.sno} value={group.sno}>
+                  Group {group.sno} - {groupDetails || "No Items"}
+                </option>
+              );
+            })}
+          </select>
+          <button onClick={handleDownloadGroupWiseData}>Download</button>
+        </div>
+  
+        {/* Section 3: Download Group Data */}
+        <div className="item-add-inventory-update-section">
+          <h2>Download Group Data</h2>
+          <label htmlFor="groupDropdown">Select Group:</label>
+          <select
+            id="groupDropdown"
+            value={selectGroupData}
+            onChange={(e) => setSelectedGroupData(e.target.value)}
+          >
+            <option value="">-- Select Group --</option>
+            {groupDataList.map((group, index) => (
+              <option key={index} value={group}>
+                {group}
+              </option>
+            ))}
+          </select>
+          <button onClick={handleDownloadGroupData}>Download</button>
         </div>
       </div>
-
-      <h1>Upload Excel File</h1>
-      <form onSubmit={handleSubmit}>
-        <input
-          id="fileInput"
-          type="file"
-          onChange={handleFileChange}
-          accept=".xlsx"
-        />
-        <button type="submit">Upload</button>
-        <button type="button" onClick={handleRefresh} style={{ marginLeft: "10px" }}>
-          Refresh
-        </button>
-      </form>
-
-      {error && <p style={{ color: "red" }}>{error}</p>}
-
+  
+      {/* Table Section */}
       {items.length > 0 && (
         <div>
-          <h2>Parsed Data</h2>
-          <table style={{ width: "100%", borderCollapse: "collapse" }}>
-            <thead>
-              <tr>
-                <th style={{ border: "1px solid #ccc", padding: "8px" }}>School Code</th>
-                <th style={{ border: "1px solid #ccc", padding: "8px" }}>Item Code</th>
-                <th style={{ border: "1px solid #ccc", padding: "8px" }}>Size</th>
-                <th style={{ border: "1px solid #ccc", padding: "8px" }}>Color</th>
-                <th style={{ border: "1px solid #ccc", padding: "8px" }}>Quantity</th>
-                <th style={{ border: "1px solid #ccc", padding: "8px" }}>Store ID</th>
-                <th style={{ border: "1px solid #ccc", padding: "8px" }}>Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              {items.map((item, index) => (
-                <tr key={index}>
-                  <td style={{ border: "1px solid #ccc", padding: "8px" }}>{item.schoolCode}</td>
-                  <td style={{ border: "1px solid #ccc", padding: "8px" }}>{item.itemCode}</td>
-                  <td style={{ border: "1px solid #ccc", padding: "8px" }}>{item.size}</td>
-                  <td style={{ border: "1px solid #ccc", padding: "8px" }}>{item.itemColor}</td>
-                  <td style={{ border: "1px solid #ccc", padding: "8px" }}>
-                    <input
-                      id={`quantityInput-${index}`} // Unique ID for each input
-                      type="number"
-                      value={item.quantity}
-                      onChange={(e) => handleQuantityChange(index, e.target.value)}
-                      onKeyDown={(e) => handleKeyDown(e, index)} // Handle key down events
-                      style={{ width: "60px" }}
-                    />
-                  </td>
-                  <td style={{ border: "1px solid #ccc", padding: "8px" }}>{storeId}</td>
-                  <td style={{ border: "1px solid #ccc", padding: "8px" }}>
-                    <button onClick={() => handleDeleteItem(index)} >
-                      Delete
-                    </button>
-                  </td>
+          <h2 style={{ textAlign: "center", marginTop: "30px" }}>Parsed Data</h2>
+          <div className="table-container">
+            <table className="styled-table">
+              <thead>
+                <tr>
+                  <th>School Code</th>
+                  <th>Item Code</th>
+                  <th>Size</th>
+                  <th>Color</th>
+                  <th>Quantity</th>
+                  <th>Store ID</th>
+                  <th>Actions</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
-
+              </thead>
+              <tbody>
+                {items.map((item, index) => (
+                  <tr key={index}>
+                    <td>{item.schoolCode}</td>
+                    <td>{item.itemCode}</td>
+                    <td>{item.size}</td>
+                    <td>{item.itemColor}</td>
+                    <td>
+                      <input
+                        id={`quantityInput-${index}`}
+                        type="number"
+                        value={item.quantity}
+                        onChange={(e) => handleQuantityChange(index, e.target.value)}
+                        onKeyDown={(e) => handleKeyDown(e, index)}
+                        style={{ width: "60px" }}
+                      />
+                    </td>
+                    <td>{storeId}</td>
+                    <td>
+                      <button onClick={() => handleDeleteItem(index)}>Delete</button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
           <button onClick={handleUpdateInventory} style={{ marginTop: "20px" }}>
             Submit Updated Inventory
           </button>
@@ -276,5 +366,4 @@ function AddInventoryItem() {
     </div>
   );
 }
-
 export default AddInventoryItem;
