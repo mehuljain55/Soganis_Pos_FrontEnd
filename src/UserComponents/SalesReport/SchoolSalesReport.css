@@ -1,91 +1,124 @@
-.school-sales-report {
+.sales-school-report {
     padding: 20px;
     font-family: Arial, sans-serif;
 }
 
-.school-sales-report h2 {
+.sales-report-title {
     font-size: 24px;
-    color: #333;
+    font-weight: bold;
     margin-bottom: 20px;
 }
 
-.school-sales-report .d-flex {
+.sales-date-inputs {
     display: flex;
     gap: 10px;
     margin-bottom: 20px;
 }
 
-.school-sales-report input[type="date"] {
-    padding: 10px;
+.sales-input-date {
+    padding: 8px;
+    font-size: 14px;
     border: 1px solid #ccc;
     border-radius: 4px;
 }
 
-.school-sales-report .btn {
-    padding: 8px 15px; /* Adjust button size */
-    background-color: #4CAF50; /* Green background */
-    color: white; /* White text */
-    border: none; /* Remove border */
-    border-radius: 4px; /* Rounded corners */
-    cursor: pointer; /* Pointer cursor */
+.sales-fetch-btn {
+    padding: 8px 16px;
+    font-size: 14px;
+    color: #fff;
+    background-color: #007bff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
 }
 
-.school-sales-report .btn:hover {
-    background-color: #45a049; /* Darker green on hover */
+.sales-fetch-btn:hover {
+    background-color: #0056b3;
 }
 
-.school-sales-report__table {
-    width: 100%; /* Full width */
-    border-collapse: collapse; /* Collapse borders */
+.sales-loading-message,
+.sales-error-message,
+.sales-no-data-message {
+    margin-top: 20px;
+    font-size: 16px;
+    color: #666;
 }
 
-.school-sales-report__table th,
-.school-sales-report__table td {
-    padding: 12px;
-    border: 1px solid #ddd; /* Light gray border */
-    text-align: left; /* Align text to the left */
+.sales-error-message {
+    color: red;
 }
 
-.school-sales-report__table th {
-    background-color: #f2f2f2; /* Light gray background for header */
-    color: #333; /* Dark text color */
+.sales-report-table-wrapper {
+    max-height: 450px; /* Fixed height for table */
+    overflow-y: auto; /* Enable vertical scrolling */
+    border: 1px solid #ddd;
+    border-radius: 4px;
 }
 
-.school-sales-report__table tr:nth-child(even) {
-    background-color: #f9f9f9; /* Light gray for even rows */
+.sales-report-table {
+    width: 100%;
+    border-collapse: collapse;
 }
 
-.school-sales-report__table tr:nth-child(odd) {
-    background-color: #fff; /* White for odd rows */
+.sales-report-table th,
+.sales-report-table td {
+    padding: 10px;
+    text-align: left;
+    border: 1px solid #ddd;
 }
 
-.school-sales-report__table .btn {
-    padding: 5px 10px; /* Smaller button size */
-    font-size: 12px; /* Smaller font size */
+.sales-report-table th {
+    background-color: #707070;
+    font-weight: bold;
 }
 
-/* Responsive table adjustments */
-.table-responsive {
-    overflow-x: auto; /* Enables horizontal scrolling */
+.sales-view-btn {
+    padding: 6px 12px;
+    font-size: 12px;
+    color: #fff;
+    background-color: #28a745;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
 }
 
-@media (max-width: 768px) {
-    .school-sales-report h2 {
-        font-size: 20px; /* Smaller font on mobile */
-    }
+.sales-view-btn:hover {
+    background-color: #218838;
+}
 
-    .school-sales-report .d-flex {
-        flex-wrap: wrap; /* Allow wrapping */
-    }
+.sales-school-report-popup-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.7);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
 
-    .school-sales-report input[type="date"],
-    .school-sales-report .btn {
-        flex: 1; /* Grow to fill available space */
-        min-width: 120px; /* Minimum width */
-        margin-bottom: 10px; /* Margin between elements */
-    }
+.sales-school-report-popup-content {
+    background: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    max-width: 80%;
+    max-height: 80%;
+    overflow-y: auto;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
 
-    .school-sales-report__table {
-        width: 100%; /* Make table responsive */
-    }
+.sales-school-report-popup-close-btn {
+    background-color: #d9534f;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-top: 20px;
+}
+
+.sales-school-report-popup-close-btn:hover {
+    background-color: #c9302c;
 }
