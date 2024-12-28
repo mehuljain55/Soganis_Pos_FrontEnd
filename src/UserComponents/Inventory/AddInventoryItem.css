@@ -1,87 +1,139 @@
 /* General container styling */
 .item-add-inventory-update-container {
   max-width: 1200px;
-  margin: 30px auto;
-  padding: 20px;
+  margin: 20px auto;
+  padding: 10px;
   font-family: Arial, sans-serif;
   background-color: #ffffff;
-  border-radius: 10px;
-  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
-}
-
-/* Three-column grid for sections */
-.item-add-inventory-update-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 20px;
-}
-
-/* Individual section styling */
-.item-add-inventory-update-section {
-  background-color: #f8f9fa;
-  padding: 20px;
   border-radius: 8px;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 6px 10px rgba(0, 0, 0, 0.1);
+  overflow: hidden; /* Ensure no scrollbars */
+  }
+  
+  /* Four-column grid for sections */
+  .item-add-inventory-update-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+  }
+  
+  /* Individual section styling */
+  .item-add-inventory-update-section {
+  background-color: #f8f9fa;
+  padding: 10px;
+  border-radius: 6px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
   text-align: center;
-}
-
-.item-add-inventory-update-section h2 {
-  font-size: 18px;
+  height: auto; /* Adjust height dynamically */
+  }
+  
+  .item-add-inventory-update-section h2 {
+  font-size: 16px;
   color: #333;
-  margin-bottom: 15px;
-}
-
-/* Scoped button styles */
-.item-add-inventory-update-section button {
+  margin-bottom: 10px;
+  }
+  
+  /* Scoped button styles */
+  .item-add-inventory-update-section button {
   display: block;
   width: 100%;
-  margin: 10px 0;
-  padding: 10px;
-  font-size: 14px;
+  margin: 5px 0;
+  padding: 8px;
+  font-size: 12px;
   border: 1px solid #ccc;
-  border-radius: 5px;
+  border-radius: 4px;
   background-color: #007bff;
   color: #fff;
   cursor: pointer;
   transition: all 0.3s ease;
-}
-
-.item-add-inventory-update-section button:hover {
+  }
+  
+  .item-add-inventory-update-section button:hover {
   background-color: #0056b3;
-}
-
-/* Scoped input and select styles */
-.item-add-inventory-update-section input,
-.item-add-inventory-update-section select {
+  }
+  
+  /* Scoped input and select styles */
+  .item-add-inventory-update-section input,
+  .item-add-inventory-update-section select {
   display: block;
   width: 100%;
-  margin: 10px 0;
-  padding: 10px;
-  font-size: 14px;
+  margin: 5px 0;
+  padding: 8px;
+  font-size: 12px;
   border: 1px solid #ccc;
-  border-radius: 5px;
+  border-radius: 4px;
   transition: all 0.3s ease;
-}
-
-/* File input specific styling */
-.item-add-inventory-update-drag-area {
-  border: 2px dashed #007bff;
-  padding: 20px;
+  }
+  
+  /* File input specific styling */
+  .item-add-inventory-update-drag-area {
+  border: 1px dashed #007bff;
+  padding: 10px;
   background-color: #e9f5ff;
-  border-radius: 8px;
+  border-radius: 6px;
   text-align: center;
   color: #007bff;
+  font-size: 12px;
   cursor: pointer;
   transition: background-color 0.3s ease;
-}
-
-.item-add-inventory-update-drag-area:hover {
+  }
+  
+  .item-add-inventory-update-drag-area:hover {
   background-color: #d0ebff;
-}
-
-/* Responsive grid for smaller screens */
-@media (max-width: 768px) {
+  }
+  
+  /* Table styling */
+  .table-container {
+  overflow: auto; /* Remove scrollbars */
+  margin: 0 auto;
+  width: 100%;
+  }
+  
+  .styled-table {
+  width: 100%;
+  border-collapse: collapse;
+  }
+  
+  .styled-table th,
+  .styled-table td {
+  text-align: center;
+  padding: 5px;
+  font-size: 12px;
+  }
+  
+  .styled-table th {
+  background-color: #707070;
+  color: white;
+  }
+  
+  .styled-table tr:nth-child(even) {
+  background-color: #f2f2f2;
+  }
+  
+  /* Status box styling */
+  .status-box {
+  background-color: #ffffff;
+  border: 1px solid #ccc;
+  padding: 10px;
+  border-radius: 4px;
+  font-size: 12px;
+  color: #333;
+  text-align: left;
+  max-height: 150px; /* Fixed height */
+  overflow-y: auto;  /* Enable vertical scrolling */
+  word-wrap: break-word; /* Ensure long words break to the next line */
+  white-space: pre-wrap; /* Ensures whitespace and line breaks are respected */
+  }
+  
+  
+  /* Responsive grid for smaller screens */
+  @media (max-width: 768px) {
   .item-add-inventory-update-grid {
     grid-template-columns: 1fr;
   }
-}
+  
+  .item-add-inventory-update-section {
+    padding: 8px;
+  }
+  }
+  
