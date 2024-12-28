@@ -24,6 +24,7 @@ function AddInventoryItem() {
   const handleClearFile = () => {
     setFile(null);
     setItems([]);
+    setStatus("");
   };
 
   const handleQuantityChange = (index, newQuantity) => {
