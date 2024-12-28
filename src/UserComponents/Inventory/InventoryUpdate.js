@@ -10,30 +10,30 @@ const InventoryUpdate = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
   const [downloadUrl, setDownloadUrl] = useState('');
-  const [fileContent, setFileContent] = useState(''); // For storing the file content
+  const [fileContent, setFileContent] = useState('');
 
   const handleFileChange = (e) => {
     setFile(e.target.files[0]);
-    setDownloadUrl(''); // Reset download link on new file selection
-    setFileContent(''); // Reset file content when new file is selected
+    setDownloadUrl(''); 
+    setFileContent(''); 
   };
 
   const handleDragOver = (e) => {
     e.preventDefault();
-    e.currentTarget.classList.add('dragover'); // Add visual feedback
+    e.currentTarget.classList.add('dragover'); 
   };
 
   const handleDrop = (e) => {
     e.preventDefault();
-    e.currentTarget.classList.remove('dragover'); // Remove visual feedback
+    e.currentTarget.classList.remove('dragover'); 
     const droppedFile = e.dataTransfer.files[0];
     setFile(droppedFile);
-    setDownloadUrl(''); // Reset download link on new file drop
-    setFileContent(''); // Reset file content when new file is dropped
+    setDownloadUrl('');
+    setFileContent('');
   };
 
   const handleDragLeave = (e) => {
-    e.currentTarget.classList.remove('dragover'); // Remove visual feedback on drag leave
+    e.currentTarget.classList.remove('dragover'); 
   };
 
   const handleUpload = async () => {
@@ -54,21 +54,17 @@ const InventoryUpdate = () => {
             responseType: 'blob', // Ensure the response is in blob format
         });
 
-        // Create a Blob object from the response
+
         const blob = new Blob([response.data], { type: 'text/plain' });
         
-        // Create a temporary URL for the blob
         const url = window.URL.createObjectURL(blob);
         
-        // Automatically trigger the file download
         const link = document.createElement('a');
         link.href = url;
         link.download = 'downloaded_file.txt'; // Specify the file name
         document.body.appendChild(link); // Append the link to the document
         link.click(); // Programmatically click the link
         link.remove(); // Remove the link element from the document
-        
-        // Revoke the object URL after download
         window.URL.revokeObjectURL(url);
 
         console.log('Upload successful:', response);
@@ -77,7 +73,7 @@ const InventoryUpdate = () => {
     } finally {
         setIsUploading(false);
         setIsLoading(false);
-        setFile(null); // Clear the file after response is received
+        setFile(null);
     }
 };
 
@@ -85,7 +81,7 @@ const InventoryUpdate = () => {
   const handleClear = () => {
     setFile(null);
     setDownloadUrl('');
-    setFileContent(''); // Reset file content on clear
+    setFileContent(''); 
   };
 
   return (

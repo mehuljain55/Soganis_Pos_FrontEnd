@@ -12,6 +12,7 @@ function AddInventoryItem() {
   const [selectedGroup, setSelectedGroup] = useState("");
   const [groupDataList, setGroupDataList] = useState([]);
   const [selectGroupData, setSelectedGroupData] = useState("");
+  const [status,setStatus]=useState("");
 
   const handleFileChange = (e) => {
     const file = e.target.files[0];
@@ -54,29 +55,49 @@ function AddInventoryItem() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
+  
+    // Retrieve the user object from sessionStorage
     const user = JSON.parse(sessionStorage.getItem("user"));
-    const storeId = user ? user.storeId : '';
-    setStoreId(storeId); // Set the storeId state
-
+    const storeId = user?.storeId || ""; // Use optional chaining and fallback to an empty string
+  
+    if (!storeId) {
+      setError("Store ID is missing. Please ensure you are logged in.");
+      return;
+    }
+  
+    if (!file) {
+      setError("No file selected. Please choose a file to upload.");
+      return;
+    }
+  
+    // Prepare form data
     const formData = new FormData();
     formData.append("file", file);
     formData.append("storeId", storeId);
-
+  
     try {
+      // Make the API request
       const response = await axios.post(`${API_BASE_URL}/inventory/add`, formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
       });
-      const itemsWithStoreId = response.data.map(item => ({ ...item, storeId })); // Add storeId to each item
+  
+      // Process the response data
+      const itemModel = response.data.itemModelList || [];
+      const itemsWithStoreId = itemModel.map((item) => ({ ...item, storeId })); // Add storeId to each item
+  
+      // Update states
       setItems(itemsWithStoreId);
+      setStatus(response.data.status);
       setError(null);
     } catch (err) {
-      console.error(err);
-      setError("Failed to upload file");
+      // Log detailed error information and set error state
+      console.error("Error during file upload:", err);
+      setError(err.response?.data?.message || "Failed to upload file. Please try again.");
     }
   };
+  
 
   useEffect(() => {
     const fetchGroupList = async () => {
@@ -315,7 +336,22 @@ function AddInventoryItem() {
           </select>
           <button onClick={handleDownloadGroupData}>Download</button>
         </div>
+         {/* Section 4: Group Data Status */}
+         <div className="item-add-inventory-update-section">
+  <h2>Group Data Status</h2>
+  <div className="status-box" role="status" aria-live="polite">
+    {status
+      ? status.split("\n").map((line, index) => <div key={index}>{line}</div>)
+      : "Status will appear here..."}
+  </div>
+  </div>
+  
       </div>
+  
+      
+  
+  
+  
   
       {/* Table Section */}
       {items.length > 0 && (
@@ -367,5 +403,5 @@ function AddInventoryItem() {
       )}
     </div>
   );
-}
-export default AddInventoryItem;
+  }
+  export default AddInventoryItem;
