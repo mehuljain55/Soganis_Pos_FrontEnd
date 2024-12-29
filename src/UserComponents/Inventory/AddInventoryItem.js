@@ -357,7 +357,7 @@ function AddInventoryItem() {
       {/* Table Section */}
       {items.length > 0 && (
         <div>
-          <h2 style={{ textAlign: "center", marginTop: "30px" }}>Parsed Data</h2>
+          <h2 style={{ textAlign: "center", marginTop: "30px" }}>Item Data</h2>
           <div className="table-container">
             <table className="styled-table">
               <thead>
@@ -410,5 +410,5 @@ function AddInventoryItem() {
     </div>
   );
   }
-  
+
   export default AddInventoryItem;
