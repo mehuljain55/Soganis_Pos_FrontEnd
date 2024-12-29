@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from "axios";
 import { API_BASE_URL } from '../Config.js';
 import './AddInventoryItem.css'; // Import the CSS file
+import InventoryUpdateHistory from './InventoryUpdateHistory.js';
 
 function AddInventoryItem() {
   const [file, setFile] = useState(null);
@@ -13,6 +14,8 @@ function AddInventoryItem() {
   const [groupDataList, setGroupDataList] = useState([]);
   const [selectGroupData, setSelectedGroupData] = useState("");
   const [status,setStatus]=useState("");
+  const [showHistory, setShowHistory] = useState(false); // State to toggle history popup
+
 
   const handleFileChange = (e) => {
     const file = e.target.files[0];
@@ -191,9 +194,6 @@ function AddInventoryItem() {
     }
   };
 
-
-
-
   const handleRefresh = () => {
     setFile(null);
     setItems([]);
@@ -242,10 +242,15 @@ function AddInventoryItem() {
   };
 
   return (
-    <div className="item-add-inventory-update-container">
-      <h1 style={{ textAlign: "center", marginBottom: "30px" }}>Inventory Management</h1>
-  
-  
+    <div className="item-add-inventory-update-container" style={{ position: "relative" }}>
+    <h1 style={{ textAlign: "center", marginBottom: "30px" }}>Inventory Management</h1>
+    <button
+      className="view-history-button"
+      onClick={() => setShowHistory(true)}
+    >
+      View Update History
+    </button>
+
       <div className="item-add-inventory-update-grid">
         {/* Section 1: Upload Excel */}
         <div className="item-add-inventory-update-section">
@@ -349,11 +354,6 @@ function AddInventoryItem() {
   
       </div>
   
-      
-  
-  
-  
-  
       {/* Table Section */}
       {items.length > 0 && (
         <div>
@@ -366,6 +366,7 @@ function AddInventoryItem() {
                   <th>Item Code</th>
                   <th>Size</th>
                   <th>Color</th>
+                  <th>Current Quantity</th>
                   <th>Quantity</th>
                   <th>Store ID</th>
                   <th>Actions</th>
@@ -378,6 +379,7 @@ function AddInventoryItem() {
                     <td>{item.itemCode}</td>
                     <td>{item.size}</td>
                     <td>{item.itemColor}</td>
+                    <td>{item.currentQuantity}</td>
                     <td>
                       <input
                         id={`quantityInput-${index}`}
@@ -401,6 +403,9 @@ function AddInventoryItem() {
             Submit Updated Inventory
           </button>
         </div>
+      )}
+            {showHistory && (
+        <InventoryUpdateHistory onClose={() => setShowHistory(false)} />
       )}
     </div>
   );
