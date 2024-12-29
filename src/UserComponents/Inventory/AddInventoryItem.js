@@ -410,4 +410,5 @@ function AddInventoryItem() {
     </div>
   );
   }
+  
   export default AddInventoryItem;
