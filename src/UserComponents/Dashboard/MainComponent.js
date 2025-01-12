@@ -25,13 +25,13 @@ import { API_BASE_URL } from '../Config.js';
 import { LogoutButton, useLogout } from '../Login/LogoutPage.js';
 import ItemCodeFetcher from '../Billing/ItemCodeFetcher.js';
 import CustomerDueList from '../Billing/CustomerDueList.js';
-
+import Dashboard from './Dashboard.js';
 
 const MainComponent = ({ userData }) => {
-  const [selectedMenuItem, setSelectedMenuItem] = useState('');
+  const [selectedMenuItem, setSelectedMenuItem] = useState('Dashboard');
   const [todayCashCollection, setTodayCashCollection] = useState(null);
   const [isSearchModalOpen, setIsSearchModalOpen] = useState(false);
-  const [isSidebarOpen, setIsSidebarOpen] = useState(false); 
+  const [isSidebarOpen, setIsSidebarOpen] = useState(true); 
    const[storeName,setStoreName]=useState('');
 
   const user = JSON.parse(sessionStorage.getItem("user"));
@@ -61,6 +61,12 @@ const MainComponent = ({ userData }) => {
     });
     setStoreName(store.data);
   }
+
+  const handleHeadingClick = () => {
+    handleMenuItemClick('Dashboard');
+    setIsSidebarOpen(true);
+
+  };
 
   useEffect(() => {
     fetchStore(); 
@@ -97,7 +103,9 @@ const MainComponent = ({ userData }) => {
   return (
     <div className="container-fluid" {...swipeHandlers}>
       <div className="top-bar">
-        <h1 className="brand-heading">{storeName}</h1>
+      <h1 className="brand-heading" onClick={handleHeadingClick} style={{ cursor: 'pointer' }}>
+        {storeName}
+      </h1>
         {userData && (
           <div className="user-info">
             <span>User: {userData.sname}</span>
@@ -142,6 +150,7 @@ const MainComponent = ({ userData }) => {
         </div>
 
         <main className="main-content">
+          {selectedMenuItem === 'Dashboard' && <Dashboard />}
           {selectedMenuItem === 'New Bill' && <NewBillContainer userData={userData} />}
           {selectedMenuItem === 'Inter Company Transaction' && <InterCompanyTranfer userData={userData} />}
           {selectedMenuItem === 'Returns' && <BillDetails userData={userData} />}
