@@ -1,0 +1,46 @@
+.dashboard-container {
+  padding: 20px;
+  background-color: #f9f9f9;
+  display: block; /* Avoid flex here */
+}
+
+.custom-card {
+  width: 100%;
+  max-width: 250px; /* Limit card width */
+  height: 200px;
+  border-radius: 12px;
+  transition: transform 0.2s, box-shadow 0.2s;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden; /* Prevent content overflow */
+  margin: 10px; /* Add margin between cards */
+}
+
+.custom-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+}
+
+.custom-card .icon {
+  font-size: 3rem; /* Adjust font size */
+  margin-bottom: 10px; /* Space below icon */
+}
+
+.card-title {
+  font-size: 1.25rem;
+  font-weight: 500;
+}
+
+.card-value {
+  font-size: 1.75rem;
+  font-weight: bold;
+}
+
+@media (max-width: 767px) {
+  .custom-card {
+    max-width: 200px; /* Ensure responsiveness */
+    height: 120px;
+  }
+}
