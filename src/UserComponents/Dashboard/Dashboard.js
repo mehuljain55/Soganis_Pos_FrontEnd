@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { Container, Row, Col, Card } from "react-bootstrap";
 import { FaCashRegister, FaCreditCard, FaMobileAlt } from "react-icons/fa";
 import "./Dashboard.css";
 import { API_BASE_URL } from "../Config.js";
@@ -32,19 +31,19 @@ const Dashboard = () => {
 
   const cardData = [
     {
-      title: "Cash",
+      title: "Cash Collection",
       value: storeInfo.cash,
       icon: <FaCashRegister size={30} />,
       bgColor: "#42a5f5",
     },
     {
-      title: "Card",
+      title: "Card Collection",
       value: storeInfo.card,
       icon: <FaCreditCard size={30} />,
       bgColor: "#66bb6a",
     },
     {
-      title: "UPI",
+      title: "UPI Collection",
       value: storeInfo.upi,
       icon: <FaMobileAlt size={30} />,
       bgColor: "#ffa726",
@@ -58,21 +57,45 @@ const Dashboard = () => {
   ];
 
   return (
-    <Container fluid className="dashboard-container">
-      <Row className="g-4 justify-content-center">
-        {cardData.map((card, index) => (
-          <Col xs={12} sm={6} md={3} lg={3} key={index}>
-            <Card className="custom-card border border-secondary" style={{ backgroundColor: card.bgColor }}>
-              <Card.Body className="text-white text-center">
-                <div className="icon">{card.icon}</div>
-                <h5 className="card-title">{card.title}</h5>
-                <h3 className="card-value">{card.value}</h3>
-              </Card.Body>
-            </Card>
-          </Col>
-        ))}
-      </Row>
-    </Container>
+    <div className="dashboard-container">
+      {/* First Row */}
+      <div className="card-row">
+        <div className="card-container" style={{ backgroundColor: cardData[0].bgColor }}>
+          <div className="card-body text-center">
+            <div className="icon">{cardData[0].icon}</div>
+            <h5 className="card-title">{cardData[0].title}</h5>
+            <h3 className="card-value">{cardData[0].value}</h3>
+          </div>
+        </div>
+
+        <div className="card-container" style={{ backgroundColor: cardData[1].bgColor }}>
+          <div className="card-body text-center">
+            <div className="icon">{cardData[1].icon}</div>
+            <h5 className="card-title">{cardData[1].title}</h5>
+            <h3 className="card-value">{cardData[1].value}</h3>
+          </div>
+        </div>
+      </div>
+
+      {/* Second Row */}
+      <div className="card-row">
+        <div className="card-container" style={{ backgroundColor: cardData[2].bgColor }}>
+          <div className="card-body text-center">
+            <div className="icon">{cardData[2].icon}</div>
+            <h5 className="card-title">{cardData[2].title}</h5>
+            <h3 className="card-value">{cardData[2].value}</h3>
+          </div>
+        </div>
+
+        <div className="card-container" style={{ backgroundColor: cardData[3].bgColor }}>
+          <div className="card-body text-center">
+            <div className="icon">{cardData[3].icon}</div>
+            <h5 className="card-title">{cardData[3].title}</h5>
+            <h3 className="card-value">{cardData[3].value}</h3>
+          </div>
+        </div>
+      </div>
+    </div>
   );
 };
 

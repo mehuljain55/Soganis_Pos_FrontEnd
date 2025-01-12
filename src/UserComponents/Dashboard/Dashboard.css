@@ -1,31 +1,45 @@
 .dashboard-container {
   padding: 20px;
   background-color: #f9f9f9;
-  display: block; /* Avoid flex here */
+  display: flex;
+  flex-direction: column;
+  gap: 15px; /* Reduced the gap between rows */
 }
 
-.custom-card {
-  width: 100%;
-  max-width: 250px; /* Limit card width */
-  height: 200px;
+.card-row {
+  display: flex;
+  justify-content: center;
+  gap: 10px; /* Reduced the gap between cards */
+  flex-wrap: wrap;
+}
+
+.card-container {
+  flex: 1;
+  max-width: 220px; /* Reduced width for smaller gap */
+  max-height: 150px;
+  background-color: #42a5f5;
   border-radius: 12px;
+  padding: 20px;
   transition: transform 0.2s, box-shadow 0.2s;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow */
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  overflow: hidden; /* Prevent content overflow */
-  margin: 10px; /* Add margin between cards */
 }
 
-.custom-card:hover {
+.card-container:hover {
   transform: translateY(-5px);
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
 }
 
-.custom-card .icon {
-  font-size: 3rem; /* Adjust font size */
-  margin-bottom: 10px; /* Space below icon */
+.card-body {
+  text-align: center;
+}
+
+.icon {
+  font-size: 3rem;
+  margin-bottom: 10px;
 }
 
 .card-title {
@@ -39,8 +53,8 @@
 }
 
 @media (max-width: 767px) {
-  .custom-card {
-    max-width: 200px; /* Ensure responsiveness */
-    height: 120px;
+  .card-container {
+    max-width: 100%; /* Full width for smaller screens */
+    height: 180px;
   }
 }
