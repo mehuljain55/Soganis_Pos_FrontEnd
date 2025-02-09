@@ -3,7 +3,8 @@ import './FilterSalesPage.css';
 import axios from 'axios';
 import { API_BASE_URL } from '../Config.js';
 import SalesReport from './SalesReport'; 
-import { Button, Spinner } from "react-bootstrap";
+
+import { Button, Form, Spinner, Container, Row, Col, Card } from "react-bootstrap";
 
 const FilterSalesPage = () => {
   const [filters, setFilters] = useState({
@@ -208,136 +209,83 @@ const FilterSalesPage = () => {
     }
   };
 
-  
-
   return (
-    <div className="filter-sales-page">
-      <div className="filter-container">
-        <h1>View Sales</h1>
-        <div className="checkbox-group">
-          <div className="checkbox-group-item">
-            <label>
-              <input
-                type="checkbox"
-                name="dateRange"
-                checked={filters.dateRange}
-                onChange={handleCheckboxChange}
-              />
-              Date Range
-            </label>
-          </div>
-          <div className="checkbox-group-item">
-            <label>
-              <input
-                type="checkbox"
-                name="item"
-                checked={filters.item}
-                onChange={handleCheckboxChange}
-              />
-              Item
-            </label>  
-          </div>
-          <div className="checkbox-group-item">
-            <label>
-              <input
-                type="checkbox"
-                name="school"
-                checked={filters.school}
-                onChange={handleCheckboxChange}
-              />
-              School
-            </label>
-          </div>
+    <Container className="filter-sales-page mt-4">
+      <Card className="p-4 shadow-sm">
+        <h1 className="text-center mb-4">View Sales</h1>
+        
+        <div className="checkbox-group d-flex justify-content-center gap-3 mb-3">
+          {['dateRange', 'item', 'school'].map((filter) => (
+            <Form.Check 
+              key={filter}
+              type="checkbox"
+              label={filter.charAt(0).toUpperCase() + filter.slice(1).replace(/([A-Z])/g, ' $1')}
+              name={filter}
+              checked={filters[filter]}
+              onChange={handleCheckboxChange}
+            />
+          ))}
         </div>
 
-        {/* Combine all dropdowns in a single row */}
-        <div className="dropdown-group">
+        <Row className="dropdown-group d-flex justify-content-center gap-2 mb-3">
           {filters.dateRange && (
             <>
-              <label htmlFor="startDate">Start Date:</label>
-              <input
-                type="date"
-                id="startDate"
-                name="startDate"
-                value={selectedFilters.dateRange.startDate}
-                onChange={handleDateChange}
-              />
-
-              <label htmlFor="endDate">End Date:</label>
-              <input
-                type="date"
-                id="endDate"
-                name="endDate"
-                value={selectedFilters.dateRange.endDate}
-                onChange={handleDateChange}
-              />
+              <Col xs="auto">
+                <Form.Label>Start Date:</Form.Label>
+                <Form.Control type="date" name="startDate" value={selectedFilters.dateRange.startDate} onChange={handleDateChange} />
+              </Col>
+              <Col xs="auto">
+                <Form.Label>End Date:</Form.Label>
+                <Form.Control type="date" name="endDate" value={selectedFilters.dateRange.endDate} onChange={handleDateChange} />
+              </Col>
             </>
           )}
-
+          
           {filters.school && (
-            <>
-              <label htmlFor="schoolDropdown">Select School Code:</label>
-              <select
-                id="schoolDropdown"
-                name="school"
-                value={selectedFilters.school}
-                onChange={handleDropdownChange}
-              >
+            <Col xs="auto">
+              <Form.Label>Select School Code:</Form.Label>
+              <Form.Select name="school" value={selectedFilters.school} onChange={handleDropdownChange}>
                 <option value="">--Select--</option>
                 {schools.map((school, index) => (
-                  <option key={index} value={school}>
-                    {school}
-                  </option>
+                  <option key={index} value={school}>{school}</option>
                 ))}
-              </select>
-            </>
+              </Form.Select>
+            </Col>
           )}
-
+          
           {filters.item && (
-            <>
-              <label htmlFor="itemDropdown">Select Item Code:</label>
-              <select
-                id="itemDropdown"
-                name="item"
-                value={selectedFilters.item}
-                onChange={handleDropdownChange}
-              >
+            <Col xs="auto">
+              <Form.Label>Select Item Code:</Form.Label>
+              <Form.Select name="item" value={selectedFilters.item} onChange={handleDropdownChange}>
                 <option value="">--Select--</option>
-                {selectedFilters.school
-                  ? filteredItems.map((item, index) => (
-                      <option key={index} value={item}>
-                        {item}
-                      </option>
-                    ))
-                  : items.map((item, index) => (
-                      <option key={index} value={item}>
-                        {item}
-                      </option>
-                    ))}
-              </select>
-            </>
+                {(selectedFilters.school ? filteredItems : items).map((item, index) => (
+                  <option key={index} value={item}>{item}</option>
+                ))}
+              </Form.Select>
+            </Col>
           )}
-        </div>
+        </Row>
 
-        <div className="button-group">
-      <Button onClick={fetchSalesData} disabled={loading}>
-        {loading ? (
-          <>
-            <Spinner animation="border" size="sm" /> Generating Report...
-          </>
-        ) : (
-          "Submit"
-        )}
-      </Button>
-    </div>
+        <div className="text-center">
+  <button onClick={fetchSalesData} disabled={loading} className="search-button">
+    {loading ? (
+      <>
+        <span className="custom-spinner"></span> Generating Report
+      </>
+    ) : (
+      "View"
+    )}
+  </button>
+</div>
 
-        {errorMessage && <p className="error-message">{errorMessage}</p>}
-      </div>
 
-      <div className="sales-report">
+        {errorMessage && <p className="text-danger text-center mt-3">{errorMessage}</p>}
+      </Card>
+
+      <div className="sales-report-container mt-4">
         <SalesReport data={salesData} />
       </div>
-    </div>
+    </Container>
   );
 };
 
