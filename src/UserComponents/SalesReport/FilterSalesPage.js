@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import './FilterSalesPage.css'; // Import custom CSS for styling
+import './FilterSalesPage.css'; 
 import axios from 'axios';
 import { API_BASE_URL } from '../Config.js';
-import SalesReport from './SalesReport'; // Import the SalesReport component
+import SalesReport from './SalesReport'; 
+import { Button, Spinner } from "react-bootstrap";
 
 const FilterSalesPage = () => {
   const [filters, setFilters] = useState({
@@ -22,6 +23,7 @@ const FilterSalesPage = () => {
   const [filteredItems, setFilteredItems] = useState([]);
   const [salesData, setSalesData] = useState([]);
   const [errorMessage, setErrorMessage] = useState('');
+  const [loading, setLoading] = useState(false);
 
   const handleCheckboxChange = (event) => {
     const { name, checked } = event.target;
@@ -133,6 +135,7 @@ const FilterSalesPage = () => {
   }, [filters.item, selectedFilters.school]);
 
   const fetchSalesData = () => {
+    setLoading(true);
     let url = `${API_BASE_URL}/report/findReportAll`; // Default URL for all reports
     const params = {};
     const user = JSON.parse(sessionStorage.getItem("user"));
@@ -181,18 +184,26 @@ const FilterSalesPage = () => {
       axios.get(url, { params })
         .then(response => {
           setSalesData(response.data);
+          setLoading(false); 
         })
         .catch(error => {
           console.error('Error fetching sales data:', error);
+          setLoading(false); 
+        }).finally(() => {
+          setLoading(false); // Re-enable button after response
         });
     } else {
       // If no filters are applied, fetch all sales data
       axios.get(url)
         .then(response => {
           setSalesData(response.data);
+          setLoading(false); // Re-enable button after response
         })
         .catch(error => {
           console.error('Error fetching sales data:', error);
+          setLoading(false); // Re-enable button after response
+        }) .finally(() => {
+          setLoading(false); // Re-enable button after response
         });
     }
   };
@@ -309,8 +320,16 @@ const FilterSalesPage = () => {
         </div>
 
         <div className="button-group">
-          <button onClick={fetchSalesData}>Submit</button>
-        </div>
+      <Button onClick={fetchSalesData} disabled={loading}>
+        {loading ? (
+          <>
+            <Spinner animation="border" size="sm" /> Generating Report...
+          </>
+        ) : (
+          "Submit"
+        )}
+      </Button>
+    </div>
 
         {errorMessage && <p className="error-message">{errorMessage}</p>}
       </div>

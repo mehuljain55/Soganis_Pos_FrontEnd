@@ -223,14 +223,13 @@ const BillDetails = ({ userData }) => {
             return_quantity: returnQuantities[item.sno],
         }));
     
-        setItemsToExchange(exchangeItems); // Set the globally accessible state
+        setItemsToExchange(exchangeItems); 
     
-                    const exchangeAmount = calculateTotalAmount(); // Calculate total exchange amount
+                    const exchangeAmount = calculateTotalAmount();
                     setExchangeAmount(exchangeAmount);
                     setIsModalOpen(false);
                     setIsExchangeModalOpen(true);
-                    fetchBill(); // Refetch bill data after exchange
-        
+                    fetchBill();        
     };
 
     const isToday = (date) => date === currentDate;
@@ -252,7 +251,7 @@ const BillDetails = ({ userData }) => {
             barcodedId: defectItem.itemBarcodeID,
             return_quantity: defectQuantity,
             price: defectItem.sellPrice,
-            userId: userData.userId // Make sure `userId` is defined
+            userId: userData.userId
         })
         .then(response => {
             setShowPopup({ message: 'Item defected successfully!', type: 'success' });

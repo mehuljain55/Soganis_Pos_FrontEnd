@@ -51,7 +51,7 @@ const MainComponent = ({ userData }) => {
 
   const handleMenuItemClick = (menuItem) => {
     setSelectedMenuItem(menuItem);
-    setIsSidebarOpen(false); // Close sidebar after menu selection on mobile
+    setIsSidebarOpen(false); 
     
   };
 
@@ -134,7 +134,6 @@ const MainComponent = ({ userData }) => {
             <button className="list-group-item" onClick={() => handleMenuItemClick('Inter Company Transaction')}>Inter Company</button>
             <button className="list-group-item" onClick={() => handleMenuItemClick('Recent Bills')}>Recent Bills</button>
             <button className="list-group-item" onClick={() => handleMenuItemClick('Customer Due List')}>Customer Due List</button>
-    
             <button className="list-group-item" onClick={() => handleMenuItemClick('Add Order')}>Customer Order Book</button>
             <button className="list-group-item" onClick={() => handleMenuItemClick('View Order')}>View Order Book</button>
             <button className="list-group-item" onClick={() => handleMenuItemClick('View Stock')}>View Stock</button>
