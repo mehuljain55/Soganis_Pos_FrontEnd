@@ -1,8 +1,12 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { FaCashRegister, FaCreditCard, FaMobileAlt } from "react-icons/fa";
+import { FaCashRegister, FaCreditCard,FaMoneyBillWave , FaMobileAlt } from "react-icons/fa";
 import "./Dashboard.css";
 import { API_BASE_URL } from "../Config.js";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faIndianRupeeSign } from "@fortawesome/free-solid-svg-icons";
+
+
 
 const Dashboard = () => {
   const [storeInfo, setStoreInfo] = useState({
@@ -51,7 +55,13 @@ const Dashboard = () => {
     {
       title: "Retail Due",
       value: storeInfo.retailDue,
-      icon: <FaCashRegister size={30} />,
+      icon: <FaCashRegister  />,
+      bgColor: "#ef5350",
+    },
+    {
+      title: "Opening Cash",
+      value: storeInfo.openingCash,
+      icon: <FontAwesomeIcon icon={faIndianRupeeSign} size={30} />,
       bgColor: "#ef5350",
     },
   ];
@@ -75,6 +85,16 @@ const Dashboard = () => {
             <h3 className="card-value">{cardData[1].value}</h3>
           </div>
         </div>
+
+        <div className="card-container" style={{ backgroundColor: cardData[1].bgColor }}>
+          <div className="card-body text-center">
+          <div className="icon" style={{ marginTop: "15px" }}>{cardData[4].icon}</div>
+            <h5 className="card-title">{cardData[4].title}</h5>
+            <h3 className="card-value">{cardData[4].value}</h3>
+          </div>
+        </div>
+
+
       </div>
 
       {/* Second Row */}
