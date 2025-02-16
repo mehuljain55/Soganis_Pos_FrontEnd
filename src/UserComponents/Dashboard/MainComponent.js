@@ -33,6 +33,7 @@ const MainComponent = ({ userData }) => {
   const [isSearchModalOpen, setIsSearchModalOpen] = useState(false);
   const [isSidebarOpen, setIsSidebarOpen] = useState(true); 
    const[storeName,setStoreName]=useState('');
+   const[backupDetails,setBackupDetails]=useState('');
 
   const user = JSON.parse(sessionStorage.getItem("user"));
   const navigate = useNavigate();
@@ -49,6 +50,15 @@ const MainComponent = ({ userData }) => {
     }
   };
 
+  const handleBackup = async () => {
+    try {
+      const response = await axios.get(`${API_BASE_URL}/user/backup`);
+      alert(response.data);
+    } catch (error) {
+      console.error("Error creating backup:", error);
+    }
+  };
+
   const handleMenuItemClick = (menuItem) => {
     setSelectedMenuItem(menuItem);
     setIsSidebarOpen(false); 
@@ -59,6 +69,9 @@ const MainComponent = ({ userData }) => {
     const store = await axios.get(`${API_BASE_URL}/store/getStoreName`, {
       params: { storeId: user.storeId }
     });
+   
+    const backupDetail = await axios.get(`${API_BASE_URL}/store/backupDetail`);
+    setBackupDetails(backupDetail.data);
     setStoreName(store.data);
   }
 
@@ -100,6 +113,8 @@ const MainComponent = ({ userData }) => {
     trackMouse: true,
   });
 
+  
+
   return (
     <div className="container-fluid" {...swipeHandlers}>
       <div className="top-bar">
@@ -119,6 +134,12 @@ const MainComponent = ({ userData }) => {
             <button className="logout-button" onClick={handleLogout}>
               <FontAwesomeIcon icon={faSignOutAlt} />
             </button>
+          
+            <button className="backup-button" onClick={handleBackup}>
+             Backup
+            </button>
+          
+          
           </div>
         )}
         <button className="menu-toggle" onClick={toggleSidebar}>
@@ -167,6 +188,9 @@ const MainComponent = ({ userData }) => {
           {selectedMenuItem === 'Customer Due List' && <CustomerDueList  />}
 
         </main>
+      </div>
+      <div>
+        {backupDetails}
       </div>
 
       <SearchModal isOpen={isSearchModalOpen} onClose={() => setIsSearchModalOpen(false)} />
