@@ -7,24 +7,33 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faIndianRupeeSign } from "@fortawesome/free-solid-svg-icons";
 
 
-
 const Dashboard = () => {
   const [storeInfo, setStoreInfo] = useState({
     retailDue: 0,
     cash: 0,
     card: 0,
     upi: 0,
+    backupDetails:'',
   });
+
+  
 
   useEffect(() => {
     const fetchStoreInfo = async () => {
       try {
         const user = JSON.parse(sessionStorage.getItem("user"));
 
-        const response = await axios.get(`${API_BASE_URL}/store/storeInfo`, {
-          params: { storeId: user.storeId },
-        });
-        setStoreInfo(response.data);
+        const [storeResponse, backupResponse] = await Promise.all([
+          axios.get(`${API_BASE_URL}/store/storeInfo`, {
+            params: { storeId: user.storeId },
+          }),
+          axios.get(`${API_BASE_URL}/store/backupDetail`),
+        ]);
+
+        setStoreInfo((prevState) => ({
+          ...storeResponse.data,
+          backupDetails: backupResponse.data, // Ensure backupDetails is included
+        }));
       } catch (error) {
         console.error("Error fetching store data", error);
       }
@@ -32,6 +41,7 @@ const Dashboard = () => {
 
     fetchStoreInfo();
   }, []);
+
 
   const cardData = [
     {
@@ -64,7 +74,15 @@ const Dashboard = () => {
       icon: <FontAwesomeIcon icon={faIndianRupeeSign} size={30} />,
       bgColor: "#ef5350",
     },
+
+    {
+      title: "Backup Details",
+      value: storeInfo.backupDetails,
+      bgColor: "#B9B9B9",
+    },
+    
   ];
+
 
   return (
     <div className="dashboard-container">
@@ -114,6 +132,17 @@ const Dashboard = () => {
             <h3 className="card-value">{cardData[3].value}</h3>
           </div>
         </div>
+
+        <div className="card-container" style={{ backgroundColor: cardData[5].bgColor }}>
+          <div className="card-body text-center">
+            <div className="icon">{cardData[5].icon}</div>
+            <h5 className="card-title">{cardData[5].title}</h5>
+            <h3 className="card-title">{cardData[5].value}</h3>
+          </div>
+        </div>
+
+
+
       </div>
     </div>
   );
