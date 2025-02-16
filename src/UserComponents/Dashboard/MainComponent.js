@@ -32,8 +32,7 @@ const MainComponent = ({ userData }) => {
   const [todayCashCollection, setTodayCashCollection] = useState(null);
   const [isSearchModalOpen, setIsSearchModalOpen] = useState(false);
   const [isSidebarOpen, setIsSidebarOpen] = useState(true); 
-   const[storeName,setStoreName]=useState('');
-   const[backupDetails,setBackupDetails]=useState('');
+  const[storeName,setStoreName]=useState('');
 
   const user = JSON.parse(sessionStorage.getItem("user"));
   const navigate = useNavigate();
@@ -70,8 +69,6 @@ const MainComponent = ({ userData }) => {
       params: { storeId: user.storeId }
     });
    
-    const backupDetail = await axios.get(`${API_BASE_URL}/store/backupDetail`);
-    setBackupDetails(backupDetail.data);
     setStoreName(store.data);
   }
 
@@ -189,9 +186,7 @@ const MainComponent = ({ userData }) => {
 
         </main>
       </div>
-      <div>
-        {backupDetails}
-      </div>
+    
 
       <SearchModal isOpen={isSearchModalOpen} onClose={() => setIsSearchModalOpen(false)} />
     </div>
