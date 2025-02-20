@@ -71,24 +71,13 @@ function App() {
           <Route path="/store/dashboard" element={<StoreComponent />} />
           <Route path="/invoice" element={<Invoice />} />
 
-          {/* Conditional rendering based on userData for main app routes */}
+      
           {!userData ? (
-            <Route path="*" element={<Login setUserData={saveUserData} />} /> // Catch-all for login
+            <Route path="*" element={<Login setUserData={saveUserData} />} />
           ) : (
             <>
               <Route path="/" element={<MainComponent userData={userData} />} />
-              <Route path="/filter" element={<FilterPage />} />
-              <Route path="/filter-sales" element={<FilterSalesPage />} />
-              <Route path="/customer-order" element={<CustomerOrder />} />
-              <Route path="/view_customer_order" element={<OrderView />} />
-              <Route path="/purchase-order-book" element={<PurchaseOrderBook />} />
               <Route path="/barcode" element={<BarcodePrintPage />} />
-              <Route path="/bill" element={<Bill />} />
-              <Route path="/add_item" element={<AddItemStock />} />
-              <Route path="/inventory/update" element={<AddInventoryItem />} />
-              <Route path="/sales/school_sales" element={<SchoolSalesReport />} />
-              <Route path="/sales/report" element={<SalesReportGraph />} />
-          
             </>
           )}
         </Routes>
