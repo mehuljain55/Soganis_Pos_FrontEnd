@@ -719,9 +719,8 @@ console.log(billData);
         </div>
   
         {/* Customer Details */}
-        <div className="customer-details">
-          <h5>Customer Details</h5>
-          <div className="customer-details-box">
+        <div className="intercompany-customer-details">
+         <div className="intercompany-customer-details-box">
           <label>
       Company Name:
       <select
@@ -740,7 +739,7 @@ console.log(billData);
       </select>
     </label>
   
-            <div className="school-name-input">
+            <div className="inter-company-school-name-input">
               <label>
                 School Name:
                 <Select
