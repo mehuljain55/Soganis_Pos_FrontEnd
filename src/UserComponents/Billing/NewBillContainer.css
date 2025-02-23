@@ -323,13 +323,49 @@ h2 {
   padding: 10px 20px;
   margin: 0 5px;
 }
-.customer-details{
+.customer-details {
+  padding-left: 200px !important;
   display: flex;
   flex-direction: column;
   font-size: 18px;
   align-items: center;
+  margin-top: -5px;
   justify-content: center;
 }
+
+.customer-details-box {
+  border-radius: 10px;
+  margin: 10px;
+  padding: 10px;
+  display: flex;
+  gap: 20px;
+  margin-bottom: 20px;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.customer-details-box label {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  white-space: nowrap;
+}
+
+.customer-details-box input {
+  width: 200px;
+  height: 20px;
+  padding: 5px;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+.school-name-input .Select__control {
+  width: 200px !important;
+  height: 40px !important;
+}
+
 
 .mode-toggle {
   position: relative;
@@ -355,14 +391,7 @@ h2 {
 }
 
 
-.customer-details-box{
-  border-radius: 10px;
-  margin: 10px;
-  padding: 10px;
-  display: flex;
-  gap: 20px;
-  margin-bottom: 20px;
-}
+
 
 
 /* Styles for the PDF modal */

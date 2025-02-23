@@ -974,7 +974,6 @@ const handleSelectChange = (selectedOption) => {
   
       {/* Customer Details */}
       <div className="customer-details">
-        <h5>Customer Details</h5>
         <div className="customer-details-box">
           <label>
             Customer Name:
