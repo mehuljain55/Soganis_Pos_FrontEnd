@@ -528,6 +528,7 @@ const BillDetails = ({ userData }) => {
                                 itemsToExchange={itemsToExchange}
                                 exchangeAmount={exchangeAmount}
                                 billNo={billData.billNo}
+                                schoolNameBill={billData.schoolName}
                                 onClose={handleCloseExchangeModal}
                             />
                         ) : (
@@ -536,6 +537,7 @@ const BillDetails = ({ userData }) => {
                                 itemsToExchange={itemsToExchange}
                                 exchangeAmount={exchangeAmount}
                                 billNo={billData.billNo}
+                                schoolNameBill={billData.schoolName}
                                 onClose={handleCloseExchangeModal}
                             />
                         )}

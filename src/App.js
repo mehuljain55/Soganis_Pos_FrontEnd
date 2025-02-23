@@ -17,6 +17,7 @@ import StoreLogin from './UserComponents/Store/StoreLogin';
 import Invoice from './UserComponents/Invoice/Invoice'; 
 import SchoolSalesReport from './UserComponents/SalesReport/SchoolSalesReport'; 
 import SalesReportGraph from './UserComponents/SalesReport/SalesReportGraph'; 
+import ExchangeBill from './UserComponents/Billing/ExchangeBill.js';
 
 import './App.css'; 
 
@@ -70,6 +71,8 @@ function App() {
           <Route path="/store/login" element={<StoreLogin />} />
           <Route path="/store/dashboard" element={<StoreComponent />} />
           <Route path="/invoice" element={<Invoice />} />
+          <Route path="/exchange" element={<ExchangeBill />} />
+          
 
       
           {!userData ? (

@@ -532,6 +532,14 @@ const handleSelectChange = (selectedOption) => {
         return; // Prevent API call
       }
     }
+
+    if(discountPercentage>0)
+    {
+      if (!customerName?.trim()) {
+        alert("Customer Name is required");
+        return; // Prevent API call
+      }
+    }
   
     // Process items
     const updatedItems = selectedItems.map((item) => {
