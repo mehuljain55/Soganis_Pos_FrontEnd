@@ -694,3 +694,46 @@ h2 {
 .discard-bill:hover {
   background-color: rgba(0, 0, 0, 0.7);
 }
+
+.intercompany-customer-details {
+  display: flex;
+  flex-direction: column;
+  font-size: 18px;
+  align-items: center;
+  justify-content: center;
+}
+
+.intercompany-customer-details-box {
+  border-radius: 10px;
+  margin: 10px;
+  padding: 10px;
+  display: flex;
+  gap: 20px;
+  margin-bottom: 20px;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.intercompany-customer-details-box label {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  white-space: nowrap;
+}
+
+.intercompany-customer-details-box select,
+.intercompany-customer-details-box input {
+  width: 250px;
+  height: 30px;
+  padding: 5px;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+/* Ensuring React Select (dropdown) is the same size */
+.inter-company-school-name-input .Select__control {
+  width: 250px !important;
+  height: 30px !important;
+}
