@@ -285,13 +285,44 @@ h2 {
   padding: 10px 20px;
   margin: 0 5px;
 }
-.customer-details{
+
+
+.customer-details {
+  padding-top: 80px !important; 
   display: flex;
-  flex-direction: column;
-  font-size: 18px;
+  flex-direction: row;
   align-items: center;
-  justify-content: center;
+  justify-content: space-between;
+  width: 95%;
+  padding: 10px;
+  background: #f8f9fa; /* Light background */
+  border-radius: 5px;
+  white-space: nowrap; /* Prevent text from wrapping */
+  
 }
+
+.credit-info {
+  flex: 1; /* Takes equal space */
+  text-align: center;
+  font-size: 18px;
+  font-weight: bold;
+  padding-left: 350px;
+}
+
+.school-info {
+  display: flex;
+  align-items: center;
+  gap: 10px; /* Space between label and dropdown */
+}
+
+.school-label {
+  white-space: nowrap; /* Prevents label from stacking */
+}
+
+.customer-details > * {
+  flex-shrink: 0; /* Prevents flex items from wrapping */
+}
+
 
 .mode-toggle {
   position: relative;
@@ -452,4 +483,9 @@ h2 {
 
 .exchange-close-button{
   margin-top: 25px !important;
+  background-color: red !important;
+  border-color: red !important;
+  color: white !important;
 }
+
+

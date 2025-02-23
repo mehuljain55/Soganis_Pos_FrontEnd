@@ -9,7 +9,7 @@ import BillPopup from './BillPopup'; // Import the popup component
 import printJS from "print-js";
 
 
-const ExchangeBill = ({ userData,itemsToExchange, exchangeAmount,billNo, onClose }) => {
+const ExchangeBill = ({ userData,itemsToExchange=[], exchangeAmount,billNo, schoolNameBill,onClose }) => {
   const [selectedItems, setSelectedItems] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [searchResults, setSearchResults] = useState([]);
@@ -77,6 +77,12 @@ const handleSelectChange = (selectedOption) => {
   // Set only the school name without the code
   setSchoolName(selectedOption ? selectedOption.schoolName : '');
 };
+
+
+useEffect(() => {
+  setSchoolName(schoolNameBill);  
+}, []);
+
 
   useEffect(() => {
     fetchAllSchools();
@@ -598,7 +604,7 @@ console.log(requestData);
 
       <div className="billing-container">
   <div className="billing-head">
-    <h2>Exchange</h2>
+    <h2>Exchange Bill</h2>
   </div>
   <div className="barcode-input">
       <input
@@ -671,26 +677,34 @@ console.log(requestData);
 
       {/* Customer Details */}
       <div className="customer-details">
-      <label>
-    School Name:
-    <Select
-    options={allSchools}
-    onFocus={handleSelectFocus}
-    onBlur={handleSelectBlur}
-    ref={selectedSchoolRef}
-    value={allSchools.find((school) => school.schoolName === schoolName) || null}
-    onChange={handleSelectChange}
-    placeholder="Select a school"
-    styles={{ control: (base) => ({ ...base, width: '200px' }) }}
-    filterOption={(option, inputValue) => 
-        option.data.schoolName.toLowerCase().includes(inputValue.toLowerCase()) || 
-        option.data.schoolCode.toLowerCase().includes(inputValue.toLowerCase())
-    }
-/>
+      <div className="credit-info">
 
-</label>
-       <h5>Credit Available: {exchangeAmount}</h5>
-     
+     Credit Available: {exchangeAmount}
+      </div>
+
+      <div className="school-info">
+        <label className="school-label"><b>School Name:</b></label>
+        <Select
+          options={allSchools}
+          onFocus={handleSelectFocus}
+          onBlur={handleSelectBlur}
+          ref={selectedSchoolRef}
+          value={allSchools.find((school) => school.schoolName === schoolName) || null}
+          onChange={handleSelectChange}
+          placeholder="Select a school"
+          styles={{ control: (base) => ({ ...base, width: '250px' }) }}
+          filterOption={(option, inputValue) => 
+            option.data.schoolName.toLowerCase().includes(inputValue.toLowerCase()) || 
+            option.data.schoolCode.toLowerCase().includes(inputValue.toLowerCase())
+          }
+        />
+      </div>
+    </div>
+
+
+
+
+<div className="exchange-item-table">
       <h5>Exchange Items</h5>
       <table>
         <thead>
@@ -720,7 +734,7 @@ console.log(requestData);
           ))}
         </tbody>
       </table>
-    </div>
+      </div>
 
       {/* Billing Items Table */}
       <div
@@ -921,9 +935,10 @@ console.log(requestData);
     </form>
   </Modal.Body>
   <Modal.Footer>
-    <Button variant="secondary" onClick={() => setShowCustomItemModal(false)}>
-      Close
-    </Button>
+  <button  className="exchange-close-btn" onClick={() => setShowCustomItemModal(false)}>
+  Close
+</button>
+
     <Button variant="primary" onClick={handleAddCustomItem}>
       Add Item
     </Button>
