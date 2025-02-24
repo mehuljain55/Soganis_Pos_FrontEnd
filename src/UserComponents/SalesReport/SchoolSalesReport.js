@@ -1,6 +1,8 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { API_BASE_URL } from '../Config.js';
 import './SchoolSalesReport.css';
+import Select from "react-select";
+
 
 const SalesSchoolReport = () => {
     const user = JSON.parse(sessionStorage.getItem('user'));
@@ -13,13 +15,15 @@ const SalesSchoolReport = () => {
     const [error, setError] = useState(null);
     const [popupData, setPopupData] = useState(null); // State for popup data
     const [popupVisible, setPopupVisible] = useState(false); // State for popup visibility
+    const[userList,setUserList]=useState([]);
+    const[userId,setUserId]=useState('ALL');
 
     const fetchSalesReport = async () => {
         try {
             setLoading(true);
             setError(null);
 
-            const response = await fetch(`${API_BASE_URL}/sales/report/school_name?startDate=${startDate}&endDate=${endDate}&storeId=${storeId}`);
+            const response = await fetch(`${API_BASE_URL}/sales/report/school_name?startDate=${startDate}&endDate=${endDate}&storeId=${storeId}&userId=${userId}`);
             if (!response.ok) {
                 throw new Error('Failed to fetch data');
             }
@@ -33,6 +37,40 @@ const SalesSchoolReport = () => {
             setLoading(false);
         }
     };
+
+      const handleExport = async () => {
+        if (reportData.length === 0) {
+          alert('No data to export.');
+          return;
+        }
+    
+        try {
+          const response = await fetch(`${API_BASE_URL}/sales/export/schoolWiseSales`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(reportData),
+          });
+    
+          if (!response.ok) {
+            throw new Error('Failed to export sales report.');
+          }
+    
+          const blob = await response.blob();
+          const url = window.URL.createObjectURL(new Blob([blob]));
+          const link = document.createElement('a');
+          link.href = url;
+          link.setAttribute('download', 'Sales Report School Wise.xlsx');
+          document.body.appendChild(link);
+          link.click();
+          link.parentNode.removeChild(link);
+        } catch (error) {
+          console.error('Error exporting sales report:', error);
+        }
+      };
+    
+    
 
     const fetchDetailedReport = async (schoolName) => {
         try {
@@ -61,6 +99,27 @@ const SalesSchoolReport = () => {
         }
     };
 
+    useEffect(() => {
+        const fetchUser = async () => {
+            try {
+                const response = await fetch(`${API_BASE_URL}/store/getAllUserByStore?storeId=${storeId}`);
+                const data = await response.json(); // Response is List<String> like ["DS", "VN"]
+    
+                // Convert the list of strings into objects { value, label }
+                const options = [{ value: "ALL", label: "ALL" }, ...data.map(user => ({ value: user, label: user }))];
+    
+                setUserList(options);
+            } catch (error) {
+                console.error("Error fetching users:", error);
+            }
+        };
+    
+        fetchUser();
+    }, [API_BASE_URL, storeId]);
+    
+    
+    
+
     const handleView = (schoolName) => {
         console.log("Handle view")
         fetchDetailedReport(schoolName);
@@ -87,8 +146,27 @@ const SalesSchoolReport = () => {
                     onChange={(e) => setEndDate(e.target.value)}
                     className="sales-input-date"
                 />
+
+<div>
+        
+            <Select
+                options={userList}
+                value={userList.find(option => option.value === userId)}
+                onChange={(selectedOption) => setUserId(selectedOption.value)}
+                placeholder="Select a user..."
+                isSearchable
+            />
+
+            
+        </div>
                 <button onClick={handleFetch} className="sales-fetch-btn">Fetch Report</button>
+
+              
+
             </div>
+
+         
+
 
             {loading && <p className="sales-loading-message">Loading...</p>}
             {error && <p className="sales-error-message">{error}</p>}
@@ -117,10 +195,31 @@ const SalesSchoolReport = () => {
                                     </td>
                                 </tr>
                             ))}
+
+
+
                         </tbody>
+                       
                     </table>
+
+                   
                 </div>
+                
             )}
+               {!loading && reportData.length > 0 && (
+                <>
+                <div className='school-total-sale'>
+                <h4>Total Sales:{reportData.reduce((total, report) => total + report.sales, 0)}</h4>
+                </div>
+                <div>
+                    <button onClick={handleExport} >
+                        Export
+                    </button>
+                </div>
+
+                </>
+               )}
+
             {!loading && reportData.length === 0 && !error && <p className="sales-no-data-message">No sales data available for the selected dates.</p>}
 
             {popupVisible && popupData && (
