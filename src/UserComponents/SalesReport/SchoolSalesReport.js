@@ -103,9 +103,7 @@ const SalesSchoolReport = () => {
         const fetchUser = async () => {
             try {
                 const response = await fetch(`${API_BASE_URL}/store/getAllUserByStore?storeId=${storeId}`);
-                const data = await response.json(); // Response is List<String> like ["DS", "VN"]
-    
-                // Convert the list of strings into objects { value, label }
+                const data = await response.json(); 
                 const options = [{ value: "ALL", label: "ALL" }, ...data.map(user => ({ value: user, label: user }))];
     
                 setUserList(options);
@@ -176,7 +174,9 @@ const SalesSchoolReport = () => {
                         <thead>
                             <tr>
                                 <th>School</th>
-                                <th>Sales</th>
+                                <th>School Sales</th>
+                                <th>Other Sales</th>
+                                <th>Total Sales</th>
                                 <th>Action</th>
                             </tr>
                         </thead>
@@ -184,6 +184,8 @@ const SalesSchoolReport = () => {
                             {reportData.map((report, index) => (
                                 <tr key={index}>
                                     <td>{report.schoolName}</td>
+                                    <td>{report.schoolSales}</td>
+                                    <td>{report.otherSales}</td>
                                     <td>{report.sales}</td>
                                     <td>
                                     <button
@@ -230,6 +232,7 @@ const SalesSchoolReport = () => {
                 <thead>
                     <tr>
                         <th>Item Barcode ID</th>
+                        <th>Item Category</th>
                         <th>Item Code</th>
                         <th>Description</th>
                         <th>Type</th>
@@ -246,6 +249,7 @@ const SalesSchoolReport = () => {
                     {popupData.map((item, index) => (
                         <tr key={index}>
                             <td>{item.itemBarcodeID}</td>
+                            <td>{item.itemCategory}</td>
                             <td>{item.itemCode}</td>
                             <td>{item.description}</td>
                             <td>{item.itemType}</td>
