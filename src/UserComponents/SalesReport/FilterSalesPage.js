@@ -166,18 +166,25 @@ const FilterSalesPage = () => {
     // Determine the URL based on the filters
     if (filters.dateRange && filters.school && filters.item) {
       url = `${API_BASE_URL}/sales/report/school_item_type_date`;
+      console.log("Filter 1");
     } else if (filters.dateRange && filters.school) {
       url = `${API_BASE_URL}/sales/report/school_code_and_date`;
+      console.log("Filter 2");
     } else if (filters.dateRange && filters.item) {
       url = `${API_BASE_URL}/sales/report/item_code_and_date`;
+      console.log("Filter 3");
     } else if (filters.school && filters.item) {
       url = `${API_BASE_URL}/sales/report/school_and_item_type`;
+      console.log("Filter 4");
     } else if (filters.dateRange) {
       url = `${API_BASE_URL}/sales/report/sales_date`;
+      console.log("Filter 5");
     } else if (filters.school) {
       url = `${API_BASE_URL}/sales/report/school_code`;
+      console.log("Filter 6");
     } else if (filters.item) {
       url = `${API_BASE_URL}/sales/report/item_code`;
+      console.log("Filter 7");
     }
   
     // Make the API call
