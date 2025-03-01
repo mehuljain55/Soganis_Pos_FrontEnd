@@ -19,9 +19,9 @@ const BillDetails = ({ userData }) => {
     const [popupMessage, setPopupMessage] = useState('');
     const [popupType, setPopupType] = useState('');
     const [defectItem, setDefectItem] = useState(null);
-    const [defectQuantity, setDefectQuantity] = useState(0);
+    const [defectQuantity, setDefectQuantity] = useState(1);
     const [itemsToExchange, setItemsToExchange] = useState([]);
-    const[billType,setBillType]=useState('');
+    const [billType,setBillType]=useState('');
     const [billList, setBillList] = useState([]);
     const [showBillSelectionPopup, setShowBillSelectionPopup] = useState(false);
 
@@ -42,7 +42,7 @@ const BillDetails = ({ userData }) => {
     setPopupMessage('');
     setPopupType('');
     setDefectItem(null);
-    setDefectQuantity(0);
+    setDefectQuantity(1);
     setItemsToExchange([]);
     setBillType('');
     setBillList([]);
@@ -149,6 +149,14 @@ const BillDetails = ({ userData }) => {
         }
     };
 
+    useEffect(() => {
+        selectedItems.forEach(item => {
+            if (!returnQuantities[item.sno] || returnQuantities[item.sno] === 0) {
+                handleQuantityChange(item.sno, 1); // Call handleQuantityChange only if 0
+            }
+        });
+    }, [selectedItems]);
+
     const confirmReturn = () => {
         const allQuantitiesValid = selectedItems.every(item => {
             const returnQuantity = returnQuantities[item.sno];
@@ -241,7 +249,7 @@ const BillDetails = ({ userData }) => {
 
     const handleDefectItem = (item) => {
         setDefectItem(item);
-        setDefectQuantity(0);
+        setDefectQuantity(1);
         setIsDefectModalOpen(true);
     };
     
@@ -451,7 +459,8 @@ const BillDetails = ({ userData }) => {
                                         <td>
                                             <input
                                                 type="number"
-                                                value={returnQuantities[item.sno]}
+                                                value={returnQuantities[item.sno] > 0 ? returnQuantities[item.sno] : 1}
+
                                                 onChange={(e) => handleQuantityChange(item.sno, e.target.value)}
                                             />
                                         </td>
@@ -499,7 +508,7 @@ const BillDetails = ({ userData }) => {
                                                     setDefectQuantity(newQuantity);
                                                 } else {
                                                     alert(`Defect quantity cannot exceed ${defectItem.quantity}`);
-                                                    setDefectQuantity(defectItem.quantity);
+                                                    setDefectQuantity(1);
                                                 }
                                             }}
                                         />

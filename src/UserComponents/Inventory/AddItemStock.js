@@ -6,7 +6,7 @@ import { API_BASE_URL } from "../Config.js";
 
 const AddItemStock = () => {
   const user = JSON.parse(sessionStorage.getItem("user"));
-  const initialItemState = { itemCode: '',itemName: '',itemType: '',itemSize: '',itemColor: '',itemCategory: '',price: '',wholeSalePrice: '', quantity: 0,description: '',groupId: '',storeId: user ? user.storeId : ''};
+  const initialItemState = { itemCode: '',description: '',itemType: '',itemSize: '',itemColor: '',itemCategory: '',price: '',wholeSalePrice: '', quantity: 0,groupId: '',storeId: user ? user.storeId : ''};
   const [items, setItems] = useState([initialItemState]);
   const [itemCategoryOptions, setItemCategoryOptions] = useState([]);
   const [itemTypeOptions, setItemTypeOptions] = useState([]);
@@ -249,7 +249,7 @@ const AddItemStock = () => {
 
             return {
                 itemCode: toTrimmedString(row[0]),
-                itemName: toTrimmedString(row[1]),
+                description: toTrimmedString(row[1]),
                 itemType: getHighestMatch(itemType, itemTypeOptions),
                 itemSize: toTrimmedString(row[3]),
                 itemColor: toTrimmedString(row[4]),
@@ -257,8 +257,7 @@ const AddItemStock = () => {
                 price: toTrimmedString(row[6]),
                 wholeSalePrice: toTrimmedString(row[7]),
                 quantity: parseFloat(row[8]) || 0, // Parse quantity as a number
-                description: toTrimmedString(row[9]),
-                groupId: toTrimmedString(row[10])
+                groupId: toTrimmedString(row[9])
             };
         });
 
@@ -297,16 +296,16 @@ const AddItemStock = () => {
         <thead>
           <tr>
             <th>Item Code</th>
-            <th>Item Name</th>
+            <th>Barcode Description</th>
+         
             <th>Item Type</th>
             <th>Item Size</th>
             <th>Item Color</th>
-            <th>Item Category</th>
+            <th>School Name</th>
             <th>Price</th>
             <th>Wholesale Price</th>
             <th>Quantity</th>
-            <th>Barcode Description</th>
-            <th>Group ID</th>
+           <th>Group ID</th>
             
             <th>Action</th>
           </tr>
@@ -325,14 +324,16 @@ const AddItemStock = () => {
                 />
                 {validationErrors[`itemCode${rowIndex}`] && <span className="error-message">{validationErrors[`itemCode${rowIndex}`]}</span>}
               </td>
+
               <td>
                 <input
-                  value={item.itemName}
-                  onChange={(e) => handleInputChange(e, rowIndex, 'itemName')}
-                  onKeyDown={(e) => handleKeyDown(e, rowIndex, 1)}
-                  placeholder="Item Name"
+                  value={item.description}
+                  onChange={(e) => handleInputChange(e, rowIndex, 'description')}
+                  onKeyDown={(e) => handleKeyDown(e, rowIndex, 9)}
+                  placeholder="Description"
                 />
               </td>
+
               <td>
                 <select
                   value={item.itemType}
@@ -408,14 +409,7 @@ const AddItemStock = () => {
                   placeholder="Quantity"
                 />
               </td>
-              <td>
-                <input
-                  value={item.description}
-                  onChange={(e) => handleInputChange(e, rowIndex, 'description')}
-                  onKeyDown={(e) => handleKeyDown(e, rowIndex, 9)}
-                  placeholder="Description"
-                />
-              </td>
+
 
               <td>
               <input
