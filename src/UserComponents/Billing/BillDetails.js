@@ -76,6 +76,7 @@ const BillDetails = ({ userData }) => {
                     setShowBillSelectionPopup(true);  // Open popup to show bill list
                     setSelectedItems([]);
                 } else {
+                    resetPage();
                     alert("Bill not found");
                 }
             })
