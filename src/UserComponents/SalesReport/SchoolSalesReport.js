@@ -29,10 +29,12 @@ const SalesSchoolReport = () => {
             }
 
             const data = await response.json();
+            console.log(response)
             const sortedData = data.sort((a, b) => b.sales - a.sales);
             setReportData(sortedData);
         } catch (err) {
-            setError(err.message);
+            console.log(err.message);
+            
         } finally {
             setLoading(false);
         }
@@ -85,7 +87,7 @@ const SalesSchoolReport = () => {
             setPopupData(data);
             setPopupVisible(true);
         } catch (err) {
-            setError(err.message);
+            console.log(err.message);
         } finally {
             setLoading(false);
         }
