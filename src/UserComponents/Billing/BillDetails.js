@@ -64,12 +64,13 @@ const BillDetails = ({ userData }) => {
                 const data = response.data;
     
                 if (data.type === "single") {
+                    resetPage();
                     setBillData(data.bill);  // Directly set bill data if it's a single bill
                     setShowBillSelectionPopup(false);  // Ensure popup is closed if it was open
                     setPopupMessage("");  // Clear any existing popup messages
                     setSelectedItems([]);
                 } else if (data.type === "list") {
-                    setBillData(null);  // Clear any existing bill data
+                    resetPage();
                     setReturnedItems({});
                     setReturnQuantities({});
                     setBillList(data.billList);  // Store the list of bills for display in the popup
@@ -334,7 +335,7 @@ const BillDetails = ({ userData }) => {
                     id="billNo"
                     value={billNo}
                     onChange={handleInputChange}
-                    placeholder="Enter bill number"
+                    placeholder="Enter bill no or mobile no"
                 />
                 <button onClick={fetchBill}>Fetch Bill</button>
             </div>

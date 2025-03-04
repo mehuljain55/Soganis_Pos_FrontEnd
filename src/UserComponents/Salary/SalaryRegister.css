@@ -15,6 +15,23 @@ h2 {
   margin-bottom: 20px;
 }
 
+.salary-register-delete-button {
+  background-color: red !important;  /* Red background */
+  color: white;  /* White text */
+  border: none;  /* Removes default border */
+  padding: 8px 16px;  /* Proper padding for a clean look */
+  border-radius: 25px;  /* Rounded corners */
+  font-size: 14px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s ease-in-out;
+}
+
+.salary-register-delete-button:hover {
+  background-color: darkred !important;  /* Darker red on hover */
+}
+
+
 /* Table styling */
 table {
   width: 100%;
@@ -88,51 +105,6 @@ table td select {
   border-radius: 4px;
 }
 
-/* Button styling */
-button {
-  padding: 10px;
-  background-color: #007bff;
-  /* Blue background */
-  color: #fff;
-  /* White text color */
-  border: 2px solid #007bff;
-  /* Blue border */
-  cursor: pointer;
-  font-size: 18px;
-  /* Reduced font size for buttons */
-  transition: background-color 0.3s ease;
-  /* Smooth transition for hover effect */
-}
-
-button:hover {
-  background-color: #0056b3;
-  /* Darker blue on hover */
-}
-
-
-
-button.round-transparent {
-  background-color: transparent;
-  /* Transparent background */
-  color: #007bff;
-  /* Blue color for text */
-  border: 2px solid #007bff;
-  /* Blue border */
-  border-radius: 50%;
-  /* Round shape */
-  font-size: 18px;
-  /* Reduced font size for round-transparent button */
-  padding: 10px;
-  /* Adjust padding as needed */
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-  /* Smooth transition for hover effect */
-}
-
-button.round-transparent:hover {
-  background-color: rgba(0, 123, 255, 0.1);
-  /* Light blue tint on hover */
-}
 
 /* Error row styling */
 .error-row {
@@ -263,4 +235,44 @@ button.round-transparent:hover {
     font-size: 40px;
     /* Adjust icon size for smaller screens */
   }
+}
+
+
+
+.salary-register-btn {
+  display: flex;
+  justify-content: center; /* Centers buttons */
+  gap: 15px; /* Adds spacing between buttons */
+  margin-top: 20px; /* Adjusts spacing from other elements */
+}
+
+.salary-register-add-button,
+.salary-register-update-button {
+  border: none;
+  padding: 10px 20px;
+  border-radius: 25px; /* Makes buttons rounded */
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: 0.3s ease-in-out;
+}
+
+/* Add Button - Blue */
+.salary-register-add-button {
+  background-color: blue;
+  color: white;
+}
+
+.salary-register-add-button:hover {
+  background-color: darkblue;
+}
+
+/* Update Button - Green */
+.salary-register-update-button {
+  background-color: green !important;
+  color: white;
+}
+
+.salary-register-update-button:hover {
+  background-color: darkgreen;
 }
