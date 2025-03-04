@@ -101,23 +101,53 @@ const SalaryRegister = () => {
     setErrorRows(errorRows.filter((errIndex) => errIndex !== index)); // Remove error if row is deleted
   };
 
+  const checkSalaryStatus = async () => {
+    const userData = JSON.parse(sessionStorage.getItem('user'));
+    const storeId = userData?.storeId;
+    let hasError = false;
+  
+    const updatedRows = await Promise.all(rows.map(async (row, index) => {
+      if (!row.userId || row.type === 'SELECT') return row; // Skip empty rows
+  
+      try {
+        const response = await axios.get(`${API_BASE_URL}/user/salary/checkStatus`, {
+          params: { employeeId: row.userId, storeId: storeId, date: row.date },
+        });
+  
+        if (response.data !== 'NOT_PRESENT') {
+          hasError = true;
+          return { ...row, error: response.data }; // Store the error message in the row
+        }
+      } catch (error) {
+        console.error('Error checking salary status:', error);
+        hasError = true;
+        return { ...row, error: 'Error checking status' };
+      }
+  
+      return { ...row, error: '' }; // No error if NOT_PRESENT
+    }));
+  
+    setRows(updatedRows); // Update state with error messages
+    return !hasError;
+  };
+  
+
+
   const handleUpdate = async () => {
-    // Filter out rows with empty userId or type set to 'SELECT' to prevent sending incomplete data
-    const filteredRows = rows.filter(row => row.userId !== '' && row.type !== 'SELECT');
-    if (filteredRows.length !== rows.length) {
-      setPopupStatus('failed');
-      setShowPopup(true);
+    const isValid = await checkSalaryStatus();
+    
+    if (!isValid) {
       return;
     }
   
+    const filteredRows = rows.filter(row => row.userId !== '' && row.type !== 'SELECT');
+    
     try {
-
       const userData = JSON.parse(sessionStorage.getItem('user'));
       const storeId = userData?.storeId;
-
-     const response = await axios.post(`${API_BASE_URL}/user/salary/update?storeId=${storeId}`, filteredRows);
-
-      console.log('Update response:', response.data); // Log response from the server
+  
+      const response = await axios.post(`${API_BASE_URL}/user/salary/update?storeId=${storeId}`, filteredRows);
+      console.log('Update response:', response.data);
   
       if (response.data === 'Success') {
         setPopupStatus('success');
@@ -129,11 +159,11 @@ const SalaryRegister = () => {
   
     } catch (error) {
       console.error('Error updating salaries:', error);
-      // Handle error gracefully, e.g., show error message to the user
       setPopupStatus('failed');
       setShowPopup(true);
     }
   };
+  
   
 
   const closePopup = () => {
@@ -150,7 +180,6 @@ const SalaryRegister = () => {
             <th>Employee Name</th>
             <th>Description</th>
             <th>Type</th>
-            <th>Hours</th>
             <th>Date</th>
             <th>Amount</th>
             <th>Action</th>
@@ -158,85 +187,47 @@ const SalaryRegister = () => {
         </thead>
         <tbody>
           {rows.map((row, index) => (
-            <tr key={index} className={errorRows.includes(index) ? 'error-row' : ''}>
+            <tr key={index}>
               <td>
                 <select value={row.userId} onChange={(e) => handleRowChange(index, 'userId', e.target.value)}>
                   <option value="">Select Employee</option>
                   {userList.map((user) => (
-                    <option key={user.employeeName} value={user.employeeName}>
-                      {user.employeeName}
-                    </option>
+                    <option key={user.employeeName} value={user.employeeName}>{user.employeeName}</option>
                   ))}
                 </select>
+                {row.error && <div className="error-message">{row.error}</div>}
               </td>
               <td>
                 <input type="text" value={row.description} onChange={(e) => handleRowChange(index, 'description', e.target.value)} />
               </td>
               <td>
-                <select value={row.type} onChange={(e) => handleRowChange(index, 'type', e.target.value)} disabled={!row.userId}>
-                  <option value="">SELECT</option>
+                <select value={row.type} onChange={(e) => handleRowChange(index, 'type', e.target.value)}>
+                  <option value="SELECT">SELECT</option>
                   <option value="ABSENT">ABSENT</option>
                   <option value="HALF_DAY">HALF DAY</option>
                   <option value="ADVANCE">ADVANCE</option>
-                  <option value="HOURLY_DEDUCTION">HOURLY DEDUCTION</option>
                 </select>
-              </td>
-              <td>
-            
-              {row.type === 'HOURLY_DEDUCTION' && (
-  <input
-    type="number"
-    value={row.hours}
-    step="0.1"  // Allows decimal numbers with one decimal place
-    min="0"      // Prevents negative numbers
-    onChange={(e) => handleRowChange(index, 'hours', e.target.value)} // pass the string value here
-  />
-)}
-
-
               </td>
               <td>
                 <input type="date" value={row.date} onChange={(e) => handleRowChange(index, 'date', e.target.value)} />
               </td>
               <td>
-                {row.type === 'ADVANCE' ? (
-                  <input type="number" value={row.amount} onChange={(e) => handleRowChange(index, 'amount', parseInt(e.target.value))} />
-                ) : (
-                  <input type="number" value={row.amount} readOnly />
-                )}
+                <input type="number" value={row.amount} readOnly />
               </td>
-              
               <td>
-  <button className="salary-register-delete-button" onClick={() => deleteRow(index)}>Delete</button>
-</td>
-
+                <button onClick={() => setRows(rows.filter((_, i) => i !== index))}>Delete</button>
+              </td>
             </tr>
           ))}
         </tbody>
       </table>
-     
-      <div className="salary-register-btn">
-  <button className="salary-register-add-button" onClick={addRow}>Add</button>
-  <button className="salary-register-update-button" onClick={handleUpdate}>Update</button>
-</div>
-
-
-      {/* Popup */}
+      <button onClick={addRow}>Add</button>
+      <button onClick={handleUpdate}>Update</button>
       {showPopup && (
         <div className="popup">
           <div className="popup-content">
-            {popupStatus === 'success' ? (
-              <div>
-                <span style={{ fontSize: '60px', color: 'green' }}>&#10004;</span>
-                <p>Update successful!</p>
-              </div>
-            ) : (
-              <div>
-                <span style={{ fontSize: '60px', color: 'red' }}>&#10008;</span>
-                <p>Update failed. Please check your entries and try again.</p>
-              </div>
-            )}
-            <button className="close" onClick={closePopup}>Close</button>
+            {popupStatus === 'success' ? <p>Update successful!</p> : <p>Update failed!</p>}
+            <button onClick={() => setShowPopup(false)}>Close</button>
           </div>
         </div>
       )}
