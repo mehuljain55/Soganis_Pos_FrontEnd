@@ -58,7 +58,7 @@ const SalaryRegister = () => {
   
     if (field === 'type') {
       updatedRows[index].hours = 0; // Reset hours when type changes
-      if (value === 'ABSENT' || value === 'HALF_DAY' || value === 'HOURLY_DEDUCTION') {
+      if (value === 'ABSENT' || value === 'HALF_DAY' || value === 'HOURLY_DEDUCTION'|| value === 'EXTRA_HOUR'|| value === 'EXTRA_DAY') {
         const amount = await fetchAmount(updatedRows[index].userId, value, updatedRows[index].hours);
         updatedRows[index].amount = amount;
       } else if (value === 'ADVANCE') {
@@ -66,6 +66,15 @@ const SalaryRegister = () => {
         updatedRows[index].amount = updatedRows[index].amount || 0;
       }
     } else if (field === 'hours' && updatedRows[index].type === 'HOURLY_DEDUCTION') {
+      const parsedHours = parseFloat(value);
+      if (!isNaN(parsedHours) && parsedHours >= 0) {
+        updatedRows[index].hours = parsedHours; // Set the hours value correctly
+        const amount = await fetchAmount(updatedRows[index].userId, updatedRows[index].type, parsedHours);
+        updatedRows[index].amount = amount;
+      } else {
+        updatedRows[index].hours = 0; // Reset hours if invalid input
+      }
+    }else if (field === 'hours' && updatedRows[index].type === 'EXTRA_HOUR') {
       const parsedHours = parseFloat(value);
       if (!isNaN(parsedHours) && parsedHours >= 0) {
         updatedRows[index].hours = parsedHours; // Set the hours value correctly
@@ -93,12 +102,6 @@ const SalaryRegister = () => {
       console.error('Error fetching amount:', error);
       return 0; // Default to 0 if there's an error
     }
-  };
-
-  const deleteRow = (index) => {
-    const updatedRows = rows.filter((row, i) => i !== index);
-    setRows(updatedRows);
-    setErrorRows(errorRows.filter((errIndex) => errIndex !== index)); // Remove error if row is deleted
   };
 
   const checkSalaryStatus = async () => {
@@ -132,22 +135,38 @@ const SalaryRegister = () => {
   };
   
 
+  const deleteRow = (index) => {
+    const updatedRows = rows.filter((row, i) => i !== index);
+    setRows(updatedRows);
+    setErrorRows(errorRows.filter((errIndex) => errIndex !== index)); // Remove error if row is deleted
+  };
 
   const handleUpdate = async () => {
+   
     const isValid = await checkSalaryStatus();
-    
+  
     if (!isValid) {
+      setPopupStatus('failed');
+      setShowPopup(true);
       return;
     }
   
+
     const filteredRows = rows.filter(row => row.userId !== '' && row.type !== 'SELECT');
-    
+    if (filteredRows.length !== rows.length) {
+      setPopupStatus('failed');
+      setShowPopup(true);
+      return;
+    }
+  
     try {
+
       const userData = JSON.parse(sessionStorage.getItem('user'));
       const storeId = userData?.storeId;
-  
-      const response = await axios.post(`${API_BASE_URL}/user/salary/update?storeId=${storeId}`, filteredRows);
-      console.log('Update response:', response.data);
+
+     const response = await axios.post(`${API_BASE_URL}/user/salary/update?storeId=${storeId}`, filteredRows);
+
+      console.log('Update response:', response.data); // Log response from the server
   
       if (response.data === 'Success') {
         setPopupStatus('success');
@@ -159,11 +178,11 @@ const SalaryRegister = () => {
   
     } catch (error) {
       console.error('Error updating salaries:', error);
+      // Handle error gracefully, e.g., show error message to the user
       setPopupStatus('failed');
       setShowPopup(true);
     }
   };
-  
   
 
   const closePopup = () => {
@@ -180,6 +199,7 @@ const SalaryRegister = () => {
             <th>Employee Name</th>
             <th>Description</th>
             <th>Type</th>
+            <th>Hours</th>
             <th>Date</th>
             <th>Amount</th>
             <th>Action</th>
@@ -187,12 +207,14 @@ const SalaryRegister = () => {
         </thead>
         <tbody>
           {rows.map((row, index) => (
-            <tr key={index}>
+            <tr key={index} className={errorRows.includes(index) ? 'error-row' : ''}>
               <td>
                 <select value={row.userId} onChange={(e) => handleRowChange(index, 'userId', e.target.value)}>
                   <option value="">Select Employee</option>
                   {userList.map((user) => (
-                    <option key={user.employeeName} value={user.employeeName}>{user.employeeName}</option>
+                    <option key={user.employeeName} value={user.employeeName}>
+                      {user.employeeName}
+                    </option>
                   ))}
                 </select>
                 {row.error && <div className="error-message">{row.error}</div>}
@@ -201,33 +223,71 @@ const SalaryRegister = () => {
                 <input type="text" value={row.description} onChange={(e) => handleRowChange(index, 'description', e.target.value)} />
               </td>
               <td>
-                <select value={row.type} onChange={(e) => handleRowChange(index, 'type', e.target.value)}>
-                  <option value="SELECT">SELECT</option>
+                <select value={row.type} onChange={(e) => handleRowChange(index, 'type', e.target.value)} disabled={!row.userId}>
+                  <option value="">SELECT</option>
                   <option value="ABSENT">ABSENT</option>
                   <option value="HALF_DAY">HALF DAY</option>
                   <option value="ADVANCE">ADVANCE</option>
+                  <option value="HOURLY_DEDUCTION">HOURLY DEDUCTION</option>
+                  <option value="EXTRA_DAY">EXTRA DAY</option>
+                  <option value="EXTRA_HOUR">EXTRA HOURS</option>
+                  
                 </select>
+              </td>
+              <td>
+            
+              {(row.type === 'HOURLY_DEDUCTION'||row.type === 'EXTRA_HOUR') && (
+                <input
+                  type="number"
+                  value={row.hours}
+                  step="0.1"  // Allows decimal numbers with one decimal place
+                  min="0"    // Prevents negative numbers
+                  onChange={(e) => handleRowChange(index, 'hours', e.target.value)} // pass the string value here
+                />
+              )}
               </td>
               <td>
                 <input type="date" value={row.date} onChange={(e) => handleRowChange(index, 'date', e.target.value)} />
               </td>
               <td>
-                <input type="number" value={row.amount} readOnly />
+                {row.type === 'ADVANCE' ? (
+                  <input type="number" value={row.amount} onChange={(e) => handleRowChange(index, 'amount', parseInt(e.target.value))} />
+                ) : (
+                  <input type="number" value={row.amount} readOnly />
+                )}
               </td>
+              
               <td>
-                <button onClick={() => setRows(rows.filter((_, i) => i !== index))}>Delete</button>
-              </td>
+  <button className="salary-register-delete-button" onClick={() => deleteRow(index)}>Delete</button>
+</td>
+
             </tr>
           ))}
         </tbody>
       </table>
-      <button onClick={addRow}>Add</button>
-      <button onClick={handleUpdate}>Update</button>
+     
+      <div className="salary-register-btn">
+  <button className="salary-register-add-button" onClick={addRow}>Add</button>
+  <button className="salary-register-update-button" onClick={handleUpdate}>Update</button>
+</div>
+
+
+      {/* Popup */}
       {showPopup && (
         <div className="popup">
           <div className="popup-content">
-            {popupStatus === 'success' ? <p>Update successful!</p> : <p>Update failed!</p>}
-            <button onClick={() => setShowPopup(false)}>Close</button>
+            {popupStatus === 'success' ? (
+              <div>
+                <span style={{ fontSize: '60px', color: 'green' }}>&#10004;</span>
+                <p>Update successful!</p>
+              </div>
+            ) : (
+              <div>
+                <span style={{ fontSize: '60px', color: 'red' }}>&#10008;</span>
+                <p>Update failed. Please check your entries and try again.</p>
+              </div>
+            )}
+            <button className="close" onClick={closePopup}>Close</button>
           </div>
         </div>
       )}
