@@ -18,7 +18,7 @@ const SalaryRegister = () => {
   
         if (storeId) {
           // Make API call with storeId as a query parameter
-          const response = await axios.get(`${API_BASE_URL}/user/getUserList`, {
+          const response = await axios.get(`${API_BASE_URL}/user/getEmployeeList`, {
             params: { storeId: storeId },
           });
           setUserList(response.data);
@@ -40,7 +40,7 @@ const SalaryRegister = () => {
   const handleRowChange = async (index, field, value) => {
     const updatedRows = [...rows];
     updatedRows[index] = { ...updatedRows[index], [field]: value };
-
+  
     if (field === 'userId') {
       updatedRows[index].type = 'SELECT'; // Reset type when userId changes
       updatedRows[index].amount = 0; // Reset amount
@@ -51,11 +51,11 @@ const SalaryRegister = () => {
         setErrorRows(errorRows.filter((errIndex) => errIndex !== index)); // Remove error if user is selected
       }
     }
-
+  
     if (field === 'type' && !value) {
       updatedRows[index].type = 'SELECT'; // Reset type if selection is cleared
     }
-
+  
     if (field === 'type') {
       updatedRows[index].hours = 0; // Reset hours when type changes
       if (value === 'ABSENT' || value === 'HALF_DAY' || value === 'HOURLY_DEDUCTION') {
@@ -66,13 +66,19 @@ const SalaryRegister = () => {
         updatedRows[index].amount = updatedRows[index].amount || 0;
       }
     } else if (field === 'hours' && updatedRows[index].type === 'HOURLY_DEDUCTION') {
-      const amount = await fetchAmount(updatedRows[index].userId, updatedRows[index].type, value);
-      updatedRows[index].amount = amount;
+      const parsedHours = parseFloat(value);
+      if (!isNaN(parsedHours) && parsedHours >= 0) {
+        updatedRows[index].hours = parsedHours; // Set the hours value correctly
+        const amount = await fetchAmount(updatedRows[index].userId, updatedRows[index].type, parsedHours);
+        updatedRows[index].amount = amount;
+      } else {
+        updatedRows[index].hours = 0; // Reset hours if invalid input
+      }
     }
-
+  
     setRows(updatedRows);
   };
-
+  
   const fetchAmount = async (userId, type, hours) => {
     try {
       const response = await axios.get(`${API_BASE_URL}/user/getUserSalaryAmount`, {
@@ -155,10 +161,10 @@ const SalaryRegister = () => {
             <tr key={index} className={errorRows.includes(index) ? 'error-row' : ''}>
               <td>
                 <select value={row.userId} onChange={(e) => handleRowChange(index, 'userId', e.target.value)}>
-                  <option value="">Select User</option>
+                  <option value="">Select Employee</option>
                   {userList.map((user) => (
-                    <option key={user.userId} value={user.userId}>
-                      {user.sname}
+                    <option key={user.employeeName} value={user.employeeName}>
+                      {user.employeeName}
                     </option>
                   ))}
                 </select>
@@ -176,9 +182,18 @@ const SalaryRegister = () => {
                 </select>
               </td>
               <td>
-                {row.type === 'HOURLY_DEDUCTION' && (
-                  <input type="number" value={row.hours} onChange={(e) => handleRowChange(index, 'hours', parseInt(e.target.value))} />
-                )}
+            
+              {row.type === 'HOURLY_DEDUCTION' && (
+  <input
+    type="number"
+    value={row.hours}
+    step="0.1"  // Allows decimal numbers with one decimal place
+    min="0"      // Prevents negative numbers
+    onChange={(e) => handleRowChange(index, 'hours', e.target.value)} // pass the string value here
+  />
+)}
+
+
               </td>
               <td>
                 <input type="date" value={row.date} onChange={(e) => handleRowChange(index, 'date', e.target.value)} />
@@ -190,15 +205,21 @@ const SalaryRegister = () => {
                   <input type="number" value={row.amount} readOnly />
                 )}
               </td>
+              
               <td>
-                <button onClick={() => deleteRow(index)}>Delete</button>
-              </td>
+  <button className="salary-register-delete-button" onClick={() => deleteRow(index)}>Delete</button>
+</td>
+
             </tr>
           ))}
         </tbody>
       </table>
-      <button onClick={addRow}>Add</button>
-      <button onClick={handleUpdate}>Update</button>
+     
+      <div className="salary-register-btn">
+  <button className="salary-register-add-button" onClick={addRow}>Add</button>
+  <button className="salary-register-update-button" onClick={handleUpdate}>Update</button>
+</div>
+
 
       {/* Popup */}
       {showPopup && (
