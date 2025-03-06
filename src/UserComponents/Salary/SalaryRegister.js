@@ -167,25 +167,22 @@ const SalaryRegister = () => {
     }
   
 
-    const filteredRows = rows.filter(row => row.userId !== '' && row.type !== 'SELECT');
-    if (filteredRows.length !== rows.length) {
-      setPopupStatus('failed');
-      setShowPopup(true);
-      return;
-    }
+    const validRows = rows.filter(row => row.amount > 0);
+ 
+
   
     try {
 
       const userData = JSON.parse(sessionStorage.getItem('user'));
       const storeId = userData?.storeId;
 
-     const response = await axios.post(`${API_BASE_URL}/user/salary/update?storeId=${storeId}`, filteredRows);
+     const response = await axios.post(`${API_BASE_URL}/user/salary/update?storeId=${storeId}`, validRows);
 
       console.log('Update response:', response.data); // Log response from the server
   
       if (response.data === 'Success') {
         setPopupStatus('success');
-        setRows([]); // Clear table upon successful update
+        setRows(rows.filter(row => row.amount === 0));
       } else {
         setPopupStatus('failed');
       }

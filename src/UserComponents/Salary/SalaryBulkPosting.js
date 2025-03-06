@@ -46,10 +46,46 @@ const SalaryBulkPosting = () => {
     };
 
 
-    const handleUpdate = ()=>{
-        console.log(rows);
-    }
-
+    const handleUpdate = async () => {
+      const userData = JSON.parse(sessionStorage.getItem('user'));
+      const storeId = userData?.storeId;
+  
+      if (!storeId) {
+          console.error('Store ID not found in user data');
+          return;
+      }
+  
+      const validRows = rows.filter(row => row.amount > 0);
+  
+      if (validRows.length === 0) {
+          console.warn('No valid rows with amount > 0 to update');
+          return;
+      }
+  
+      try {
+          const response = await axios.post(`${API_BASE_URL}/user/salary/bulk/update`, validRows, {
+              params: { storeId: storeId },
+              headers: {
+                  'Content-Type': 'application/json'
+              }
+          });
+  
+          console.log(response.data)
+          if (response.data === 'SUCCESS') {
+              setPopupStatus('Success! Salaries updated.');
+              // Remove only the rows that were sent
+              setRows(rows.filter(row => row.amount === 0));
+          } else {
+              setPopupStatus('Failed to update salaries.');
+          }
+      } catch (error) {
+          console.error('Error updating salaries:', error);
+          setPopupStatus('Error updating salaries.');
+      } finally {
+          setShowPopup(true);
+      }
+  };
+  
     
     const addRow = () =>{
         setRows([...rows, { userId: '', description: '', type: 'SELECT', startDate: '', endDate: '', amount: 0, hours: 0 }])
