@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import './SalaryRegister.css'; // CSS file for styling
 import { API_BASE_URL } from '../Config.js';
+import SalaryBulkPosting from './SalaryBulkPosting.js';
 
 const SalaryRegister = () => {
   const [userList, setUserList] = useState([]);
@@ -9,6 +10,8 @@ const SalaryRegister = () => {
   const [errorRows, setErrorRows] = useState([]);
   const [showPopup, setShowPopup] = useState(false);
   const [popupStatus, setPopupStatus] = useState(null);
+  const [showBulkModal, setShowBulkModal] = useState(false);
+
   useEffect(() => {
     const fetchUserList = async () => {
       try {
@@ -87,6 +90,18 @@ const SalaryRegister = () => {
   
     setRows(updatedRows);
   };
+
+  const openBulkModal = () => {
+    console.log("open modal");
+    setShowBulkModal(true);
+    console.log(showBulkModal);
+  };
+
+  // Close bulk modal
+  const closeBulkModal = () => {
+    setShowBulkModal(false);
+  };
+
   
   const fetchAmount = async (userId, type, hours) => {
     try {
@@ -152,25 +167,22 @@ const SalaryRegister = () => {
     }
   
 
-    const filteredRows = rows.filter(row => row.userId !== '' && row.type !== 'SELECT');
-    if (filteredRows.length !== rows.length) {
-      setPopupStatus('failed');
-      setShowPopup(true);
-      return;
-    }
+    const validRows = rows.filter(row => row.amount > 0);
+ 
+
   
     try {
 
       const userData = JSON.parse(sessionStorage.getItem('user'));
       const storeId = userData?.storeId;
 
-     const response = await axios.post(`${API_BASE_URL}/user/salary/update?storeId=${storeId}`, filteredRows);
+     const response = await axios.post(`${API_BASE_URL}/user/salary/update?storeId=${storeId}`, validRows);
 
       console.log('Update response:', response.data); // Log response from the server
   
       if (response.data === 'Success') {
         setPopupStatus('success');
-        setRows([]); // Clear table upon successful update
+        setRows(rows.filter(row => row.amount === 0));
       } else {
         setPopupStatus('failed');
       }
@@ -269,6 +281,7 @@ const SalaryRegister = () => {
       <div className="salary-register-btn">
   <button className="salary-register-add-button" onClick={addRow}>Add</button>
   <button className="salary-register-update-button" onClick={handleUpdate}>Update</button>
+  <button className="salary-register-bulk-button" onClick={openBulkModal}>Bulk Posting</button>
 </div>
 
 
@@ -288,6 +301,16 @@ const SalaryRegister = () => {
               </div>
             )}
             <button className="close" onClick={closePopup}>Close</button>
+          </div>
+        </div>
+      )}
+
+
+{showBulkModal && (
+        <div className="salary-register-modal modal">
+          <div className="modal-content">
+            <span className="close" onClick={closeBulkModal}>&times;</span>
+            <SalaryBulkPosting />
           </div>
         </div>
       )}
