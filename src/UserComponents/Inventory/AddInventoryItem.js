@@ -8,6 +8,8 @@ function AddInventoryItem() {
   const [file, setFile] = useState(null);
   const [items, setItems] = useState([]);
   const [error, setError] = useState(null);
+  const [showToast, setShowToast] = useState(false);
+  const [countdown, setCountdown] = useState(5);
   const [groupList, setGroupList] = useState([]);
   const [storeId, setStoreId] = useState('');
   const [selectedGroup, setSelectedGroup] = useState("");
@@ -127,14 +129,46 @@ function AddInventoryItem() {
     fetchGroupDataList();
   }, []);
 
+ 
   const handleDownloadGroupWiseData = async () => {
     if (!selectedGroup) {
       alert("Please select a group before downloading!");
       return;
     }
-
+  
     try {
       const user = JSON.parse(sessionStorage.getItem("user")); // Fetch user data
+  
+      console.log("Group List:", groupList);
+  
+      // Ensure groupList is not empty and find the selected group
+      if (!groupList || groupList.length === 0) {
+        alert("Group list is empty. Please try again later.");
+        return;
+      }
+  
+      const selectedGroupData = groupList.find((group) => String(group.sno) === String(selectedGroup));
+  
+      console.log("Selected Group Data:", selectedGroupData);
+  
+      // If the group is not found, show an alert and return
+      if (!selectedGroupData) {
+        alert("Selected group not found. Please refresh and try again.");
+        return;
+      }
+  
+      // Extract and filter item names, separated by commas instead of underscores
+      const groupItems = [
+        selectedGroupData.item1,
+        selectedGroupData.item2,
+        selectedGroupData.item3,
+        selectedGroupData.item4,
+        selectedGroupData.item5,
+        selectedGroupData.item6,
+      ]
+        .filter((item) => item && item.trim() !== "") // Remove empty values
+        .join(","); // Join with commas for filename
+  
       const response = await axios.post(
         `${API_BASE_URL}/inventory/format/groupData?groupId=${selectedGroup}`,
         user,
@@ -145,22 +179,37 @@ function AddInventoryItem() {
           responseType: "blob", // Expect a file as a response
         }
       );
-
+  
       const url = window.URL.createObjectURL(new Blob([response.data]));
       const link = document.createElement("a");
+  
+      const fileName = `${groupItems || "No_Items"}.xlsx`;
       link.href = url;
-      link.setAttribute("download", `group_${selectedGroup}_inventory.xlsx`); // Dynamic file name
+      link.setAttribute("download", fileName);
       document.body.appendChild(link);
       link.click();
       link.parentNode.removeChild(link);
-      alert("Excel downloaded successfully!");
+  
+      // Show toast with countdown
+      setShowToast(true);
+      setCountdown(5);
+  
+      const interval = setInterval(() => {
+        setCountdown((prev) => {
+          if (prev === 1) {
+            clearInterval(interval);
+            setShowToast(false);
+          }
+          return prev - 1;
+        });
+      }, 1000);
     } catch (err) {
       console.error("Failed to download group data:", err);
       alert("Error downloading Excel. Please try again.");
     }
   };
-
-
+  
+  
   const handleDownloadGroupData = async () => {
     if (!selectGroupData) {
       alert("Please select a group before downloading!");
@@ -183,11 +232,11 @@ function AddInventoryItem() {
       const url = window.URL.createObjectURL(new Blob([response.data]));
       const link = document.createElement("a");
       link.href = url;
-      link.setAttribute("download", `${selectGroupData}.xlsx`); // Dynamic file name
+      link.setAttribute("download", `GROUP_${selectGroupData}.xlsx`); // Dynamic file name
       document.body.appendChild(link);
       link.click();
       link.parentNode.removeChild(link);
-      alert("Excel downloaded successfully!");
+      
     } catch (err) {
       console.error("Failed to download group data:", err);
       alert("Error downloading Excel. Please try again.");
@@ -227,6 +276,7 @@ function AddInventoryItem() {
       link.parentNode.removeChild(link);
   
       alert('Inventory updated successfully');
+      handleClearFile();
     } catch (err) {
       console.error(err);
       alert('Failed to update inventory');

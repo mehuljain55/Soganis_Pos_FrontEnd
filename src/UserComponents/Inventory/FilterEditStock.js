@@ -208,8 +208,7 @@ const FilterEditStock = () => {
 
   return (
     <div>
-      <h1>Edit Item</h1>
-
+    
       <div className="filter-page-radio">
         <div className="filter-page-radio-option">
           <input
