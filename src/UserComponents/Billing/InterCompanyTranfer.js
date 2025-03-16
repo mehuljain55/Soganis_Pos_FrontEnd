@@ -427,11 +427,6 @@ const handleSelectChange = (selectedOption) => {
       return; 
     }
 
-    if (!schoolName) {
-      alert("School Name is required")
-      
-      return; 
-  }
 
 
 
@@ -739,26 +734,7 @@ console.log(billData);
       </select>
     </label>
   
-            <div className="inter-company-school-name-input">
-              <label>
-                School Name:
-                <Select
-    options={allSchools}
-    onFocus={handleSelectFocus}
-    onBlur={handleSelectBlur}
-    ref={selectedSchoolRef}
-    value={allSchools.find((school) => school.schoolName === schoolName) || null}
-    onChange={handleSelectChange}
-    placeholder="Select a school"
-    styles={{ control: (base) => ({ ...base, width: '200px' }) }}
-    filterOption={(option, inputValue) => 
-        option.data.schoolName.toLowerCase().includes(inputValue.toLowerCase()) || 
-        option.data.schoolCode.toLowerCase().includes(inputValue.toLowerCase())
-    }
-/>
-
-              </label>
-            </div>
+         
           </div>
         </div>
   

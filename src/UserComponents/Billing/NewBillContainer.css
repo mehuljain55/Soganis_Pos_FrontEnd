@@ -696,9 +696,11 @@ h2 {
 }
 
 .intercompany-customer-details {
+
   display: flex;
   flex-direction: column;
   font-size: 18px;
+  margin-top: 40px;
   align-items: center;
   justify-content: center;
 }
