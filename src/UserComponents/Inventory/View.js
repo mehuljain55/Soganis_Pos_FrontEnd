@@ -136,7 +136,8 @@ const View = ({ data, onUpdateSuccess }) => {
     setIsEditingPrice(false);
   };
 
-  const filteredData = data.filter((item) => {
+  const filteredData = data
+  .filter((item) => {
     const matchesSearchTerm =
       (item.itemCode && item.itemCode.toLowerCase().includes(searchTerm)) ||
       (item.itemName && item.itemName.toLowerCase().includes(searchTerm)) ||
@@ -146,16 +147,22 @@ const View = ({ data, onUpdateSuccess }) => {
       (item.itemCategory && item.itemCategory.toLowerCase().includes(searchTerm)) ||
       (item.group_id && item.group_id.toLowerCase().includes(searchTerm));
   
-    // Only apply quantity filter when checkbox is checked
-    if (maxQuantity==='') {
+    // Only apply quantity filter when maxQuantity is provided
+    if (maxQuantity === '') {
       return matchesSearchTerm;
     }
     
     const matchesQuantityFilter = 
-      maxQuantity === '' || 
       (item.quantity !== undefined && item.quantity <= parseInt(maxQuantity, 10));
     
     return matchesSearchTerm && matchesQuantityFilter;
+  })
+  // Sort by quantity in descending order, but only when quantity filter is applied
+  .sort((a, b) => {
+    if (maxQuantity !== '') {
+      return (b.quantity || 0) - (a.quantity || 0); // Descending order
+    }
+    return 0; // No sorting when quantity filter isn't applied
   });
 
   const handleKeyDown = (e, rowIndex, columnIndex, field) => {

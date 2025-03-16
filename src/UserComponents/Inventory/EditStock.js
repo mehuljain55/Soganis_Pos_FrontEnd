@@ -76,7 +76,8 @@ const EditStock = ({ data, resetFilters  }) => {
   
   
 
-  const filteredData = data.filter((item) => {
+  const filteredData = data
+  .filter((item) => {
     const matchesSearchTerm =
       (item.itemCode && item.itemCode.toLowerCase().includes(searchTerm)) ||
       (item.itemName && item.itemName.toLowerCase().includes(searchTerm)) ||
@@ -86,16 +87,20 @@ const EditStock = ({ data, resetFilters  }) => {
       (item.itemCategory && item.itemCategory.toLowerCase().includes(searchTerm)) ||
       (item.group_id && item.group_id.toLowerCase().includes(searchTerm));
   
-    // Only apply quantity filter when checkbox is checked
-    if (maxQuantity==='') {
+    if (maxQuantity === '') {
       return matchesSearchTerm;
     }
     
     const matchesQuantityFilter = 
-      maxQuantity === '' || 
       (item.quantity !== undefined && item.quantity <= parseInt(maxQuantity, 10));
     
     return matchesSearchTerm && matchesQuantityFilter;
+  })
+  .sort((a, b) => {
+    if (maxQuantity !== '') {
+      return (b.quantity || 0) - (a.quantity || 0); // Descending order
+    }
+    return 0; // No sorting when quantity filter isn't applied
   });
 
   return (
