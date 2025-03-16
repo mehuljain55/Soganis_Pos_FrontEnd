@@ -85,10 +85,16 @@ const EditStock = ({ data, resetFilters  }) => {
       (item.itemSize && item.itemSize.toLowerCase().includes(searchTerm)) ||
       (item.itemCategory && item.itemCategory.toLowerCase().includes(searchTerm)) ||
       (item.group_id && item.group_id.toLowerCase().includes(searchTerm));
-
-    const matchesQuantityFilter =
-      maxQuantity === '' || (item.quantity && item.quantity <= maxQuantity);
-
+  
+    // Only apply quantity filter when checkbox is checked
+    if (maxQuantity==='') {
+      return matchesSearchTerm;
+    }
+    
+    const matchesQuantityFilter = 
+      maxQuantity === '' || 
+      (item.quantity !== undefined && item.quantity <= parseInt(maxQuantity, 10));
+    
     return matchesSearchTerm && matchesQuantityFilter;
   });
 
