@@ -1,71 +1,172 @@
-.table-container {
-    max-height: 400px; /* Adjust as needed */
-    overflow: auto;
-    margin-top: 20px;
+/* View Filter Stock Component Styles */
+.view-filter-stock-container {
+  max-width: 100%;
+  margin: 0 auto;
+  padding: 20px;
+  margin-top: -40px;
 }
 
-table {
+.view-filter-stock-title {
+  margin-bottom: 20px;
+  text-align: center;
+  color: #333;
+}
+
+/* Filter Options Layout */
+.view-filter-stock-options {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  margin-bottom: 20px;
+  background-color: #f9f9f9;
+  padding: 15px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Radio Button Group - Inline layout */
+.view-filter-stock-radio-group {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  justify-content: center;
+  margin-bottom: 10px;
+  width: 100%;
+}
+
+.view-filter-stock-radio {
+  display: flex;
+  align-items: center;
+  margin-right: 20px;
+  white-space: nowrap;
+}
+
+.view-filter-stock-radio input[type="radio"] {
+  margin-right: 5px;
+}
+
+.view-filter-stock-radio label {
+  font-weight: 500;
+  cursor: pointer;
+}
+
+/* Select Dropdowns - Inline layout */
+.view-filter-stock-selects {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+}
+
+.view-filter-stock-select-group {
+  display: flex;
+  align-items: center;
+  margin-right: 15px;
+}
+
+.view-filter-stock-select-group label {
+  margin-right: 8px;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.view-filter-stock-select-group select {
+  padding: 8px 12px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  min-width: 200px;
+  background-color: white;
+}
+
+/* Table Container Styles */
+.view-filter-stock-table-container {
+  max-height: 400px;
+  overflow: auto;
+  margin-top: 20px;
+  border-radius: 4px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+.view-filter-stock-table {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed;
+}
+
+.view-filter-stock-table th, 
+.view-filter-stock-table td {
+  border: 1px solid #ddd;
+  padding: 10px;
+  text-align: left;
+  white-space: nowrap;
+}
+
+.view-filter-stock-table th {
+  background-color: #f4f4f4;
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  font-weight: 600;
+}
+
+.view-filter-stock-table tr:nth-child(even) {
+  background-color: #f9f9f9;
+}
+
+.view-filter-stock-table tr:hover {
+  background-color: #f1f1f1;
+}
+
+/* Loading spinner */
+.view-filter-stock-spinner {
+  border: 8px solid rgba(0, 0, 0, 0.1);
+  border-top: 8px solid #3498db;
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  animation: view-filter-stock-spin 1s linear infinite;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 1001;
+}
+
+@keyframes view-filter-stock-spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.view-filter-stock-blur {
+  filter: blur(3px);
+  pointer-events: none;
+  opacity: 0.6;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+  .view-filter-stock-radio-group {
+    flex-wrap: wrap;
+    justify-content: flex-start;
+  }
+  
+  .view-filter-stock-radio {
+    margin-bottom: 8px;
+  }
+  
+  .view-filter-stock-selects {
+    flex-wrap: wrap;
+    justify-content: flex-start;
+  }
+  
+  .view-filter-stock-select-group {
+    margin-bottom: 10px;
     width: 100%;
-    border-collapse: collapse;
-    table-layout: fixed; /* Ensures columns are of fixed width */
-}
-
-th, td {
-    border: 1px solid #ddd;
-    padding: 8px;
-    text-align: left;
-    white-space: nowrap; /* Prevents text from wrapping */
-}
-
-th {
-    background-color: #f4f4f4;
-    position: -webkit-sticky; /* For Safari */
-    position: sticky;
-    top: 0; /* Keeps the header on top while scrolling */
-    z-index: 1; /* Ensures header is above the rows */
-}
-
-tbody {
-    display: block;
-    height: 300px; /* Adjust as needed */
-    overflow-y: auto;
+  }
+  
+  .view-filter-stock-select-group select {
     width: 100%;
-}
-
-thead, tbody tr {
-    display: table;
-    width: calc(100% - 1em); /* Adjust for padding */
-    table-layout: fixed;
-}
-
-thead {
-    display: table-header-group; /* Keeps the header visible */
-}
-
-/* Spinner animation */
-.spinner {
-    border: 8px solid rgba(0, 0, 0, 0.1);
-    border-top: 8px solid #3498db;
-    border-radius: 50%;
-    width: 50px;
-    height: 50px;
-    animation: spin 1s linear infinite;
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    z-index: 1001;
   }
-  
-  @keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
-  }
-  
-  /* Blur effect */
-  .blur {
-    filter: blur(3px);
-    pointer-events: none;
-    opacity: 0.6;
-  }
-  
+}

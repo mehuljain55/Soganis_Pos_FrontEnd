@@ -1,109 +1,190 @@
-.view-sales-filter-data-table-wrapper {
-    max-height: 300px; /* Adjust based on your needs */
+/* Main container */
+.view-stock-filter-container {
+    width: 100%;
+    box-sizing: border-box;
+  }
+  
+  /* Search bar and filter section */
+  .view-stock-filter-search-bar-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 15px;
+    margin-top: 25px;
+    margin-bottom: 15px;
+    flex-wrap: wrap;
+  }
+  
+  .view-stock-filter-search-bar,
+  .view-stock-filter-quantity-filter {
+    padding: 8px 12px;
+    border: 1px solid #000000;
+    border-radius: 4px;
+  }
+  
+  /* Checkbox controls */
+  .view-stock-filter-checkboxes {
+    display: flex;
+    gap: 15px;
+    align-items: center;
+  }
+  
+  .view-stock-filter-checkbox-label {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    cursor: pointer;
+  }
+  
+  .view-stock-filter-checkbox-label input[type="checkbox"] {
+    cursor: pointer;
+  }
+  
+  /* Table wrapper */
+  .view-stock-filter-table-wrapper {
+    max-height: 335px; /* Adjust based on your needs */
+    max-width: 3000px; /* Adjust based on your needs */
+    
     overflow-y: auto; /* Vertical scrolling */
     overflow-x: auto; /* Horizontal scrolling */
     border: 1px solid #ddd;
     background-color: #fff; /* Background color for better visibility */
     margin-bottom: 10px;
-}
-
-.view-sales-filter-data-table-wrapper table {
+  }
+  
+  /* Main table styles */
+  .view-stock-filter-table {
     width: 100%;
     border-collapse: collapse; /* Collapse borders for a unified look */
     word-wrap: break-word; /* Enable word wrap */
-}
-
-.view-sales-filter-data-table-wrapper thead {
+  }
+  
+  /* Header styles */
+  .view-stock-filter-table thead {
     background-color: #f4f4f4; /* Light background for header */
     position: sticky; /* Sticky header */
     top: 0; /* Stick to the top */
     z-index: 1; /* Ensure header is above the body */
-}
-
-.view-sales-filter-data-table-wrapper th,
-.view-sales-filter-data-table-wrapper td {
+  }
+  
+  .view-stock-filter-table th {
+    background-color: #707070;
+    color: white;
+    padding: 10px;
+    border: 1px solid #ddd;
+    text-align: left;
+    font-weight: bold;
+  }
+  
+  /* Cell styles */
+  .view-stock-filter-table td {
     padding: 10px;
     border: 1px solid #ddd;
     text-align: left;
     white-space: normal; /* Allow text to wrap */
-}
-
-.view-sales-filter-data-table-wrapper th {
-    font-weight: bold; /* Bold header text */
-}
-
-.view-sales-filter-data-search-bar-wrapper {
-    display: flex;
-    gap: 10px;
-    margin: 20px 0; 
-    align-items: center;
-    justify-content: center;
-}
-
-.view-sales-filter-data-search-bar,
-.view-sales-filter-data-quantity-filter {
-    padding: 5px;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-}
-
-th {
-    background-color: #707070;
-    color: white;
-}
-
-tr:nth-child(even) {
+  }
+  
+  /* Row alternating colors */
+  .view-stock-filter-even-row {
     background-color: #cbcbcb;
-}
-
-.view-sales-filter-data-table-wrapper td:nth-child(1) { width: 40px; } /* S.No */
-.view-sales-filter-data-table-wrapper td:nth-child(2) { width: 100px; } /* Item Code */
-.view-sales-filter-data-table-wrapper td:nth-child(3) { width: 200px; } /* Item Name */
-.view-sales-filter-data-table-wrapper td:nth-child(4) { width: 150px; } /* Item Type */
-.view-sales-filter-data-table-wrapper td:nth-child(5) { width: 300px; } /* Item Color */
-.view-sales-filter-data-table-wrapper td:nth-child(6) { width: 100px; } /* Item Size */
-.view-sales-filter-data-table-wrapper td:nth-child(7) { width: 150px; } /* Item Category */
-.view-sales-filter-data-table-wrapper td:nth-child(8) { width: 150px; } /* Price */
-.view-sales-filter-data-table-wrapper td:nth-child(9) { width: 150px; } /* Wholesale Price */
-.view-sales-filter-data-table-wrapper td:nth-child(10) { width: 80px; } /* Available Quantity */
-.view-sales-filter-data-table-wrapper td:nth-child(11) { width: 60px; } /* Added Quantity */
-.view-sales-filter-data-table-wrapper td:nth-child(12) { width: 120px; } /* Group ID */
-.view-sales-filter-data-table-wrapper td:nth-child(13) { width: 120px; } /* Group ID */
-/* Styling input fields inside table cells */
-.view-sales-filter-data-table-wrapper input[type="number"] {
+  }
+  
+  .view-stock-filter-odd-row {
+    background-color: #ffffff;
+  }
+  
+  /* Column widths - more specific selectors to avoid conflicts */
+  .view-stock-filter-table td:nth-child(1) { width: 30px !important; } /* S.No */
+  .view-stock-filter-table td:nth-child(2) { width: 90px !important; } /* Item Code */
+  .view-stock-filter-table td:nth-child(3) { width: 300px !important; } /* Item Name */
+  .view-stock-filter-table td:nth-child(4) { width: 200px !important; } /* Item Type */
+  .view-stock-filter-table td:nth-child(5) { width: 150px !important; } /* Item Color */
+  .view-stock-filter-table td:nth-child(6) { width: 40px !important; } /* Item Size */
+  .view-stock-filter-table td:nth-child(7) { width: 150px !important; } /* Item Category */
+  .view-stock-filter-table td:nth-child(8) { width: 50px !important; } /* Price */
+  .view-stock-filter-table td:nth-child(9) { width: 50px !important; } /* Wholesale Price */
+  .view-stock-filter-table td:nth-child(10) { width: 50px !important; } /* Available Quantity */
+  .view-stock-filter-table td:nth-child(11) { width: 50px !important; } /* Added Quantity */
+  .view-stock-filter-table td:nth-child(12) { width: 120px !important; } /* Group ID */
+  .view-stock-filter-table td:nth-child(13) { width: 120px !important; } /* Action */
+  
+  
+  /* Input fields styling */
+  .view-stock-filter-edit-input {
     width: 100%; /* Full width of the cell */
     box-sizing: border-box; /* Include padding/border in width */
     padding: 8px;
     min-width: 100px;
     border: 1px solid #ddd;
     border-radius: 4px;
-}
-
-/* Styling for radio button controls */
-.filter-page-radio {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 20px;
-    font-size: 18px;
-}
-
-.filter-page-radio-output {
-    margin-top: 20px;
-}
-
-.filter-page-radio-output label,
-.filter-page-radio-output select {
-    margin-right: 10px;
-    font-size: 18px;
-}
-
-/* Controls and actions layout */
-.view-sales-filter-data-controls,
-.view-sales-filter-data-actions {
+  }
+  
+  /* No data message */
+  .view-stock-filter-no-data-message {
+    text-align: center;
+    padding: 20px;
+    font-style: italic;
+    color: #666;
+  }
+  
+  /* Button styling */
+  .view-stock-filter-place-order-btn,
+  .view-stock-filter-submit-btn,
+  .view-stock-filter-cancel-btn,
+  .view-stock-filter-export-btn {
+    padding: 8px 12px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background-color 0.3s;
+  }
+  
+  .view-stock-filter-place-order-btn {
+    background-color: #4CAF50;
+    color: white;
+  }
+  
+  .view-stock-filter-submit-btn {
+    background-color: #178409e4;
+    color: white;
+  }
+  
+  .view-stock-filter-cancel-btn {
+    background-color: #f44336;
+    color: white;
+  }
+  
+  .view-stock-filter-export-btn {
+    background-color: #2593ec;
+    color: white;
+  }
+  
+  .view-stock-filter-place-order-btn:hover,
+  .view-stock-filter-submit-btn:hover,
+  .view-stock-filter-cancel-btn:hover,
+  .view-stock-filter-export-btn:hover {
+    opacity: 0.9;
+  }
+  
+  /* Actions container */
+  .view-stock-filter-actions {
     display: flex;
     gap: 10px;
     align-items: center;
     justify-content: center;
     margin-top: 10px;
-}
+  }
+  
+  /* Responsive adjustments */
+  @media screen and (max-width: 768px) {
+    .view-stock-filter-search-bar-wrapper {
+      flex-direction: column;
+      align-items: stretch;
+    }
+    
+    .view-stock-filter-checkboxes {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+  }

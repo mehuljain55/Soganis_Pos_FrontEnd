@@ -219,7 +219,7 @@ const FilterSalesPage = () => {
   return (
     <Container className="filter-sales-page mt-4">
       <Card className="p-4 shadow-sm">
-        <h1 className="text-center mb-4">View Sales</h1>
+        <h3 className="text-center mb-4">View Sales</h3>
         
         <div className="checkbox-group d-flex justify-content-center gap-3 mb-3">
           {['dateRange', 'item', 'school'].map((filter) => (

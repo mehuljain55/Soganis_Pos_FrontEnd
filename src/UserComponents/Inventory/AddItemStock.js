@@ -270,7 +270,6 @@ const AddItemStock = () => {
 
   return (
     <div className='add-stock-cont'>
-      <h2>Add Item Stock</h2>
       <div className="actionBtns">
   <div className="actionBtns-left">
     <button className="clear-button" onClick={clearItemRows}>Clear Items</button>

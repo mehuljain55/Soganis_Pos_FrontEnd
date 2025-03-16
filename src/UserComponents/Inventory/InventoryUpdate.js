@@ -4,7 +4,6 @@ import { API_BASE_URL } from "../Config.js";
 import InventoryManager from './InventoryManager';
 import './InventoryUpdate.css';
 
-
 const InventoryUpdate = () => {
   const [file, setFile] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -54,7 +53,6 @@ const InventoryUpdate = () => {
             responseType: 'blob', // Ensure the response is in blob format
         });
 
-
         const blob = new Blob([response.data], { type: 'text/plain' });
         
         const url = window.URL.createObjectURL(blob);
@@ -75,8 +73,7 @@ const InventoryUpdate = () => {
         setIsLoading(false);
         setFile(null);
     }
-};
-
+  };
 
   const handleClear = () => {
     setFile(null);
@@ -86,52 +83,59 @@ const InventoryUpdate = () => {
 
   return (
     <div className="inventory-update-container">
-      {!file ? (
-        <label
-          className="drop-zone"
-          onDragOver={handleDragOver}
-          onDrop={handleDrop}
-          onDragLeave={handleDragLeave}
-        >
-          <input
-            type="file"
-            onChange={handleFileChange}
-            accept=".xlsx, .xls"
-            style={{ display: 'none' }} // Hide default file input
-          />
-          <p>Drag & drop Excel file here, or click to select file</p>
-        </label>
-      ) : (
-        <div className="file-info">
-          <span className="file-icon">📄</span>
-          <span className="file-name">{file.name}</span>
-          <button onClick={handleClear} disabled={isLoading || isUploading}>Remove</button>
-        </div>
-      )}
+      {/* Left half - Inventory Upload */}
+      <div className="inventory-upload-section">
+        <h2 className="section-title">Inventory Upload</h2>
+        
+        {!file ? (
+          <label
+            className="drop-zone"
+            onDragOver={handleDragOver}
+            onDrop={handleDrop}
+            onDragLeave={handleDragLeave}
+          >
+            <input
+              type="file"
+              onChange={handleFileChange}
+              accept=".xlsx, .xls"
+              style={{ display: 'none' }} // Hide default file input
+            />
+            <p>Drag & drop Excel file here, or click to select file</p>
+          </label>
+        ) : (
+          <div className="file-info">
+            <span className="file-icon">📄</span>
+            <span className="file-name">{file.name}</span>
+            <button onClick={handleClear} disabled={isLoading || isUploading}>Remove</button>
+          </div>
+        )}
 
-      <div className="button-group">
-        <button onClick={handleUpload} disabled={!file || isLoading || isUploading}>
-          {isUploading ? 'Uploading file...' : isLoading ? 'Waiting for response...' : 'Submit'}
-        </button>
+        <div className="button-group">
+          <button onClick={handleUpload} disabled={!file || isLoading || isUploading}>
+            {isUploading ? 'Uploading file...' : isLoading ? 'Waiting for response...' : 'Submit'}
+          </button>
+        </div>
+
+        {isLoading && <div className="loading-animation">Waiting for response...</div>}
+
+        {fileContent && (
+          <div className="response-box">
+            <h3>File Content:</h3>
+            <pre>{fileContent}</pre>
+          </div>
+        )}
+
+        {downloadUrl && (
+          <a href={downloadUrl} download="InventoryUpdate.txt">
+            Download Inventory Edit Status
+          </a>
+        )}
       </div>
 
-      {isLoading && <div className="loading-animation">Waiting for response...</div>}
-
-      {fileContent && (
-        <div className="response-box">
-          <h3>File Content:</h3>
-          <pre>{fileContent}</pre>
-        </div>
-      )}
-
-      {downloadUrl && (
-        <a href={downloadUrl} download="InventoryUpdate.txt">
-          Download Inventory Edit Status
-        </a>
-      )}
-
-      <div classname='download-excel'>
-                  <InventoryManager />   
+      {/* Right half - Inventory Manager */}
+      <div className="inventory-manager-section">
+        <h2 className="section-title">Inventory Manager</h2>
+        <InventoryManager />
       </div>
     </div>
   );

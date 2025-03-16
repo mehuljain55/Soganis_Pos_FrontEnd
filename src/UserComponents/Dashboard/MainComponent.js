@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faSyncAlt, faBars, faSignOutAlt } from '@fortawesome/free-solid-svg-icons';
+import { faSyncAlt, faCloudUploadAlt ,faBars, faSignOutAlt } from '@fortawesome/free-solid-svg-icons';
 import { useSwipeable } from 'react-swipeable';
 import './MainComponent.css';
 
@@ -113,60 +113,58 @@ const MainComponent = ({ userData }) => {
   
 
   return (
-    <div className="container-fluid" {...swipeHandlers}>
-      <div className="top-bar">
-      <h1 className="brand-heading" onClick={handleHeadingClick} style={{ cursor: 'pointer' }}>
-        {storeName}
-      </h1>
+    <div className="dashboard-container-fluid" {...swipeHandlers}>
+      <div className="dashboard-top-bar">
+        <h1 className="dashboard-brand-heading" onClick={handleHeadingClick} style={{ cursor: 'pointer' }}>
+          {storeName}
+        </h1>
         {userData && (
-          <div className="user-info">
+          <div className="dashboard-user-info">
             <span>User: {userData.sname}</span>
             <span>Shop: {userData.storeId}</span>
-            <span className="cash-collection">
+            <span className="dashboard-cash-collection">
               <span>Cash Collection: {todayCashCollection}</span>
-              <button className="refresh-button" onClick={fetchTodayCashCollection}>
+              <button className="dashboard-refresh-button" onClick={fetchTodayCashCollection}>
                 <FontAwesomeIcon icon={faSyncAlt} />
               </button>
             </span>
-            <button className="logout-button" onClick={handleLogout}>
+            <button className="dashboard-logout-button" onClick={handleLogout}>
               <FontAwesomeIcon icon={faSignOutAlt} />
             </button>
-          
-            <button className="backup-button" onClick={handleBackup}>
-             Backup
-            </button>
-          
-          
+            <button className="dashboard-backup-button" onClick={handleBackup}>
+  <FontAwesomeIcon icon={faCloudUploadAlt} className="backup-icon" /> Backup
+</button>
+
           </div>
         )}
-        <button className="menu-toggle" onClick={toggleSidebar}>
+        <button className="dashboard-menu-toggle" onClick={toggleSidebar}>
           <FontAwesomeIcon icon={faBars} />
         </button>
       </div>
-
-      <div className={`main-content-wrapper ${isSidebarOpen ? 'shifted' : ''}`}>
-        <div className={`sidebar ${isSidebarOpen ? 'open' : ''}`}>
-          <div className="list-group">
-            <button className="list-group-item" onClick={() => handleMenuItemClick('New Bill')}>New Bill</button>
-            <button className="list-group-item" onClick={() => handleMenuItemClick('Returns')}>Return/Exchange</button>
-            <button className="list-group-item" onClick={() => handleMenuItemClick('Inter Company Transaction')}>Inter Company</button>
-            <button className="list-group-item" onClick={() => handleMenuItemClick('Recent Bills')}>Recent Bills</button>
-            <button className="list-group-item" onClick={() => handleMenuItemClick('Customer Due List')}>Customer Due List</button>
-            <button className="list-group-item" onClick={() => handleMenuItemClick('Add Order')}>Customer Order Book</button>
-            <button className="list-group-item" onClick={() => handleMenuItemClick('View Order')}>View Order Book</button>
-            <button className="list-group-item" onClick={() => handleMenuItemClick('View Stock')}>View Stock</button>
-            <button className="list-group-item" onClick={() => handleMenuItemClick('Purchase Order')}>Purchase Order</button>
-            <button className="list-group-item" onClick={() => handleMenuItemClick('Cash Collection')}>Cash Collection</button>
-            <button className="list-group-item" onClick={() => handleMenuItemClick('View Sales Report')}>Sale Report</button>
-            <button className="list-group-item" onClick={() => handleMenuItemClick('School Sales')}>School Report</button>
-            <button className="list-group-item" onClick={() => handleMenuItemClick('Salary Register')}>Salary Register</button>
-            <button className="list-group-item" onClick={() => navigate('/barcode')}>Open Barcode</button>
-            <button className="list-group-item" onClick={() => handleMenuItemClick('Update Inventory')}>Add Inventory(Qty)</button>
-            <button className="list-group-item" onClick={() => handleMenuItemClick('Add New Item')}>Update Item List</button>
-            </div>
+  
+      <div className={`dashboard-main-content-wrapper ${isSidebarOpen ? 'shifted' : ''}`}>
+        <div className={`dashboard-sidebar ${isSidebarOpen ? 'open' : ''}`}>
+          <div className="dashboard-list-group">
+            <button className="dashboard-list-group-item" onClick={() => handleMenuItemClick('New Bill')}>New Bill</button>
+            <button className="dashboard-list-group-item" onClick={() => handleMenuItemClick('Returns')}>Return/Exchange</button>
+            <button className="dashboard-list-group-item" onClick={() => handleMenuItemClick('Inter Company Transaction')}>Inter Company</button>
+            <button className="dashboard-list-group-item" onClick={() => handleMenuItemClick('Recent Bills')}>Recent Bills</button>
+            <button className="dashboard-list-group-item" onClick={() => handleMenuItemClick('Customer Due List')}>Customer Due List</button>
+            <button className="dashboard-list-group-item" onClick={() => handleMenuItemClick('Add Order')}>Customer Order Book</button>
+            <button className="dashboard-list-group-item" onClick={() => handleMenuItemClick('View Order')}>View Order Book</button>
+            <button className="dashboard-list-group-item" onClick={() => handleMenuItemClick('View Stock')}>View Stock</button>
+            <button className="dashboard-list-group-item" onClick={() => handleMenuItemClick('Purchase Order')}>Purchase Order</button>
+            <button className="dashboard-list-group-item" onClick={() => handleMenuItemClick('Cash Collection')}>Cash Collection</button>
+            <button className="dashboard-list-group-item" onClick={() => handleMenuItemClick('View Sales Report')}>Sale Report</button>
+            <button className="dashboard-list-group-item" onClick={() => handleMenuItemClick('School Sales')}>School Report</button>
+            <button className="dashboard-list-group-item" onClick={() => handleMenuItemClick('Salary Register')}>Salary Register</button>
+            <button className="dashboard-list-group-item" onClick={() => navigate('/barcode')}>Open Barcode</button>
+            <button className="dashboard-list-group-item" onClick={() => handleMenuItemClick('Update Inventory')}>Add Inventory(Qty)</button>
+            <button className="dashboard-list-group-item" onClick={() => handleMenuItemClick('Add New Item')}>Update Item List</button>
+          </div>
         </div>
-
-        <main className="main-content">
+  
+        <main className="dashboard-main-content">
           {selectedMenuItem === 'Dashboard' && <Dashboard />}
           {selectedMenuItem === 'New Bill' && <NewBillContainer userData={userData} />}
           {selectedMenuItem === 'Inter Company Transaction' && <InterCompanyTranfer userData={userData} />}
@@ -181,13 +179,11 @@ const MainComponent = ({ userData }) => {
           {selectedMenuItem === 'School Sales' && <SchoolSalesReport />}
           {selectedMenuItem === 'Update Inventory' && <AddInventoryItem />}
           {selectedMenuItem === 'Add New Item' && <InventoryAdd />}
-          {selectedMenuItem === 'Recent Bills' && <BillViewer  />}
-          {selectedMenuItem === 'Customer Due List' && <CustomerDueList  />}
-
+          {selectedMenuItem === 'Recent Bills' && <BillViewer />}
+          {selectedMenuItem === 'Customer Due List' && <CustomerDueList />}
         </main>
       </div>
-    
-
+  
       <SearchModal isOpen={isSearchModalOpen} onClose={() => setIsSearchModalOpen(false)} />
     </div>
   );

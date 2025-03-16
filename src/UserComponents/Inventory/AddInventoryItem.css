@@ -1,40 +1,41 @@
 /* General container styling */
-.item-add-inventory-update-container {
+.inventory-qty-container {
   max-width: 1200px;
   margin: 20px auto;
   padding: 10px;
+  margin-top: -15px;
   font-family: Arial, sans-serif;
   background-color: #ffffff;
   border-radius: 8px;
   box-shadow: 0 6px 10px rgba(0, 0, 0, 0.1);
-  overflow: hidden; /* Ensure no scrollbars */
-  }
-  
-  /* Four-column grid for sections */
-  .item-add-inventory-update-grid {
+  overflow: hidden;
+}
+
+/* Four-column grid for sections */
+.inventory-qty-grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   gap: 10px;
-  }
-  
-  /* Individual section styling */
-  .item-add-inventory-update-section {
+}
+
+/* Individual section styling */
+.inventory-qty-section {
   background-color: #f8f9fa;
   padding: 10px;
   border-radius: 6px;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
   text-align: center;
-  height: auto; /* Adjust height dynamically */
-  }
-  
-  .item-add-inventory-update-section h2 {
+  height: auto;
+}
+
+.inventory-qty-section h2 {
   font-size: 16px;
   color: #333;
   margin-bottom: 10px;
-  }
-  
-  /* Scoped button styles */
-  .item-add-inventory-update-section button {
+}
+
+/* Scoped button styles */
+.inventory-qty-section button {
   display: block;
   width: 100%;
   margin: 5px 0;
@@ -46,15 +47,15 @@
   color: #fff;
   cursor: pointer;
   transition: all 0.3s ease;
-  }
-  
-  .item-add-inventory-update-section button:hover {
+}
+
+.inventory-qty-section button:hover {
   background-color: #0056b3;
-  }
-  
-  /* Scoped input and select styles */
-  .item-add-inventory-update-section input,
-  .item-add-inventory-update-section select {
+}
+
+/* Scoped input and select styles */
+.inventory-qty-section input,
+.inventory-qty-section select {
   display: block;
   width: 100%;
   margin: 5px 0;
@@ -63,10 +64,10 @@
   border: 1px solid #ccc;
   border-radius: 4px;
   transition: all 0.3s ease;
-  }
-  
-  /* File input specific styling */
-  .item-add-inventory-update-drag-area {
+}
+
+/* File input specific styling */
+.inventory-qty-drag-area {
   border: 1px dashed #007bff;
   padding: 10px;
   background-color: #e9f5ff;
@@ -76,42 +77,110 @@
   font-size: 12px;
   cursor: pointer;
   transition: background-color 0.3s ease;
-  }
-  
-  .item-add-inventory-update-drag-area:hover {
+}
+
+.inventory-qty-drag-area:hover {
   background-color: #d0ebff;
-  }
-  
-  /* Table styling */
-  .table-container {
-  overflow: auto; /* Remove scrollbars */
-  margin: 0 auto;
+}
+
+/* Update the table styling */
+.inventory-qty-table-container {
+  overflow-y: auto;
+  margin-top: -10px;
   width: 100%;
-  }
-  
-  .styled-table {
+  max-height: 240px;
+  border: 1px solid #e0e0e0;
+  border-radius: 4px;
+}
+
+.inventory-qty-styled-table {
   width: 100%;
   border-collapse: collapse;
-  }
-  
-  .styled-table th,
-  .styled-table td {
+}
+
+.inventory-qty-styled-table th,
+.inventory-qty-styled-table td {
   text-align: center;
-  padding: 5px;
+  border: 1px solid #ddd; /* Ensure all cells have borders */
+  padding: 3px; /* Reduce padding to decrease height */
   font-size: 12px;
-  }
-  
-  .styled-table th {
+  height: 25px; /* Explicitly set height for all rows */
+}
+
+.inventory-qty-styled-table th {
   background-color: #707070;
   color: white;
-  }
-  
-  .styled-table tr:nth-child(even) {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  border: 1px solid #555; /* Add visible border to table headings */
+}
+
+.inventory-qty-styled-table tr:nth-child(even) {
   background-color: #f2f2f2;
-  }
+}
+
+/* Adjust column widths */
+.inventory-qty-styled-table th:nth-child(1),
+.inventory-qty-styled-table td:nth-child(1) {
+  width: 80px; /* Reduced School Code width */
+}
+
+.inventory-qty-styled-table th:nth-child(2),
+.inventory-qty-styled-table td:nth-child(2) {
+  width: 80px; /* Reduced Item Code width */
+}
+
+.inventory-qty-styled-table th:nth-child(3),
+.inventory-qty-styled-table td:nth-child(3) {
+  width: 60px; /* Reduced Size width */
+}
+
+.inventory-qty-styled-table th:nth-child(4),
+.inventory-qty-styled-table td:nth-child(4) {
+  width: 60px; /* Reduced Color width */
+}
+
+.inventory-qty-styled-table th:nth-child(5),
+.inventory-qty-styled-table td:nth-child(5) {
+  width: 90px; /* Reduced Current Quantity width */
+}
+
+.inventory-qty-styled-table th:nth-child(6),
+.inventory-qty-styled-table td:nth-child(6) {
+  width: 60px; /* Reduced Quantity width */
+}
+
+.inventory-qty-styled-table th:nth-child(7),
+.inventory-qty-styled-table td:nth-child(7) {
+  width: 60px; /* Reduced Store ID width */
+}
+
+.inventory-qty-styled-table th:nth-child(8),
+.inventory-qty-styled-table td:nth-child(8) {
+  width: 60px; /* Reduced Actions width */
+}
+
+/* Adjust input field within the table */
+.inventory-qty-styled-table input[type="number"] {
+  width: 95% !important; /* Make input fields smaller */
+  height: 100% !important; /* Reduce height of input fields */
+  padding: 2px 4px; /* Smaller padding for inputs */
   
-  /* Status box styling */
-  .status-box {
+  font-size: 12px;
+  border: 1px solid #ccc;
+  border-radius: 3px;
+  text-align: center;
+}
+
+/* Adjust button size in the table */
+.inventory-qty-styled-table button {
+  padding: 2px 8px; /* Reduce button padding */
+  font-size: 11px; /* Smaller font size for buttons */
+  height: 22px; /* Explicit height for buttons */
+}
+
+.inventory-qty-status-box {
   background-color: #ffffff;
   border: 1px solid #ccc;
   padding: 10px;
@@ -119,32 +188,56 @@
   font-size: 12px;
   color: #333;
   text-align: left;
-  max-height: 150px; /* Fixed height */
-  overflow-y: auto;  /* Enable vertical scrolling */
-  word-wrap: break-word; /* Ensure long words break to the next line */
-  white-space: pre-wrap; /* Ensures whitespace and line breaks are respected */
-  }
-  
-  
-  /* Responsive grid for smaller screens */
-  @media (max-width: 768px) {
-  .item-add-inventory-update-grid {
+  max-height: 150px;
+  overflow-y: auto;
+  word-wrap: break-word;
+  white-space: pre-wrap;
+}
+
+/* Responsive grid for smaller screens */
+@media (max-width: 768px) {
+  .inventory-qty-grid {
     grid-template-columns: 1fr;
   }
-  
-  .item-add-inventory-update-section {
+
+  .inventory-qty-section {
     padding: 8px;
   }
-  }
-  
-  .toast-notification {
-    position: fixed;
-    bottom: 20px;
-    right: 20px;
-    background-color: #28a745;
-    color: white;
-    padding: 10px 15px;
-    border-radius: 5px;
-    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
-  }
-  
+}
+
+.inventory-qty-toast-notification {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  background-color: #28a745;
+  color: white;
+  padding: 10px 15px;
+  border-radius: 5px;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* View history button styling */
+.inventory-qty-view-history-button {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  padding: 8px 12px;
+  background-color: #6c757d;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 12px;
+}
+
+.inventory-qty-view-history-button:hover {
+  background-color: #5a6268;
+}
+
+/* File info display styling */
+.inventory-qty-file-info {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 10px;
+}

@@ -1,12 +1,12 @@
-/* Main container */
-.container-fluid {
+/* Main container with renamed class */
+.dashboard-container-fluid {
   display: flex;
   flex-direction: column;
   height: 100vh;
 }
 
-/* Top bar styles */
-.top-bar {
+/* Top bar styles with renamed class */
+.dashboard-top-bar {
   background-color: #0b9aed;
   color: white;
   padding: 10px 20px;
@@ -16,18 +16,18 @@
   height: 60px;
 }
 
-.brand-heading {
+.dashboard-brand-heading {
   font-size: 1.5rem;
   font-weight: bold;
 }
 
-.user-info {
+.dashboard-user-info {
   display: flex;
   align-items: center;
   gap: 15px;
 }
 
-.logout-button {
+.dashboard-logout-button {
   background: none;
   border: none;
   color: white;
@@ -35,15 +35,45 @@
   font-size: 1.5rem;
 }
 
-.refresh-button {
+.dashboard-backup-button {
+  background-color: orange;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  font-size: 16px;
+  font-weight: bold;
+  border-radius: 5px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px; /* Space between icon and text */
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.dashboard-backup-button:hover {
+  background-color: darkorange;
+  transform: scale(1.05);
+}
+
+.dashboard-backup-button:active {
+  background-color: #cc7000;
+  transform: scale(0.98);
+}
+
+.backup-icon {
+  font-size: 20px; /* Adjust icon size */
+}
+
+
+.dashboard-refresh-button {
   background: none;
   border: none;
   color: white;
   cursor: pointer;
-  font-size: 0.8rem; /* Smaller size for refresh icon */
+  font-size: 0.8rem;
 }
 
-.menu-toggle {
+.dashboard-menu-toggle {
   background: none;
   border: none;
   font-size: 18px;
@@ -52,8 +82,8 @@
   cursor: pointer;
 }
 
-/* Sidebar styles */
-.sidebar {
+/* Sidebar styles with renamed class */
+.dashboard-sidebar {
   position: fixed;
   top: 80px;
   left: -250px;
@@ -67,45 +97,59 @@
   box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
 }
 
-.sidebar.open {
+.dashboard-sidebar.open {
   left: 0;
 }
 
-.main-content-wrapper {
+.dashboard-main-content-wrapper {
   display: flex;
   flex-grow: 1;
   transition: margin-left 0.3s ease-in-out;
 }
 
-.main-content-wrapper.shifted {
-  margin-left: 200px; /* Shift when sidebar is open */
+.dashboard-main-content-wrapper.shifted {
+  margin-left: 200px;
 }
 
-.main-content {
+.dashboard-main-content {
   flex-grow: 1;
   padding: 20px;
 }
 
-/* List group */
-.list-group {
+/* List group with renamed class */
+.dashboard-list-group {
   margin-top: 20px;
   display: flex;
   flex-direction: column;
 }
 
-.list-group-item {
-  font-size: 16px;
+/* Updated sidebar button styles */
+.dashboard-list-group-item {
+  font-size: 15px;
   margin-bottom: 10px;
   cursor: pointer;
-}
-.abc {
-  width: 100px;
-  display: flex;
-  flex-direction: column;
-  text-align: left;
+  
+  background-color: #0b9aed;
+  color: white;
+  border: none;
+  border-radius: 10px;
+  padding: 12px 15px;
+  height: 40px;
+  width: 100%;
+  text-align: center;
+  transition: background-color 0.3s, transform 0.2s;
 }
 
-.cash-collection{
+.dashboard-list-group-item:hover {
+  background-color: #0880c5;
+  transform: translateY(-2px);
+}
+
+.dashboard-list-group-item:active {
+  transform: translateY(1px);
+}
+
+.dashboard-cash-collection {
   display: flex;
   justify-content: center;
   align-items: center;
@@ -114,51 +158,49 @@
 
 /* Mobile Specific Styles */
 @media (max-width: 768px) {
-  .brand-heading {
+  .dashboard-brand-heading {
     font-size: 1rem;
   }
 
-  .user-info {
+  .dashboard-user-info {
     flex-direction: column;
     align-items: flex-start;
     font-size: 12px;
   }
 
-  .refresh-button {
+  .dashboard-refresh-button {
     margin-left: 5px;
   }
 
-  .list-group-item {
+  .dashboard-list-group-item {
     font-size: 14px;
     padding: 10px;
+    height: 45px;
   }
 
-  .top-bar {
+  .dashboard-top-bar {
     padding: 5px 10px;
   }
 
-  .menu-toggle {
+  .dashboard-menu-toggle {
     font-size: 16px;
   }
 
-  .main-content-wrapper.shifted {
+  .dashboard-main-content-wrapper.shifted {
     margin-left: 0;
   }
 
-  .sidebar {
-    width: 250px; /* Adjust width for mobile sidebar */
-    left: -300px; /* Fully hide the sidebar off the screen */
+  .dashboard-sidebar {
+    width: 250px;
+    left: -300px;
   }
 
-  .sidebar.open {
-    left: 0; /* Fully show the sidebar when open */
+  .dashboard-sidebar.open {
+    left: 0;
   }
 
-  .cash-collection span {
+  .dashboard-cash-collection span {
     display: block;
   }
-
 }
-
-
 
