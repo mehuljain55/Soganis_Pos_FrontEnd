@@ -17,6 +17,7 @@ const SalesSchoolReport = () => {
     const [popupVisible, setPopupVisible] = useState(false); // State for popup visibility
     const[userList,setUserList]=useState([]);
     const[userId,setUserId]=useState('ALL');
+    
 
     const fetchSalesReport = async () => {
         try {
@@ -32,6 +33,10 @@ const SalesSchoolReport = () => {
             console.log(response)
             const sortedData = data.sort((a, b) => b.sales - a.sales);
             setReportData(sortedData);
+
+       
+
+
         } catch (err) {
             console.log(err.message);
             
@@ -39,6 +44,12 @@ const SalesSchoolReport = () => {
             setLoading(false);
         }
     };
+
+      useEffect(() => {
+        const today = new Date();
+        const formattedDate = today.toISOString().split('T')[0]; // Format to YYYY-MM-DD
+        setEndDate(formattedDate); // Set end date to today
+    }, []); // Empty dependency array means this runs only on component mount
 
       const handleExport = async () => {
         if (reportData.length === 0) {
@@ -215,7 +226,7 @@ const SalesSchoolReport = () => {
                 <div className='school-total-sale'>
                 <h4>Total Sales:{reportData.reduce((total, report) => total + report.sales, 0)}</h4>
                 </div>
-                <div>
+                <div className='school-total-sale-export'>
                     <button onClick={handleExport} >
                         Export
                     </button>
@@ -224,48 +235,51 @@ const SalesSchoolReport = () => {
                 </>
                )}
 
-            {!loading && reportData.length === 0 && !error && <p className="sales-no-data-message">No sales data available for the selected dates.</p>}
+          
 
-            {popupVisible && popupData && (
+          
+{popupVisible && popupData && (
     <div className="sales-school-report-popup-overlay">
         <div className="sales-school-report-popup-content">
             <h3>Sales Report Details</h3>
-            <table className="sales-detail-table">
-                <thead>
-                    <tr>
-                        <th>Item Barcode ID</th>
-                        <th>Item Category</th>
-                        <th>Item Code</th>
-                        <th>Description</th>
-                        <th>Type</th>
-                        <th>Color</th>
-                        <th>Size</th>
-                        <th>Price</th>
-                        <th>Sell Price</th>
-                        <th>Quantity</th>
-                        <th>Total Amount</th>
-                        <th>Bill Type</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {popupData.map((item, index) => (
-                        <tr key={index}>
-                            <td>{item.itemBarcodeID}</td>
-                            <td>{item.itemCategory}</td>
-                            <td>{item.itemCode}</td>
-                            <td>{item.description}</td>
-                            <td>{item.itemType}</td>
-                            <td>{item.itemColor}</td>
-                            <td>{item.itemSize}</td>
-                            <td>{item.price}</td>
-                            <td>{item.sellPrice}</td>
-                            <td>{item.totalQuantity}</td>
-                            <td>{item.totalAmount}</td>
-                            <td>{item.billType}</td>
+            <div className="sales-detail-table-container">
+                <table className="sales-detail-table">
+                    <thead>
+                        <tr>
+                            <th>Item Barcode ID</th>
+                            <th>Item Category</th>
+                            <th>Item Code</th>
+                            <th>Description</th>
+                            <th>Type</th>
+                            <th>Color</th>
+                            <th>Size</th>
+                            <th>Price</th>
+                            <th>Sell Price</th>
+                            <th>Quantity</th>
+                            <th>Total Amount</th>
+                            <th>Bill Type</th>
                         </tr>
-                    ))}
-                </tbody>
-            </table>
+                    </thead>
+                    <tbody>
+                        {popupData.map((item, index) => (
+                            <tr key={index}>
+                                <td>{item.itemBarcodeID}</td>
+                                <td>{item.itemCategory}</td>
+                                <td>{item.itemCode}</td>
+                                <td>{item.description}</td>
+                                <td>{item.itemType}</td>
+                                <td>{item.itemColor}</td>
+                                <td>{item.itemSize}</td>
+                                <td>{item.price}</td>
+                                <td>{item.sellPrice}</td>
+                                <td>{item.totalQuantity}</td>
+                                <td>{item.totalAmount}</td>
+                                <td>{item.billType}</td>
+                            </tr>
+                        ))}
+                    </tbody>
+                </table>
+            </div>
             <button onClick={closePopup} className="sales-school-report-popup-close-btn">Close</button>
         </div>
     </div>

@@ -157,7 +157,7 @@ h2 {
 }
 
 .items-table input {
-  width: 100%; /* Allow input to take full width */
+  width: 90%; /* Allow input to take full width */
 }
 
 .items-table tr:nth-child(even) {

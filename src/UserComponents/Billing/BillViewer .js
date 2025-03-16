@@ -92,14 +92,14 @@ const BillViewer = () => {
         );
         break;
   
-      case 'This FY':
-        const currentFYStartMonth = today.getMonth() >= 3 ? 3 : -9;
-        calculatedStartDate = format(new Date(today.getFullYear(), currentFYStartMonth, 1), 'yyyy-MM-dd');
-        calculatedEndDate = format(
-          new Date(today.getFullYear() + (currentFYStartMonth === -9 ? -1 : 1), 2, 31),
-          'yyyy-MM-dd'
-        );
-        break;
+        case 'This FY':
+          const currentFYStartMonth = today.getMonth() >= 3 ? 3 : -9;
+          calculatedStartDate = format(new Date(today.getFullYear(), currentFYStartMonth, 1), 'yyyy-MM-dd');
+          
+          // Adjusting the end date
+          const endYear = currentFYStartMonth === -9 ? today.getFullYear() : today.getFullYear() + 1;
+          calculatedEndDate = format(new Date(endYear, 2, 31), 'yyyy-MM-dd');
+          break;
 
         case 'Custom Date':
           setStartDate('');

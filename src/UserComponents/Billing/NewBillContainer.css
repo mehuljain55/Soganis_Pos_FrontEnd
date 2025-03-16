@@ -46,8 +46,18 @@ h2 {
   border-collapse: collapse;
 }
 
-.dropdown th, .dropdown td {
+.dropdown th
+,.dropdown td {
   padding: 8px;
+  border: 1px solid #ddd;
+  text-align: left;
+}
+
+.dropdown th
+ {
+  padding: 8px;
+  background-color: #707070;
+  color: white;
   text-align: left;
 }
 
@@ -94,7 +104,7 @@ h2 {
 /* Table styling */
 .items-table {
   width: 100%;
-  border-collapse: collapse;
+  border: 1px solid #ddd;
   table-layout: fixed; /* Ensures the width is fixed */
 }
 
@@ -106,7 +116,6 @@ h2 {
 
 .items-table th, .items-table td {
   padding: 8px;
-  border: 1px solid #ddd;
   text-align: left;
 }
 
