@@ -10,7 +10,6 @@ const View = ({ data, onUpdateSuccess }) => {
   const [isEditingQuantity, setIsEditingQuantity] = useState(false);
   const [isEditingPrice, setIsEditingPrice] = useState(false);
 
-
   const inputRefs = useRef({});
 
   const handleSearch = (event) => {
@@ -59,8 +58,6 @@ const View = ({ data, onUpdateSuccess }) => {
       },
     }));
   };
-
- 
 
   const handleExport = async () => {
     try {
@@ -197,45 +194,48 @@ const View = ({ data, onUpdateSuccess }) => {
   };
   
   return (
-    <div className="view-sales-filter-data-container">
-      <div className="view-sales-filter-data-controls">
-        <button
-          onClick={() => setIsEditingPrice(!isEditingPrice)}
-          className="view-sales-filter-data-edit-btn"
-        >
-          {isEditingPrice ? 'Exit Edit Price' : 'Edit Price'}
-        </button>
-        <button
-          onClick={() => setIsEditingQuantity(!isEditingQuantity)}
-          className="view-sales-filter-data-edit-btn"
-        >
-          {isEditingQuantity ? 'Exit Edit Quantity' : 'Edit Quantity'}
-        </button>
-      </div>
-
-      <div className="view-sales-filter-data-search-bar-wrapper">
+    <div className="view-stock-filter-container">
+      <div className="view-stock-filter-search-bar-wrapper">
         <input
           type="text"
           placeholder="Search..."
           value={searchTerm}
           onChange={handleSearch}
-          className="view-sales-filter-data-search-bar"
+          className="view-stock-filter-search-bar"
         />
-        <div className="max-quantity-filter-container">
         
+        <input
+          type="number"
+          placeholder="Max Quantity"
+          value={maxQuantity}
+          onChange={handleQuantityFilter}
+          className="view-stock-filter-quantity-filter"
+        />
+        
+        <div className="view-stock-filter-checkboxes">
+          <label className="view-stock-filter-checkbox-label">
             <input
-              type="number"
-              placeholder="Max Quantity"
-              value={maxQuantity}
-              onChange={handleQuantityFilter}
-              className="view-sales-filter-data-quantity-filter"
+              type="checkbox"
+              checked={isEditingPrice}
+              onChange={() => setIsEditingPrice(!isEditingPrice)}
             />
+            Edit Price
+          </label>
+          
+          <label className="view-stock-filter-checkbox-label">
+            <input
+              type="checkbox"
+              checked={isEditingQuantity}
+              onChange={() => setIsEditingQuantity(!isEditingQuantity)}
+            />
+            Add Quantity
+          </label>
         </div>
       </div>
 
-      <div className="view-sales-filter-data-table-wrapper">
+      <div className="view-stock-filter-table-wrapper">
         {filteredData.length > 0 ? (
-          <table className="inventory-table">
+          <table className="view-stock-filter-table">
             <thead>
               <tr>
                 <th>S.No</th>
@@ -248,14 +248,15 @@ const View = ({ data, onUpdateSuccess }) => {
                 <th>Price</th>
                 <th>Wholesale Price</th>
                 <th>Available Quantity</th>
-                <th>Added Quantity</th>
+                {isEditingQuantity && <th>Added Quantity</th>}
+
                 <th>Group ID</th>
                 <th>Action</th>
               </tr>
             </thead>
             <tbody>
               {filteredData.map((item, rowIndex) => (
-                <tr key={rowIndex} className={rowIndex % 2 === 0 ? 'even-row' : 'odd-row'}>
+                <tr key={rowIndex} className={rowIndex % 2 === 0 ? 'view-stock-filter-even-row' : 'view-stock-filter-odd-row'}>
                   <td>{item.sno}</td>
                   <td>{item.itemCode}</td>
                   <td>{item.itemName}</td>
@@ -271,7 +272,7 @@ const View = ({ data, onUpdateSuccess }) => {
                         onChange={(e) => handleInputChange(e, item.itemBarcodeID, 'price')}
                         ref={(el) => (inputRefs.current[`${rowIndex}-1-price`] = el)}
                         onKeyDown={(e) => handleKeyDown(e, rowIndex, 1, 'price')}
-                        className="edit-input"
+                        className="view-stock-filter-edit-input"
                       />
                     ) : (
                       item.price
@@ -285,32 +286,31 @@ const View = ({ data, onUpdateSuccess }) => {
                         onChange={(e) => handleInputChange(e, item.itemBarcodeID, 'wholeSalePrice')}
                         ref={(el) => (inputRefs.current[`${rowIndex}-2-wholeSalePrice`] = el)}
                         onKeyDown={(e) => handleKeyDown(e, rowIndex, 2, 'wholeSalePrice')}
-                        className="edit-input"
+                        className="view-stock-filter-edit-input"
                       />
                     ) : (
                       item.wholeSalePrice
                     )}
                   </td>
                   <td>{item.quantity}</td>
-                  <td>
-                    {isEditingQuantity ? (
-                      <input
-                        type="number"
-                        value={editableData[item.itemBarcodeID]?.quantity ?? 0}
-                        onChange={(e) => handleInputChange(e, item.itemBarcodeID, 'quantity')}
-                        ref={(el) => (inputRefs.current[`${rowIndex}-0-quantity`] = el)}
-                        onKeyDown={(e) => handleKeyDown(e, rowIndex, 0, 'quantity')}
-                        className="edit-input"
-                      />
-                    ) : (
-                      item.quantity
-                    )}
-                  </td>
+                  {isEditingQuantity && (
+  <td>
+    <input
+      type="number"
+      value={editableData[item.itemBarcodeID]?.quantity ?? 0}
+      onChange={(e) => handleInputChange(e, item.itemBarcodeID, 'quantity')}
+      ref={(el) => (inputRefs.current[`${rowIndex}-0-quantity`] = el)}
+      onKeyDown={(e) => handleKeyDown(e, rowIndex, 0, 'quantity')}
+      className="view-stock-filter-edit-input"
+    />
+  </td>
+)}
+
                   <td>{item.group_id}</td>
                   <td>
                     <button
                       onClick={() => handlePlaceOrder(item.itemBarcodeID)}
-                      className="view-sales-filter-data-place-order-btn"
+                      className="view-stock-filter-place-order-btn"
                     >
                       Place Order
                     </button>
@@ -320,22 +320,22 @@ const View = ({ data, onUpdateSuccess }) => {
             </tbody>
           </table>
         ) : (
-          <p className="no-data-message">No data found</p>
+          <p className="view-stock-filter-no-data-message">No data found</p>
         )}
       </div>
 
-      <div className="view-sales-filter-data-actions">
+      <div className="view-stock-filter-actions">
         {(isEditingQuantity || isEditingPrice) && (
           <>
             <button
               onClick={handleUpdate}
-              className="view-sales-filter-data-submit-btn"
+              className="view-stock-filter-submit-btn"
             >
               Submit Updates
             </button>
             <button
               onClick={handleDiscard}
-              className="view-sales-filter-data-cancel-btn"
+              className="view-stock-filter-cancel-btn"
             >
               Discard Changes
             </button>
@@ -343,7 +343,7 @@ const View = ({ data, onUpdateSuccess }) => {
         )}
         <button
           onClick={handleExport}
-          className="sales-export-btn"
+          className="view-stock-filter-export-btn"
         >
           Export
         </button>

@@ -105,13 +105,7 @@ const EditStock = ({ data, resetFilters  }) => {
 
   return (
     <div className="edit-stock-container">
-      <div className="edit-stock-container-controls">
-        {isSubmitButtonVisible && (
-          <button className="edit-stock-container-submit-btn" onClick={handleSubmitChanges} disabled={isUpdating}>
-            {isUpdating ? 'Updating items...' : 'Submit Changes'}
-          </button>
-        )}
-      </div>
+   
 
       {/* Show search controls if table is not hidden */}
       {!tableHidden && (
@@ -142,7 +136,7 @@ const EditStock = ({ data, resetFilters  }) => {
       ): (
         <div className="edit-stock-container-table-wrapper">
           {filteredData.length > 0 ? (
-            <table>
+          <table className="edit-stock-table">
               <thead>
                 <tr>
                   <th>S.No</th>
@@ -255,6 +249,13 @@ const EditStock = ({ data, resetFilters  }) => {
           )}
         </div>
       )}
+         <div className="edit-stock-container-controls">
+        {isSubmitButtonVisible && (
+          <button className="edit-stock-container-submit-btn" onClick={handleSubmitChanges} disabled={isUpdating}>
+            {isUpdating ? 'Updating items...' : 'Submit Changes'}
+          </button>
+        )}
+      </div>
     </div>
   );
 };

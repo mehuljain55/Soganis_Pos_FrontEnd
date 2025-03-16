@@ -58,6 +58,10 @@ const BillDetails = ({ userData }) => {
     const fetchBill = () => {
         const user = JSON.parse(sessionStorage.getItem('user'));
         const storeId = user ? user.storeId : '';
+
+        if (!billNo) {
+            return;
+        }
     
         axios.get(`${API_BASE_URL}/user/getBill/${billNo}/${storeId}`)
             .then(response => {

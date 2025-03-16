@@ -1,81 +1,147 @@
 .inventory-update-container {
-    display: flex;
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  min-height: 80vh;
+  margin: 0;
+  padding: 0;
+}
+
+/* Left half - Inventory Upload */
+.inventory-upload-section {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px;
+  border-right: 1px solid #ccc;
+}
+
+/* Right half - Inventory Manager */
+.inventory-manager-section {
+  flex: 1;
+  padding: 20px;
+}
+
+.section-title {
+  font-size: 1.5rem;
+  font-weight: bold;
+  margin-bottom: 20px;
+  text-align: center;
+  width: 100%;
+}
+
+.drop-zone {
+  border: 2px dashed #ccc;
+  padding: 30px;
+  width: 90%;
+  max-width: 400px;
+  text-align: center;
+  cursor: pointer;
+  background-color: #f9f9f9;
+  margin-bottom: 20px;
+  transition: background-color 0.2s ease;
+  border-radius: 8px;
+}
+
+.drop-zone.dragover {
+  border-color: #333;
+  background-color: #e0e0e0;
+}
+
+.file-info {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 15px;
+  background-color: #f1f1f1;
+  border-radius: 5px;
+  width: 90%;
+  max-width: 400px;
+  margin-bottom: 20px;
+}
+
+.file-icon {
+  font-size: 24px;
+}
+
+.file-name {
+  flex-grow: 1;
+  font-size: 14px;
+  color: #333;
+  word-break: break-all;
+}
+
+.button-group {
+  display: flex;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+button {
+  padding: 8px 16px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+button:hover {
+  background-color: #0056b3;
+}
+
+button:disabled {
+  background-color: #cccccc;
+  cursor: not-allowed;
+}
+
+.loading-animation {
+  margin-top: 15px;
+  color: #007bff;
+}
+
+.response-box {
+  margin-top: 20px;
+  padding: 15px;
+  width: 90%;
+  max-width: 400px;
+  background-color: #f4f4f4;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  overflow-y: auto;
+  max-height: 200px;
+}
+
+pre {
+  white-space: pre-wrap;
+  word-wrap: break-word;
+}
+
+a {
+  margin-top: 15px;
+  color: #007bff;
+  text-decoration: none;
+  display: inline-block;
+  padding: 8px 16px;
+  background-color: #f0f0f0;
+  border-radius: 4px;
+}
+
+a:hover {
+  text-decoration: underline;
+  background-color: #e0e0e0;
+}
+
+/* Responsive design for mobile */
+@media (max-width: 768px) {
+  .inventory-update-container {
     flex-direction: column;
-    align-items: center;
-    margin: 20px;
   }
   
-  .drop-zone {
-    border: 2px dashed #ccc;
-    padding: 20px;
-    width: 300px;
-    text-align: center;
-    cursor: pointer;
-    background-color: #f9f9f9;
-    margin-bottom: 10px;
-    transition: background-color 0.2s ease;
+  .inventory-upload-section {
+    border-right: none;
+    border-bottom: 1px solid #ccc;
   }
-  
-  .drop-zone.dragover {
-    border-color: #333;
-    background-color: #e0e0e0;
-  }
-  
-  .file-info {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    padding: 10px;
-    background-color: #f1f1f1;
-    border-radius: 5px;
-    width: 300px;
-    margin-bottom: 10px;
-  }
-  
-  .file-icon {
-    font-size: 24px;
-  }
-  
-  .file-name {
-    flex-grow: 1;
-    font-size: 14px;
-    color: #333;
-  }
-  
-  .button-group {
-    display: flex;
-    gap: 10px;
-    margin-top: 10px;
-  }
-  
-  .loading-animation {
-    margin-top: 10px;
-    color: #007bff;
-  }
-  
-  .response-box {
-    margin-top: 20px;
-    padding: 10px;
-    width: 80%;
-    max-width: 600px;
-    background-color: #f4f4f4;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    overflow-y: auto;
-  }
-  
-  pre {
-    white-space: pre-wrap;
-    word-wrap: break-word;
-  }
-  
-  a {
-    margin-top: 10px;
-    color: #007bff;
-    text-decoration: none;
-  }
-  
-  a:hover {
-    text-decoration: underline;
-  }
-  
+}

@@ -49,7 +49,7 @@ const SalesReport = ({ data }) => {
 
   return (
     <div className="sales-report">
-      <h5>Consolidated Sales Report</h5>
+    
       
       {/* Bill Type Filter Dropdown */}
       <div className="filter-container">

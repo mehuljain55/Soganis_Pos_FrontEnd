@@ -292,22 +292,22 @@ function AddInventoryItem() {
   };
 
   return (
-    <div className="item-add-inventory-update-container" style={{ position: "relative" }}>
-    <h1 style={{ textAlign: "center", marginBottom: "30px" }}>Inventory Management</h1>
-    <button
-      className="view-history-button"
-      onClick={() => setShowHistory(true)}
-    >
-      View Update History
-    </button>
-
-      <div className="item-add-inventory-update-grid">
+    <div className="inventory-qty-container" style={{ position: "relative" }}>
+      <h1 style={{ textAlign: "center", marginBottom: "30px" }}>Inventory Management</h1>
+      <button
+        className="inventory-qty-view-history-button"
+        onClick={() => setShowHistory(true)}
+      >
+        View Update History
+      </button>
+  
+      <div className="inventory-qty-grid">
         {/* Section 1: Upload Excel */}
-        <div className="item-add-inventory-update-section">
+        <div className="inventory-qty-section">
           <h2>Upload Excel File</h2>
           {file ? (
             <div>
-              <div className="file-info">
+              <div className="inventory-qty-file-info">
                 <img
                   src="https://upload.wikimedia.org/wikipedia/commons/8/86/Microsoft_Excel_2013_logo.svg"
                   alt="Excel Icon"
@@ -323,7 +323,7 @@ function AddInventoryItem() {
           ) : (
             <div>
               <div
-                className="item-add-inventory-update-drag-area"
+                className="inventory-qty-drag-area"
                 onDrop={handleFileDrop}
                 onDragOver={(e) => e.preventDefault()}
                 onClick={() => document.getElementById("fileInput").click()}
@@ -337,13 +337,12 @@ function AddInventoryItem() {
                 accept=".xlsx"
                 style={{ display: "none" }}
               />
-          
             </div>
           )}
         </div>
   
         {/* Section 2: Download Item Data */}
-        <div className="item-add-inventory-update-section">
+        <div className="inventory-qty-section">
           <h2>Download Item Data</h2>
           <label htmlFor="itemDropdown">Select Item:</label>
           <select
@@ -375,7 +374,7 @@ function AddInventoryItem() {
         </div>
   
         {/* Section 3: Download Group Data */}
-        <div className="item-add-inventory-update-section">
+        <div className="inventory-qty-section">
           <h2>Download Group Data</h2>
           <label htmlFor="groupDropdown">Select Group:</label>
           <select
@@ -392,69 +391,91 @@ function AddInventoryItem() {
           </select>
           <button onClick={handleDownloadGroupData}>Download</button>
         </div>
-         {/* Section 4: Group Data Status */}
-         <div className="item-add-inventory-update-section">
-  <h2>Group Data Status</h2>
-  <div className="status-box" role="status" aria-live="polite">
-    {status
-      ? status.split("\n").map((line, index) => <div key={index}>{line}</div>)
-      : "Status will appear here..."}
-  </div>
-  </div>
-  
+        
+        {/* Section 4: Group Data Status */}
+        <div className="inventory-qty-section">
+          <h2>Group Data Status</h2>
+          <div className="inventory-qty-status-box" role="status" aria-live="polite">
+            {status
+              ? status.split("\n").map((line, index) => <div key={index}>{line}</div>)
+              : "Status will appear here..."}
+          </div>
+        </div>
       </div>
   
       {/* Table Section */}
-      {items.length > 0 && (
-        <div>
-          <h2 style={{ textAlign: "center", marginTop: "30px" }}>Item Data</h2>
-          <div className="table-container">
-            <table className="styled-table">
-              <thead>
-                <tr>
-                  <th>School Code</th>
-                  <th>Item Code</th>
-                  <th>Size</th>
-                  <th>Color</th>
-                  <th>Current Quantity</th>
-                  <th>Quantity</th>
-                  <th>Store ID</th>
-                  <th>Actions</th>
-                </tr>
-              </thead>
-              <tbody>
-                {items.map((item, index) => (
-                  <tr key={index}>
-                    <td>{item.schoolCode}</td>
-                    <td>{item.itemCode}</td>
-                    <td>{item.size}</td>
-                    <td>{item.itemColor}</td>
-                    <td>{item.currentQuantity}</td>
-                    <td>
-                      <input
-                        id={`quantityInput-${index}`}
-                        type="number"
-                        value={item.quantity}
-                        onChange={(e) => handleQuantityChange(index, e.target.value)}
-                        onKeyDown={(e) => handleKeyDown(e, index)}
-                        style={{ width: "60px" }}
-                      />
-                    </td>
-                    <td>{storeId}</td>
-                    <td>
-                      <button onClick={() => handleDeleteItem(index)}>Delete</button>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-          <button onClick={handleUpdateInventory} style={{ marginTop: "20px" }}>
-            Submit Updated Inventory
-          </button>
-        </div>
-      )}
-            {showHistory && (
+      {/* Table Section */}
+{items.length > 0 && (
+  <div>
+    <h3 style={{ textAlign: "center", marginTop: "20px", marginBottom: "10px" }}>Item Data</h3>
+    <div className="inventory-qty-table-container">
+      <table className="inventory-qty-styled-table">
+        <thead>
+          <tr>
+            <th>School Code</th>
+            <th>Item Code</th>
+            <th>Size</th>
+            <th>Color</th>
+            <th>Current Quantity</th>
+            <th>Quantity</th>
+            <th>Store ID</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {items.map((item, index) => (
+            <tr key={index}>
+              <td>{item.schoolCode}</td>
+              <td>{item.itemCode}</td>
+              <td>{item.size}</td>
+              <td>{item.itemColor}</td>
+              <td>{item.currentQuantity}</td>
+              <td>
+                <input
+                  id={`quantityInput-${index}`}
+                  type="number"
+                  value={item.quantity}
+                  onChange={(e) => handleQuantityChange(index, e.target.value)}
+                  onKeyDown={(e) => handleKeyDown(e, index)}
+                  style={{ width: "50px", height: "20px" }}
+                />
+              </td>
+              <td>{storeId}</td>
+              <td>
+                <button 
+                  onClick={() => handleDeleteItem(index)}
+                  style={{ 
+                    padding: "2px 8px", 
+                    fontSize: "11px", 
+                    height: "22px" 
+                  }}
+                >
+                  Delete
+                </button>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+    <button 
+      onClick={handleUpdateInventory} 
+      style={{ 
+        marginTop: "15px",
+        padding: "8px 12px",
+        backgroundColor: "#28a745",
+        color: "white",
+        border: "none",
+        borderRadius: "4px",
+        cursor: "pointer"
+      }}
+    >
+      Submit Updated Inventory
+    </button>
+  </div>
+)}
+      
+      {showHistory && (
         <InventoryUpdateHistory onClose={() => setShowHistory(false)} />
       )}
     </div>

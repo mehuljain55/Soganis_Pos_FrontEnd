@@ -203,9 +203,9 @@ const SalaryRegister = () => {
   };
 
   return (
-    <div>
-      <h2>Salary Register</h2>
-      <table>
+    <div className="salary-register-container">
+      <h2 className="salary-register-title">Salary Register</h2>
+      <table className="salary-register-table">
         <thead>
           <tr>
             <th>Employee Name</th>
@@ -219,21 +219,16 @@ const SalaryRegister = () => {
         </thead>
         <tbody>
           {rows.map((row, index) => (
-            <tr key={index} className={errorRows.includes(index) ? 'error-row' : ''}>
+            <tr key={index} className={errorRows.includes(index) ? 'salary-register-error-row' : ''}>
               <td>
                 <select value={row.userId} onChange={(e) => handleRowChange(index, 'userId', e.target.value)}>
                   <option value="">Select Employee</option>
                   {userList.map((user) => (
-                    <option key={user.employeeName} value={user.employeeName}>
-                      {user.employeeName}
-                    </option>
+                    <option key={user.employeeName} value={user.employeeName}>{user.employeeName}</option>
                   ))}
                 </select>
-                {row.error && <div className="error-message">{row.error}</div>}
               </td>
-              <td>
-                <input type="text" value={row.description} onChange={(e) => handleRowChange(index, 'description', e.target.value)} />
-              </td>
+              <td><input type="text" value={row.description} onChange={(e) => handleRowChange(index, 'description', e.target.value)} /></td>
               <td>
                 <select value={row.type} onChange={(e) => handleRowChange(index, 'type', e.target.value)} disabled={!row.userId}>
                   <option value="">SELECT</option>
@@ -243,24 +238,14 @@ const SalaryRegister = () => {
                   <option value="HOURLY_DEDUCTION">HOURLY DEDUCTION</option>
                   <option value="EXTRA_DAY">EXTRA DAY</option>
                   <option value="EXTRA_HOUR">EXTRA HOURS</option>
-                  
                 </select>
               </td>
               <td>
-            
-              {(row.type === 'HOURLY_DEDUCTION'||row.type === 'EXTRA_HOUR') && (
-                <input
-                  type="number"
-                  value={row.hours}
-                  step="0.1"  // Allows decimal numbers with one decimal place
-                  min="0"    // Prevents negative numbers
-                  onChange={(e) => handleRowChange(index, 'hours', e.target.value)} // pass the string value here
-                />
-              )}
+                {(row.type === 'HOURLY_DEDUCTION' || row.type === 'EXTRA_HOUR') && (
+                  <input type="number" value={row.hours} step="0.1" min="0" onChange={(e) => handleRowChange(index, 'hours', e.target.value)} />
+                )}
               </td>
-              <td>
-                <input type="date" value={row.date} onChange={(e) => handleRowChange(index, 'date', e.target.value)} />
-              </td>
+              <td><input type="date" value={row.date} onChange={(e) => handleRowChange(index, 'date', e.target.value)} /></td>
               <td>
                 {row.type === 'ADVANCE' ? (
                   <input type="number" value={row.amount} onChange={(e) => handleRowChange(index, 'amount', parseInt(e.target.value))} />
@@ -268,48 +253,40 @@ const SalaryRegister = () => {
                   <input type="number" value={row.amount} readOnly />
                 )}
               </td>
-              
               <td>
-  <button className="salary-register-delete-button" onClick={() => deleteRow(index)}>Delete</button>
-</td>
-
+                <button className="salary-register-delete-button" onClick={() => deleteRow(index)}>Delete</button>
+              </td>
             </tr>
           ))}
         </tbody>
       </table>
-     
-      <div className="salary-register-btn">
-  <button className="salary-register-add-button" onClick={addRow}>Add</button>
-  <button className="salary-register-update-button" onClick={handleUpdate}>Update</button>
-  <button className="salary-register-bulk-button" onClick={openBulkModal}>Bulk Posting</button>
-</div>
-
-
-      {/* Popup */}
+      <div className="salary-register-buttons">
+        <button className="salary-register-add-button" onClick={addRow}>Add</button>
+        <button className="salary-register-update-button" onClick={handleUpdate}>Update</button>
+        <button className="salary-register-bulk-button" onClick={openBulkModal}>Bulk Posting</button>
+      </div>
       {showPopup && (
-        <div className="popup">
-          <div className="popup-content">
+        <div className="salary-register-popup">
+          <div className="salary-register-popup-content">
             {popupStatus === 'success' ? (
               <div>
-                <span style={{ fontSize: '60px', color: 'green' }}>&#10004;</span>
+                <span className="salary-register-popup-icon success">&#10004;</span>
                 <p>Update successful!</p>
               </div>
             ) : (
               <div>
-                <span style={{ fontSize: '60px', color: 'red' }}>&#10008;</span>
+                <span className="salary-register-popup-icon failed">&#10008;</span>
                 <p>Update failed. Please check your entries and try again.</p>
               </div>
             )}
-            <button className="close" onClick={closePopup}>Close</button>
+            <button className="salary-register-close" onClick={closePopup}>Close</button>
           </div>
         </div>
       )}
-
-
-{showBulkModal && (
-        <div className="salary-register-modal modal">
-          <div className="modal-content">
-            <span className="close" onClick={closeBulkModal}>&times;</span>
+      {showBulkModal && (
+        <div className="salary-register-modal">
+          <div className="salary-register-modal-content">
+            <span className="salary-register-close" onClick={closeBulkModal}>&times;</span>
             <SalaryBulkPosting />
           </div>
         </div>
