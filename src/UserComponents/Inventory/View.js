@@ -61,7 +61,7 @@ const View = ({ data, onUpdateSuccess }) => {
 
   const handleExport = async () => {
     try {
-      const response = await axios.post(`${API_BASE_URL}/inventory/export`, data, {
+      const response = await axios.post(`${API_BASE_URL}/inventory/export`, filteredData, {
         responseType: 'blob',
         headers: {
           'Content-Type': 'application/json',
