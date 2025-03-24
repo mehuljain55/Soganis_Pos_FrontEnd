@@ -38,7 +38,7 @@ h2 {
   border: 1px solid #ddd;
   max-height: 200px;
   overflow-y: auto;
-  z-index: 1000;
+  z-index: 9999 !important;
 }
 
 .dropdown table {
@@ -99,7 +99,6 @@ h2 {
   max-height: 240px;
   overflow: auto;
   position: relative;
-  z-index: 2;
 }
 
 /* Table styling */
@@ -112,7 +111,6 @@ h2 {
 .items-table thead {
   position: sticky;
   top: 0;
-  z-index: 1;
 }
 
 .items-table th, .items-table td {
@@ -276,6 +274,7 @@ h2 {
 /* Customer info section */
 .customer-info {
   margin: 20px 0;
+  
 }
 
 .customer-info label {
@@ -336,18 +335,18 @@ h2 {
 .customer-details {
   padding-left: 40px !important;
   display: flex;
-  width: 100%;
   flex-direction: column;
   font-size: 18px;
   align-items: center;
-  margin-top: -5px;
+  margin-top: -20px;
   justify-content: center;
+  position: relative;
+
 }
 
 .customer-details-box {
   border-radius: 10px;
   margin: 10px;
-  width: 100%;
   padding: 10px;
   display: flex;
   gap: 20px;
@@ -382,18 +381,15 @@ h2 {
 
 .school-name-input {
   position: relative;
-  z-index: 20;
-
+  z-index: 5;
 }
-
-
-
 
 .school-select-container {
   text-align: left;
-  width: 400px;
+  width: 350px;
   margin-left: 5px;
-  z-index: 9999;
+
+
   position: relative;
 }
 
@@ -401,7 +397,7 @@ h2 {
   position: absolute;
   top: 100%;
   left: 0;
-  z-index: 9999;
+
   max-height: 300px;
   overflow-y: auto;
 }
