@@ -418,7 +418,7 @@ const BillDetails = ({ userData }) => {
                                                 ) : (
                                                     <>
                                                         <button onClick={() => handleSelectItem(item)}>Select</button>
-                                                        <button onClick={() => handleDefectItem(item)}>Defect</button>
+                                                        <button className='bill-detail-defet-btn' onClick={() => handleDefectItem(item)}>Defect</button>
                                                     </>
                                                 )}
                                             </>
@@ -429,7 +429,7 @@ const BillDetails = ({ userData }) => {
                         </tbody>
                     </table>
                     {selectedItems.length > 0 && (
-                        <button onClick={() => setIsModalOpen(true)}>Return / Exchange </button>
+                        <button className="bill-detail-exchange-btn" onClick={() => setIsModalOpen(true)}>Return / Exchange </button>
                     )}
                    
                     { billData.status === 'Fresh' && billData.final_amount > 0 && (

@@ -35,6 +35,15 @@
     cursor: pointer;
 }
 
+
+.bill-detail-defet-btn{
+    background-color: rgb(245, 49, 49) !important;
+   }
+
+.bill-detail-exchange-btn{
+    margin-top: 10px;
+}
+
 .bill-detail button:hover {
     background-color: #0056b3;
 }
@@ -160,6 +169,7 @@
 .bill-detail td button:hover {
     background-color: #2205b6;
 }
+
 
 .bill-detail-return-modal {
     position: fixed;
