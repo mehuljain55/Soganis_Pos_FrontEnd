@@ -38,7 +38,7 @@ h2 {
   border: 1px solid #ddd;
   max-height: 200px;
   overflow-y: auto;
-  z-index: 1000;
+  z-index: 9999 !important;
 }
 
 .dropdown table {
@@ -111,7 +111,6 @@ h2 {
 .items-table thead {
   position: sticky;
   top: 0;
-  z-index: 1;
 }
 
 .items-table th, .items-table td {
@@ -275,6 +274,7 @@ h2 {
 /* Customer info section */
 .customer-info {
   margin: 20px 0;
+  
 }
 
 .customer-info label {
@@ -333,13 +333,15 @@ h2 {
   margin: 0 5px;
 }
 .customer-details {
-  padding-left: 200px !important;
+  padding-left: 40px !important;
   display: flex;
   flex-direction: column;
   font-size: 18px;
   align-items: center;
-  margin-top: -5px;
+  margin-top: -20px;
   justify-content: center;
+  position: relative;
+
 }
 
 .customer-details-box {
@@ -370,10 +372,50 @@ h2 {
   border-radius: 5px;
 }
 
-.school-name-input .Select__control {
-  width: 200px !important;
-  height: 40px !important;
+
+
+.search-bar-container {
+  position: relative;
+  z-index: 10;
 }
+
+.school-name-input {
+  position: relative;
+  z-index: 5;
+}
+
+.school-select-container {
+  text-align: left;
+  width: 350px;
+  margin-left: 5px;
+
+
+  position: relative;
+}
+
+.school-select-container .select__menu {
+  position: absolute;
+  top: 100%;
+  left: 0;
+
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+.school-select-container .select__control {
+  width: 300px !important;
+  height: 50px !important;
+}
+
+.school-select-container .select__input {
+  width: 300px !important;
+}
+
+.school-select-container input {
+  width: 300px !important;
+}
+
+
 
 .mode-toggle {
   position: relative;
@@ -747,4 +789,5 @@ h2 {
 .inter-company-school-name-input .Select__control {
   width: 250px !important;
   height: 30px !important;
+  z-index: 9999;
 }

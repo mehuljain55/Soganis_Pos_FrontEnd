@@ -1001,6 +1001,7 @@ const handleSelectChange = (selectedOption) => {
             <label>
               School Name:
               <Select
+              className='school-select-container'
     options={allSchools}
     onFocus={handleSelectFocus}
     onBlur={handleSelectBlur}
