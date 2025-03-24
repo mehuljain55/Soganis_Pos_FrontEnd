@@ -1,14 +1,16 @@
 .bill-detail {
     font-family: Arial, sans-serif;
     margin: 20px;
+    margin-top: -10px;
     padding: 20px;
     border: 1px solid #ccc;
     border-radius: 5px;
     background-color: #f9f9f9;
 }
 
-.bill-detail h1 {
-    font-size: 24px;
+.bill-detail h3 {
+    font-size: 22px;
+    margin-top: -5px;
     margin-bottom: 20px;
 }
 
@@ -18,10 +20,11 @@
 
 .bill-detail input {
     padding: 8px;
+    margin-left: 5px;
     font-size: 16px;
     border: 1px solid #ccc;
     border-radius: 4px;
-    width: 100px;
+    width: 200px;
 }
 
 .bill-detail button {
@@ -34,6 +37,21 @@
     border-radius: 4px;
     cursor: pointer;
 }
+
+
+.bill-detail-defet-btn{
+    background-color: rgb(245, 49, 49) !important;
+   }
+
+.bill-detail-exchange-btn{
+    margin-top: 10px;
+}
+
+.bill-detail-delete-btn{
+    margin-top: 5px;
+    background-color: rgb(245, 49, 49) !important;
+}
+
 
 .bill-detail button:hover {
     background-color: #0056b3;
@@ -90,56 +108,78 @@
 
 .bill-detail th:nth-child(1),
 .bill-detail td:nth-child(1) {
+    text-align: center; /* Horizontally center the content */
     width: 50px; /* Serial No */
 }
 
 .bill-detail th:nth-child(2),
 .bill-detail td:nth-child(2) {
-    width: 100px; /* Item Barcode ID */
+    text-align: center; /* Horizontally center the content */   
+    width: 110px; /* Item Barcode ID */
 }
 
 .bill-detail th:nth-child(3),
 .bill-detail td:nth-child(3) {
-    width: 100px; /* Item Type */
+    text-align: center;
+    width: 200px; /* Description */
 }
+
 
 .bill-detail th:nth-child(4),
 .bill-detail td:nth-child(4) {
-    width: 100px; /* Item Color */
+    text-align: center;
+    width: 100px; /* Item Type */
 }
 
 .bill-detail th:nth-child(5),
 .bill-detail td:nth-child(5) {
-    width: 80px; /* Item Size */
+    text-align: center;
+    width: 100px; /* Item Color */
 }
 
 .bill-detail th:nth-child(6),
 .bill-detail td:nth-child(6) {
-    width: 120px; /* Item Category */
+    text-align: center; /* Horizontally center the content */
+    width: 50px; /* Item Size */
+    
+    
 }
 
 .bill-detail th:nth-child(7),
 .bill-detail td:nth-child(7) {
-    width: 70px; /* Quantity */
+    text-align: center;
+    width: 120px; /* Item Category */
+    
+    
 }
 
 .bill-detail th:nth-child(8),
 .bill-detail td:nth-child(8) {
-    width: 70px; /* Sell Price */
+    text-align: center; /* Horizontally center the content */
+    width: 60px; /* Quantity */
 }
 
 .bill-detail th:nth-child(9),
 .bill-detail td:nth-child(9) {
-    width: 80px; /* Total Amount */
+    text-align: center; /* Horizontally center the content */
+    width: 70px; /* Sell Price */
 }
 
 .bill-detail th:nth-child(10),
 .bill-detail td:nth-child(10) {
-    width: 100px; /* Action */
+    text-align: center; /* Horizontally center the content */
+    width: 80px; /* Total Amount */
 }
 
 .bill-detail th:nth-child(11),
 .bill-detail td:nth-child(11) {
+    text-align: center;
+    width: 100px; /* Action */
+}
+
+.bill-detail th:nth-child(12),
+.bill-detail td:nth-child(12) {
+    text-align: center;
     width: 100px; 
 }
 #exchange-btn {
@@ -160,6 +200,7 @@
 .bill-detail td button:hover {
     background-color: #2205b6;
 }
+
 
 .bill-detail-return-modal {
     position: fixed;
@@ -304,6 +345,11 @@
 
 .popup-content button {
     margin-top: 10px;
+}
+
+
+.bill-detail-info {
+    margin-top: -5px !important;
 }
 
 .billdets-info p{
