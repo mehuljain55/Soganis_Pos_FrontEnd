@@ -1160,7 +1160,7 @@ const handleSelectChange = (selectedOption) => {
             <h3>Payment Details</h3>
             <h3>Total Amount: {calculateTotalAmount().toFixed(2)} Rs</h3>
             {transactionError && <div className="error-message">{transactionError}</div>}
-            <table>
+            <table className="billingtransaction-model">
               <thead>
                 <tr>
                   <th>Value (Rs)</th>
@@ -1203,17 +1203,18 @@ const handleSelectChange = (selectedOption) => {
                     </td>
                     <td>
                       {index > 0 && (
-                        <button onClick={() => handleRemoveRow(entry.id)}>Remove</button>
+                        <button className='transaction-model-remove-btn' onClick={() => handleRemoveRow(entry.id)}>Remove</button>
                       )}
                     </td>
                   </tr>
                 ))}
               </tbody>
             </table>
-            <button onClick={handleAddRow}>Add</button>
+           
             <div className="popup-actions">
-              <button onClick={handleTransactionSubmit}>Add payments</button>
-              <button onClick={() => setShowTransactionPopup(false)}>Cancel</button>
+            <button onClick={handleAddRow}>Add Row</button>
+              <button className='popup-actions-submit-btn' onClick={handleTransactionSubmit}>Add payments</button>
+              <button className='popup-actions-cancel-btn' onClick={() => setShowTransactionPopup(false)}>Cancel</button>
             </div>
           </div>
         </div>
