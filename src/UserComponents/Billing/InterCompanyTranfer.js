@@ -196,6 +196,8 @@ const handleSelectChange = (selectedOption) => {
     if (isBarcodeMode && barcode.trim() !== '') {
       const fetchItemByBarcode = async () => {
         try {
+          toggleBarcodeMode(true); 
+
           const user = JSON.parse(sessionStorage.getItem('user'));
           const storeId = user?.storeId; // Retrieve storeId from user data
     
@@ -540,22 +542,40 @@ console.log(billData);
     // Close the modal
     setShowCustomItemModal(false);
   };
-  const toggleBarcodeMode = () => {
+
+  const toggleBarcodeMode = (manualMode = null) => {
     setIsBarcodeMode((prevMode) => {
-      const newMode = !prevMode;
-
-      // Use requestAnimationFrame to ensure the DOM updates before focusing
-      if (newMode) {
-        // Barcode mode - focus on the barcode input
-        setTimeout(() => barcodeInputRef.current.focus(), 0);
+      let newMode;
+  
+      if (manualMode !== null) {
+        // If a manual mode is provided, use it directly
+        newMode = manualMode;
       } else {
-        // Search mode - focus on the search input
-        setTimeout(() => searchInputRef.current.focus(), 0);
+        // Default toggle behavior
+        const isBarcodeInputFocused = document.activeElement === barcodeInputRef.current;
+        const isSearchInputFocused = document.activeElement === searchInputRef.current;
+  
+        if (isBarcodeInputFocused) {
+          newMode = false; // Switch to search mode
+        } else if (isSearchInputFocused) {
+          newMode = true; // Switch to barcode mode
+        } else {
+          newMode = !prevMode;
+        }
       }
-
+  
+      setTimeout(() => {
+        if (newMode) {
+          barcodeInputRef.current.focus();
+        } else {
+          searchInputRef.current.focus();
+        }
+      }, 0);
+  
       return newMode;
     });
   };
+  
 
   const handleArrowKeyCustomerDetail = (e, fieldName) => {
     const fields = ['customerName', 'customerMobileNo', 'schoolName'];
@@ -637,28 +657,32 @@ console.log(billData);
       )}
       
       {/* Main Content Area */}
-      <div className={`main-content ${loading ? 'loading' : ''}`}>
-        <div className="mode-toggle">
-          <button onClick={toggleBarcodeMode}>
-            {isBarcodeMode ? 'Barcode Mode' : 'Search Mode'}
-          </button>
-        </div>
-  
-        <div className="billing-container">
-          <div className="billing-head">
-            <h2>Inter Company Transfer</h2>
-          </div>
-          <div className="barcode-input">
-            <input
-              type="text"
-              placeholder="Scan or enter barcode and press Enter"
-              value={barcode}
-              onChange={(e) => setBarcode(e.target.value)}
-              ref={barcodeInputRef}
-              onFocus={() => setIsBarcodeMode(true)} // Focus switches to barcode mode
-            />
-          </div>
-        </div>
+      <div className="billing-container">
+
+<div className="mode-toggle">
+<button 
+className={isBarcodeMode ? "barcode-mode" : "search-mode"}
+onClick={() => toggleBarcodeMode(!isBarcodeMode)}
+>
+{isBarcodeMode ? "Barcode Mode" : "Search Mode"}
+</button>
+</div>
+
+  <div className="billing-head">
+    <h2>Inter Company Transfer</h2>
+  </div>
+  <div className="barcode-input">
+    <input
+      type="text"
+      placeholder="Scan or enter barcode and press Enter"
+      value={barcode}
+      onChange={(e) => setBarcode(e.target.value)}
+      ref={barcodeInputRef}
+      onFocus={() => setIsBarcodeMode(true)} // Focus switches to barcode mode
+    />
+  </div>
+</div>
+
   
         <div className="search-bar-container">
           <div className="search-bar" tabIndex="0">
@@ -671,6 +695,8 @@ console.log(billData);
               onFocus={(e) => {
                 setSearchTerm(e.target.value); // Ensure searchTerm is set on focus
                 setDropdownOpen(true);
+                toggleBarcodeMode(false); 
+
               }}
               onKeyDown={handleArrowNavigation}
             />
@@ -950,7 +976,7 @@ console.log(billData);
           </Modal.Footer>
         </Modal>
       </div>
-    </div>
+    
   );
 };  
 
