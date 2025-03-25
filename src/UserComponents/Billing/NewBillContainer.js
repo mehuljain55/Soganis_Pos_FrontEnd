@@ -231,6 +231,7 @@ const handleSelectChange = (selectedOption) => {
     if (isBarcodeMode && barcode.trim() !== '') {
       const fetchItemByBarcode = async () => {
         try {
+          toggleBarcodeMode(true);
           const user = JSON.parse(sessionStorage.getItem('user'));
           const storeId = user?.storeId; // Retrieve storeId from user data
     
@@ -801,22 +802,39 @@ const handleSelectChange = (selectedOption) => {
     // Close the modal
     setShowCustomItemModal(false);
   };
-  const toggleBarcodeMode = () => {
+  const toggleBarcodeMode = (manualMode = null) => {
     setIsBarcodeMode((prevMode) => {
-      const newMode = !prevMode;
-
-      // Use requestAnimationFrame to ensure the DOM updates before focusing
-      if (newMode) {
-        // Barcode mode - focus on the barcode input
-        setTimeout(() => barcodeInputRef.current.focus(), 0);
+      let newMode;
+  
+      if (manualMode !== null) {
+        // If a manual mode is provided, use it directly
+        newMode = manualMode;
       } else {
-        // Search mode - focus on the search input
-        setTimeout(() => searchInputRef.current.focus(), 0);
+        // Default toggle behavior
+        const isBarcodeInputFocused = document.activeElement === barcodeInputRef.current;
+        const isSearchInputFocused = document.activeElement === searchInputRef.current;
+  
+        if (isBarcodeInputFocused) {
+          newMode = false; // Switch to search mode
+        } else if (isSearchInputFocused) {
+          newMode = true; // Switch to barcode mode
+        } else {
+          newMode = !prevMode;
+        }
       }
-
+  
+      setTimeout(() => {
+        if (newMode) {
+          barcodeInputRef.current.focus();
+        } else {
+          searchInputRef.current.focus();
+        }
+      }, 0);
+  
       return newMode;
     });
   };
+  
 
   const handleArrowKeyCustomerDetail = (e, fieldName) => {
     const fields = ['customerName', 'customerMobileNo', 'schoolName'];
@@ -896,13 +914,19 @@ const handleSelectChange = (selectedOption) => {
         </div>
       )}
   
-      <div className="mode-toggle">
-        <button onClick={toggleBarcodeMode}>
-          {isBarcodeMode ? 'Barcode Mode' : 'Search Mode'}
-        </button>
-      </div>
+      
   
       <div className="billing-container">
+
+      <div className="mode-toggle">
+      <button 
+      className={isBarcodeMode ? "barcode-mode" : "search-mode"}
+      onClick={() => toggleBarcodeMode(!isBarcodeMode)}
+    >
+      {isBarcodeMode ? "Barcode Mode" : "Search Mode"}
+    </button>
+      </div>
+
         <div className="billing-head">
           <h2>Billing</h2>
         </div>
@@ -929,6 +953,8 @@ const handleSelectChange = (selectedOption) => {
             onFocus={(e) => {
               setSearchTerm(e.target.value); // Ensure searchTerm is set on focus
               setDropdownOpen(true);
+              toggleBarcodeMode(false); 
+
             
             }}
             onKeyDown={handleArrowNavigation}

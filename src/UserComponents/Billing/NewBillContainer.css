@@ -20,6 +20,58 @@ h2 {
   box-sizing: border-box;
 }
 
+.billing-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 20px;
+}
+
+.mode-toggle {
+  display: flex;
+  align-items: center;
+}
+
+.mode-toggle button {
+  padding: 8px 12px !important;
+  font-size: 15px !important;
+  width: 150px !important;
+  height: 40px !important;
+  border: none !important;
+  border-radius: 4px;
+  cursor: pointer;
+  color: white;
+}
+
+.barcode-mode {
+  background-color: rgb(3, 114, 53) !important; 
+}
+
+.search-mode {
+  background-color: #0b9aed !important;
+}
+
+.billing-head {
+  text-align: center;
+  flex-grow: 1;
+}
+
+.barcode-input {
+  display: flex;
+  align-items: center;
+}
+
+.barcode-input input {
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px; 
+  font-size: 15px !important;
+  width: 260px !important;
+  height: 30px !important;
+}
+
+
+
 .barcode-input{
 
   width: 100%;
@@ -416,34 +468,6 @@ h2 {
 }
 
 
-
-.mode-toggle {
-  position: relative;
-}
-
-.mode-toggle button {
-  padding: 5px 10px;
-  font-size: 12px;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  position: absolute;
-  left: 10px;
-  color: white;
-}
-
-.mode-toggle .barcode-mode {
-  background-color: green;
-}
-
-.mode-toggle .search-mode {
-  background-color: blue;
-}
-
-
-
-
-
 /* Styles for the PDF modal */
 .pdf-modal {
   position: fixed;
@@ -542,29 +566,6 @@ h2 {
   }
 }
 
-.billing-container {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 20px; /* Adjust padding as needed */
-}
-
-.billing-head {
-  flex: 1;
-  text-align: center;
-  margin-left: 500px;
-}
-
-.barcode-input {
-  flex: 1;
-  display: flex;
-  justify-content: flex-end;
-  height: 50px;
-}
-
-.barcode-input label {
-  margin-left: auto; /* Ensures the input is aligned to the right */
-}
 
 .blurred-background {
   filter: blur(5px);
