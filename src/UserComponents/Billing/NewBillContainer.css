@@ -38,7 +38,7 @@ h2 {
   border: 1px solid #ddd;
   max-height: 200px;
   overflow-y: auto;
-  z-index: 9999 !important;
+  z-index: 50 !important;
 }
 
 .dropdown table {
@@ -609,7 +609,100 @@ h2 {
   display: flex;
   justify-content: center;
   align-items: center;
+  z-index: 100;
 }
+
+.popup-content {
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  padding: 24px;
+  width: 90%;
+  max-width: 600px;
+}
+
+.billingtransaction-model {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  margin-top: 16px;
+}
+
+.billingtransaction-model th, 
+.billingtransaction-model td {
+  border: 1px solid #e0e0e0;
+  padding: 12px;
+  text-align: left;
+}
+
+.billingtransaction-model th {
+  background-color: #707070;
+  color: #ffffff;
+  font-weight: 600;
+}
+
+.billingtransaction-model input,
+.billingtransaction-model select {
+  width: 100%;
+  height: 100%;
+  padding: 12px;
+  border: 1px solid #d0d0d0;
+  border-radius: 4px;
+  outline: none;
+  transition: border-color 0.2s;
+  box-sizing: border-box;
+  font-size: 16px;
+}
+
+.billingtransaction-model input:focus,
+.billingtransaction-model select:focus {
+  border-color: #4a90e2;
+}
+
+.billingtransaction-model td {
+  padding: 0;
+}
+
+.billingtransaction-model td > * {
+  width: 100%;
+  height: 100%;
+}
+
+
+
+
+.transaction-model-remove-btn {
+   background-color: #f42222 !important;
+   color: white !important;
+   width: 70% !important;
+   border: none !important;
+   padding: 6px 12px !important;
+   border-radius: 4px !important;
+   cursor: pointer !important;
+   display: flex !important;
+   justify-content: center !important;
+   align-items: center !important;
+   margin: 0 auto !important;
+   text-align: center !important;
+   font-weight: bold !important;
+   transition: background-color 0.3s ease !important;
+}
+.transaction-model-remove-btn:hover {
+  background-color: red !important;
+}
+
+
+.popup-actions-submit-btn{
+  color: #ffffff;
+  background-color: #218838;
+}
+
+
+.popup-actions-cancel-btn{
+  color: #ffffff;
+  background-color: red;
+}
+
 
 .error-field {
   border: 1px solid red;
