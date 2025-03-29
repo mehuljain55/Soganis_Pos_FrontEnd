@@ -27,23 +27,6 @@ const CustomItemPopup = ({
     };
   }, [showCustomItemModal, setShowCustomItemModal]);
 
-  // Handle ESC key to close popup
-  useEffect(() => {
-    const handleEscKey = (event) => {
-      if (event.key === 'Escape') {
-        setShowCustomItemModal(false);
-      }
-    };
-
-    if (showCustomItemModal) {
-      document.addEventListener('keydown', handleEscKey);
-    }
-    
-    return () => {
-      document.removeEventListener('keydown', handleEscKey);
-    };
-  }, [showCustomItemModal, setShowCustomItemModal]);
-
   // Focus on the first input field when the popup opens
   useEffect(() => {
     if (showCustomItemModal && popupRef.current) {
@@ -55,6 +38,77 @@ const CustomItemPopup = ({
       }
     }
   }, [showCustomItemModal]);
+
+  // Implement keyboard navigation based on the provided code
+  const handleCustomItemKeyDown = (e) => {
+    // Prevent event propagation to stop parent handlers
+    e.stopPropagation();
+    
+    const inputs = popupRef.current.querySelectorAll('.custom-item-billing-input');
+    const currentIndex = Array.from(inputs).findIndex(input => input === document.activeElement);
+    
+    switch (e.key) {
+      case 'ArrowRight':
+        // Check if we're at the end of a row (even indices 0,2,4,6...)
+        if (currentIndex % 2 === 0 && currentIndex < inputs.length - 1) {
+          inputs[currentIndex + 1].focus();
+          e.preventDefault();
+        }
+        break;
+        
+      case 'ArrowLeft':
+        // Check if we're at the start of a row (odd indices 1,3,5,7...)
+        if (currentIndex % 2 === 1) {
+          inputs[currentIndex - 1].focus();
+          e.preventDefault();
+        }
+        break;
+        
+      case 'ArrowDown':
+        // Move down to the next row (add 2 to index)
+        if (currentIndex < inputs.length - 2) {
+          inputs[currentIndex + 2].focus();
+          e.preventDefault();
+        }
+        break;
+        
+      case 'ArrowUp':
+        // Move up to the previous row (subtract 2 from index)
+        if (currentIndex >= 2) {
+          inputs[currentIndex - 2].focus();
+          e.preventDefault();
+        }
+        break;
+        
+      case 'Enter':
+        // If Enter is pressed on Add Item button
+        if (e.target.textContent === 'Add Item') {
+          handleAddCustomItem();
+          setShowCustomItemModal(false);
+          e.preventDefault();
+        } else if (currentIndex === inputs.length - 1) {
+          // If we're on the last input, simulate clicking the Add Item button
+          popupRef.current.querySelector('.custom-item-billing-btn-primary').click();
+          e.preventDefault();
+        } else {
+          // Move to the next input
+          const nextInput = inputs[currentIndex + 1];
+          if (nextInput) {
+            nextInput.focus();
+            e.preventDefault();
+          }
+        }
+        break;
+        
+      case 'Escape':
+        setShowCustomItemModal(false);
+        e.preventDefault();
+        break;
+        
+      default:
+        break;
+    }
+  };
 
   // Calculate sell price and total amount when price, discount or quantity changes
   const calculatePrices = () => {
@@ -91,7 +145,7 @@ const CustomItemPopup = ({
             </button>
           </div>
           <div className="custom-item-billing-body">
-            <form>
+            <form onSubmit={(e) => e.preventDefault()}>
               <div className="custom-item-billing-form-row">
                 <div className="custom-item-billing-form-group">
                   <label className="custom-item-billing-label">Item Barcode ID:</label>
@@ -102,6 +156,7 @@ const CustomItemPopup = ({
                     value={customItem.itemBarcodeID} 
                     onChange={handleCustomItemChange} 
                     readOnly 
+                    onKeyDown={handleCustomItemKeyDown}
                   />
                 </div>
                 <div className="custom-item-billing-form-group">
@@ -113,6 +168,7 @@ const CustomItemPopup = ({
                     value={customItem.itemName} 
                     onChange={handleCustomItemChange} 
                     placeholder="Enter item name"
+                    onKeyDown={handleCustomItemKeyDown}
                   />
                 </div>
               </div>
@@ -127,6 +183,7 @@ const CustomItemPopup = ({
                     value={customItem.itemType} 
                     onChange={handleCustomItemChange} 
                     placeholder="Enter item type"
+                    onKeyDown={handleCustomItemKeyDown}
                   />
                 </div>
                 <div className="custom-item-billing-form-group">
@@ -138,6 +195,7 @@ const CustomItemPopup = ({
                     value={customItem.itemColor} 
                     onChange={handleCustomItemChange} 
                     placeholder="Enter item color"
+                    onKeyDown={handleCustomItemKeyDown}
                   />
                 </div>
               </div>
@@ -152,6 +210,7 @@ const CustomItemPopup = ({
                     value={customItem.itemSize} 
                     onChange={handleCustomItemChange} 
                     placeholder="Enter item size"
+                    onKeyDown={handleCustomItemKeyDown}
                   />
                 </div>
                 <div className="custom-item-billing-form-group">
@@ -163,6 +222,7 @@ const CustomItemPopup = ({
                     value={customItem.quantity} 
                     onChange={handleCustomItemChange} 
                     placeholder="Enter quantity"
+                    onKeyDown={handleCustomItemKeyDown}
                     onKeyPress={(e) => {
                       if (!/[0-9]/.test(e.key)) {
                         e.preventDefault();
@@ -182,6 +242,7 @@ const CustomItemPopup = ({
                     value={customItem.price}
                     onChange={handleCustomItemChange}
                     placeholder="0"
+                    onKeyDown={handleCustomItemKeyDown}
                     onKeyPress={(e) => {
                       if (!/[0-9]/.test(e.key)) {
                         e.preventDefault();
@@ -198,6 +259,7 @@ const CustomItemPopup = ({
                     value={customItem.discount}
                     onChange={handleCustomItemChange}
                     placeholder="0"
+                    onKeyDown={handleCustomItemKeyDown}
                     onKeyPress={(e) => {
                       if (!/[0-9]/.test(e.key)) {
                         e.preventDefault();
@@ -216,6 +278,7 @@ const CustomItemPopup = ({
                     name="sellPrice" 
                     value={sellPrice} 
                     readOnly 
+                    onKeyDown={handleCustomItemKeyDown}
                   />
                 </div>
                 <div className="custom-item-billing-form-group">
@@ -226,6 +289,7 @@ const CustomItemPopup = ({
                     name="amount" 
                     value={amount} 
                     readOnly 
+                    onKeyDown={handleCustomItemKeyDown}
                   />
                 </div>
               </div>
@@ -238,6 +302,7 @@ const CustomItemPopup = ({
                 handleAddCustomItem();
                 setShowCustomItemModal(false);
               }}
+              onKeyDown={handleCustomItemKeyDown}
             >
               Add Item
             </button>
