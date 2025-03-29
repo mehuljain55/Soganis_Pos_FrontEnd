@@ -56,59 +56,113 @@ const CustomItemPopup = ({
     }
   }, [showCustomItemModal]);
 
+  // Calculate sell price and total amount when price, discount or quantity changes
+  const calculatePrices = () => {
+    const price = parseFloat(customItem.price) || 0;
+    const discount = parseFloat(customItem.discount) || 0;
+    const quantity = parseInt(customItem.quantity) || 0;
+    
+    const sellPrice = price - (price * discount / 100);
+    const amount = sellPrice * quantity;
+    
+    return {
+      sellPrice: sellPrice.toFixed(2),
+      amount: amount.toFixed(2)
+    };
+  };
+
   if (!showCustomItemModal) {
     return null;
   }
 
+  const { sellPrice, amount } = calculatePrices();
+
   return (
-    <div className="popup-overlay">
-      <div className="billing-custom-item-modal" ref={popupRef}>
-        <div className="modal-content">
-          <div className="modal-header">
-            <div className="modal-title">Add Custom Item</div>
+    <div className="custom-item-billing-overlay">
+      <div className="custom-item-billing-modal" ref={popupRef}>
+        <div className="custom-item-billing-content">
+          <div className="custom-item-billing-header">
+            <div className="custom-item-billing-title">Add Custom Item</div>
             <button 
-              className="close-button" 
+              className="custom-item-billing-close-button" 
               onClick={() => setShowCustomItemModal(false)}
             >
               ×
             </button>
           </div>
-          <div className="modal-body">
+          <div className="custom-item-billing-body">
             <form>
-              <div className="form-row">
-                <div className="form-group">
-                  <label>Item Barcode ID:</label>
-                  <input type="text" name="itemBarcodeID" value={customItem.itemBarcodeID} onChange={handleCustomItemChange} readOnly />
-                </div>
-                <div className="form-group">
-                  <label>Item Name:</label>
-                  <input type="text" name="itemName" value={customItem.itemName} onChange={handleCustomItemChange} />
-                </div>
-              </div>
-
-              <div className="form-row">
-                <div className="form-group">
-                  <label>Item Type:</label>
-                  <input type="text" name="itemType" value={customItem.itemType} onChange={handleCustomItemChange} />
-                </div>
-                <div className="form-group">
-                  <label>Item Color:</label>
-                  <input type="text" name="itemColor" value={customItem.itemColor} onChange={handleCustomItemChange} />
-                </div>
-              </div>
-
-              <div className="form-row">
-                <div className="form-group">
-                  <label>Item Size:</label>
-                  <input type="text" name="itemSize" value={customItem.itemSize} onChange={handleCustomItemChange} />
-                </div>
-                <div className="form-group">
-                  <label>Quantity:</label>
+              <div className="custom-item-billing-form-row">
+                <div className="custom-item-billing-form-group">
+                  <label className="custom-item-billing-label">Item Barcode ID:</label>
                   <input 
+                    className="custom-item-billing-input"
+                    type="text" 
+                    name="itemBarcodeID" 
+                    value={customItem.itemBarcodeID} 
+                    onChange={handleCustomItemChange} 
+                    readOnly 
+                  />
+                </div>
+                <div className="custom-item-billing-form-group">
+                  <label className="custom-item-billing-label">Item Name:</label>
+                  <input 
+                    className="custom-item-billing-input"
+                    type="text" 
+                    name="itemName" 
+                    value={customItem.itemName} 
+                    onChange={handleCustomItemChange} 
+                    placeholder="Enter item name"
+                  />
+                </div>
+              </div>
+
+              <div className="custom-item-billing-form-row">
+                <div className="custom-item-billing-form-group">
+                  <label className="custom-item-billing-label">Item Type:</label>
+                  <input 
+                    className="custom-item-billing-input"
+                    type="text" 
+                    name="itemType" 
+                    value={customItem.itemType} 
+                    onChange={handleCustomItemChange} 
+                    placeholder="Enter item type"
+                  />
+                </div>
+                <div className="custom-item-billing-form-group">
+                  <label className="custom-item-billing-label">Item Color:</label>
+                  <input 
+                    className="custom-item-billing-input"
+                    type="text" 
+                    name="itemColor" 
+                    value={customItem.itemColor} 
+                    onChange={handleCustomItemChange} 
+                    placeholder="Enter item color"
+                  />
+                </div>
+              </div>
+
+              <div className="custom-item-billing-form-row">
+                <div className="custom-item-billing-form-group">
+                  <label className="custom-item-billing-label">Item Size:</label>
+                  <input 
+                    className="custom-item-billing-input"
+                    type="text" 
+                    name="itemSize" 
+                    value={customItem.itemSize} 
+                    onChange={handleCustomItemChange} 
+                    placeholder="Enter item size"
+                  />
+                </div>
+                <div className="custom-item-billing-form-group">
+                  <label className="custom-item-billing-label">Quantity:</label>
+                  <input 
+                    className="custom-item-billing-input"
                     type="text" 
                     name="quantity" 
                     value={customItem.quantity} 
                     onChange={handleCustomItemChange} 
+                    placeholder="Enter quantity"
                     onKeyPress={(e) => {
                       if (!/[0-9]/.test(e.key)) {
                         e.preventDefault();
@@ -118,14 +172,16 @@ const CustomItemPopup = ({
                 </div>
               </div>
 
-              <div className="form-row">
-                <div className="form-group">
-                  <label>Price:</label>
+              <div className="custom-item-billing-form-row">
+                <div className="custom-item-billing-form-group">
+                  <label className="custom-item-billing-label">Price:</label>
                   <input
+                    className="custom-item-billing-input"
                     type="text"
                     name="price"
                     value={customItem.price}
                     onChange={handleCustomItemChange}
+                    placeholder="0.00"
                     onKeyPress={(e) => {
                       if (!/[0-9.]/.test(e.key)) {
                         e.preventDefault();
@@ -133,13 +189,15 @@ const CustomItemPopup = ({
                     }}
                   />
                 </div>
-                <div className="form-group">
-                  <label>Discount %:</label>
+                <div className="custom-item-billing-form-group">
+                  <label className="custom-item-billing-label">Discount %:</label>
                   <input
+                    className="custom-item-billing-input"
                     type="text"
                     name="discount"
                     value={customItem.discount}
                     onChange={handleCustomItemChange}
+                    placeholder="0"
                     onKeyPress={(e) => {
                       if (!/[0-9.]/.test(e.key)) {
                         e.preventDefault();
@@ -149,21 +207,33 @@ const CustomItemPopup = ({
                 </div>
               </div>
 
-              <div className="form-row">
-                <div className="form-group">
-                  <label>Sell Price:</label>
-                  <input type="text" name="sellPrice" value={customItem.sellPrice} readOnly />
+              <div className="custom-item-billing-form-row">
+                <div className="custom-item-billing-form-group">
+                  <label className="custom-item-billing-label">Sell Price:</label>
+                  <input 
+                    className="custom-item-billing-input"
+                    type="text" 
+                    name="sellPrice" 
+                    value={sellPrice} 
+                    readOnly 
+                  />
                 </div>
-                <div className="form-group">
-                  <label>Total Amount:</label>
-                  <input type="text" name="amount" value={customItem.amount} readOnly />
+                <div className="custom-item-billing-form-group">
+                  <label className="custom-item-billing-label">Total Amount:</label>
+                  <input 
+                    className="custom-item-billing-input"
+                    type="text" 
+                    name="amount" 
+                    value={amount} 
+                    readOnly 
+                  />
                 </div>
               </div>
             </form>
           </div>
-          <div className="modal-footer">
+          <div className="custom-item-billing-footer">
             <button 
-              className="btn btn-primary" 
+              className="custom-item-billing-btn custom-item-billing-btn-primary" 
               onClick={() => {
                 handleAddCustomItem();
                 setShowCustomItemModal(false);
@@ -172,7 +242,7 @@ const CustomItemPopup = ({
               Add Item
             </button>
             <button 
-              className="btn btn-secondary" 
+              className="custom-item-billing-btn custom-item-billing-btn-secondary" 
               onClick={() => setShowCustomItemModal(false)}
             >
               Cancel
