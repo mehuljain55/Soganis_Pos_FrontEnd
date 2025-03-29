@@ -58,16 +58,16 @@ const CustomItemPopup = ({
 
   // Calculate sell price and total amount when price, discount or quantity changes
   const calculatePrices = () => {
-    const price = parseFloat(customItem.price) || 0;
-    const discount = parseFloat(customItem.discount) || 0;
-    const quantity = parseInt(customItem.quantity) || 0;
+    const price = parseInt(customItem.price) || 0;  // Convert to integer
+    const discount = parseInt(customItem.discount) || 0;  // Convert to integer
+    const quantity = parseInt(customItem.quantity) || 0;  // Convert to integer
     
-    const sellPrice = price - (price * discount / 100);
-    const amount = sellPrice * quantity;
+    const sellPrice = Math.round(price - (price * discount / 100));  // Round sellPrice to integer
+    const amount = Math.round(sellPrice * quantity);  // Round amount to integer
     
     return {
-      sellPrice: sellPrice.toFixed(2),
-      amount: amount.toFixed(2)
+      sellPrice: sellPrice,
+      amount: amount
     };
   };
 
@@ -181,9 +181,9 @@ const CustomItemPopup = ({
                     name="price"
                     value={customItem.price}
                     onChange={handleCustomItemChange}
-                    placeholder="0.00"
+                    placeholder="0"
                     onKeyPress={(e) => {
-                      if (!/[0-9.]/.test(e.key)) {
+                      if (!/[0-9]/.test(e.key)) {
                         e.preventDefault();
                       }
                     }}
@@ -199,7 +199,7 @@ const CustomItemPopup = ({
                     onChange={handleCustomItemChange}
                     placeholder="0"
                     onKeyPress={(e) => {
-                      if (!/[0-9.]/.test(e.key)) {
+                      if (!/[0-9]/.test(e.key)) {
                         e.preventDefault();
                       }
                     }}
