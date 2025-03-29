@@ -26,6 +26,8 @@ function App() {
   const [userData, setUserData] = useState(null);
   const [token, setToken] = useState(null);
   const [serverOffline, setServerOffline] = useState(false);
+  const[userLoginStatus,setLoginStatus]=useState(false);
+  
 
   const saveUserData = (data, token) => {
     setUserData(data);
@@ -37,6 +39,14 @@ function App() {
 
  
   useEffect(() => {
+
+    if(!userLoginStatus)
+    {
+      setUserData(null);
+      sessionStorage.removeItem('user'); // Remove user data from session storage
+      sessionStorage.removeItem('token'); // Remove user data from session storage  
+      return;
+    }
     const savedUserData = sessionStorage.getItem('user');
     const savedToken = sessionStorage.getItem('token');
 
@@ -44,7 +54,7 @@ function App() {
       setUserData(JSON.parse(savedUserData));
       setToken(savedToken);
     }
-  }, []);
+  }, [userLoginStatus]);
 
   useEffect(() => {
     const checkServerStatus = async () => {
