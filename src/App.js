@@ -24,18 +24,28 @@ import './App.css';
 
 function App() {
   const [userData, setUserData] = useState(null);
+  const [token, setToken] = useState(null);
   const [serverOffline, setServerOffline] = useState(false);
 
-  const saveUserData = (data) => {
+  const saveUserData = (data, token) => {
     setUserData(data);
-    localStorage.setItem('user', JSON.stringify(data)); 
-    sessionStorage.setItem('user', JSON.stringify(data)); 
-    };
+    setToken(token);
 
+    localStorage.setItem('userData', JSON.stringify(data));
+    localStorage.setItem('token', token);
+    
+    sessionStorage.setItem('userData', JSON.stringify(data));
+    sessionStorage.setItem('token', token);
+  };
+
+ 
   useEffect(() => {
-    const savedUserData = sessionStorage.getItem('userData');
-    if (savedUserData) {
+    const savedUserData = sessionStorage.getItem('user');
+    const savedToken = sessionStorage.getItem('token');
+
+    if (savedUserData && savedToken) {
       setUserData(JSON.parse(savedUserData));
+      setToken(savedToken);
     }
   }, []);
 
@@ -76,7 +86,7 @@ function App() {
 
       
           {!userData ? (
-            <Route path="*" element={<Login setUserData={saveUserData} />} />
+             <Route path="*" element={<Login setUserData={saveUserData} />} />
           ) : (
             <>
               <Route path="/" element={<MainComponent userData={userData} />} />
