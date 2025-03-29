@@ -31,10 +31,7 @@ function App() {
     setUserData(data);
     setToken(token);
 
-    localStorage.setItem('userData', JSON.stringify(data));
-    localStorage.setItem('token', token);
-    
-    sessionStorage.setItem('userData', JSON.stringify(data));
+    sessionStorage.setItem('user', JSON.stringify(data));
     sessionStorage.setItem('token', token);
   };
 
