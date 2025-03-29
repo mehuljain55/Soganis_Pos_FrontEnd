@@ -979,6 +979,12 @@ const handleSelectChange = (selectedOption) => {
 
   useEffect(() => {
     const handleKeyDown = (event) => {
+      
+      if(showCustomItemModal)
+      {
+        return;
+      }
+      
       if (event.key === 'Shift') {
         const currentTime = new Date().getTime(); // Get current time
 
@@ -996,7 +1002,7 @@ const handleSelectChange = (selectedOption) => {
     return () => {
       window.removeEventListener('keydown', handleKeyDown);
     };
-  }, [shiftPressTime]); // Track shiftPressTime changes
+  }, [shiftPressTime,showCustomItemModal]); // Track shiftPressTime changes
 
 
   return (
