@@ -1,0 +1,135 @@
+.popup-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1050;
+  }
+  
+  .billing-custom-item-modal {
+    width: 100%;
+    max-width: 600px;
+    z-index: 1060;
+  }
+  
+  .billing-custom-item-modal .modal-content {
+    padding: 0;
+    border-radius: 8px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+    max-height: 90vh;
+    background-color: white;
+  }
+  
+  .billing-custom-item-modal .modal-header {
+    padding: 15px 20px;
+    border-bottom: 1px solid #eaeaea;
+    background-color: #f8f9fa;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  .billing-custom-item-modal .modal-title {
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: #333;
+  }
+  
+  .billing-custom-item-modal .close-button {
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    line-height: 1;
+    color: #666;
+    cursor: pointer;
+    padding: 0;
+    margin: 0;
+  }
+  
+  .billing-custom-item-modal .modal-body {
+    padding: 20px;
+    max-height: calc(90vh - 130px);
+    overflow-y: auto;
+  }
+  
+  .billing-custom-item-modal .form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+    margin-bottom: 10px;
+  }
+  
+  .billing-custom-item-modal .form-group {
+    margin-bottom: 12px;
+  }
+  
+  .billing-custom-item-modal label {
+    font-size: 0.85rem;
+    color: #555;
+    font-weight: 500;
+    margin-bottom: 4px;
+    display: block;
+  }
+  
+  .billing-custom-item-modal input {
+    padding: 8px 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 0.9rem;
+    width: 100%;
+    transition: border-color 0.2s;
+  }
+  
+  .billing-custom-item-modal input:focus {
+    outline: none;
+    border-color: #80bdff;
+    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+  }
+  
+  .billing-custom-item-modal input[readonly] {
+    background-color: #f8f9fa;
+    color: #666;
+  }
+  
+  .billing-custom-item-modal .modal-footer {
+    padding: 12px 20px;
+    border-top: 1px solid #eaeaea;
+    background-color: #f8f9fa;
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+  }
+  
+  .billing-custom-item-modal .btn {
+    padding: 8px 16px;
+    font-size: 0.9rem;
+    border-radius: 4px;
+    font-weight: 500;
+    transition: all 0.2s;
+    cursor: pointer;
+  }
+  
+  .billing-custom-item-modal .btn-secondary {
+    background-color: #ff0000;
+    border: 1px solid #d8d8d8;
+    color: #ffffff;
+  }
+  
+  .billing-custom-item-modal .btn-secondary:hover {
+    background-color: #e50000;
+  }
+  
+  .billing-custom-item-modal .btn-primary {
+    background-color: #0d6efd;
+    border: none;
+    color: white;
+  }
+  
+  .billing-custom-item-modal .btn-primary:hover {
+    background-color: #0b5ed7;
+  }

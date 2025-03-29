@@ -7,6 +7,7 @@ import Button from 'react-bootstrap/Button';
 import Select from 'react-select';
 import BillPopup from './BillPopup'; 
 import printJS from "print-js";
+import CustomItemPopup from './CustomItemPopup.js';
 
 const NewBillContainer = ({ userData }) => {
   const [selectedItems, setSelectedItems] = useState([]);
@@ -1383,110 +1384,19 @@ const handleSelectChange = (selectedOption) => {
           </Button>
         </Modal.Footer>
       </Modal>
-      <Modal 
-  show={showCustomItemModal} 
-  onHide={() => setShowCustomItemModal(false)} 
-  className="billing-custom-item-modal"
-  size="md"
-  centered
->
-  <Modal.Header closeButton>
-    <Modal.Title>Add Custom Item</Modal.Title>
-  </Modal.Header>
-  <Modal.Body>
-    <form>
-      <div className="form-row">
-        <div className="form-group">
-          <label>Item Barcode ID:</label>
-          <input type="text" name="itemBarcodeID" value={customItem.itemBarcodeID} onChange={handleCustomItemChange} readOnly />
-        </div>
-        <div className="form-group">
-          <label>Item Name:</label>
-          <input type="text" name="itemName" value={customItem.itemName} onChange={handleCustomItemChange} autoFocus />
-        </div>
-      </div>
 
-      <div className="form-row">
-        <div className="form-group">
-          <label>Item Type:</label>
-          <input type="text" name="itemType" value={customItem.itemType} onChange={handleCustomItemChange} />
-        </div>
-        <div className="form-group">
-          <label>Item Color:</label>
-          <input type="text" name="itemColor" value={customItem.itemColor} onChange={handleCustomItemChange} />
-        </div>
-      </div>
+     <div className='custom-item-modal'>
+     <CustomItemPopup
+        showCustomItemModal={showCustomItemModal}
+        setShowCustomItemModal={setShowCustomItemModal}
+        customItem={customItem}
+        handleCustomItemChange={handleCustomItemChange}
+        handleAddCustomItem={handleAddCustomItem}
+      />
+     </div>
 
-      <div className="form-row">
-        <div className="form-group">
-          <label>Item Size:</label>
-          <input type="text" name="itemSize" value={customItem.itemSize} onChange={handleCustomItemChange} />
-        </div>
-        <div className="form-group">
-          <label>Quantity:</label>
-          <input 
-            type="text" 
-            name="quantity" 
-            value={customItem.quantity} 
-            onChange={handleCustomItemChange} 
-            onKeyPress={(e) => {
-              if (!/[0-9]/.test(e.key)) {
-                e.preventDefault();
-              }
-            }}
-          />
-        </div>
-      </div>
 
-      <div className="form-row">
-        <div className="form-group">
-          <label>Price:</label>
-          <input
-            type="text"
-            name="price"
-            value={customItem.price}
-            onChange={handleCustomItemChange}
-            onKeyPress={(e) => {
-              if (!/[0-9.]/.test(e.key)) {
-                e.preventDefault();
-              }
-            }}
-          />
-        </div>
-        <div className="form-group">
-          <label>Discount %:</label>
-          <input
-            type="text"
-            name="discount"
-            value={customItem.discount}
-            onChange={handleCustomItemChange}
-            onKeyPress={(e) => {
-              if (!/[0-9.]/.test(e.key)) {
-                e.preventDefault();
-              }
-            }}
-          />
-        </div>
-      </div>
 
-      <div className="form-row">
-        <div className="form-group">
-          <label>Sell Price:</label>
-          <input type="text" name="sellPrice" value={customItem.sellPrice} readOnly />
-        </div>
-        <div className="form-group">
-          <label>Total Amount:</label>
-          <input type="text" name="amount" value={customItem.amount} readOnly />
-        </div>
-      </div>
-    </form>
-  </Modal.Body>
-  <Modal.Footer>
-  <Button variant="primary" onClick={handleAddCustomItem}>Add Item</Button>
- 
-    <Button variant="secondary" onClick={() => setShowCustomItemModal(false)}>Cancel</Button>
-  </Modal.Footer>
-</Modal>
     </div>
   );
   };
