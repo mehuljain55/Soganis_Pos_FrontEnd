@@ -292,21 +292,21 @@ const handleSelectChange = (selectedOption) => {
   
       // Auto-calculate sell price when price or discount changes
       if (name === "price" || name === "discount") {
-        const price = parseFloat(updatedItem.price) || 0;
-        const discount = parseFloat(updatedItem.discount) || 0;
+        const price = parseInt(updatedItem.price) || 0;  // Convert price to integer
+        const discount = parseInt(updatedItem.discount) || 0;  // Convert discount to integer
         updatedItem.sellPrice = (price - (price * discount / 100)).toFixed(2);
       }
   
       // Auto-calculate amount when quantity or sellPrice changes
       if (name === "quantity" || name === "sellPrice" || name === "price" || name === "discount") {
-        const quantity = parseFloat(updatedItem.quantity) || 1;
-        updatedItem.amount = (parseFloat(updatedItem.sellPrice) * quantity).toFixed(2);
+        const quantity = parseInt(updatedItem.quantity) || 1;  // Convert quantity to integer
+        updatedItem.amount = (parseInt(updatedItem.sellPrice) * quantity).toFixed(2);  // Convert sellPrice to integer before multiplication
       }
   
       return updatedItem;
     });
   };
-
+  
   useEffect(() => {
     if (showCustomItemModal) {
       window.addEventListener('keydown', handleCustomItemKeyDown);
@@ -880,18 +880,18 @@ const handleSelectChange = (selectedOption) => {
 
   const handleAddCustomItem = () => {
   
-    // Create the new item object
+    // Create the new item object with integer conversion
     const newItem = {
-      itemBarcodeID:customItem.itemBarcodeID,
+      itemBarcodeID: customItem.itemBarcodeID,
       itemCode: customItem.itemBarcodeID,
       itemType: customItem.itemType,
       itemColor: customItem.itemColor,
       itemSize: customItem.itemSize,
       itemCategory: customItem.itemCategory,
       itemName: `${customItem.itemCategory} ${customItem.itemType}`,
-      quantity: customItem.quantity,
-      price:customItem.sellPrice,
-      amount:(customItem.quantity)*(customItem.sellPrice),
+      quantity: parseInt(customItem.quantity) || 0,  // Convert quantity to integer
+      price: parseInt(customItem.sellPrice) || 0,  // Convert sellPrice to integer
+      amount: parseInt(customItem.quantity) * parseInt(customItem.sellPrice) || 0,  // Calculate amount as an integer
     };
   
     // Update the selectedItems state
@@ -900,6 +900,7 @@ const handleSelectChange = (selectedOption) => {
     // Close the modal
     setShowCustomItemModal(false);
   };
+  
   const toggleBarcodeMode = (manualMode = null) => {
     setIsBarcodeMode((prevMode) => {
       let newMode;
