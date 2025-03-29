@@ -514,6 +514,9 @@ const handleSelectChange = (selectedOption) => {
   };
   
   useEffect(() => {
+
+    // save the bill
+
     const handleKeyDown = (event) => {
       if (event.ctrlKey && event.key === 's') {
         event.preventDefault(); // Prevent the browser's default Save action
@@ -955,6 +958,8 @@ const handleSelectChange = (selectedOption) => {
         itemColor: '',
         itemSize: '',
         itemCategory: '',
+        discount: 0,
+        price: 0,
         sellPrice: 0,
         quantity: 1,
         amount: 0,
@@ -963,6 +968,8 @@ const handleSelectChange = (selectedOption) => {
   }, [showCustomItemModal]);
 
   useEffect(() => {
+    
+    // open custom model
     const handleKeyDown = (event) => {
       if (event.ctrlKey && event.key === 'c') {
         setShowCustomItemModal(true);  // Open the modal
@@ -978,31 +985,30 @@ const handleSelectChange = (selectedOption) => {
   }, [someState]); // Dependency array with `someState`
 
   useEffect(() => {
-    const handleKeyDown = (event) => {
-      
-      if(showCustomItemModal)
-      {
+    // Handle Shift key press to toggle barcode mode
+    const handleShiftKeyDown = (event) => {
+      if (showCustomItemModal) {
         return;
       }
-      
+  
       if (event.key === 'Shift') {
         const currentTime = new Date().getTime(); // Get current time
-
+  
         if (shiftPressTime && currentTime - shiftPressTime < 500) {
-          toggleBarcodeMode(); // Change mode if Shift is pressed twice quickly
-          setShiftPressTime(null); // Reset the time
+          toggleBarcodeMode();
+          setShiftPressTime(null); 
         } else {
-          setShiftPressTime(currentTime); // Store the time of the first Shift press
+          setShiftPressTime(currentTime); 
         }
       }
     };
-
-    window.addEventListener('keydown', handleKeyDown);
-
+  
+    window.addEventListener('keydown', handleShiftKeyDown);
+  
     return () => {
-      window.removeEventListener('keydown', handleKeyDown);
+      window.removeEventListener('keydown', handleShiftKeyDown);
     };
-  }, [shiftPressTime,showCustomItemModal]); // Track shiftPressTime changes
+  }, [shiftPressTime, showCustomItemModal]); // Track shiftPressTime changes
 
 
   return (
