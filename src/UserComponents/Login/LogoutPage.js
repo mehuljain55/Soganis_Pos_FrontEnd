@@ -27,8 +27,12 @@ export const useLogout = () => {
   const navigate = useNavigate();
 
   const handleLogout = () => {
-    localStorage.removeItem('userData'); // Remove user data from local storage
-    sessionStorage.removeItem('userData'); // Remove user data from session storage
+    localStorage.removeItem('user'); // Remove user data from local storage
+    sessionStorage.removeItem('user'); // Remove user data from session storage
+    sessionStorage.removeItem('token'); // Remove user data from session storage
+    sessionStorage.removeItem('token'); // Remove user data from session storage
+  
+  
     window.location.reload(); // Reload the page to reflect changes
   };
 

@@ -16,12 +16,22 @@ const Dashboard = () => {
     backupDetails:'',
   });
 
+  const getUserData= () => {
+    const user = sessionStorage.getItem('user');
+    const token = sessionStorage.getItem('token');
+  
+    return {
+      user: user ? JSON.parse(user) : null,
+      token: token || null
+    };
+  };
   
 
   useEffect(() => {
     const fetchStoreInfo = async () => {
       try {
-        const user = JSON.parse(sessionStorage.getItem("user"));
+        const { user, token } = getUserData();
+        
 
         const [storeResponse, backupResponse] = await Promise.all([
           axios.get(`${API_BASE_URL}/store/storeInfo`, {
