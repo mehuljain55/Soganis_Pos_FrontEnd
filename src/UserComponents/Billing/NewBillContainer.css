@@ -506,107 +506,66 @@ h2 {
   cursor: pointer;
 }
 
-
-
-.billing-custom-item-modal {
+/* Unique class name for the custom item entry modal */
+.custom-item-modal {
   .modal-content {
-    padding: 0;
+    padding: 20px;
     border-radius: 8px;
-    box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
-    max-height: 90vh;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
   }
 
   .modal-header {
-    padding: 15px 20px;
-    border-bottom: 1px solid #eaeaea;
+    border-bottom: 1px solid #dee2e6;
     background-color: #f8f9fa;
   }
 
   .modal-title {
-    font-size: 1.2rem;
-    font-weight: 600;
-    color: #333;
+    font-size: 1.5rem;
+    font-weight: bold;
   }
 
   .modal-body {
-    padding: 20px;
-    max-height: calc(90vh - 130px);
-    overflow-y: auto;
-  }
-
-  .form-row {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
+    display: flex;
+    flex-direction: column;
     gap: 15px;
-    margin-bottom: 10px;
-  }
-
-  .form-group {
-    margin-bottom: 12px;
   }
 
   label {
-    font-size: 0.85rem;
-    color: #555;
-    font-weight: 500;
-    margin-bottom: 4px;
-    display: block;
+    display: flex;
+    flex-direction: column;
+    font-size: 1rem;
+    color: #495057;
   }
 
   input {
-    padding: 8px 10px;
-    border: 1px solid #ddd;
+    padding: 8px;
+    border: 1px solid #ced4da;
     border-radius: 4px;
-    font-size: 0.9rem;
-    width: 100%;
-    transition: border-color 0.2s;
-  }
-
-  input:focus {
-    outline: none;
-    border-color: #80bdff;
-    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
-  }
-
-  input[readonly] {
-    background-color: #f8f9fa;
-    color: #666;
+    font-size: 1rem;
   }
 
   .modal-footer {
-    padding: 12px 20px;
-    border-top: 1px solid #eaeaea;
+    border-top: 1px solid #dee2e6;
     background-color: #f8f9fa;
   }
 
-  .btn {
-    padding: 8px 16px;
-    font-size: 0.9rem;
-    border-radius: 4px;
-    font-weight: 500;
-    transition: all 0.2s;
-  }
-
   .btn-secondary {
-    background-color: #ff0000;
-    border: 1px solid #d8d8d8;
-    color: 
-    #ffffff;
-  }
-
-  .btn-secondary:hover {
-    background-color: #e5e5e5;
-  }
-
-  .btn-primary {
-    background-color: #0d6efd;
+    background-color: #6c757d;
     border: none;
   }
 
-  .btn-primary:hover {
-    background-color: #0b5ed7;
+  .btn-primary {
+    background-color: #007bff;
+    border: none;
+  }
+
+  .btn {
+    border-radius: 4px;
+    padding: 10px 20px;
+    font-size: 1rem;
   }
 }
+
 
 .blurred-background {
   filter: blur(5px);
