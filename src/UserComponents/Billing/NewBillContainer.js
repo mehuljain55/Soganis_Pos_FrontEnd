@@ -7,6 +7,7 @@ import Button from 'react-bootstrap/Button';
 import Select from 'react-select';
 import BillPopup from './BillPopup'; 
 import printJS from "print-js";
+import CustomItemPopup from './CustomItemPopup.js';
 
 const NewBillContainer = ({ userData }) => {
   const [selectedItems, setSelectedItems] = useState([]);
@@ -291,21 +292,21 @@ const handleSelectChange = (selectedOption) => {
   
       // Auto-calculate sell price when price or discount changes
       if (name === "price" || name === "discount") {
-        const price = parseFloat(updatedItem.price) || 0;
-        const discount = parseFloat(updatedItem.discount) || 0;
+        const price = parseInt(updatedItem.price) || 0;  // Convert price to integer
+        const discount = parseInt(updatedItem.discount) || 0;  // Convert discount to integer
         updatedItem.sellPrice = (price - (price * discount / 100)).toFixed(2);
       }
   
       // Auto-calculate amount when quantity or sellPrice changes
       if (name === "quantity" || name === "sellPrice" || name === "price" || name === "discount") {
-        const quantity = parseFloat(updatedItem.quantity) || 1;
-        updatedItem.amount = (parseFloat(updatedItem.sellPrice) * quantity).toFixed(2);
+        const quantity = parseInt(updatedItem.quantity) || 1;  // Convert quantity to integer
+        updatedItem.amount = (parseInt(updatedItem.sellPrice) * quantity).toFixed(2);  // Convert sellPrice to integer before multiplication
       }
   
       return updatedItem;
     });
   };
-
+  
   useEffect(() => {
     if (showCustomItemModal) {
       window.addEventListener('keydown', handleCustomItemKeyDown);
@@ -879,18 +880,18 @@ const handleSelectChange = (selectedOption) => {
 
   const handleAddCustomItem = () => {
   
-    // Create the new item object
+    // Create the new item object with integer conversion
     const newItem = {
-      itemBarcodeID:customItem.itemBarcodeID,
+      itemBarcodeID: customItem.itemBarcodeID,
       itemCode: customItem.itemBarcodeID,
       itemType: customItem.itemType,
       itemColor: customItem.itemColor,
       itemSize: customItem.itemSize,
       itemCategory: customItem.itemCategory,
       itemName: `${customItem.itemCategory} ${customItem.itemType}`,
-      quantity: customItem.quantity,
-      price:customItem.sellPrice,
-      amount:(customItem.quantity)*(customItem.sellPrice),
+      quantity: parseInt(customItem.quantity) || 0,  // Convert quantity to integer
+      price: parseInt(customItem.sellPrice) || 0,  // Convert sellPrice to integer
+      amount: parseInt(customItem.quantity) * parseInt(customItem.sellPrice) || 0,  // Calculate amount as an integer
     };
   
     // Update the selectedItems state
@@ -899,6 +900,7 @@ const handleSelectChange = (selectedOption) => {
     // Close the modal
     setShowCustomItemModal(false);
   };
+  
   const toggleBarcodeMode = (manualMode = null) => {
     setIsBarcodeMode((prevMode) => {
       let newMode;
@@ -1383,110 +1385,19 @@ const handleSelectChange = (selectedOption) => {
           </Button>
         </Modal.Footer>
       </Modal>
-      <Modal 
-  show={showCustomItemModal} 
-  onHide={() => setShowCustomItemModal(false)} 
-  className="billing-custom-item-modal"
-  size="md"
-  centered
->
-  <Modal.Header closeButton>
-    <Modal.Title>Add Custom Item</Modal.Title>
-  </Modal.Header>
-  <Modal.Body>
-    <form>
-      <div className="form-row">
-        <div className="form-group">
-          <label>Item Barcode ID:</label>
-          <input type="text" name="itemBarcodeID" value={customItem.itemBarcodeID} onChange={handleCustomItemChange} readOnly />
-        </div>
-        <div className="form-group">
-          <label>Item Name:</label>
-          <input type="text" name="itemName" value={customItem.itemName} onChange={handleCustomItemChange} autoFocus />
-        </div>
-      </div>
 
-      <div className="form-row">
-        <div className="form-group">
-          <label>Item Type:</label>
-          <input type="text" name="itemType" value={customItem.itemType} onChange={handleCustomItemChange} />
-        </div>
-        <div className="form-group">
-          <label>Item Color:</label>
-          <input type="text" name="itemColor" value={customItem.itemColor} onChange={handleCustomItemChange} />
-        </div>
-      </div>
+     <div className='custom-item-modal'>
+     <CustomItemPopup
+        showCustomItemModal={showCustomItemModal}
+        setShowCustomItemModal={setShowCustomItemModal}
+        customItem={customItem}
+        handleCustomItemChange={handleCustomItemChange}
+        handleAddCustomItem={handleAddCustomItem}
+      />
+     </div>
 
-      <div className="form-row">
-        <div className="form-group">
-          <label>Item Size:</label>
-          <input type="text" name="itemSize" value={customItem.itemSize} onChange={handleCustomItemChange} />
-        </div>
-        <div className="form-group">
-          <label>Quantity:</label>
-          <input 
-            type="text" 
-            name="quantity" 
-            value={customItem.quantity} 
-            onChange={handleCustomItemChange} 
-            onKeyPress={(e) => {
-              if (!/[0-9]/.test(e.key)) {
-                e.preventDefault();
-              }
-            }}
-          />
-        </div>
-      </div>
 
-      <div className="form-row">
-        <div className="form-group">
-          <label>Price:</label>
-          <input
-            type="text"
-            name="price"
-            value={customItem.price}
-            onChange={handleCustomItemChange}
-            onKeyPress={(e) => {
-              if (!/[0-9.]/.test(e.key)) {
-                e.preventDefault();
-              }
-            }}
-          />
-        </div>
-        <div className="form-group">
-          <label>Discount %:</label>
-          <input
-            type="text"
-            name="discount"
-            value={customItem.discount}
-            onChange={handleCustomItemChange}
-            onKeyPress={(e) => {
-              if (!/[0-9.]/.test(e.key)) {
-                e.preventDefault();
-              }
-            }}
-          />
-        </div>
-      </div>
 
-      <div className="form-row">
-        <div className="form-group">
-          <label>Sell Price:</label>
-          <input type="text" name="sellPrice" value={customItem.sellPrice} readOnly />
-        </div>
-        <div className="form-group">
-          <label>Total Amount:</label>
-          <input type="text" name="amount" value={customItem.amount} readOnly />
-        </div>
-      </div>
-    </form>
-  </Modal.Body>
-  <Modal.Footer>
-  <Button variant="primary" onClick={handleAddCustomItem}>Add Item</Button>
- 
-    <Button variant="secondary" onClick={() => setShowCustomItemModal(false)}>Cancel</Button>
-  </Modal.Footer>
-</Modal>
     </div>
   );
   };
