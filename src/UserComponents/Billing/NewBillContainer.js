@@ -57,6 +57,8 @@ const NewBillContainer = ({ userData }) => {
     itemColor: '',
     itemSize: '',
     itemCategory: '',
+    price :0,
+    discount: 0,
     sellPrice: 0,
     quantity: 1,
     amount: 0,
@@ -212,18 +214,110 @@ const handleSelectChange = (selectedOption) => {
     );
   }, [discountPercentage]);
   
+  const handleCustomItemKeyDown = (e) => {
+    // Prevent event propagation to stop parent handlers
+    e.stopPropagation();
+    
+    const inputs = document.querySelectorAll('.billing-custom-item-modal input');
+    const currentIndex = Array.from(inputs).findIndex(input => input === document.activeElement);
+    
+    switch (e.key) {
+      case 'ArrowRight':
+        // Check if we're at the end of a row (even indices 0,2,4,6...)
+        if (currentIndex % 2 === 0 && currentIndex < inputs.length - 1) {
+          inputs[currentIndex + 1].focus();
+          e.preventDefault();
+        }
+        break;
+        
+      case 'ArrowLeft':
+        // Check if we're at the start of a row (odd indices 1,3,5,7...)
+        if (currentIndex % 2 === 1) {
+          inputs[currentIndex - 1].focus();
+          e.preventDefault();
+        }
+        break;
+        
+      case 'ArrowDown':
+        // Move down to the next row (add 2 to index)
+        if (currentIndex < inputs.length - 2) {
+          inputs[currentIndex + 2].focus();
+          e.preventDefault();
+        }
+        break;
+        
+      case 'ArrowUp':
+        // Move up to the previous row (subtract 2 from index)
+        if (currentIndex >= 2) {
+          inputs[currentIndex - 2].focus();
+          e.preventDefault();
+        }
+        break;
+        
+      case 'Enter':
+        // If Enter is pressed on Add Item button
+        if (e.target.textContent === 'Add Item') {
+          handleAddCustomItem();
+          e.preventDefault();
+        } else if (currentIndex === inputs.length - 1) {
+          // If we're on the last input, simulate clicking the Add Item button
+          document.querySelector('.billing-custom-item-modal .btn-primary').click();
+          e.preventDefault();
+        } else {
+          // Move to the next input
+          const nextInput = inputs[currentIndex + 1];
+          if (nextInput) {
+            nextInput.focus();
+            e.preventDefault();
+          }
+        }
+        break;
+        
+      case 'Escape':
+        setShowCustomItemModal(false);
+        e.preventDefault();
+        break;
+        
+      default:
+        break;
+    }
+  };
 
   const handleCustomItemChange = (e) => {
     const { name, value } = e.target;
-    setCustomItem((prev) => ({
-      ...prev,
-      [name]: value,
-      amount: name === 'quantity' || name === 'sellPrice' 
-        ? customItem.sellPrice * customItem.quantity
-        : prev.amount,
-    }));
+  
+    setCustomItem((prev) => {
+      const updatedItem = { ...prev, [name]: value };
+  
+      // Auto-calculate sell price when price or discount changes
+      if (name === "price" || name === "discount") {
+        const price = parseFloat(updatedItem.price) || 0;
+        const discount = parseFloat(updatedItem.discount) || 0;
+        updatedItem.sellPrice = (price - (price * discount / 100)).toFixed(2);
+      }
+  
+      // Auto-calculate amount when quantity or sellPrice changes
+      if (name === "quantity" || name === "sellPrice" || name === "price" || name === "discount") {
+        const quantity = parseFloat(updatedItem.quantity) || 1;
+        updatedItem.amount = (parseFloat(updatedItem.sellPrice) * quantity).toFixed(2);
+      }
+  
+      return updatedItem;
+    });
   };
 
+  useEffect(() => {
+    if (showCustomItemModal) {
+      window.addEventListener('keydown', handleCustomItemKeyDown);
+      
+     } else {
+      window.removeEventListener('keydown', handleCustomItemKeyDown);
+    }
+    
+    return () => {
+      window.removeEventListener('keydown', handleCustomItemKeyDown);
+    };
+  }, [showCustomItemModal]);
   
   
 
@@ -420,6 +514,9 @@ const handleSelectChange = (selectedOption) => {
   };
   
   useEffect(() => {
+
+    // save the bill
+
     const handleKeyDown = (event) => {
       if (event.ctrlKey && event.key === 's') {
         event.preventDefault(); // Prevent the browser's default Save action
@@ -861,6 +958,8 @@ const handleSelectChange = (selectedOption) => {
         itemColor: '',
         itemSize: '',
         itemCategory: '',
+        discount: 0,
+        price: 0,
         sellPrice: 0,
         quantity: 1,
         amount: 0,
@@ -869,6 +968,8 @@ const handleSelectChange = (selectedOption) => {
   }, [showCustomItemModal]);
 
   useEffect(() => {
+    
+    // open custom model
     const handleKeyDown = (event) => {
       if (event.ctrlKey && event.key === 'c') {
         setShowCustomItemModal(true);  // Open the modal
@@ -884,25 +985,30 @@ const handleSelectChange = (selectedOption) => {
   }, [someState]); // Dependency array with `someState`
 
   useEffect(() => {
-    const handleKeyDown = (event) => {
+    // Handle Shift key press to toggle barcode mode
+    const handleShiftKeyDown = (event) => {
+      if (showCustomItemModal) {
+        return;
+      }
+  
       if (event.key === 'Shift') {
         const currentTime = new Date().getTime(); // Get current time
-
+  
         if (shiftPressTime && currentTime - shiftPressTime < 500) {
-          toggleBarcodeMode(); // Change mode if Shift is pressed twice quickly
-          setShiftPressTime(null); // Reset the time
+          toggleBarcodeMode();
+          setShiftPressTime(null); 
         } else {
-          setShiftPressTime(currentTime); // Store the time of the first Shift press
+          setShiftPressTime(currentTime); 
         }
       }
     };
-
-    window.addEventListener('keydown', handleKeyDown);
-
+  
+    window.addEventListener('keydown', handleShiftKeyDown);
+  
     return () => {
-      window.removeEventListener('keydown', handleKeyDown);
+      window.removeEventListener('keydown', handleShiftKeyDown);
     };
-  }, [shiftPressTime]); // Track shiftPressTime changes
+  }, [shiftPressTime, showCustomItemModal]); // Track shiftPressTime changes
 
 
   return (
@@ -1277,89 +1383,110 @@ const handleSelectChange = (selectedOption) => {
           </Button>
         </Modal.Footer>
       </Modal>
-  
-      <Modal show={showCustomItemModal} onHide={() => setShowCustomItemModal(false)} className="custom-item-modal">
-        <Modal.Header closeButton>
-          <Modal.Title>Add Custom Item</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          <form>
-            <div className="form-group">
-              <label>Item Barcode ID:</label>
-              <input
-                type="text"
-                name="itemBarcodeID"
-                value={customItem.itemBarcodeID}
-                onChange={handleCustomItemChange}
-                readOnly
-              />
-            </div>
-            <div className="form-group">
-              <label>Item Type:</label>
-              <input
-                type="text"
-                name="itemType"
-                value={customItem.itemType}
-                onChange={handleCustomItemChange}
-              />
-            </div>
-            <div className="form-group">
-              <label>Item Color:</label>
-              <input
-                type="text"
-                name="itemColor"
-                value={customItem.itemColor}
-                onChange={handleCustomItemChange}
-              />
-            </div>
-            <div className="form-group">
-              <label>Item Size:</label>
-              <input
-                type="text"
-                name="itemSize"
-                value={customItem.itemSize}
-                onChange={handleCustomItemChange}
-              />
-            </div>
-            <div className="form-group">
-              <label>Item Category:</label>
-              <input
-                type="text"
-                name="itemCategory"
-                value={customItem.itemCategory}
-                onChange={handleCustomItemChange}
-              />
-            </div>
-            <div className="form-group">
-              <label>Price:</label>
-              <input
-                type="number"
-                name="sellPrice"
-                value={customItem.sellPrice}
-                onChange={handleCustomItemChange}
-              />
-            </div>
-            <div className="form-group">
-              <label>Quantity:</label>
-              <input
-                type="number"
-                name="quantity"
-                value={customItem.quantity}
-                onChange={handleCustomItemChange}
-                min="1"
-              />
-            </div>
-          </form>
-        </Modal.Body>
-        <Modal.Footer>
-          <Button variant="secondary" onClick={() => setShowCustomItemModal(false)}>
-            Close
-          </Button>
-          <Button variant="primary" onClick={handleAddCustomItem}>
-            Add Item
-          </Button>
-        </Modal.Footer>
-      </Modal>
+      <Modal 
+  show={showCustomItemModal} 
+  onHide={() => setShowCustomItemModal(false)} 
+  className="billing-custom-item-modal"
+  size="md"
+  centered
+>
+  <Modal.Header closeButton>
+    <Modal.Title>Add Custom Item</Modal.Title>
+  </Modal.Header>
+  <Modal.Body>
+    <form>
+      <div className="form-row">
+        <div className="form-group">
+          <label>Item Barcode ID:</label>
+          <input type="text" name="itemBarcodeID" value={customItem.itemBarcodeID} onChange={handleCustomItemChange} readOnly />
+        </div>
+        <div className="form-group">
+          <label>Item Name:</label>
+          <input type="text" name="itemName" value={customItem.itemName} onChange={handleCustomItemChange} autoFocus />
+        </div>
+      </div>
+
+      <div className="form-row">
+        <div className="form-group">
+          <label>Item Type:</label>
+          <input type="text" name="itemType" value={customItem.itemType} onChange={handleCustomItemChange} />
+        </div>
+        <div className="form-group">
+          <label>Item Color:</label>
+          <input type="text" name="itemColor" value={customItem.itemColor} onChange={handleCustomItemChange} />
+        </div>
+      </div>
+
+      <div className="form-row">
+        <div className="form-group">
+          <label>Item Size:</label>
+          <input type="text" name="itemSize" value={customItem.itemSize} onChange={handleCustomItemChange} />
+        </div>
+        <div className="form-group">
+          <label>Quantity:</label>
+          <input 
+            type="text" 
+            name="quantity" 
+            value={customItem.quantity} 
+            onChange={handleCustomItemChange} 
+            onKeyPress={(e) => {
+              if (!/[0-9]/.test(e.key)) {
+                e.preventDefault();
+              }
+            }}
+          />
+        </div>
+      </div>
+
+      <div className="form-row">
+        <div className="form-group">
+          <label>Price:</label>
+          <input
+            type="text"
+            name="price"
+            value={customItem.price}
+            onChange={handleCustomItemChange}
+            onKeyPress={(e) => {
+              if (!/[0-9.]/.test(e.key)) {
+                e.preventDefault();
+              }
+            }}
+          />
+        </div>
+        <div className="form-group">
+          <label>Discount %:</label>
+          <input
+            type="text"
+            name="discount"
+            value={customItem.discount}
+            onChange={handleCustomItemChange}
+            onKeyPress={(e) => {
+              if (!/[0-9.]/.test(e.key)) {
+                e.preventDefault();
+              }
+            }}
+          />
+        </div>
+      </div>
+
+      <div className="form-row">
+        <div className="form-group">
+          <label>Sell Price:</label>
+          <input type="text" name="sellPrice" value={customItem.sellPrice} readOnly />
+        </div>
+        <div className="form-group">
+          <label>Total Amount:</label>
+          <input type="text" name="amount" value={customItem.amount} readOnly />
+        </div>
+      </div>
+    </form>
+  </Modal.Body>
+  <Modal.Footer>
+  <Button variant="primary" onClick={handleAddCustomItem}>Add Item</Button>
+ 
+    <Button variant="secondary" onClick={() => setShowCustomItemModal(false)}>Cancel</Button>
+  </Modal.Footer>
+</Modal>
     </div>
   );
   };
