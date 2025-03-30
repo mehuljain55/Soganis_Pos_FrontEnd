@@ -219,7 +219,7 @@
     padding: 20px;
     border-radius: 8px;
     width: 80%;
-    max-width: 900px;
+    max-width: 1000px !important;
 }
 
 .bill-detail-return-items-table {
@@ -460,7 +460,7 @@
     background: #fff;
     border-radius: 8px;
     padding: 20px;
-    max-width: 600px;
+    max-width: 850px;
     width: 100%;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
     position: relative;
