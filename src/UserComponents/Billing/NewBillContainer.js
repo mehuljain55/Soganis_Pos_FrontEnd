@@ -9,6 +9,8 @@ import BillPopup from './BillPopup';
 import printJS from "print-js";
 import CustomItemPopup from './CustomItemPopup.js';
 
+import { NEW_BILL_GENERATE_URL } from '../Api/ApiConstants.js';
+
 const NewBillContainer = ({ userData }) => {
   const [selectedItems, setSelectedItems] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
@@ -64,6 +66,18 @@ const NewBillContainer = ({ userData }) => {
     quantity: 1,
     amount: 0,
   });
+
+
+  const getUserData = () => {
+    const user = sessionStorage.getItem('user');
+    const token = sessionStorage.getItem('token');
+
+    return {
+        user: user ? JSON.parse(user) : null,
+        token: token || null
+    };
+};
+
 
   const [heldBills, setHeldBills] = useState(() => {
     const bills = JSON.parse(sessionStorage.getItem('heldBills')) || [];
@@ -581,7 +595,9 @@ const handleSelectChange = (selectedOption) => {
   };
 
   const handleSubmit = async () => {
-    // Validations
+
+    const{user,token} = getUserData();
+
     if (selectedItems.length === 0) {
       alert("The item list cannot be empty. Please add at least one item.");
       return;
@@ -652,8 +668,7 @@ const handleSelectChange = (selectedOption) => {
         amount,
       };
     });
-  
-    // Prepare billing and transaction models
+    
     const billData = {
       userId: userData.userId,
       customerName: customerName,
@@ -678,10 +693,18 @@ const handleSelectChange = (selectedOption) => {
       billing: billData,
       transactionModel: transactionalModel, // Use the transactional model directly
     };
+
+
+
+    const apiRequestModel={
+      user,
+      token,
+      billTransactionModel:billingModel
+    }
   
     try {
       setLoading(true);
-      const response = await axios.post(`${API_BASE_URL}/user/billRequest`, billingModel, {
+      const response = await axios.post(`${NEW_BILL_GENERATE_URL}`, apiRequestModel, {
         responseType: "arraybuffer",
       });
       const pdfBlob = new Blob([response.data], { type: "application/pdf" });
