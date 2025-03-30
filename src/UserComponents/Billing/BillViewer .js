@@ -266,7 +266,7 @@ const BillViewer = () => {
                   <td className="action-buttons">
                     <button onClick={() => handleViewDetails(bill)}>View</button>
                     <button onClick={() => handlePrintBill(bill.billNo)}>Print</button>
-                    {bill.status === 'Fresh' && isToday(bill.bill_date) && (
+                    {bill.status === 'FRESH' && isToday(bill.bill_date) && (
                       <button onClick={() => handleDeleteBill(bill.billNo)}>Delete</button>
                     )}
                   </td>

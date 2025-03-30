@@ -5,6 +5,8 @@ import './BillDetails.css';
 import ExchangeBill from './ExchangeBill.js'; 
 import ExchangeBillWholesale from './ExchangeBillWholesale.js'; 
 
+import { BILL_FETCH_URL, DEFECT_ITEM_RETURN } from '../Api/ApiConstants.js';
+
 
 const BillDetails = ({ userData }) => {
   const [billNo, setBillNo] = useState('');
@@ -24,6 +26,7 @@ const BillDetails = ({ userData }) => {
   const [billType,setBillType]=useState('');
   const [billList, setBillList] = useState([]);
   const [showBillSelectionPopup, setShowBillSelectionPopup] = useState(false);
+  const[billInfo,setBillInfo]=useState(null);
 
     const [isDefectModalOpen, setIsDefectModalOpen] = useState(false);
     const [exchangeAmount, setExchangeAmount] = useState(0);
@@ -69,41 +72,44 @@ const BillDetails = ({ userData }) => {
         return `${day}-${month}-${year}`;
         };
 
-        const fetchBill = () => {
+
+        const fetchBill = async () => {
             const user = JSON.parse(sessionStorage.getItem('user'));
             const storeId = user ? user.storeId : '';
-
             if (!billNo) {
+                resetPage();
                 return;
             }
 
-            axios.get(`${API_BASE_URL}/user/getBill/${billNo}/${storeId}`)
-                .then(response => {
-                    const data = response.data;
-
-                    if (data.type === "single") {
-                        resetPage();
-                        setBillData(data.bill);  // Directly set bill data if it's a single bill
-                        setShowBillSelectionPopup(false);  // Ensure popup is closed if it was open
-                        setPopupMessage("");  // Clear any existing popup messages
-                        setSelectedItems([]);
-                    } else if (data.type === "list") {
-                        resetPage();
-                        setReturnedItems({});
-                        setReturnQuantities({});
-                        setBillList(data.billList);  // Store the list of bills for display in the popup
-                        setShowBillSelectionPopup(true);  // Open popup to show bill list
-                        setSelectedItems([]);
-                    } else {
-                        alert("Bill not found");
-                        resetPage();
-                    }
-                })
-                .catch(error => {
-                    alert('Error fetching bill data please try again');
-                    
+            try {
+                const response = await axios.get(`${BILL_FETCH_URL}`, {
+                    params: { billNo, storeId }  // Pass parameters as query params
                 });
+                const data = response.data;
+        
+                if (data.type === "single") {
+                   
+                    setBillData(data.bill);  // Directly set bill data if it's a single bill
+                    setShowBillSelectionPopup(false);  // Ensure popup is closed if it was open
+                    setPopupMessage("");  // Clear any existing popup messages
+                    setSelectedItems([]);
+                } else if (data.type === "list") {
+                    resetPage();
+                    setReturnedItems({});
+                    setReturnQuantities({});
+                    setBillList(data.billList);  // Store the list of bills for display in the popup
+                    setShowBillSelectionPopup(true);  // Open popup to show bill list
+                    setSelectedItems([]);
+                } else {
+                    alert("Bill not found");
+                    resetPage();
+                }
+
+            } catch (error) {
+                alert('Error fetching bill data, please try again');
+            }
         };
+        
 
 
         const handleDeleteBill = () => {
@@ -177,55 +183,56 @@ const BillDetails = ({ userData }) => {
             });
         }, [selectedItems]);
 
-        const confirmReturn = () => {
+        const confirmReturn = async () => {
             const allQuantitiesValid = selectedItems.every(item => {
                 const returnQuantity = returnQuantities[item.sno];
                 return returnQuantity !== undefined && returnQuantity > 0;
             });
-
+        
             if (!allQuantitiesValid) {
                 alert('Please enter a valid return quantity for all selected items.');
                 return;
             }
-
+        
             const itemsToReturn = selectedItems.map(item => ({
                 sno: item.sno,
                 barcodedId: item.itemBarcodeID,
-                
-                price:item.sellPrice,
-                userId:userData.userId,
+                price: item.sellPrice,
+                userId: userData.userId,
                 return_quantity: returnQuantities[item.sno],
             }));
-
-            axios.post(`${API_BASE_URL}/user/return_stock/bill`, itemsToReturn)
-                .then(response => {
-                    if (response.data === 'success') {
-                        setPopupMessage('Item returned');
-                        setPopupType('success');
-                    } else {
-                        setPopupMessage('Please try again');
-                        setPopupType('error');
-                    }
-                    setShowPopup(true);
-                
-                    setReturnedItems(prevState => {
-                        const newReturnedItems = { ...prevState };
-                        itemsToReturn.forEach(item => {
-                            newReturnedItems[item.sno] = true;
-                        });
-                        return newReturnedItems;
-                    });
-                    setIsModalOpen(false);
-                    setSelectedItems([]);
-                    fetchBill(); // Refetch bill data after return
-                })
-                .catch(error => {
-                    console.error('Error returning items:', error);
+        
+            try {
+                const response = await axios.post(`${API_BASE_URL}/user/return_stock/bill`, itemsToReturn);
+        
+                if (response.data === 'success') {
+                    setPopupMessage('Item returned');
+                    setPopupType('success');
+                } else {
                     setPopupMessage('Please try again');
                     setPopupType('error');
-                    setShowPopup(true);
+                }
+                setShowPopup(true);
+        
+                setReturnedItems(prevState => {
+                    const newReturnedItems = { ...prevState };
+                    itemsToReturn.forEach(item => {
+                        newReturnedItems[item.sno] = true;
+                    });
+                    return newReturnedItems;
                 });
+        
+                setIsModalOpen(false);
+                setSelectedItems([]);
+                fetchBill(); // Refetch bill data after return
+            } catch (error) {
+                console.error('Error returning items:', error);
+                setPopupMessage('Please try again');
+                setPopupType('error');
+                setShowPopup(true);
+            }
         };
+        
 
         const handleSelectBill = (bill) => {
             setBillData(bill);  // Set selected bill as billData
@@ -273,25 +280,40 @@ const BillDetails = ({ userData }) => {
             setIsDefectModalOpen(true);
         };
 
-        const confirmDefect = () => {
-            axios.post(`${API_BASE_URL}/user/stock/defect`, {
-                sno: defectItem.sno,
-                barcodedId: defectItem.itemBarcodeID,
-                return_quantity: defectQuantity,
-                price: defectItem.sellPrice,
-                userId: userData.userId
-            })
-            .then(response => {
-                setShowPopup({ message: 'Item defected successfully!', type: 'success' });
+        const confirmDefect = async () => {
+            try {
+                const response = await axios.post(`${DEFECT_ITEM_RETURN}`, {
+                    sno: defectItem.sno,
+                    barcodedId: defectItem.itemBarcodeID,
+                    return_quantity: defectQuantity,
+                    price: defectItem.sellPrice,
+                    userId: userData.userId
+                });
+
+
+                if(response.data.status==='success')
+                {
+             console.log("Success");
+                setPopupMessage(response.data.message);
+                setPopupType('success');
                 setIsDefectModalOpen(false);
-                fetchBill(); 
                 setSelectedItems([]);
-            })
-            .catch(error => {
-                // Handle error
-                setShowPopup({ message: 'Error defecting item!', type: 'error' });
-            });
+                setPopupMessage(response.data.message);
+                setPopupType('success');
+                }else{
+                    console.log("failed");
+                    setPopupMessage(response.data.message);
+                    setPopupType('failed');  
+                }
+            } catch (error) {
+                console.log(error);
+                setPopupMessage("Error in returning defeted item");
+                    setPopupType('failed');
+            }finally{
+                fetchBill();
+            }
         };
+        
 
         const handleCloseExchangeModal = () => {
             setIsExchangeModalOpen(false);
@@ -356,6 +378,7 @@ const BillDetails = ({ userData }) => {
                         placeholder="Enter bill no or mobile no"
                     />
                     <button onClick={fetchBill}>Fetch Bill</button>
+                    <button onClick={resetPage}>Clear</button>
                 </div>
 
 
@@ -425,11 +448,11 @@ const BillDetails = ({ userData }) => {
                                                 <span style={{ color: 'green' }}>Item Selected</span>
                                             ) : (
                                                 <>
-                                                    {item.status === "Returned" ? (
+                                                    {item.status === "RETURN" ? (
                                                         <span>Item Returned</span>
-                                                    ) : item.status === "Exchanged" ? (
+                                                    ) : item.status === "EXCHANGE" ? (
                                                         <span>Item Exchanged</span>
-                                                    ) : item.status === "Defected" ? (
+                                                    ) : item.status === "DEFECT" ? (
                                                         <span>Defected Item Returned</span>
                                                     ) : item.quantity <= 0 ? (
                                                         <span>Item Exchanged or returned</span>
