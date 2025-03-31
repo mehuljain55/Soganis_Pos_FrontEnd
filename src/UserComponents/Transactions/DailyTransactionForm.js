@@ -43,11 +43,13 @@ const DailyTransactionForm = () => {
 
   const fetchStores = async () => {
     try {
+      const{user,token}=getUserData();
       const response = await axios.post(`${FETCH_STORES_URL}`);
      
      if(response.status===200)
      {
-      setStores(response.data);
+      const filteredStores = response.data.filter(store => store.storeId !== user.storeId);
+      setStores(filteredStores);
      }else{
      alert("No store found");
      }
@@ -80,6 +82,9 @@ const DailyTransactionForm = () => {
 
   const fetchStoreUsers = async (storeId) => {
     try {
+     
+      
+
       const response = await axios.get(`${FETCH_STORE_USER_URL}?storeId=${storeId}`);
       if (response.status === 200) {
         setStoreUsers(response.data);
