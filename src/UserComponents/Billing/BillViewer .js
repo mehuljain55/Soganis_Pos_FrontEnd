@@ -2,8 +2,10 @@ import { useState, useRef, useEffect } from 'react';
 
 import { API_BASE_URL } from '../Config.js';
 import axios from 'axios';
-import './BillViewer.css';
 import { format } from 'date-fns';
+import './BillViewer.css';
+import { DELETE_BILL_URL } from '../Api/ApiConstants.js';
+
 
 const BillViewer = () => {
   const [startDate, setStartDate] = useState('');
@@ -158,22 +160,19 @@ const BillViewer = () => {
     try {
       const user = JSON.parse(sessionStorage.getItem('user'));
       const storeId = user?.storeId;
-
-      const response = await axios.post(`${API_BASE_URL}/user/cancelBill`, null, {
-        params: { billNo, storeId },
-      });
-
-      if (response.data === 'Success') {
-        alert('Bill successfully canceled.');
-        fetchBills(); // Refresh bills after deletion
-      } else {
-        alert('Failed to cancel the bill.');
-      }
+  
+      const response = await axios.post(
+        `${DELETE_BILL_URL}?billNo=${billNo}&storeId=${storeId}`
+      );
+      alert(response.data.message || "Unable to delete bill");
     } catch (error) {
       console.error('Error canceling bill:', error);
       alert('An error occurred while canceling the bill.');
+    } finally {
+      fetchBills();
     }
   };
+  
 
   const isToday = (dateString) => {
     const today = new Date().toISOString().split('T')[0];

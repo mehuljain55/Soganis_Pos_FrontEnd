@@ -8,3 +8,4 @@ export const NEW_BILL_GENERATE_URL = `${API_BASE_URL}/user/billRequest`;
 export const BILL_FETCH_URL = `${API_BASE_URL}/user/getBill`;
 export const ITEM_RETURN_URL = `${API_BASE_URL}/user/return_stock/bill`;
 export const DEFECT_ITEM_RETURN= `${API_BASE_URL}/user/stock/defect`;
+export const DELETE_BILL_URL= `${API_BASE_URL}/user/cancelBill`;

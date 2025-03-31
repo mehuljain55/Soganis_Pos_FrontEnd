@@ -87,20 +87,7 @@ const CustomItemPopup = ({
               {/* Each field in its own row */}
    
   
-              <div className="custom-item-billing-form-row">
-                <div className="custom-item-billing-form-group">
-                  <label className="custom-item-billing-label">Item Name:</label>
-                  <input 
-                    className="custom-item-billing-input"
-                    type="text" 
-                    name="itemName" 
-                    value={customItem.itemName} 
-                    onChange={handleCustomItemChange} 
-                    placeholder="Enter item name"
-                    onKeyDown={handleCustomItemKeyDown}
-                  />
-                </div>
-              </div>
+              
   
               <div className="custom-item-billing-form-row">
                 <div className="custom-item-billing-form-group">
