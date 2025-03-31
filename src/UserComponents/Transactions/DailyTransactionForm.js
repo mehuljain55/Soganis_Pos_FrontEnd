@@ -8,6 +8,9 @@ import {
 } from 'lucide-react';
 import './DailyTransactionForm.css';
 
+import { FETCH_STORES_URL, FETCH_STORE_USER_URL, CREATE_TRANSACTION_URL } from '../Api/ApiConstants';
+import axios from 'axios';
+
 const DailyTransactionForm = () => {
   const [formData, setFormData] = useState({
     description: '',
@@ -25,29 +28,39 @@ const DailyTransactionForm = () => {
   const [errors, setErrors] = useState({});
   const [success, setSuccess] = useState(false);
 
-  // Fetch stores on component mount
+  
+
+  const getUserData = () => {
+    const user = sessionStorage.getItem('user');
+    const token = sessionStorage.getItem('token');
+
+    return {
+        user: user ? JSON.parse(user) : null,
+        token: token || null
+    };
+};
+
+
+  const fetchStores = async () => {
+    try {
+      const response = await axios.post(`${FETCH_STORES_URL}`);
+     
+     if(response.status===200)
+     {
+      setStores(response.data);
+     }else{
+     alert("No store found");
+     }
+    } catch (error) {
+      console.error("Error fetching stores:", error);
+    }
+  };
+
   useEffect(() => {
-    // Mock data for demonstration
-    setStores([
-      { storeId: 'store1', storeName: 'Main Branch' },
-      { storeId: 'store2', storeName: 'North Branch' },
-      { storeId: 'store3', storeName: 'South Branch' }
-    ]);
+    fetchStores();
   }, []);
 
-  // Fetch store users based on selected store
-  useEffect(() => {
-    if (formData.transferToStore) {
-      // Mock data for demonstration
-      setStoreUsers([
-        { userId: 'user1', sname: 'John Doe' },
-        { userId: 'user2', sname: 'Jane Smith' },
-        { userId: 'user3', sname: 'Robert Johnson' }
-      ]);
-    } else {
-      setStoreUsers([]);
-    }
-  }, [formData.transferToStore]);
+ 
 
   // Reset transaction type code when transaction type changes to Transfer
   useEffect(() => {
@@ -63,6 +76,29 @@ const DailyTransactionForm = () => {
       }));
     }
   }, [formData.transactionType]);
+
+
+  const fetchStoreUsers = async (storeId) => {
+    try {
+      const response = await axios.get(`${FETCH_STORE_USER_URL}?storeId=${storeId}`);
+      if (response.status === 200) {
+        setStoreUsers(response.data);
+      } else {
+        setStoreUsers([]);
+      }
+    } catch (error) {
+      console.error("Error fetching store users:", error);
+      setStoreUsers([]);
+    }
+  };
+
+  useEffect(() => {
+    if (formData.transferToStore) {
+      fetchStoreUsers(formData.transferToStore);
+    } else {
+      setStoreUsers([]);
+    }
+  }, [formData.transferToStore]);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -127,48 +163,53 @@ const DailyTransactionForm = () => {
     setLoading(true);
     
     try {
-      // Mock user data - in a real app, this would come from authentication context
-      const user = {
-        userId: 'current-user-id',
-        sname: 'Current User'
-      };
+      // Get user data from session storage
+      const {user, token} = getUserData();
+  
+
+      
 
       const requestData = {
         user: user,
-        token: localStorage.getItem('token') || 'mock-token',
+        token,
         transactionDailyCashModel: {
           ...formData,
           amount: parseInt(formData.amount, 10)
         }
       };
-
-      // For demonstration, just log the data that would be sent
-      console.log('Submitting:', requestData);
+  
+      if (formData.transactionType === 'TRANSFER') {
+        delete requestData.transactionDailyCashModel.transactionTypeCode;
+      }
       
-      // Simulate API delay
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      
-      // Show success message
-      setSuccess(true);
-      
-      // Reset form after successful submission
-      setFormData({
-        description: '',
-        transferToStore: '',
-        storeUser: '',
-        paymentMode: 'CASH',
-        transactionTypeCode: 'dr',
-        transactionType: 'EXPENSE',
-        amount: ''
-      });
+      // Send the actual API request
+      const response = await axios.post(CREATE_TRANSACTION_URL, requestData);
+  
+      // Check if request was successful
+      if (response.status === 200) {
+        // Show success message
+        setSuccess(true);
+        
+        // Reset form after successful submission
+        setFormData({
+          description: '',
+          transferToStore: '',
+          storeUser: '',
+          paymentMode: 'CASH',
+          transactionTypeCode: 'dr',
+          transactionType: 'EXPENSE',
+          amount: ''
+        });
+      } else {
+        throw new Error('Failed to create transaction');
+      }
     } catch (err) {
-      console.error(err);
+      console.error('Transaction creation error:', err);
       setErrors({ form: 'Failed to create transaction' });
     } finally {
       setLoading(false);
     }
   };
-
   // Determine if transfer fields should be shown
   const showTransferFields = formData.transactionType === 'TRANSFER';
   
@@ -244,19 +285,22 @@ const DailyTransactionForm = () => {
                 <div className="dtf-column">
                   <label className="dtf-section-label">Transfer To Store</label>
                   <div className="dtf-select-wrapper">
-                    <select
-                      name="transferToStore"
-                      value={formData.transferToStore}
-                      onChange={handleInputChange}
-                      className={`dtf-select ${errors.transferToStore ? 'dtf-error' : ''}`}
-                    >
-                      <option value="">Select Store</option>
-                      {stores.map(store => (
-                        <option key={store.storeId} value={store.storeId}>
-                          {store.storeName}
-                        </option>
-                      ))}
-                    </select>
+                  <select
+              name="transferToStore"
+              value={formData.transferToStore}
+              onChange={(e) => {
+                handleInputChange(e);
+                setFormData(prev => ({ ...prev, storeUser: '' }));
+              }}
+              className={`dtf-select ${errors.transferToStore ? 'dtf-error' : ''}`}
+            >
+              <option value="">Select Store</option>
+              {stores.map(store => (
+                <option key={store.storeId} value={store.storeId}>
+                  {store.storeName}
+                </option>
+              ))}
+            </select>
                   </div>
                   {errors.transferToStore && (
                     <div className="dtf-error-message">
@@ -269,20 +313,20 @@ const DailyTransactionForm = () => {
                 <div className="dtf-column">
                   <label className="dtf-section-label">Store User</label>
                   <div className="dtf-select-wrapper">
-                    <select
-                      name="storeUser"
-                      value={formData.storeUser}
-                      onChange={handleInputChange}
-                      className={`dtf-select ${errors.storeUser ? 'dtf-error' : ''}`}
-                      disabled={!formData.transferToStore}
-                    >
-                      <option value="">Select User</option>
-                      {storeUsers.map(user => (
-                        <option key={user.userId} value={user.userId}>
-                          {user.sname}
-                        </option>
-                      ))}
-                    </select>
+                  <select
+              name="storeUser"
+              value={formData.storeUser}
+              onChange={handleInputChange}
+              className={`dtf-select ${errors.storeUser ? 'dtf-error' : ''}`}
+              disabled={!formData.transferToStore}
+            >
+              <option value="">Select User</option>
+              {storeUsers.map(user => (
+                <option key={user.userId} value={user.userId}>
+                  {user.sname}
+                </option>
+              ))}
+            </select>
                   </div>
                   {errors.storeUser && (
                     <div className="dtf-error-message">
@@ -353,7 +397,7 @@ const DailyTransactionForm = () => {
           <div className="dtf-section">
             <label className="dtf-section-label">Amount</label>
             <div className="dtf-amount-wrapper">
-              <span className="dtf-currency-symbol">$</span>
+              <span className="dtf-currency-symbol">₹</span>
               <input
                 type="number"
                 name="amount"
