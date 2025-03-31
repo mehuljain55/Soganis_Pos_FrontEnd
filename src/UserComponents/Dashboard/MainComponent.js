@@ -26,6 +26,7 @@ import { LogoutButton, useLogout } from '../Login/LogoutPage.js';
 import ItemCodeFetcher from '../Billing/ItemCodeFetcher.js';
 import CustomerDueList from '../Billing/CustomerDueList.js';
 import Dashboard from './Dashboard.js';
+import DailyTransactionForm from '../Transactions/DailyTransactionForm.js';
 
 const MainComponent = ({ userData }) => {
   const [selectedMenuItem, setSelectedMenuItem] = useState('Dashboard');
@@ -150,6 +151,8 @@ const MainComponent = ({ userData }) => {
             <button className="dashboard-list-group-item" onClick={() => handleMenuItemClick('Inter Company Transaction')}>Inter Company</button>
             <button className="dashboard-list-group-item" onClick={() => handleMenuItemClick('Recent Bills')}>Recent Bills</button>
             <button className="dashboard-list-group-item" onClick={() => handleMenuItemClick('Customer Due List')}>Customer Due List</button>
+            <button className="dashboard-list-group-item" onClick={() => handleMenuItemClick('Daily Cash')}>Daily Cash</button>
+        
             <button className="dashboard-list-group-item" onClick={() => handleMenuItemClick('Add Order')}>Customer Order Book</button>
             <button className="dashboard-list-group-item" onClick={() => handleMenuItemClick('View Order')}>View Order Book</button>
             <button className="dashboard-list-group-item" onClick={() => handleMenuItemClick('View Stock')}>View Stock</button>
@@ -161,6 +164,7 @@ const MainComponent = ({ userData }) => {
             <button className="dashboard-list-group-item" onClick={() => navigate('/barcode')}>Open Barcode</button>
             <button className="dashboard-list-group-item" onClick={() => handleMenuItemClick('Update Inventory')}>Add Inventory(Qty)</button>
             <button className="dashboard-list-group-item" onClick={() => handleMenuItemClick('Add New Item')}>Update Item List</button>
+        
           </div>
         </div>
   
@@ -181,6 +185,8 @@ const MainComponent = ({ userData }) => {
           {selectedMenuItem === 'Add New Item' && <InventoryAdd />}
           {selectedMenuItem === 'Recent Bills' && <BillViewer />}
           {selectedMenuItem === 'Customer Due List' && <CustomerDueList />}
+          {selectedMenuItem === 'Daily Cash' && <DailyTransactionForm />}
+          
         </main>
       </div>
   

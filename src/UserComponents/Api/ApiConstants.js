@@ -9,3 +9,11 @@ export const BILL_FETCH_URL = `${API_BASE_URL}/user/getBill`;
 export const ITEM_RETURN_URL = `${API_BASE_URL}/user/return_stock/bill`;
 export const DEFECT_ITEM_RETURN= `${API_BASE_URL}/user/stock/defect`;
 export const DELETE_BILL_URL= `${API_BASE_URL}/user/cancelBill`;
+
+
+// Store URL
+export const FETCH_STORES_URL = `${API_BASE_URL}/store/getAllStores`;
+export const FETCH_STORE_USER_URL= `${API_BASE_URL}/user/getUserList`;
+
+// Transaction Daily Cash
+export const CREATE_TRANSACTION_URL = `${API_BASE_URL}/user/daily/create`;

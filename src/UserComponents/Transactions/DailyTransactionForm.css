@@ -1,0 +1,279 @@
+/* DailyTransactionForm.css */
+.dtf-wrapper {
+  margin-left: 15%;
+  width: 100%;
+  max-width: 800px;
+  padding: 1rem;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+.dtf-container {
+  background-color: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  padding: 1.25rem;
+}
+
+.dtf-title {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #1a1a1a;
+  margin-bottom: 0.75rem;
+}
+
+.dtf-divider {
+  height: 1px;
+  background-color: #f0f0f0;
+  margin: 0.75rem 0;
+}
+
+.dtf-form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.dtf-section {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.dtf-section-label {
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: #4b5563;
+  margin-bottom: 0.1rem;
+}
+
+.dtf-input {
+  width: 95%;
+  height: 38px;
+  padding: 0 0.75rem;
+  font-size: 0.9rem;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.dtf-input:focus {
+  outline: none;
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.1);
+}
+
+.dtf-type-buttons, .dtf-payment-options {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 0.1rem;
+}
+
+.dtf-type-button, .dtf-payment-button {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  height: 38px;
+  padding: 0 0.75rem;
+  background-color: #f9fafb;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  color: #4b5563;
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.dtf-type-button:hover, .dtf-payment-button:hover {
+  background-color: #f3f4f6;
+}
+
+/* Transaction Type blue (Expense and Transfer) */
+.dtf-expense-transfer-button:hover,
+.dtf-expense-transfer-button.dtf-active {
+  background-color: #edf5ff;
+  border-color: #3b82f6;
+  color: #2563eb;
+}
+
+/* Debit button - red on hover or active */
+.dtf-debit-button:hover,
+.dtf-debit-button.dtf-active {
+  background-color: #fee2e2;
+  border-color: #ef4444;
+  color: #dc2626;
+}
+
+/* Credit button - green on hover or active */
+.dtf-credit-button:hover,
+.dtf-credit-button.dtf-active {
+  background-color: #dcfce7;
+  border-color: #22c55e;
+  color: #16a34a;
+}
+
+.dtf-active {
+  background-color: #edf5ff;
+  border-color: #3b82f6;
+  color: #2563eb;
+}
+
+.dtf-icon {
+  color: currentColor;
+}
+
+.dtf-select-wrapper {
+  position: relative;
+}
+
+.dtf-select-wrapper::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  right: 1rem;
+  transform: translateY(-50%);
+  width: 0;
+  height: 0;
+  border-left: 5px solid transparent;
+  border-right: 5px solid transparent;
+  border-top: 5px solid #6b7280;
+  pointer-events: none;
+}
+
+.dtf-select {
+  width: 100%;
+  height: 38px;
+  padding: 0 1rem;
+  font-size: 0.9rem;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  background-color: white;
+  appearance: none;
+  cursor: pointer;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.dtf-select:focus {
+  outline: none;
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.1);
+}
+
+.dtf-select:disabled {
+  background-color: #f9fafb;
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+
+.dtf-transfer-section {
+  padding: 0.75rem;
+  background-color: #f8fafc;
+  border-radius: 8px;
+  border: 1px solid #e5e7eb;
+  position: relative;
+}
+
+.dtf-blue-line {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 5px;
+  height: 100%;
+  background-color: #3b82f6;
+  border-top-left-radius: 8px;
+  border-bottom-left-radius: 8px;
+}
+
+.dtf-row {
+  display: flex;
+  gap: 1rem;
+}
+
+.dtf-column {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.dtf-amount-wrapper {
+  position: relative;
+}
+
+.dtf-currency-symbol {
+  position: absolute;
+  top: 50%;
+  left: 0.75rem;
+  transform: translateY(-50%);
+  color: #6b7280;
+  font-size: 0.9rem;
+}
+
+.dtf-amount-input {
+  padding-left: 1.5rem;
+}
+
+.dtf-error {
+  border-color: #ef4444;
+}
+
+.dtf-error-message {
+  font-size: 0.7rem;
+  color: #ef4444;
+  margin-top: 0.1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.dtf-success-message {
+  padding: 0.5rem;
+  background-color: #dcfce7;
+  border-radius: 6px;
+  color: #16a34a;
+  font-size: 0.9rem;
+  margin-bottom: 0.75rem;
+}
+
+.dtf-submit-button {
+  margin-top: 0.5rem;
+  height: 42px;
+  background-color: #2563eb;
+  color: white;
+  font-size: 0.9rem;
+  font-weight: 500;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.dtf-submit-button:hover {
+  background-color: #1d4ed8;
+}
+
+.dtf-submit-button:disabled {
+  background-color: #93c5fd;
+  cursor: not-allowed;
+}
+
+@media (max-width: 640px) {
+  .dtf-wrapper {
+    padding: 0.5rem;
+  }
+  
+  .dtf-container {
+    padding: 1rem;
+  }
+  
+  .dtf-row {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  
+  .dtf-type-buttons, .dtf-payment-options {
+    flex-direction: row;
+  }
+}
