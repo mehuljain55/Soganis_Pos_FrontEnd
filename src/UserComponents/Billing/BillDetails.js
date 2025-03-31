@@ -477,7 +477,7 @@ const BillDetails = ({ userData }) => {
                             <button className="bill-detail-exchange-btn" onClick={() => setIsModalOpen(true)}>Return / Exchange </button>
                         )}
                         
-                        { billData.status === 'Fresh' && 
+                        { billData.status === 'FRESH' && 
                         billData.final_amount > 0 && 
                             isToday(new Date(billData.bill_date)) && (
         <button 
