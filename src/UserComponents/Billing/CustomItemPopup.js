@@ -209,7 +209,7 @@ const CustomItemPopup = ({
   
               <div className="custom-item-billing-form-row">
                 <div className="custom-item-billing-form-group">
-                  <label className="custom-item-billing-label">Sell Price:</label>
+                  <label className="custom-item-billing-label">Sell Price (Auto Calculate)</label>
                   <input 
                     className="custom-item-billing-input"
                     type="text" 
