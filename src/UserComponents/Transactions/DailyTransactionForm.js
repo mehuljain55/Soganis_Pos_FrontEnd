@@ -80,7 +80,24 @@ useEffect(() => {
         ...prev,
         transactionTypeCode: ''
       }));
-    } else if (!formData.transactionTypeCode) {
+    } 
+  
+   else if (formData.transactionType === 'EXPENSE') {
+      setFormData(prev => ({
+        ...prev,
+        transactionTypeCode: 'dr'
+      }));
+    } 
+
+    else if (formData.transactionType === 'INCOME') {
+      setFormData(prev => ({
+        ...prev,
+         transactionTypeCode: 'cr'
+      }));
+    } 
+   
+    
+    else if (!formData.transactionTypeCode) {
       setFormData(prev => ({
         ...prev,
         transactionTypeCode: 'dr'
