@@ -460,10 +460,20 @@ const handleSelectChange = (selectedOption) => {
   }, []);
 
   const addItemToBill = (item) => {
+
+    if (!schoolName) { // Check if schoolName is empty or null
+      const matchedSchool = allSchools.find(school => school.schoolName === item.itemCategory);
+      
+      if (matchedSchool) {
+          setSchoolName(matchedSchool.schoolName);
+      }
+  }
+  
     const existingItemIndex = selectedItems.findIndex(
       (selectedItem) => selectedItem.itemBarcodeID === item.itemBarcodeID
     );
   
+
     if (existingItemIndex > -1) {
       const updatedItems = [...selectedItems];
       const existingItem = updatedItems[existingItemIndex];
