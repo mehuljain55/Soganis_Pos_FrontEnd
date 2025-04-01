@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { 
-  CreditCard, 
   IndianRupee, 
   Send, 
   ShoppingBag,
-  AlertCircle
+  AlertCircle,
+  HandCoins
 } from 'lucide-react';
 import './DailyTransactionForm.css';
 
@@ -39,6 +39,15 @@ const DailyTransactionForm = () => {
         token: token || null
     };
 };
+
+useEffect(() => {
+  // Ensure transaction type code is always 'cr' for INCOME and 'dr' for EXPENSE
+  if (formData.transactionType === 'INCOME') {
+    setFormData(prev => ({ ...prev, transactionTypeCode: 'cr' }));
+  } else if (formData.transactionType === 'EXPENSE') {
+    setFormData(prev => ({ ...prev, transactionTypeCode: 'dr' }));
+  }
+}, [formData.transactionType]);
 
 
   const fetchStores = async () => {
@@ -82,20 +91,34 @@ const DailyTransactionForm = () => {
 
   const fetchStoreUsers = async (storeId) => {
     try {
-     
-      
-
       const response = await axios.get(`${FETCH_STORE_USER_URL}?storeId=${storeId}`);
-      if (response.status === 200) {
-        setStoreUsers(response.data);
+  
+      if (response.data.status === 'success') {
+        const users = response.data.payload;
+  
+        // Find the default user
+        const defaultUser = users.find(user => user.userType === 'default');
+  
+        setStoreUsers(users);
+        
+        // If a default user exists, set it as the selected storeUser
+        setFormData(prev => ({
+          ...prev,
+          storeUser: defaultUser ? defaultUser.userId : ''
+        }));
+  
       } else {
         setStoreUsers([]);
+        setFormData(prev => ({ ...prev, storeUser: '' }));
       }
+  
     } catch (error) {
       console.error("Error fetching store users:", error);
       setStoreUsers([]);
+      setFormData(prev => ({ ...prev, storeUser: '' }));
     }
   };
+  
 
   useEffect(() => {
     if (formData.transferToStore) {
@@ -253,6 +276,15 @@ const DailyTransactionForm = () => {
                 <ShoppingBag size={18} className="dtf-icon" />
                 <span>Expense</span>
               </button>
+
+              <button 
+                type="button"
+                className={`dtf-type-button dtf-expense-transfer-button ${formData.transactionType === 'INCOME' ? 'dtf-active' : ''}`}
+                onClick={() => handleInputChange({ target: { name: 'transactionType', value: 'INCOME' } })}
+              >
+                <HandCoins size={18} className="dtf-icon" />
+                <span>Income</span>
+              </button>
               
               <button 
                 type="button"
@@ -302,7 +334,7 @@ const DailyTransactionForm = () => {
               <option value="">Select Store</option>
               {stores.map(store => (
                 <option key={store.storeId} value={store.storeId}>
-                  {store.storeName}
+                  {store.storeName} -{store.address}
                 </option>
               ))}
             </select>
@@ -356,6 +388,18 @@ const DailyTransactionForm = () => {
                   <span>Debit</span>
                 </button>
                 
+                
+              </div>
+            </div>
+          )}
+
+
+        {formData.transactionType === 'INCOME' && (
+            <div className="dtf-section">
+              <label className="dtf-section-label">Transaction Type</label>
+              <div className="dtf-type-buttons">
+             
+                
                 <button 
                   type="button"
                   className={`dtf-type-button dtf-credit-button ${!isDebit ? 'dtf-active' : ''}`}
@@ -378,8 +422,8 @@ const DailyTransactionForm = () => {
                 <IndianRupee size={18} className="dtf-icon" />
                 <span>Cash</span>
               </button>
-              
-              <button
+            
+              {/* <button
                 type="button"
                 className={`dtf-payment-button ${formData.paymentMode === 'UPI' ? 'dtf-active' : ''}`}
                 onClick={() => handleInputChange({ target: { name: 'paymentMode', value: 'UPI' } })}
@@ -395,7 +439,8 @@ const DailyTransactionForm = () => {
               >
                 <CreditCard size={18} className="dtf-icon" />
                 <span>Card</span>
-              </button>
+              </button>     */}
+          
             </div>
           </div>
           

@@ -13,7 +13,7 @@ export const DELETE_BILL_URL= `${API_BASE_URL}/user/cancelBill`;
 
 // Store URL
 export const FETCH_STORES_URL = `${API_BASE_URL}/store/getAllStores`;
-export const FETCH_STORE_USER_URL= `${API_BASE_URL}/user/getUserList`;
+export const FETCH_STORE_USER_URL= `${API_BASE_URL}/user/getUserByStore`;
 
 // Transaction Daily Cash
 export const CREATE_TRANSACTION_URL = `${API_BASE_URL}/user/daily/create`;
