@@ -4,6 +4,9 @@ import { API_BASE_URL } from '../Config.js';
 import './UserCashCollection.css';
 import { format } from 'date-fns';
 
+import ExcelJS from 'exceljs';
+import { saveAs } from 'file-saver';
+
 const UserCashCollection = () => {
   const [userCashCollection, setUserCashCollection] = useState([]);
   const [error, setError] = useState(null);
@@ -83,6 +86,191 @@ const UserCashCollection = () => {
     setActiveFilter(filter);
   };
 
+  const exportToExcel = async () => {
+    // Import required libraries
+    const ExcelJS = require('exceljs');
+    const { saveAs } = require('file-saver');
+    
+    // Create a new workbook and worksheet
+    const workbook = new ExcelJS.Workbook();
+    const worksheet = workbook.addWorksheet('Cash Collection');
+    
+    // Format dates
+    const formattedStartDate = startDate ? format(new Date(startDate), 'dd MMM yyyy') : 'N/A';
+    const formattedEndDate = endDate ? format(new Date(endDate), 'dd MMM yyyy') : 'N/A';
+    
+    // Define columns first (without adding headers yet)
+    worksheet.columns = [
+        { key: 'userId', width: 12 },
+        { key: 'collectionDate', width: 18 },
+        { key: 'userName', width: 20 },
+        { key: 'cashCollection', width: 15, style: { numFmt: '#,##0.00' } },
+        { key: 'upiCollection', width: 15, style: { numFmt: '#,##0.00' } },
+        { key: 'cardCollection', width: 15, style: { numFmt: '#,##0.00' } },
+        { key: 'cashOut', width: 12, style: { numFmt: '#,##0.00' } },
+        { key: 'total', width: 15, style: { numFmt: '#,##0.00' } }
+    ];
+    
+    // Add title and subtitle rows
+    worksheet.addRow([]);  // Empty row for spacing at top
+    const titleRow = worksheet.addRow(['User Cash Collection Report']);
+    const periodRow = worksheet.addRow([`Period: ${formattedStartDate} to ${formattedEndDate}`]);
+    worksheet.addRow([]);  // Empty row for spacing
+    
+    // Style the title and period rows
+    titleRow.height = 30;
+    titleRow.font = { bold: true, size: 16 };
+    titleRow.alignment = { horizontal: 'center', vertical: 'middle' };
+    worksheet.mergeCells(`A2:H2`);
+    
+    periodRow.height = 25;
+    periodRow.font = { bold: true, size: 12 };
+    periodRow.alignment = { horizontal: 'center', vertical: 'middle' };
+    worksheet.mergeCells(`A3:H3`);
+    
+    // Define the header background color - light blue
+    const headerBgColor = 'D9E1F2';
+    // Define the total row background color - light yellow
+    const totalBgColor = 'FFEB9C';
+    
+    // NOW add the header row
+    const headerRow = worksheet.addRow([
+        'User ID', 'Collection Date', 'User Name', 'Cash Collection',
+        'UPI Collection', 'Card Collection', 'Cash Out', 'Total'
+    ]);
+    
+    // Style header row - using the header background color for both fill and borders
+    headerRow.height = 25;
+    headerRow.eachCell((cell, colNumber) => {
+        cell.font = { bold: true, size: 12 };
+        cell.fill = {
+            type: 'pattern',
+            pattern: 'solid',
+            fgColor: { argb: headerBgColor }  // Light blue background
+        };
+        cell.border = {
+            top: { style: 'medium', color: { argb: headerBgColor } },
+            left: { style: 'medium', color: { argb: headerBgColor } },
+            bottom: { style: 'medium', color: { argb: headerBgColor } },
+            right: { style: 'medium', color: { argb: headerBgColor } }
+        };
+        cell.alignment = { horizontal: 'center', vertical: 'middle' };
+    });
+    
+    // Add an outer border to the header row to make it stand out
+    headerRow.eachCell((cell, colNumber) => {
+        // Add black border around the entire header
+        if (colNumber === 1) {
+            cell.border.left = { style: 'medium', color: { argb: '000000' } };
+        }
+        if (colNumber === headerRow.cellCount) {
+            cell.border.right = { style: 'medium', color: { argb: '000000' } };
+        }
+        cell.border.top = { style: 'medium', color: { argb: '000000' } };
+        cell.border.bottom = { style: 'medium', color: { argb: '000000' } };
+    });
+    
+    // Add data rows
+    userCashCollection.forEach(item => {
+        const row = worksheet.addRow({
+            userId: item.userId || '',
+            collectionDate: item.collection_date || '',
+            userName: item.userName || '',
+            cashCollection: Number(item.cash_collection || 0),
+            upiCollection: Number(item.upi_collection || 0),
+            cardCollection: Number(item.card_collection || 0),
+            cashOut: Number(item.cash_return || 0),
+            total: Number(item.final_cash_collection || 0)
+        });
+        
+        // Apply border and format to each cell in the data row
+        row.eachCell({ includeEmpty: true }, cell => {
+            cell.border = {
+                top: { style: 'thin', color: { argb: '000000' } },
+                left: { style: 'thin', color: { argb: '000000' } },
+                bottom: { style: 'thin', color: { argb: '000000' } },
+                right: { style: 'thin', color: { argb: '000000' } }
+            };
+            
+            // Right align numeric cells
+            if (cell.col >= 4) {
+                cell.alignment = { horizontal: 'right' };
+            }
+        });
+    });
+    
+    // Add total row if there's data
+    if (userCashCollection.length > 0) {
+        const totals = {
+            userId: 'Total',
+            collectionDate: '',
+            userName: '',
+            cashCollection: parseFloat(calculateTotal('cash_collection')),
+            upiCollection: parseFloat(calculateTotal('upi_collection')),
+            cardCollection: parseFloat(calculateTotal('card_collection')),
+            cashOut: parseFloat(calculateTotal('cash_return')),
+            total: parseFloat(calculateTotal('final_cash_collection'))
+        };
+        
+        const totalRow = worksheet.addRow(totals);
+        
+        // Merge the first 3 cells for "Total"
+        worksheet.mergeCells(`A${totalRow.number}:C${totalRow.number}`);
+        
+        // Style the total row - using the total background color for both fill and borders
+        totalRow.eachCell({ includeEmpty: true }, cell => {
+            cell.font = { bold: true };
+            cell.fill = {
+                type: 'pattern',
+                pattern: 'solid',
+                fgColor: { argb: totalBgColor }  // Light yellow background
+            };
+            cell.border = {
+                top: { style: 'medium', color: { argb: totalBgColor } },
+                left: { style: 'medium', color: { argb: totalBgColor } },
+                bottom: { style: 'medium', color: { argb: totalBgColor } },
+                right: { style: 'medium', color: { argb: totalBgColor } }
+            };
+            
+            // Right align numeric cells
+            if (cell.col >= 4) {
+                cell.alignment = { horizontal: 'right' };
+            }
+        });
+        
+        // Add an outer border to the total row to make it stand out
+        totalRow.eachCell((cell, colNumber) => {
+            // Add black border around the entire total row
+            if (colNumber === 1) {
+                cell.border.left = { style: 'medium', color: { argb: '000000' } };
+            }
+            if (colNumber === totalRow.cellCount) {
+                cell.border.right = { style: 'medium', color: { argb: '000000' } };
+            }
+            cell.border.top = { style: 'medium', color: { argb: '000000' } };
+            cell.border.bottom = { style: 'medium', color: { argb: '000000' } };
+        });
+        
+        // Center-align the "Total" text
+        worksheet.getCell(`A${totalRow.number}`).alignment = { horizontal: 'center' };
+    }
+    
+    // Generate filename with date range
+    const fileName = `Cash_Collection_Report.xlsx`;
+    
+    // Write to buffer and save file
+    const buffer = await workbook.xlsx.writeBuffer();
+    const blob = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+    saveAs(blob, fileName);
+};
+
+// Helper function to ensure numeric values
+function toNumber(value) {
+    const num = Number(value);
+    return isNaN(num) ? 0 : num;
+}
+
+
   const calculateTotal = (key) =>
     userCashCollection.reduce((total, item) => total + (item[key] || 0), 0).toFixed(2);
 
@@ -93,6 +281,8 @@ const UserCashCollection = () => {
   return (
     <div className="user-cash-collection-container">
       <h2>User Cash Collection</h2>
+
+   
 
       <div className="filter-buttons-and-date-picker">
         <div className="filter-buttons">
@@ -126,6 +316,7 @@ const UserCashCollection = () => {
               />
             </label>
           </div>
+
         )}
 
 {activeFilter !== 'Custom Date' && (
@@ -140,7 +331,14 @@ const UserCashCollection = () => {
     </div>
   </div>
 )}
+ <div className='user-cash-collection-export'>
+      {userCashCollection.length > 0 && (
+          <button className="export-button" onClick={exportToExcel}>
+            Export to Excel
+          </button>
+        )}
 
+        </div>
 
       </div>
 
@@ -184,6 +382,7 @@ const UserCashCollection = () => {
           </tfoot>
         </table>
       </div>
+     
     </div>
   );
 };
