@@ -67,3 +67,27 @@
   text-align: center; /* Center-align the text in the footer cells */
   padding: 10px; /* Add padding for better spacing */
 }
+
+.header-with-export {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.export-button {
+  background-color: #4CAF50;
+  color: white;
+  padding: 8px 16px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.export-button:hover {
+  background-color: #45a049;
+}
