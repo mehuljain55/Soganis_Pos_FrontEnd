@@ -4,7 +4,7 @@ import { API_BASE_URL } from '../Config.js';
 import axios from 'axios';
 import { format } from 'date-fns';
 import './BillViewer.css';
-import { DELETE_BILL_URL } from '../Api/ApiConstants.js';
+import { CUSTOMER_BILL_DETAILED_INVOICE, DELETE_BILL_URL } from '../Api/ApiConstants.js';
 
 
 const BillViewer = () => {
@@ -15,6 +15,7 @@ const BillViewer = () => {
   const [selectedBill, setSelectedBill] = useState(null);
   const [pdfData, setPdfData] = useState(null);
   const [activeFilter, setActiveFilter] = useState('Today');
+  const [sortOrder, setSortOrder] = useState('Recent');
   const pdfIframeRef = useRef(null);
 
 
@@ -31,7 +32,17 @@ const BillViewer = () => {
       const response = await axios.get(`${API_BASE_URL}/invoice/getBillByDate`, {
         params: { startDate, endDate, storeId },
       });
-      setBills(response.data);
+      
+      // Sort the bills based on sortOrder
+      const sortedBills = [...response.data].sort((a, b) => {
+        // Parse bill numbers as integers for proper numeric sorting
+        const billNoA = parseInt(a.billNo);
+        const billNoB = parseInt(b.billNo);
+        
+        return sortOrder === 'Recent' ? billNoB - billNoA : billNoA - billNoB;
+      });
+      
+      setBills(sortedBills);
       setError('');
     } catch (error) {
       if (error.response && error.response.status === 404) {
@@ -48,7 +59,7 @@ const BillViewer = () => {
     if (startDate && endDate) {
       fetchBills();
     }
-  }, [startDate, endDate]); 
+  }, [startDate, endDate, sortOrder]);
 
   useEffect(() => {
     handleDateFilter('Today');
@@ -94,19 +105,19 @@ const BillViewer = () => {
         );
         break;
   
-        case 'This FY':
-          const currentFYStartMonth = today.getMonth() >= 3 ? 3 : -9;
-          calculatedStartDate = format(new Date(today.getFullYear(), currentFYStartMonth, 1), 'yyyy-MM-dd');
-          
-          // Adjusting the end date
-          const endYear = currentFYStartMonth === -9 ? today.getFullYear() : today.getFullYear() + 1;
-          calculatedEndDate = format(new Date(endYear, 2, 31), 'yyyy-MM-dd');
-          break;
+      case 'This FY':
+        const currentFYStartMonth = today.getMonth() >= 3 ? 3 : -9;
+        calculatedStartDate = format(new Date(today.getFullYear(), currentFYStartMonth, 1), 'yyyy-MM-dd');
+        
+        // Adjusting the end date
+        const endYear = currentFYStartMonth === -9 ? today.getFullYear() : today.getFullYear() + 1;
+        calculatedEndDate = format(new Date(endYear, 2, 31), 'yyyy-MM-dd');
+        break;
 
-        case 'Custom Date':
-          setStartDate('');
-          setEndDate('');
-          break;
+      case 'Custom Date':
+        setStartDate('');
+        setEndDate('');
+        break;
       default:
         return; // Custom Date, no auto-calculation
     }
@@ -117,7 +128,10 @@ const BillViewer = () => {
     setActiveFilter(filter);
   };
   
-  
+  // Handle sort order change
+  const handleSortOrderChange = (order) => {
+    setSortOrder(order);
+  };
 
   const handleViewDetails = (bill) => {
     setSelectedBill(bill);
@@ -132,7 +146,7 @@ const BillViewer = () => {
       const user = JSON.parse(sessionStorage.getItem('user'));
       const storeId = user?.storeId;
 
-      const response = await axios.get(`${API_BASE_URL}/invoice/getBill`, {
+      const response = await axios.get(`${CUSTOMER_BILL_DETAILED_INVOICE}`, {
         params: { billNo, storeId },
         responseType: 'arraybuffer',
       });
@@ -173,7 +187,6 @@ const BillViewer = () => {
     }
   };
   
-
   const isToday = (dateString) => {
     const today = new Date().toISOString().split('T')[0];
     return dateString === today;
@@ -182,60 +195,89 @@ const BillViewer = () => {
   return (
     <div className="bill-viewer">
       <h1>Recent Bills</h1>
-      <div className="bill-viewer-filters">
-        {['Today', 'This Week', 'This Month', 'Previous Month', 'This Quarter', 'This FY', 'Custom Date'].map(
-          (filter) => (
-            <button
-              key={filter}
-              className={`bill-viewer-filter-button ${activeFilter === filter ? 'active' : ''}`}
-              onClick={() => handleDateFilter(filter)}
-            >
-              {filter}
-            </button>
-          )
-        )}
+      
+      {error && <p className="bill-viewer-error">{error}</p>}
+      <div className="bill-viewer-top-container">
+        <div className="bill-viewer-filters">
+          {['Today', 'This Week', 'This Month', 'Previous Month', 'This Quarter', 'This FY', 'Custom Date'].map(
+            (filter) => (
+              <button
+                key={filter}
+                className={`bill-viewer-filter-button ${activeFilter === filter ? 'active' : ''}`}
+                onClick={() => handleDateFilter(filter)}
+              >
+                {filter}
+              </button>
+            )
+          )}
+        </div>
         
-        {activeFilter === 'Custom Date' && (
-        <div className="custom-date-picker">
-          <div className="date-inputs">
-            <label>
-              Start Date:
+        {/* Sort Order - Now centered above table */}
+        <div className="sort-order-container">
+          <span className="sort-label">Sort By:</span>
+          <div className="radio-container">
+            <label className="radio-label">
               <input
-                type="date"
-                value={startDate}
-                onChange={(e) => setStartDate(e.target.value)}
+                type="radio"
+                name="sortOrder"
+                value="Recent"
+                checked={sortOrder === 'Recent'}
+                onChange={() => handleSortOrderChange('Recent')}
               />
+              <span className="radio-text">Recent</span>
             </label>
-            <label>
-              End Date:
+            <label className="radio-label">
               <input
-                type="date"
-                value={endDate}
-                onChange={(e) => setEndDate(e.target.value)}
+                type="radio"
+                name="sortOrder"
+                value="Oldest"
+                checked={sortOrder === 'Oldest'}
+                onChange={() => handleSortOrderChange('Oldest')}
               />
+              <span className="radio-text">Oldest</span>
             </label>
           </div>
-          
         </div>
-      )}
-    {activeFilter !== 'Custom Date' && (
-  <div className="custom-date-show">
-    <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "8px" }}>
-      <label style={{ fontWeight: "bold", minWidth: "100px" }}>Start Date:</label>
-      <span>{startDate ? format(new Date(startDate), 'dd MMM yyyy') : 'Invalid Date'}</span>
-    </div>
-    <div style={{ display: "flex", justifyContent: "space-between" }}>
-      <label style={{ fontWeight: "bold", minWidth: "100px" }}>  End Date:</label>
-      <span>{endDate ? format(new Date(endDate), 'dd MMM yyyy') : 'Invalid Date'}</span>
-    </div>
-  </div>
-)}
 
-
-
+        {/* Date display - Now on the right */}
+        <div className="date-display-container">
+          {activeFilter === 'Custom Date' ? (
+            <div className="custom-date-picker">
+              <div className="date-inputs">
+                <label>
+                  Start Date:
+                  <input
+                    type="date"
+                    value={startDate}
+                    onChange={(e) => setStartDate(e.target.value)}
+                  />
+                </label>
+                <label>
+                  End Date:
+                  <input
+                    type="date"
+                    value={endDate}
+                    onChange={(e) => setEndDate(e.target.value)}
+                  />
+                </label>
+              </div>
+            </div>
+          ) : (
+            <div className="date-display">
+              <div className="date-item">
+                <span className="date-label">Start Date:</span>
+                <span className="date-value">{startDate ? format(new Date(startDate), 'dd MMM yyyy') : 'Invalid Date'}</span>
+              </div>
+              <div className="date-item">
+                <span className="date-label">End Date:</span>
+                <span className="date-value">{endDate ? format(new Date(endDate), 'dd MMM yyyy') : 'Invalid Date'}</span>
+              </div>
+            </div>
+          )}
+        </div>
       </div>
 
-      {error && <p className="bill-viewer-error">{error}</p>}
+    
 
       {bills.length > 0 && (
         <div className="bill-viewer-table-container">
