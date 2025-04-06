@@ -4,11 +4,13 @@ import {
   Send, 
   ShoppingBag,
   AlertCircle,
-  HandCoins
+  HandCoins,
+  Wallet,
+  CreditCard
 } from 'lucide-react';
 import './DailyTransactionForm.css';
 
-import { FETCH_STORES_URL, FETCH_STORE_USER_URL, CREATE_TRANSACTION_URL } from '../Api/ApiConstants';
+import { FETCH_STORES_URL, FETCH_STORE_USER_URL, CREATE_TRANSACTION_URL, FETCH_CASH_BALANCE_URL } from '../Api/ApiConstants';
 import axios from 'axios';
 
 const DailyTransactionForm = () => {
@@ -28,6 +30,19 @@ const DailyTransactionForm = () => {
   const [errors, setErrors] = useState({});
   const [success, setSuccess] = useState(false);
 
+  const [balances, setBalances] = useState({
+    CASH_BALANCE: 0,
+    UPI_BALANCE: 0,
+    CARD_BALANCE: 0,
+    OPEN_CASH: 0,
+    OPEN_CARD: 0,
+    OPEN_UPI: 0,
+    TODAY_CASH_BALANCE:0,
+TODAY_UPI_BALANCE:0,
+TODAY_CARD_BALANCE:0,
+  });
+
+
   
 
   const getUserData = () => {
@@ -39,6 +54,47 @@ const DailyTransactionForm = () => {
         token: token || null
     };
 };
+
+// Fetch cash balance
+const fetchCashBalance = async () => {
+  try {
+    const { user, token } = getUserData();
+    
+    if (!user || !user.storeId) return;
+
+    const requestData = {
+      user: user,
+      token: token
+    };
+
+    const response = await axios.post(FETCH_CASH_BALANCE_URL, requestData);
+    
+    if (response.data.status === 'success') {
+      const { cash_BALANCE, card_BALANCE, upi_BALANCE,opening_CASH_BALANCE, opening_CARD_BALANCE, opening_UPI_BALANCE,today_CASH_BALANCE,today_UPI_BALANCE,today_CARD_BALANCE } = response.data.payload;
+      setBalances({
+        CASH_BALANCE: cash_BALANCE,
+        CARD_BALANCE: card_BALANCE,
+        UPI_BALANCE: upi_BALANCE,
+        OPEN_CASH:opening_CASH_BALANCE,
+       OPEN_CARD: opening_CARD_BALANCE,
+       OPEN_UPI: opening_UPI_BALANCE,
+       TODAY_CASH_BALANCE: today_CASH_BALANCE ,
+       TODAY_UPI_BALANCE: today_UPI_BALANCE,
+       TODAY_CARD_BALANCE: today_CARD_BALANCE
+      });
+    }
+    
+  } catch (error) {
+    console.error("Error fetching cash balance:", error);
+  }
+};
+
+useEffect(() => {
+  // Fetch balance when component mounts
+  fetchCashBalance();
+}, []);
+
+
 
 useEffect(() => {
   // Ensure transaction type code is always 'cr' for INCOME and 'dr' for EXPENSE
@@ -253,6 +309,7 @@ useEffect(() => {
       setErrors({ form: 'Failed to create transaction' });
     } finally {
       setLoading(false);
+      fetchCashBalance();
     }
   };
   // Determine if transfer fields should be shown
@@ -491,6 +548,83 @@ useEffect(() => {
           </button>
         </form>
       </div>
+         {/* Balance Container - Now positioned to the right */}
+         <div className="dtf-balance-section">
+        <div className="dtf-balance-header">
+          <Wallet size={18} className="dtf-balance-icon" />
+          <h2 className="dtf-balance-title">Account Balances</h2>
+        </div>
+        
+        <div className="dtf-balance-cards">
+          <div className="dtf-balance-card">
+            <div className="dtf-balance-card-header">
+              <IndianRupee size={16} className="dtf-balance-card-icon" />
+              <span className="dtf-balance-card-label">Cash</span>
+            </div>
+            <div className="dtf-balance-details">
+              <div className="dtf-balance-row">
+                <span className="dtf-balance-label">Opening:</span>
+                <span className="dtf-balance-value">₹{balances.OPEN_CASH}</span>
+              </div>
+              <div className="dtf-balance-row">
+                <span className="dtf-balance-label">Current:</span>
+                <span className="dtf-balance-value dtf-current-balance">₹{balances.CASH_BALANCE}</span>
+              </div>
+
+              <div className="dtf-balance-row">
+                <span className="dtf-balance-label">Today:</span>
+                <span className="dtf-balance-value dtf-current-balance">₹{balances.TODAY_CASH_BALANCE}</span>
+              </div>
+            </div>
+          </div>
+          
+          {/* <div className="dtf-balance-card">
+            <div className="dtf-balance-card-header">
+              <Send size={16} className="dtf-balance-card-icon" />
+              <span className="dtf-balance-card-label">UPI</span>
+            </div>
+            <div className="dtf-balance-details">
+              <div className="dtf-balance-row">
+                <span className="dtf-balance-label">Opening:</span>
+                <span className="dtf-balance-value">₹{balances.OPEN_UPI}</span>
+              </div>
+              <div className="dtf-balance-row">
+                <span className="dtf-balance-label">Current:</span>
+                <span className="dtf-balance-value dtf-current-balance">₹{balances.UPI_BALANCE}</span>
+              </div>
+
+              <div className="dtf-balance-row">
+                <span className="dtf-balance-label">Today:</span>
+                <span className="dtf-balance-value dtf-current-balance">₹{balances.TODAY_UPI_BALANCE}</span>
+              </div>
+
+            </div>
+          </div> */}
+          
+          {/* <div className="dtf-balance-card">
+            <div className="dtf-balance-card-header">
+              <CreditCard size={16} className="dtf-balance-card-icon" />
+              <span className="dtf-balance-card-label">Card</span>
+            </div>
+            <div className="dtf-balance-details">
+              <div className="dtf-balance-row">
+                <span className="dtf-balance-label">Opening:</span>
+                <span className="dtf-balance-value">₹{balances.OPEN_CARD}</span>
+              </div>
+              <div className="dtf-balance-row">
+                <span className="dtf-balance-label">Current:</span>
+                <span className="dtf-balance-value dtf-current-balance">₹{balances.CARD_BALANCE}</span>
+              </div>
+
+              <div className="dtf-balance-row">
+                <span className="dtf-balance-label">Today:</span>
+                <span className="dtf-balance-value dtf-current-balance">₹{balances.TODAY_CARD_BALANCE}</span>
+              </div>
+            </div>
+          </div> */}
+        </div>
+      </div>
+
     </div>
   );
 };
