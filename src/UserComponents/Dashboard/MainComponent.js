@@ -9,7 +9,7 @@ import './MainComponent.css';
 import NewBillContainer from '../Billing/NewBillContainer.js';
 import InterCompanyTranfer from '../Billing/InterCompanyTranfer.js';
 import BillDetails from '../Billing/BillDetails.js';
-import BillViewer  from '../Billing/BillViewer .js';
+import BillViewer  from '../Billing/BillViewer.js';
 import Salary from '../Salary/Salary.js';
 import UserCashCollection from '../CashCollectionReport/UserCashCollection.js';
 import FilterPage from '../Inventory/FilterPage.js';

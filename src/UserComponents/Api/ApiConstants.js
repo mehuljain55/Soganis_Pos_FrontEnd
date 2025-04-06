@@ -12,7 +12,7 @@ export const DELETE_BILL_URL= `${API_BASE_URL}/user/cancelBill`;
 
 
 // Invoice
-export const CUSTOMER_BILL_INVOICE = `${API_BASE_URL}/invoice/getBill`;
+export const CUSTOMER_BILL_DETAILED_INVOICE = `${API_BASE_URL}/invoice/getBill`;
 
 
 
