@@ -22,3 +22,5 @@ export const FETCH_STORE_USER_URL= `${API_BASE_URL}/user/getUserByStore`;
 
 // Transaction Daily Cash
 export const CREATE_TRANSACTION_URL = `${API_BASE_URL}/user/daily/create`;
+export const FETCH_CASH_BALANCE_URL = `${API_BASE_URL}/user/daily/balance`;
+
