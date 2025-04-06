@@ -4,7 +4,7 @@ import { API_BASE_URL } from '../Config.js';
 import axios from 'axios';
 import { format } from 'date-fns';
 import './BillViewer.css';
-import { DELETE_BILL_URL } from '../Api/ApiConstants.js';
+import { CUSTOMER_BILL_DETAILED_INVOICE, DELETE_BILL_URL } from '../Api/ApiConstants.js';
 
 
 const BillViewer = () => {
@@ -15,6 +15,7 @@ const BillViewer = () => {
   const [selectedBill, setSelectedBill] = useState(null);
   const [pdfData, setPdfData] = useState(null);
   const [activeFilter, setActiveFilter] = useState('Today');
+  const [sortOrder, setSortOrder] = useState('Recent'); // New state for sort order
   const pdfIframeRef = useRef(null);
 
 
@@ -31,7 +32,17 @@ const BillViewer = () => {
       const response = await axios.get(`${API_BASE_URL}/invoice/getBillByDate`, {
         params: { startDate, endDate, storeId },
       });
-      setBills(response.data);
+      
+      // Sort the bills based on sortOrder
+      const sortedBills = [...response.data].sort((a, b) => {
+        // Parse bill numbers as integers for proper numeric sorting
+        const billNoA = parseInt(a.billNo);
+        const billNoB = parseInt(b.billNo);
+        
+        return sortOrder === 'Recent' ? billNoB - billNoA : billNoA - billNoB;
+      });
+      
+      setBills(sortedBills);
       setError('');
     } catch (error) {
       if (error.response && error.response.status === 404) {
@@ -48,7 +59,7 @@ const BillViewer = () => {
     if (startDate && endDate) {
       fetchBills();
     }
-  }, [startDate, endDate]); 
+  }, [startDate, endDate, sortOrder]); // Added sortOrder to dependencies
 
   useEffect(() => {
     handleDateFilter('Today');
@@ -117,7 +128,10 @@ const BillViewer = () => {
     setActiveFilter(filter);
   };
   
-  
+  // Handle sort order change
+  const handleSortOrderChange = (order) => {
+    setSortOrder(order);
+  };
 
   const handleViewDetails = (bill) => {
     setSelectedBill(bill);
@@ -132,7 +146,7 @@ const BillViewer = () => {
       const user = JSON.parse(sessionStorage.getItem('user'));
       const storeId = user?.storeId;
 
-      const response = await axios.get(`${API_BASE_URL}/invoice/getBill`, {
+      const response = await axios.get(`${CUSTOMER_BILL_DETAILED_INVOICE}`, {
         params: { billNo, storeId },
         responseType: 'arraybuffer',
       });
@@ -194,6 +208,33 @@ const BillViewer = () => {
             </button>
           )
         )}
+        
+        {/* Sort Order Radio Buttons */}
+        <div className="sort-order-container">
+          <span className="sort-label">Sort By:</span>
+          <div className="radio-container">
+            <label className="radio-label">
+              <input
+                type="radio"
+                name="sortOrder"
+                value="Recent"
+                checked={sortOrder === 'Recent'}
+                onChange={() => handleSortOrderChange('Recent')}
+              />
+              <span className="radio-text">Recent</span>
+            </label>
+            <label className="radio-label">
+              <input
+                type="radio"
+                name="sortOrder"
+                value="Oldest"
+                checked={sortOrder === 'Oldest'}
+                onChange={() => handleSortOrderChange('Oldest')}
+              />
+              <span className="radio-text">Oldest</span>
+            </label>
+          </div>
+        </div>
         
         {activeFilter === 'Custom Date' && (
         <div className="custom-date-picker">
