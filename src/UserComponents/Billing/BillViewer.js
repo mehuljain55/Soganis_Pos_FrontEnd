@@ -1,10 +1,8 @@
 import { useState, useRef, useEffect } from 'react';
-
-import { API_BASE_URL } from '../Config.js';
 import axios from 'axios';
 import { format } from 'date-fns';
 import './BillViewer.css';
-import { CUSTOMER_BILL_DETAILED_INVOICE, DELETE_BILL_URL } from '../Api/ApiConstants.js';
+import { CUSTOMER_DETAILED_INVOICE, INVOICE_LIST_BY_DATE, DELETE_BILL_URL } from '../Api/ApiConstants.js';
 
 
 const BillViewer = () => {
@@ -29,7 +27,7 @@ const BillViewer = () => {
       const user = JSON.parse(sessionStorage.getItem('user'));
       const storeId = user?.storeId;
 
-      const response = await axios.get(`${API_BASE_URL}/invoice/getBillByDate`, {
+      const response = await axios.get(`${INVOICE_LIST_BY_DATE}`, {
         params: { startDate, endDate, storeId },
       });
       
@@ -146,7 +144,7 @@ const BillViewer = () => {
       const user = JSON.parse(sessionStorage.getItem('user'));
       const storeId = user?.storeId;
 
-      const response = await axios.get(`${CUSTOMER_BILL_DETAILED_INVOICE}`, {
+      const response = await axios.get(`${CUSTOMER_DETAILED_INVOICE}`, {
         params: { billNo, storeId },
         responseType: 'arraybuffer',
       });

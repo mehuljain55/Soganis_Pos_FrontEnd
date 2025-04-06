@@ -12,8 +12,8 @@ export const DELETE_BILL_URL= `${API_BASE_URL}/user/cancelBill`;
 
 
 // Invoice
-export const CUSTOMER_BILL_DETAILED_INVOICE = `${API_BASE_URL}/invoice/getBill`;
-
+export const CUSTOMER_DETAILED_INVOICE = `${API_BASE_URL}/invoice/getBill`;
+export const INVOICE_LIST_BY_DATE = `${API_BASE_URL}/invoice/getBillByDate`;
 
 
 // Store URL
@@ -22,3 +22,5 @@ export const FETCH_STORE_USER_URL= `${API_BASE_URL}/user/getUserByStore`;
 
 // Transaction Daily Cash
 export const CREATE_TRANSACTION_URL = `${API_BASE_URL}/user/daily/create`;
+export const FETCH_CASH_BALANCE_URL = `${API_BASE_URL}/user/daily/balance`;
+
