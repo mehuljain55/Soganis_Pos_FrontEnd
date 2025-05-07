@@ -1,0 +1,255 @@
+.bill-details-popup-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.bill-details-popup {
+    width: 90%;
+    max-width: 1200px;
+    max-height: 90vh;
+    background-color: #f9f9f9;
+    border-radius: 8px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
+.bill-details-popup-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 20px;
+    background-color: #f0f0f0;
+    border-bottom: 1px solid #ddd;
+}
+
+.bill-details-popup-header h3 {
+    margin: 0;
+    font-size: 22px;
+}
+
+.close-button {
+    background: none;
+    border: none;
+    font-size: 24px;
+    cursor: pointer;
+    padding: 0;
+    color: #555;
+}
+
+.close-button:hover {
+    color: #000;
+}
+
+.bill-details-popup-content {
+    padding: 20px;
+    overflow-y: auto;
+    max-height: calc(90vh - 70px); /* Header height is approximately 70px */
+}
+
+.bill-search-section {
+    margin-bottom: 20px;
+}
+
+.bill-search-section label {
+    font-weight: bold;
+}
+
+.bill-search-section input {
+    padding: 8px;
+    margin-left: 5px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    width: 200px;
+}
+
+.bill-search-section button {
+    margin-left: 10px;
+    padding: 8px 16px;
+    font-size: 16px;
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.bill-search-section button:hover {
+    background-color: #0056b3;
+}
+
+/* Bill details information styling */
+.bill-detail-info {
+    margin-bottom: 20px;
+}
+
+.billdets-info {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.billdets-info p {
+    margin: 5px;
+}
+
+/* Bill actions section */
+.bill-actions {
+    margin-top: 15px;
+    display: flex;
+    gap: 10px;
+}
+
+/* Table wrapper for horizontal scrolling */
+.bill-detail-wrapper {
+    overflow-x: auto;
+    margin-bottom: 15px;
+}
+
+/* Table styling */
+.bill-detail-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.bill-detail-table th,
+.bill-detail-table td {
+    padding: 10px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+    word-wrap: break-word;
+}
+
+.bill-detail-table th {
+    background-color: #707070;
+    color: white;
+    position: sticky;
+    top: 0;
+}
+
+.bill-detail-table tr:nth-child(even) {
+    background-color: #cbcbcb;
+}
+
+.bill-detail-table tbody {
+    max-height: 300px;
+    overflow-y: auto;
+}
+
+/* Button styling */
+.bill-detail-exchange-btn {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.bill-detail-delete-btn {
+    background-color: rgb(245, 49, 49) !important;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.bill-detail-defet-btn {
+    background-color: rgb(245, 49, 49) !important;
+}
+
+/* Return modal styling */
+.bill-detail-return-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1100;
+}
+
+.bill-detail-return-modal-content {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    width: 80%;
+    max-width: 1000px !important;
+}
+
+.bill-detail-return-items-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.bill-detail-return-items-table th, 
+.bill-detail-return-items-table td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: left;
+}
+
+.bill-detail-return-items-table th {
+    background-color: #707070;
+    color: white;
+}
+
+/* Defect modal styling */
+.unique-defect-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1100;
+}
+
+.unique-defect-modal-content {
+    background: #fff;
+    border-radius: 8px;
+    padding: 20px;
+    max-width: 850px;
+    width: 100%;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.unique-defect-items-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+}
+
+.unique-defect-items-table th, 
+.unique-defect-items-table td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: left;
+}
+
+.unique-defect-items-table th {
+    background-color: #707070;
+    color: white;
+    font-weight: bold;
+}
+
+.unique-defect-amount {
+    margin: 15px 0;
+    font-weight: bold;
+}

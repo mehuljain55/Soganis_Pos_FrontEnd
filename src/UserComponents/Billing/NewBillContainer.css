@@ -43,17 +43,71 @@ h2 {
   color: white;
 }
 
+
+/* Container for all buttons */
+.button-container {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 15px;
+}
+
+/* Style for Search Mode Button*/
+.button-container button:nth-child(1) {
+  background-color: #0275d8; /* Blue color as in your screenshot */
+  color: white;
+  border: none;
+  padding: 10px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  width: auto;
+  height: auto;
+}
+
+/* Style for Return/Exchange with Bill button */
+.button-container button:nth-child(2) {
+  background-color: #753fcc; /* Green color */
+  color: white;
+  border: none;
+  padding: 10px;
+  margin-left: 40px;
+  margin-right: 40px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  width: auto;
+  height: auto;
+}
+
+.button-container button:nth-child(3) {
+  padding: 10px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  background-color: #d831cae0; 
+  color: white;
+  font-size: 14px;
+  width: auto;
+  height: auto;
+}
+
 .barcode-mode {
-  background-color: rgb(3, 114, 53) !important; 
+  background-color: rgb(3, 114, 53) !important; /* Green */
 }
 
 .search-mode {
-  background-color: #0b9aed !important;
+  background-color: #0b9aed !important; /* Blue */
+}
+.billing-head {
+  text-align: left !important;
+  flex-grow: 1;
 }
 
-.billing-head {
-  text-align: center;
-  flex-grow: 1;
+.billing-heading h2 {
+  font-size: 24px;
+  margin-left: -200px;
+
 }
 
 .barcode-input {
@@ -212,8 +266,14 @@ h2 {
   width: 8%;
 }
 
-.items-table th:nth-child(9), /* Actions */
+.items-table th:nth-child(9), /* Amount */
 .items-table td:nth-child(9) {
+  width: 8%;
+}
+
+
+.items-table th:nth-child(10), /* Actions */
+.items-table td:nth-child(10) {
   width: 5%;
 }
 
@@ -235,6 +295,83 @@ h2 {
   border-radius: 10px;
   background-color: red;
   border: none;
+}
+
+
+/* quantity-input.css */
+
+.quantity-input-cell {
+  padding: 8px;
+}
+
+.custom-quantity-input {
+  display: flex;
+  align-items: center;
+  height: 36px;
+  border-radius: 4px;
+  overflow: hidden;
+  width: fit-content;
+}
+
+.quantity-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  background-color: #f1f1f1;
+  border: 1px solid #ddd;
+  cursor: pointer;
+  font-size: 18px;
+  font-weight: bold;
+  user-select: none;
+  transition: background-color 0.2s;
+}
+
+.quantity-minus {
+  border-radius: 4px 0 0 4px;
+}
+
+.quantity-plus {
+  border-radius: 0 4px 4px 0;
+}
+
+.quantity-btn:hover {
+  background-color: #e1e1e1;
+}
+
+.quantity-btn:active {
+  background-color: #d1d1d1;
+}
+
+.quantity-input {
+  width: 60px;
+  height: 36px;
+  border: 1px solid #ddd;
+  border-left: none;
+  border-right: none;
+  text-align: center;
+  font-size: 14px;
+  -moz-appearance: textfield; /* Firefox */
+}
+
+/* Hide arrows for number input across browsers */
+.quantity-input::-webkit-outer-spin-button,
+.quantity-input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Focus styles */
+.quantity-input:focus {
+  outline: none;
+  border-color: #4a90e2;
+  box-shadow: 0 0 0 1px rgba(74, 144, 226, 0.2);
+}
+
+/* Specific styles for negative values (returns/exchanges) */
+.quantity-input[value^="-"] {
+  color: #e74c3c;
 }
 
 

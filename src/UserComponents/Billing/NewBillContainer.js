@@ -8,6 +8,8 @@ import Select from 'react-select';
 import BillPopup from './BillPopup'; 
 import printJS from "print-js";
 import CustomItemPopup from './CustomItemPopup.js';
+import ExchangeModalDirect from './ExchangeModalDirect.js';
+import ReturnExchangePop from './ReturnExchangePop.js';
 
 import { NEW_BILL_GENERATE_URL } from '../Api/ApiConstants.js';
 
@@ -38,7 +40,9 @@ const NewBillContainer = ({ userData }) => {
   const [loading, setLoading] = useState(false);
   const [discountPercentage, setDiscountPercentage] = useState(0);
   const [showTransactionPopup, setShowTransactionPopup] = useState(false);
- 
+  const[isExchangeModelOpen,setIsExchangeModelOpen]=useState(false);
+  const [isExchangeModelBillOpen, setIsExchangeModelBillOpen] = useState(false);
+  
   const [transactionalModel, setTransactionalModel] = useState({
     cash: 0,
     upi: 0,
@@ -48,9 +52,6 @@ const NewBillContainer = ({ userData }) => {
     { id: 1, type: "Cash", value: 0 },
   ]);
   const [transactionError, setTransactionError] = useState("");
-
-  
- 
 
   const [allSchools, setAllSchools] = useState([]);
   const selectedSchoolRef = useRef(null); 
@@ -63,6 +64,7 @@ const NewBillContainer = ({ userData }) => {
     price :0,
     discount: 0,
     sellPrice: 0,
+    itemStatus:'NEW',
     quantity: 1,
     amount: 0,
   });
@@ -142,6 +144,15 @@ const NewBillContainer = ({ userData }) => {
     setSchoolName('');
     setDiscountPercentage(0);
     setPaymentMode('Cash');
+  };
+
+  const handleOpenExchangeBillModal = () => {
+    setIsExchangeModelBillOpen(true);
+  };
+
+  // Function to close the ReturnExchangePop modal
+  const handleCloseExchangBillModal = () => {
+    setIsExchangeModelBillOpen(false);
   };
 
   const fetchAllSchools = async () => {
@@ -468,10 +479,12 @@ const handleSelectChange = (selectedOption) => {
   //         setSchoolName(matchedSchool.schoolName);
   //     }
   // }
-  
-    const existingItemIndex = selectedItems.findIndex(
-      (selectedItem) => selectedItem.itemBarcodeID === item.itemBarcodeID
-    );
+
+  const existingItemIndex = selectedItems.findIndex(
+    (selectedItem) =>
+      selectedItem.itemBarcodeID === item.itemBarcodeID &&
+      selectedItem.itemStatus === 'NEW'
+  );
   
 
     if (existingItemIndex > -1) {
@@ -482,13 +495,15 @@ const handleSelectChange = (selectedOption) => {
       const discountAmount = existingItem.discountAmount || 0; // Keep the previous discount amount if it exists
       existingItem.quantity += 1;
       existingItem.amount = existingItem.quantity * existingItem.price * (1 - discountAmount / 100); // Apply discount to updated amount
-  
+
+
       setSelectedItems(updatedItems);
     } else {
       const newItem = {
         ...item,
         quantity: 1,
         amount: item.price * 1, // Default amount without discount
+        itemStatus:'NEW',
         discountAmount: item.discountAmount || 0, // Preserve the discount value from the item
       };
       setSelectedItems([...selectedItems, newItem]);
@@ -516,6 +531,41 @@ const handleSelectChange = (selectedOption) => {
       }
     }, 100); // Delay to ensure the item is added to the DOM
   };
+
+  
+  const addItemToBillExchange = (item,quantity,status) => {
+
+        const newItem = {
+          ...item,
+          quantity: quantity,
+          amount: item.price * quantity*-1, // Default amount without discount
+          itemStatus:status,
+        };
+        setSelectedItems([...selectedItems, newItem]);
+      
+    
+      setSearchTerm('');
+      setSearchResults([]);
+      setDropdownOpen(false);
+  
+      if (!isBarcodeMode) {
+        requestAnimationFrame(() => {
+          setSearchTerm('');
+          searchInputRef.current.focus();
+        });
+      }
+    
+      // Scroll to the latest item added
+      setTimeout(() => {
+        const tableBody = document.querySelector('.items-table tbody');
+        if (tableBody) {
+          const lastRow = tableBody.lastElementChild;
+          if (lastRow) {
+            lastRow.scrollIntoView({ behavior: 'smooth', block: 'end' });
+          }
+        }
+      }, 100); // Delay to ensure the item is added to the DOM
+    };
   
   
   const removeItemFromBill = (index) => {
@@ -536,6 +586,15 @@ const handleSelectChange = (selectedOption) => {
     existingItem.amount = quantity * existingItem.price * (1 - discountAmount / 100); // Apply discount to updated amount
     
     setSelectedItems(updatedItems);
+  };
+
+  const openExchangeModal = () => {
+    setIsExchangeModelOpen(true);
+  };
+
+  // Function to close the modal
+  const closeExchangeModal = () => {
+    setIsExchangeModelOpen(false);
   };
   
   useEffect(() => {
@@ -567,7 +626,13 @@ const handleSelectChange = (selectedOption) => {
     selectedItems.forEach((item) => {
       const discount = discountPercentage > 0 ? discountPercentage : item.discountAmount || 0;
       const discountedPrice = item.price * (1 - discount / 100);
+      if(item.itemStatus==="NEW")
+      {
       total += discountedPrice * item.quantity;
+      }else{
+        total += (discountedPrice * item.quantity)*-1;
+        
+      }
     });
     
     // Round total to the nearest 5 or 10
@@ -583,6 +648,7 @@ const handleSelectChange = (selectedOption) => {
   const calculateTotalQuantity = () => {
     let total_quantity = 0; // Use let for reassignment
     selectedItems.forEach((item) => {
+      if(item.itemStatus==="NEW")
       total_quantity += Number(item.quantity); // Convert item.quantity to a number
     });
   
@@ -692,6 +758,7 @@ const handleSelectChange = (selectedOption) => {
         itemType: item.itemType,
         itemColor: item.itemColor,
         itemSize: item.itemSize,
+        itemStatus:item.itemStatus,
         itemCategory: item.itemCategory,
         sellPrice: item.discountAmount ? item.discountedPrice : item.price,
         quantity: item.quantity,
@@ -773,21 +840,7 @@ const handleSelectChange = (selectedOption) => {
       setShowTransactionPopup(true);
     }
 
-  };
-
-  const handlePaymentUpdate = () => {
-    let updatedModel = {};
-    if (paymentMode === "Cash") {
-      updatedModel = { cash: calculateTotalAmount(), upi: 0, card: 0 };
-    } else if (paymentMode === "UPI") {
-      updatedModel = { cash: 0, upi: calculateTotalAmount(), card: 0 };
-    } else if (paymentMode === "Card") {
-      updatedModel = { cash: 0, upi: 0, card: calculateTotalAmount() };
-    }
-    console.log("Payment Mode:", paymentMode, "Updated Model:", updatedModel);
-    return updatedModel; // Return the computed value instead of updating state
-  };
-  
+  };  
 
   const handleAddRow = () => {
     const totalAmount = calculateTotalAmount();
@@ -902,7 +955,36 @@ const handleSelectChange = (selectedOption) => {
         discountAmount: discount > 0 ? 0 : item.discountAmount, // Clear item discount if global discount is applied
       }))
     );
+    handleReturnOrExchangeReset();
   };
+
+  const handleReturnOrExchangeReset = () => {
+    const hasReturnOrExchange = selectedItems.some(
+      (item) =>
+        item.itemStatus === 'RETURN' ||
+        item.itemStatus === 'EXCHANGE' ||
+        item.itemStatus === 'exchange'
+    );
+  
+    if (hasReturnOrExchange) {
+      // Reset global discount
+      setDiscountPercentage(0);
+  
+      // Reset all items to original price and clear any discountAmount
+      setSelectedItems((prevItems) =>
+        prevItems.map((item) => ({
+          ...item,
+          price: item.price, // restore original price
+          discountAmount: 0,
+        }))
+      );
+    }
+  };
+
+  useEffect(() => {
+    handleReturnOrExchangeReset();
+  }, [selectedItems]);
+  
 
   useEffect(() => {
     
@@ -921,6 +1003,7 @@ const handleSelectChange = (selectedOption) => {
       itemColor: customItem.itemColor,
       itemSize: customItem.itemSize,
       itemCategory: customItem.itemCategory,
+      itemStatus: 'NEW',
       itemName: `${customItem.itemCategory} ${customItem.itemType}`,
       quantity: parseInt(customItem.quantity) || 0,  // Convert quantity to integer
       price: parseInt(customItem.sellPrice) || 0,  // Convert sellPrice to integer
@@ -1059,17 +1142,35 @@ const handleSelectChange = (selectedOption) => {
   
       <div className="billing-container">
 
-      <div className="mode-toggle">
+      <div className="button-container">
+
       <button 
-      className={isBarcodeMode ? "barcode-mode" : "search-mode"}
-      onClick={() => toggleBarcodeMode(!isBarcodeMode)}
-    >
-      {isBarcodeMode ? "Barcode Mode" : "Search Mode"}
-    </button>
-      </div>
+    className={isBarcodeMode ? "barcode-mode" : "search-mode"}
+    onClick={() => toggleBarcodeMode(!isBarcodeMode)}
+  >
+    {isBarcodeMode ? "Barcode Mode" : "Search Mode"}
+  </button>
+
+  <button onClick={() => openExchangeModal()}>
+    Return/Exchange (without Bill)
+  </button>
+ 
+
+  <button onClick={() => handleOpenExchangeBillModal()}>
+    Return/Exchange
+  </button>
+  
+  
+ 
+  
+</div>
+
 
         <div className="billing-head">
-          <h2>Billing</h2>
+          <div className='billing-heading'>          
+            <h2>Billing</h2>
+          </div>
+
         </div>
         <div className="barcode-input">
           <input
@@ -1205,8 +1306,10 @@ const handleSelectChange = (selectedOption) => {
                 <th>Size</th>
                 <th>Discount</th>
                 <th>Price</th>
-                <th>Quantity</th>
+                <th>Quantity</th>                
                 <th>Amount</th>
+                <th>Status</th>
+
                 <th>Actions</th>
               </tr>
             </thead>
@@ -1217,37 +1320,62 @@ const handleSelectChange = (selectedOption) => {
                   <td>{item.itemName}</td>
                   <td>{item.itemColor}</td>
                   <td>{item.itemSize}</td>
+                  
                   <td>
-  <input
-    type="number"
-    value={item.discountAmount || ''}
-    onChange={(e) => handleDiscountChange(rowItemTableIndex, parseFloat(e.target.value) || 0)}
-    disabled={item.discount !== 'Yes'}
-  />
-</td>
+                    <input
+                     type="number"
+                     value={item.discountAmount || ''}
+                     onChange={(e) => handleDiscountChange(rowItemTableIndex, parseFloat(e.target.value) || 0)}
+                     disabled={item.discount !== 'Yes'}
+                    />
+                  </td>
 
                   <td>{item.price}</td>
                   <td>
-                    <input
-                      type="number"
-                      value={item.quantity}
-                      ref={(el) => {
-                        if (!inputRefs.current[rowItemTableIndex]) inputRefs.current[rowItemTableIndex] = [];
-                        inputRefs.current[rowItemTableIndex][4] = el; // 4 corresponds to the "Quantity" column
-                      }}
-                      onChange={(e) =>
-                        handleQuantityChange(rowItemTableIndex, parseInt(e.target.value, 10))
-                      }
-                      onKeyDown={(e) => {
-                        handleItemTableKeyDown(e, rowItemTableIndex, 4); // Handle arrow keys for table navigation
-                        if (e.key === 'ArrowUp' || e.key === 'ArrowDown') {
-                          e.preventDefault(); // Prevent default behavior of incrementing/decrementing quantity
-                        }
-                      }}
-                      min="1"
-                    />
-                  </td>
+               <input
+    type="number"
+    value={
+      item.itemStatus === 'EXCHANGE' ||
+      item.itemStatus === 'RETURN' ||
+      item.itemStatus === 'exchange'
+        ? -Math.abs(item.quantity)
+        : item.quantity
+    }
+    ref={(el) => {
+      if (!inputRefs.current[rowItemTableIndex]) inputRefs.current[rowItemTableIndex] = [];
+      inputRefs.current[rowItemTableIndex][4] = el; // 4 corresponds to the "Quantity" column
+    }}
+    onChange={(e) => {
+      let value = parseInt(e.target.value, 10);
+      if (
+        item.itemStatus === 'EXCHANGE' ||
+        item.itemStatus === 'RETURN' ||
+        item.itemStatus === 'exchange'
+      ) {
+        value = -Math.abs(value); // Force negative
+      } else {
+        value = Math.abs(value); // Ensure positive
+      }
+      handleQuantityChange(rowItemTableIndex, value);
+    }}
+    onKeyDown={(e) => {
+      handleItemTableKeyDown(e, rowItemTableIndex, 4); // Handle arrow keys
+      if (e.key === 'ArrowUp' || e.key === 'ArrowDown') {
+        e.preventDefault(); // Prevent default increment/decrement
+      }
+    }}
+    min="1"
+  />
+</td>
+
+                 
+
                   <td>{item.amount.toFixed(2)}</td>
+
+                  <td>
+                  {item.itemStatus}
+                  </td>
+
                   <td>
                     <button onClick={() => removeItemFromBill(rowItemTableIndex)}>Remove</button>
                   </td>
@@ -1262,6 +1390,7 @@ const handleSelectChange = (selectedOption) => {
       <div className="summary">
         <div className="custom-btn">
           <button onClick={() => setShowCustomItemModal(true)}>Custom Item</button>
+          
         </div>
         <div className="item-summary">
           <h3>Total Amount: {calculateTotalAmount().toFixed(2)} Rs</h3>
@@ -1393,6 +1522,25 @@ const handleSelectChange = (selectedOption) => {
           onCancel={handlePopupCancel}
         />
       )}
+
+      {isExchangeModelOpen && (
+        <ExchangeModalDirect
+        isOpen={openExchangeModal}
+        onClose={closeExchangeModal}
+        addItemToBillExchange={addItemToBillExchange}
+      />
+      )}
+
+ {isExchangeModelBillOpen && (
+         <ReturnExchangePop 
+         onClose={handleCloseExchangBillModal}
+         userData={userData}
+       />
+      )}
+      
+
+
+      
   
       <Modal show={showPdfModal} onHide={handleClosePdfModal} size="lg">
         <Modal.Header closeButton>
