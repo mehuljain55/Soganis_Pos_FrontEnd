@@ -43,17 +43,70 @@ h2 {
   color: white;
 }
 
+
+/* Container for all buttons */
+.button-container {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 15px;
+}
+
+/* Style for Search Mode Button*/
+.button-container button:nth-child(1) {
+  background-color: #0275d8; /* Blue color as in your screenshot */
+  color: white;
+  border: none;
+  padding: 10px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  width: auto;
+  height: auto;
+}
+
+.button-container button:nth-child(2) {
+  background-color: #753fcc; /* Green color */
+  color: white;
+  border: none;
+  padding: 10px;
+  margin-left: 40px;
+  margin-right: 40px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  width: auto;
+  height: auto;
+}
+
+.button-container button:nth-child(3) {
+  padding: 10px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  background-color: #ee5a04; 
+  color: white;
+  font-size: 14px;
+  width: auto;
+  height: auto;
+}
+
 .barcode-mode {
-  background-color: rgb(3, 114, 53) !important; 
+  background-color: rgb(3, 114, 53) !important; /* Green */
 }
 
 .search-mode {
-  background-color: #0b9aed !important;
+  background-color: #0b9aed !important; /* Blue */
+}
+.billing-head {
+  text-align: left !important;
+  flex-grow: 1;
 }
 
-.billing-head {
-  text-align: center;
-  flex-grow: 1;
+.billing-heading h2 {
+  font-size: 24px;
+  margin-left: -200px;
+
 }
 
 .barcode-input {
@@ -212,8 +265,14 @@ h2 {
   width: 8%;
 }
 
-.items-table th:nth-child(9), /* Actions */
+.items-table th:nth-child(9), /* Amount */
 .items-table td:nth-child(9) {
+  width: 8%;
+}
+
+
+.items-table th:nth-child(10), /* Actions */
+.items-table td:nth-child(10) {
   width: 5%;
 }
 
@@ -237,6 +296,104 @@ h2 {
   border: none;
 }
 
+/* ItemTableQuantity.css */
+
+/* TD cell override */
+.item-table-quantity-td {
+  padding: 0 !important;
+  vertical-align: middle !important;
+  height: auto !important;
+  box-sizing: border-box !important;
+  background: transparent !important;
+  border: none !important;
+}
+
+/* Container that holds the buttons and input */
+.item-table-quantity-container {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  width: 100% !important;
+  height: 36px !important;
+  border-radius: 4px !important;
+  overflow: hidden !important;
+  border: 1px solid #ddd !important;
+  box-sizing: border-box !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  background: white !important;
+}
+
+/* Input field */
+.item-table-quantity-input {
+  flex: 1 !important;
+  border: none !important;
+  text-align: center !important;
+  padding: 4px !important;
+  width: 40px !important;
+  min-width: 40px !important;
+  font-size: 14px !important;
+  appearance: textfield !important; /* For Firefox */
+  background: white !important;
+  color: #333 !important;
+  margin: 0 !important;
+  height: 100% !important;
+  box-sizing: border-box !important;
+  outline: none !important;
+}
+
+/* Hide spinner buttons for Chrome, Safari, Edge, Opera */
+.item-table-quantity-input::-webkit-outer-spin-button,
+.item-table-quantity-input::-webkit-inner-spin-button {
+  -webkit-appearance: none !important;
+  margin: 0 !important;
+}
+
+/* Button styles */
+.item-table-quantity-btn {
+  background-color: #888888 !important;
+  border: none !important;
+  color: white !important;
+  width: 36px !important;
+  height: 36px !important;
+  min-width: 36px !important;
+  min-height: 36px !important;
+  max-width: 36px !important;
+  max-height: 36px !important;
+  cursor: pointer !important;
+  font-size: 18px !important;
+  font-weight: bold !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  transition: background-color 0.2s ease !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  aspect-ratio: 1/1 !important; /* Ensures the button is square */
+  box-sizing: border-box !important;
+  line-height: 1 !important;
+  user-select: none !important;
+}
+
+.item-table-quantity-btn:hover {
+  background-color: #777777 !important;
+}
+
+.item-table-quantity-btn:active {
+  background-color: #666666 !important;
+}
+
+.item-table-quantity-btn-decrease {
+  border-right: 1px solid #ddd !important;
+  border-top-left-radius: 3px !important;
+  border-bottom-left-radius: 3px !important;
+}
+
+.item-table-quantity-btn-increase {
+  border-left: 1px solid #ddd !important;
+  border-top-right-radius: 3px !important;
+  border-bottom-right-radius: 3px !important;
+}
 
 /* Summary section */
 .summary {
