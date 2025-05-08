@@ -142,9 +142,9 @@ const CustomerDueList = () => {
                       <option value="" disabled>
                         Select
                       </option>
-                      <option value="Cash">Cash</option>
-                      <option value="Upi">UPI</option>
-                      <option value="Card">Card</option>
+                      <option value="CASH">Cash</option>
+                      <option value="UPI">UPI</option>
+                      <option value="CARD">Card</option>
                     </select>
                   </td>
                   <td className="customer-due-list-action-buttons">
