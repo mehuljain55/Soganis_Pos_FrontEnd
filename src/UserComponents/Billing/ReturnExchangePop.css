@@ -84,6 +84,10 @@
     cursor: pointer;
 }
 
+.bill-details-popup-btn{
+    background-color: red !important;
+}
+
 .bill-search-section button:hover {
     background-color: #0056b3;
 }

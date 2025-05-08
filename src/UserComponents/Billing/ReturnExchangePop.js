@@ -366,7 +366,8 @@ const ReturnExchangePop = ({ onClose, userData }) => {
               placeholder="Enter bill no or mobile no"
             />
             <button onClick={fetchBill}>Fetch Bill</button>
-            <button onClick={resetPage}>Clear</button>
+           
+            <button className='bill-details-popup-btn' onClick={resetPage}>Clear</button>
           </div>
 
           {billData && (
