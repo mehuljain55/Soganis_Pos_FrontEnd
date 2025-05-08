@@ -297,83 +297,104 @@ h2 {
   border: none;
 }
 
+/* ItemTableQuantity.css */
 
-/* quantity-input.css */
-
-.quantity-input-cell {
-  padding: 8px;
+/* TD cell override */
+.item-table-quantity-td {
+  padding: 0 !important;
+  vertical-align: middle !important;
+  height: auto !important;
+  box-sizing: border-box !important;
+  background: transparent !important;
+  border: none !important;
 }
 
-.custom-quantity-input {
-  display: flex;
-  align-items: center;
-  height: 36px;
-  border-radius: 4px;
-  overflow: hidden;
-  width: fit-content;
+/* Container that holds the buttons and input */
+.item-table-quantity-container {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  width: 100% !important;
+  height: 36px !important;
+  border-radius: 4px !important;
+  overflow: hidden !important;
+  border: 1px solid #ddd !important;
+  box-sizing: border-box !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  background: white !important;
 }
 
-.quantity-btn {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 36px;
-  height: 36px;
-  background-color: #f1f1f1;
-  border: 1px solid #ddd;
-  cursor: pointer;
-  font-size: 18px;
-  font-weight: bold;
-  user-select: none;
-  transition: background-color 0.2s;
+/* Input field */
+.item-table-quantity-input {
+  flex: 1 !important;
+  border: none !important;
+  text-align: center !important;
+  padding: 4px !important;
+  width: 40px !important;
+  min-width: 40px !important;
+  font-size: 14px !important;
+  appearance: textfield !important; /* For Firefox */
+  background: white !important;
+  color: #333 !important;
+  margin: 0 !important;
+  height: 100% !important;
+  box-sizing: border-box !important;
+  outline: none !important;
 }
 
-.quantity-minus {
-  border-radius: 4px 0 0 4px;
+/* Hide spinner buttons for Chrome, Safari, Edge, Opera */
+.item-table-quantity-input::-webkit-outer-spin-button,
+.item-table-quantity-input::-webkit-inner-spin-button {
+  -webkit-appearance: none !important;
+  margin: 0 !important;
 }
 
-.quantity-plus {
-  border-radius: 0 4px 4px 0;
+/* Button styles */
+.item-table-quantity-btn {
+  background-color: #888888 !important;
+  border: none !important;
+  color: white !important;
+  width: 36px !important;
+  height: 36px !important;
+  min-width: 36px !important;
+  min-height: 36px !important;
+  max-width: 36px !important;
+  max-height: 36px !important;
+  cursor: pointer !important;
+  font-size: 18px !important;
+  font-weight: bold !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  transition: background-color 0.2s ease !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  aspect-ratio: 1/1 !important; /* Ensures the button is square */
+  box-sizing: border-box !important;
+  line-height: 1 !important;
+  user-select: none !important;
 }
 
-.quantity-btn:hover {
-  background-color: #e1e1e1;
+.item-table-quantity-btn:hover {
+  background-color: #777777 !important;
 }
 
-.quantity-btn:active {
-  background-color: #d1d1d1;
+.item-table-quantity-btn:active {
+  background-color: #666666 !important;
 }
 
-.quantity-input {
-  width: 60px;
-  height: 36px;
-  border: 1px solid #ddd;
-  border-left: none;
-  border-right: none;
-  text-align: center;
-  font-size: 14px;
-  -moz-appearance: textfield; /* Firefox */
+.item-table-quantity-btn-decrease {
+  border-right: 1px solid #ddd !important;
+  border-top-left-radius: 3px !important;
+  border-bottom-left-radius: 3px !important;
 }
 
-/* Hide arrows for number input across browsers */
-.quantity-input::-webkit-outer-spin-button,
-.quantity-input::-webkit-inner-spin-button {
-  -webkit-appearance: none;
-  margin: 0;
+.item-table-quantity-btn-increase {
+  border-left: 1px solid #ddd !important;
+  border-top-right-radius: 3px !important;
+  border-bottom-right-radius: 3px !important;
 }
-
-/* Focus styles */
-.quantity-input:focus {
-  outline: none;
-  border-color: #4a90e2;
-  box-shadow: 0 0 0 1px rgba(74, 144, 226, 0.2);
-}
-
-/* Specific styles for negative values (returns/exchanges) */
-.quantity-input[value^="-"] {
-  color: #e74c3c;
-}
-
 
 /* Summary section */
 .summary {
