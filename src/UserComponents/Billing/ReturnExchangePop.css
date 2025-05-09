@@ -172,6 +172,10 @@
     background-color: rgb(245, 49, 49) !important;
 }
 
+.bill-detail-return-items-btn{
+    background-color: red !important;
+}
+
 /* Return modal styling */
 .bill-detail-return-modal {
     position: fixed;

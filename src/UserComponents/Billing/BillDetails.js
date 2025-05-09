@@ -530,7 +530,7 @@ const BillDetails = ({ userData }) => {
                             <div>
                                 <button onClick={confirmReturn}>Return</button>
                                 <button onClick={handleExchange}>Exchange</button>
-                                <button onClick={() => setIsModalOpen(false)}>Cancel</button>
+                                <button className='bill-detail-return-items-btn' onClick={() => setIsModalOpen(false)}>Cancel</button>
                             </div>
                         </div>
                     </div>
