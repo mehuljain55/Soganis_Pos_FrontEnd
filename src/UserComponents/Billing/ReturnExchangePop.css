@@ -215,6 +215,10 @@
     color: white;
 }
 
+.bill-details-action-btn button{
+    background-color: red;
+}
+
 /* Defect modal styling */
 .unique-defect-modal {
     position: fixed;
