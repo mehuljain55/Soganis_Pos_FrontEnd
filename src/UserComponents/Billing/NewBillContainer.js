@@ -1605,10 +1605,7 @@ const handleSelectChange = (selectedOption) => {
        />
       )}
       
-
-
       
-  
       <Modal show={showPdfModal} onHide={handleClosePdfModal} size="lg">
         <Modal.Header closeButton>
           <Modal.Title>Bill PDF</Modal.Title>

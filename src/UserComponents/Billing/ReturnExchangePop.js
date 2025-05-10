@@ -478,6 +478,10 @@ const ReturnExchangePop = ({ onClose, userData }) => {
             </>
           )}
 
+           <div className='bill-details-action-btn'>
+       <button onClick={onClose}> Close </button>
+      </div>
+
           {isModalOpen && (
             <div className="bill-detail-return-modal">
               <div className="bill-detail-return-modal-content">
@@ -615,6 +619,7 @@ const ReturnExchangePop = ({ onClose, userData }) => {
           )}
         </div>
       </div>
+      
     </div>
   );
 };
