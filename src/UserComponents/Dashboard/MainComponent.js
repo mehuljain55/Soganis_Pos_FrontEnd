@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faSyncAlt, faCloudUploadAlt ,faBars, faSignOutAlt } from '@fortawesome/free-solid-svg-icons';
+import { faSyncAlt, faCloudUploadAlt ,faBars, faSignOutAlt, faRotateRight  } from '@fortawesome/free-solid-svg-icons';
 import { useSwipeable } from 'react-swipeable';
 import './MainComponent.css';
 
@@ -58,6 +58,18 @@ const MainComponent = ({ userData }) => {
       console.error("Error creating backup:", error);
     }
   };
+
+const reboot = async () => {
+  try {
+    const response = await axios.get(`${API_BASE_URL}/user/restart`);
+    // Reload the page correctly
+    alert(response.data);
+    window.location.reload();
+  } catch (error) {
+    console.error("Error restarting service:", error);
+  }
+};
+
 
   const handleMenuItemClick = (menuItem) => {
     setSelectedMenuItem(menuItem);
@@ -133,8 +145,15 @@ const MainComponent = ({ userData }) => {
               <FontAwesomeIcon icon={faSignOutAlt} />
             </button>
             <button className="dashboard-backup-button" onClick={handleBackup}>
-  <FontAwesomeIcon icon={faCloudUploadAlt} className="backup-icon" /> Backup
-</button>
+            <FontAwesomeIcon icon={faCloudUploadAlt} className="backup-icon" /> Backup
+            </button>
+
+            <button className="dashboard-reload-button" onClick={reboot}>
+            <FontAwesomeIcon icon={faRotateRight} className="reload-icon" />
+            Restart Server
+            </button>
+
+
 
           </div>
         )}
