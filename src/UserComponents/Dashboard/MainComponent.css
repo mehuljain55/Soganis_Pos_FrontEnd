@@ -156,6 +156,31 @@
   gap: 10px;
 }
 
+.dashboard-reload-button {
+  background-color: #ff4d4f;
+  color: white;
+  border: none;
+  padding: 12px 20px;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  transition: background-color 0.3s ease;
+}
+
+.dashboard-reload-button:hover {
+  background-color: #d9363e;
+}
+
+.reload-icon {
+  font-size: 18px;
+}
+
+
 /* Mobile Specific Styles */
 @media (max-width: 768px) {
   .dashboard-brand-heading {
