@@ -33,7 +33,8 @@ const MainComponent = ({ userData }) => {
   const [todayCashCollection, setTodayCashCollection] = useState(null);
   const [isSearchModalOpen, setIsSearchModalOpen] = useState(false);
   const [isSidebarOpen, setIsSidebarOpen] = useState(true); 
-  const[storeName,setStoreName]=useState('');
+  const [storeName,setStoreName]=useState('');
+  const [showConfirm, setShowConfirm] = useState(false);
 
   const user = JSON.parse(sessionStorage.getItem("user"));
   const navigate = useNavigate();
@@ -141,17 +142,19 @@ const reboot = async () => {
                 <FontAwesomeIcon icon={faSyncAlt} />
               </button>
             </span>
-            <button className="dashboard-logout-button" onClick={handleLogout}>
+           
+              <button className="dashboard-logout-button" onClick={handleLogout}>
               <FontAwesomeIcon icon={faSignOutAlt} />
-            </button>
-            <button className="dashboard-backup-button" onClick={handleBackup}>
-            <FontAwesomeIcon icon={faCloudUploadAlt} className="backup-icon" /> Backup
-            </button>
+              </button>
+      
+              <button className="dashboard-backup-button" onClick={handleBackup}>
+              <FontAwesomeIcon icon={faCloudUploadAlt} className="backup-icon" /> Backup
+              </button>
 
-            <button className="dashboard-reload-button" onClick={reboot}>
-            <FontAwesomeIcon icon={faRotateRight} className="reload-icon" />
-            Restart Server
-            </button>
+              <button className="dashboard-reload-button" onClick={() => setShowConfirm(true)}>
+              <FontAwesomeIcon icon={faRotateRight} className="reload-icon" />
+              Restart Server
+              </button>
 
 
 
@@ -207,9 +210,23 @@ const reboot = async () => {
           {selectedMenuItem === 'Daily Cash' && <DailyTransactionForm />}
           
         </main>
+
+        
       </div>
   
       <SearchModal isOpen={isSearchModalOpen} onClose={() => setIsSearchModalOpen(false)} />
+
+         {showConfirm && (
+        <div className="confirm-overlay">
+          <div className="confirm-box">
+            <p>Are you sure you want to restart the server?</p>
+            <div className="confirm-actions">
+              <button className="confirm-btn yes" onClick={reboot}>Yes</button>
+              <button className="confirm-btn no" onClick={() => setShowConfirm(false)}>No</button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
