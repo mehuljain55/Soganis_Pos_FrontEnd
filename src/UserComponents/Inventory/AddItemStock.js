@@ -150,6 +150,20 @@ const AddItemStock = () => {
   };
   
 
+    const handleQuantityChange = (rowIndex, newQuantity) => {
+    // Validate newQuantity (optional)
+    if (newQuantity === 0) return; // prevent zero quantity if needed
+
+    setItems((prevItems) => {
+      const updatedItems = [...prevItems];
+      updatedItems[rowIndex] = {
+        ...updatedItems[rowIndex],
+        quantity: newQuantity,
+      };
+      return updatedItems;
+    });
+  };
+
   const validateItems = async () => {
     const newValidationErrors = {};
     const uniqueItemCodes = new Set();
@@ -270,23 +284,23 @@ const AddItemStock = () => {
 
   return (
     <div className='add-stock-cont'>
-      <div className="actionBtns">
-  <div className="actionBtns-left">
-    <button className="clear-button" onClick={clearItemRows}>Clear Items</button>
-    <button className="refresh-button" onClick={fetchItemCategoryAndType}>Refresh</button>
-    <input
-      type="file"
-      accept=".xlsx, .xls"
-      onChange={handleFileUpload}
-      className="upload-button"
-      ref={fileInputRef} // Reference for resetting the file input
-    />
-  </div>
+       <div className="actionBtns">
+          <div className="actionBtns-left">
+            <button className="clear-button" onClick={clearItemRows}>Clear Items</button>
+            <button className="refresh-button" onClick={fetchItemCategoryAndType}>Refresh</button>
+            <input
+              type="file"
+              accept=".xlsx, .xls"
+              onChange={handleFileUpload}
+              className="upload-button"
+              ref={fileInputRef} // Reference for resetting the file input
+            />
+          </div>
 
-  <div className="download-btn-container">
-    <button className="download-button" onClick={downloadExcelFormat}>Download Format</button>
-  </div>
-</div>
+          <div className="download-btn-container">
+            <button className="download-button" onClick={downloadExcelFormat}>Download Format</button>
+          </div>
+        </div>
 
 
 
@@ -400,15 +414,67 @@ const AddItemStock = () => {
                   placeholder="Wholesale Price"
                 />
               </td>
+              
               <td>
-                <input
-                  value={item.quantity}
-                  onChange={(e) => handleInputChange(e, rowIndex, 'quantity')}
-                  onKeyDown={(e) => handleKeyDown(e, rowIndex, 8)}
-                  placeholder="Quantity"
-                />
-              </td>
+              <div className="item-table-quantity-container">
+                <button
+                  type="button"
+                  className="item-table-quantity-btn item-table-quantity-btn-decrease"
+                  onClick={() => {
+                    let currentQuantity = item.quantity;
+                    let newQuantity;
+                    if (item.itemStatus === 'EXCHANGE' || item.itemStatus === 'RETURN') {
+                      // For exchange/return, quantity can be negative
+                      newQuantity = currentQuantity + 1;
+                      newQuantity = -Math.abs(newQuantity);
+                      if (newQuantity === 0) newQuantity = -1;
+                    } else {
+                      newQuantity = Math.max(1, currentQuantity - 1);
+                    }
+                    handleQuantityChange(rowIndex, newQuantity);
+                  }}
+                >
+                  -
+                </button>
 
+                <input
+                  type="number"
+                  className="item-table-quantity-input"
+                  value={item.itemStatus === 'EXCHANGE' || item.itemStatus === 'RETURN' ? -Math.abs(item.quantity) : item.quantity}
+                  onChange={(e) => {
+                    let value = parseInt(e.target.value, 10) || 0;
+                    if (item.itemStatus === 'EXCHANGE' || item.itemStatus === 'RETURN') {
+                      value = -Math.abs(value);
+                    } else {
+                      value = Math.max(1, value);
+                    }
+                    handleQuantityChange(rowIndex, value);
+                  }}
+                  onKeyDown={(e) => {
+                    // You can add your keydown handler here
+                  }}
+                />
+
+                <button
+                  type="button"
+                  className="item-table-quantity-btn item-table-quantity-btn-increase"
+                  onClick={() => {
+                    let currentQuantity = item.quantity;
+                    let newQuantity;
+                    if (item.itemStatus === 'EXCHANGE' || item.itemStatus === 'RETURN') {
+                      newQuantity = currentQuantity - 1;
+                      newQuantity = -Math.abs(newQuantity);
+                      if (newQuantity === 0) newQuantity = -1;
+                    } else {
+                      newQuantity = currentQuantity + 1;
+                    }
+                    handleQuantityChange(rowIndex, newQuantity);
+                  }}
+                >
+                  +
+                </button>
+              </div>
+            </td>
 
               <td>
               <input

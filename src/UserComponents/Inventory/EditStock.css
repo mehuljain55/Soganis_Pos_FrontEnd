@@ -194,6 +194,75 @@
   text-align: center;
 }
 
+.edit-stock-quantity-container {
+  display: flex;
+  align-items: center;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  overflow: hidden;
+  height: 36px;
+  background-color: white;
+}
+
+.edit-stock-quantity-input {
+  flex: 1;
+  border: none;
+  text-align: center;
+  padding: 4px;
+  width: 40px;
+  min-width: 40px;
+  font-size: 14px;
+  background: white;
+  color: #333;
+  outline: none;
+  height: 100%;
+  box-sizing: border-box;
+  appearance: textfield;
+}
+
+.edit-stock-quantity-input::-webkit-outer-spin-button,
+.edit-stock-quantity-input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.edit-stock-quantity-btn {
+  background-color: #888888;
+  border: none;
+  color: white;
+  width: 36px;
+  height: 36px;
+  font-size: 18px;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  user-select: none;
+}
+
+.edit-stock-quantity-btn:hover {
+  background-color: #777777;
+}
+
+.edit-stock-quantity-btn:active {
+  background-color: #666666;
+}
+
+.edit-stock-quantity-btn-decrease {
+  border-right: 1px solid #ddd;
+  border-top-left-radius: 3px;
+  border-bottom-left-radius: 3px;
+}
+
+.edit-stock-quantity-btn-increase {
+  border-left: 1px solid #ddd;
+  border-top-right-radius: 3px;
+  border-bottom-right-radius: 3px;
+}
+
+
 /* Input styling - CRITICAL CHANGES HERE */
 .edit-stock-container-input {
   width: 100% !important;

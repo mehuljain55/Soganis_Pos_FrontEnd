@@ -795,34 +795,65 @@ onClick={() => toggleBarcodeMode(!isBarcodeMode)}
                     <td>{item.itemSize}</td>
                     
                     <td>
-  <input
-    type="number"
-    value={item.discountAmount || ''}
-    onChange={(e) => handleDiscountChange(rowItemTableIndex, parseFloat(e.target.value) || 0)}
-    disabled={item.discount !== 'Yes'}
-  />
-</td>
-                    <td>{item.wholeSalePrice}</td>
-                    <td>
                       <input
                         type="number"
-                        value={item.quantity}
-                        ref={(el) => {
-                          if (!inputRefs.current[rowItemTableIndex]) inputRefs.current[rowItemTableIndex] = [];
-                          inputRefs.current[rowItemTableIndex][4] = el; // 4 corresponds to the "Quantity" column
-                        }}
-                        onChange={(e) =>
-                          handleQuantityChange(rowItemTableIndex, parseInt(e.target.value, 10))
-                        }
-                        onKeyDown={(e) => {
-                          handleItemTableKeyDown(e, rowItemTableIndex, 4); // Handle arrow keys for table navigation
-                          if (e.key === 'ArrowUp' || e.key === 'ArrowDown') {
-                            e.preventDefault(); // Prevent default behavior of incrementing/decrementing quantity
-                          }
-                        }}
-                        min="1"
+                        value={item.discountAmount || ''}
+                        onChange={(e) => handleDiscountChange(rowItemTableIndex, parseFloat(e.target.value) || 0)}
+                        disabled={item.discount !== 'Yes'}
                       />
                     </td>
+                    <td>{item.wholeSalePrice}</td>
+                    
+                  <td className="item-table-quantity-container">
+  {/* Decrease Button */}
+  <button
+    type="button"
+    className="item-table-quantity-btn item-table-quantity-btn-decrease"
+    onClick={() => {
+      let currentValue = parseInt(inputRefs.current[rowItemTableIndex][4].value, 10) || 0;
+      let newValue = Math.max(1, currentValue - 1);
+      handleQuantityChange(rowItemTableIndex, newValue);
+    }}
+  >
+    -
+  </button>
+
+  {/* Quantity Input */}
+  <input
+    type="number"
+    value={item.quantity}
+    ref={(el) => {
+      if (!inputRefs.current[rowItemTableIndex]) inputRefs.current[rowItemTableIndex] = [];
+      inputRefs.current[rowItemTableIndex][4] = el;
+    }}
+    onChange={(e) =>
+      handleQuantityChange(rowItemTableIndex, parseInt(e.target.value, 10))
+    }
+    onKeyDown={(e) => {
+      handleItemTableKeyDown(e, rowItemTableIndex, 4);
+      if (e.key === 'ArrowUp' || e.key === 'ArrowDown') {
+        e.preventDefault();
+      }
+    }}
+    min="1"
+    className="item-table-quantity-input"
+  />
+
+  {/* Increase Button */}
+  <button
+    type="button"
+    className="item-table-quantity-btn item-table-quantity-btn-increase"
+    onClick={() => {
+      let currentValue = parseInt(inputRefs.current[rowItemTableIndex][4].value, 10) || 0;
+      let newValue = currentValue + 1;
+      handleQuantityChange(rowItemTableIndex, newValue);
+    }}
+  >
+    +
+  </button>
+</td>
+
+
                     <td>{item.amount.toFixed(2)}</td>
                     <td>
                       <button onClick={() => removeItemFromBill(rowItemTableIndex)}>Remove</button>
