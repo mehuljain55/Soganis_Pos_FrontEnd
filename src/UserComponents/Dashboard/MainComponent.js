@@ -216,17 +216,50 @@ const reboot = async () => {
   
       <SearchModal isOpen={isSearchModalOpen} onClose={() => setIsSearchModalOpen(false)} />
 
-         {showConfirm && (
-        <div className="confirm-overlay">
-          <div className="confirm-box">
-            <p>Are you sure you want to restart the server?</p>
-            <div className="confirm-actions">
-              <button className="confirm-btn yes" onClick={reboot}>Yes</button>
-              <button className="confirm-btn no" onClick={() => setShowConfirm(false)}>No</button>
-            </div>
-          </div>
+ {showConfirm && (
+  <div className="custom-confirm-overlay">
+    <div className="custom-confirm-dialog">
+      
+      {/* Header */}
+      <div className="custom-confirm-header">
+        <div className="custom-confirm-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
+            <line x1="12" y1="9" x2="12" y2="13"></line>
+            <line x1="12" y1="17" x2="12.01" y2="17"></line>
+          </svg>
         </div>
-      )}
+        <h3 className="custom-confirm-title">Confirm Server Restart</h3>
+      </div>
+
+      {/* Body */}
+      <div className="custom-confirm-content">
+        <p className="custom-confirm-message">
+          Are you sure you want to restart the server? This action may cause temporary service interruption.
+        </p>
+      </div>
+
+      {/* Footer */}
+      <div className="custom-confirm-actions">
+        <button
+          className="custom-btn custom-btn-cancel"
+          onClick={() => setShowConfirm(false)}
+        >
+          Cancel
+        </button>
+        <button
+          className="custom-btn custom-btn-danger"
+          onClick={reboot}
+        >
+          Restart
+        </button>
+      </div>
+    </div>
+  </div>
+)}
+
+
     </div>
   );
 };

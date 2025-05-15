@@ -180,6 +180,115 @@
   font-size: 18px;
 }
 
+.custom-confirm-overlay {
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
+  background-color: rgba(0, 0, 0, 0.6) !important;
+  display: flex !important;
+  justify-content: center !important;
+  align-items: center !important;
+  z-index: 1000 !important;
+  backdrop-filter: blur(2px) !important;
+  animation: fadeIn 0.2s ease-out !important;
+}
+
+.custom-confirm-dialog {
+  background-color: #ffffff !important;
+  width: 400px !important;
+  border-radius: 8px !important;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15) !important;
+  overflow: hidden !important;
+  animation: slideIn 0.3s ease-out !important;
+}
+
+.custom-confirm-header {
+  display: flex !important;
+  align-items: center !important;
+  padding: 16px 24px !important;
+  background-color: #f8f9fa !important;
+  border-bottom: 1px solid #e9ecef !important;
+}
+
+.custom-confirm-icon {
+  display: flex !important;
+  justify-content: center !important;
+  align-items: center !important;
+  width: 36px !important;
+  height: 36px !important;
+  border-radius: 50% !important;
+  background-color: #fff3cd !important;
+  margin-right: 12px !important;
+}
+
+.custom-confirm-icon svg {
+  width: 20px !important;
+  height: 20px !important;
+  color: #ffc107 !important;
+}
+
+.custom-confirm-title {
+  font-size: 18px !important;
+  font-weight: 500 !important;
+  color: #212529 !important;
+  margin: 0 !important;
+}
+
+.custom-confirm-content {
+  padding: 20px 24px !important;
+}
+
+.custom-confirm-message {
+  font-size: 16px !important;
+  line-height: 1.5 !important;
+  color: #495057 !important;
+  margin: 0 !important;
+}
+
+.custom-confirm-actions {
+  display: flex !important;
+  justify-content: flex-end !important;
+  padding: 16px 24px !important;
+  background-color: #f8f9fa !important;
+  border-top: 1px solid #e9ecef !important;
+  gap: 12px !important;
+}
+
+.custom-btn {
+  font-size: 14px !important;
+  font-weight: 500 !important;
+  padding: 8px 16px !important;
+  border-radius: 4px !important;
+  cursor: pointer !important;
+  transition: all 0.2s ease !important;
+  border: none !important;
+  outline: none !important;
+}
+
+.custom-btn-cancel {
+  background-color: #e9ecef !important;
+  color: #495057 !important;
+}
+
+.custom-btn-cancel:hover {
+  background-color: #dee2e6 !important;
+}
+
+.custom-btn-danger {
+  background-color: #dc3545 !important;
+  color: white !important;
+}
+
+.custom-btn-danger:hover {
+  background-color: #c82333 !important;
+}
+
+.custom-btn:focus {
+  box-shadow: 0 0 0 3px rgba(220, 53, 69, 0.25) !important;
+}
+
 
 /* Mobile Specific Styles */
 @media (max-width: 768px) {
