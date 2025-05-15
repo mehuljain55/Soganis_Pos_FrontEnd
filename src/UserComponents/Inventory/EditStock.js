@@ -221,14 +221,38 @@ const EditStock = ({ data, resetFilters  }) => {
                         className="edit-stock-container-input"
                       />
                     </td>
+                  
                     <td>
-                      <input
-                        type="number"
-                        value={editableData[rowIndex]?.quantity || item.quantity}
-                        onChange={(e) => handleFieldChange(rowIndex, 'quantity', e.target.value)}
-                        className="edit-stock-container-input"
-                      />
+                      <div className="edit-stock-quantity-container">
+                        <button
+                          type="button"
+                          className="edit-stock-quantity-btn edit-stock-quantity-btn-decrease"
+                          onClick={() => handleFieldChange(rowIndex, 'quantity', Math.max(1, (parseInt(editableData[rowIndex]?.quantity || item.quantity, 10) || 0) - 1))}
+                        >
+                          -
+                        </button>
+                        <input
+                          type="number"
+                          value={editableData[rowIndex]?.quantity || item.quantity}
+                          onChange={(e) => handleFieldChange(rowIndex, 'quantity', e.target.value)}
+                          onKeyDown={(e) => {
+                            if (e.key === 'ArrowUp' || e.key === 'ArrowDown') {
+                              e.preventDefault(); // disable increment/decrement with arrow keys
+                            }
+                          }}
+                          className="edit-stock-quantity-input"
+                        />
+
+                        <button
+                          type="button"
+                          className="edit-stock-quantity-btn edit-stock-quantity-btn-increase"
+                          onClick={() => handleFieldChange(rowIndex, 'quantity', (parseInt(editableData[rowIndex]?.quantity || item.quantity, 10) || 0) + 1)}
+                        >
+                          +
+                        </button>
+                      </div>
                     </td>
+
                     <td>
                       <input
                         type="text"

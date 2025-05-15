@@ -294,17 +294,49 @@ const View = ({ data, onUpdateSuccess }) => {
                   </td>
                   <td>{item.quantity}</td>
                   {isEditingQuantity && (
-  <td>
-    <input
-      type="number"
-      value={editableData[item.itemBarcodeID]?.quantity ?? 0}
-      onChange={(e) => handleInputChange(e, item.itemBarcodeID, 'quantity')}
-      ref={(el) => (inputRefs.current[`${rowIndex}-0-quantity`] = el)}
-      onKeyDown={(e) => handleKeyDown(e, rowIndex, 0, 'quantity')}
-      className="view-stock-filter-edit-input"
-    />
-  </td>
-)}
+                    <td>
+                      <div className="item-table-quantity-container">
+                        <button
+                          type="button"
+                          className="item-table-quantity-btn item-table-quantity-btn-decrease"
+                          onClick={() => {
+                            const current = editableData[item.itemBarcodeID]?.quantity || 0;
+                            const newValue =
+                              item.itemStatus === 'EXCHANGE' || item.itemStatus === 'RETURN' || item.itemStatus === 'exchange'
+                                ? Math.max(-Math.abs(current + 1), -1)
+                                : Math.max(current - 1, 1);
+                            handleInputChange({ target: { value: newValue } }, item.itemBarcodeID, 'quantity');
+                          }}
+                        >
+                          -
+                        </button>
+
+                        <input
+                          type="number"
+                          value={editableData[item.itemBarcodeID]?.quantity ?? 0}
+                          onChange={(e) => handleInputChange(e, item.itemBarcodeID, 'quantity')}
+                          ref={(el) => (inputRefs.current[`${rowIndex}-0-quantity`] = el)}
+                          onKeyDown={(e) => handleKeyDown(e, rowIndex, 0, 'quantity')}
+                          className="item-table-quantity-input"
+                        />
+
+                        <button
+                          type="button"
+                          className="item-table-quantity-btn item-table-quantity-btn-increase"
+                          onClick={() => {
+                            const current = editableData[item.itemBarcodeID]?.quantity || 0;
+                            const newValue =
+                              item.itemStatus === 'EXCHANGE' || item.itemStatus === 'RETURN' || item.itemStatus === 'exchange'
+                                ? Math.min(current - 1, -1)
+                                : current + 1;
+                            handleInputChange({ target: { value: newValue } }, item.itemBarcodeID, 'quantity');
+                          }}
+                        >
+                          +
+                        </button>
+                      </div>
+                    </td>
+                  )}
 
                   <td>{item.group_id}</td>
                   <td>
