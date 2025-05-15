@@ -10,7 +10,7 @@ import printJS from "print-js";
 import CustomItemPopup from './CustomItemPopup.js';
 import ExchangeModalDirect from './ExchangeModalDirect.js';
 import ReturnExchangePop from './ReturnExchangePop.js';
-
+import CustomClothModal from './CustomClothModal.js';
 import { NEW_BILL_GENERATE_URL } from '../Api/ApiConstants.js';
 
 const NewBillContainer = ({ userData }) => {
@@ -42,6 +42,7 @@ const NewBillContainer = ({ userData }) => {
   const [showTransactionPopup, setShowTransactionPopup] = useState(false);
   const[isExchangeModelOpen,setIsExchangeModelOpen]=useState(false);
   const [isExchangeModelBillOpen, setIsExchangeModelBillOpen] = useState(false);
+  const [showCustomClothModal, setShowCustomClothModal] = useState(false);
   
   const [transactionalModel, setTransactionalModel] = useState({
     cash: 0,
@@ -67,6 +68,18 @@ const NewBillContainer = ({ userData }) => {
     itemStatus:'NEW',
     quantity: 1,
     amount: 0,
+  });
+
+    const [customCloth, setCustomCloth] = useState({
+    itemBarcodeID: 'SG9999999',
+    itemType: '',
+    itemColor: '',
+    size:'', // this can be in decimal
+    itemCategory: '',
+    price :0,
+    itemStatus:'NEW',
+    quantity: 1, // this is fixed always
+    amount: 0 // Size* price,
   });
 
 
@@ -479,7 +492,6 @@ const handleSelectChange = (selectedOption) => {
   //         setSchoolName(matchedSchool.schoolName);
   //     }
   // }
-
   const existingItemIndex = selectedItems.findIndex(
     (selectedItem) =>
       selectedItem.itemBarcodeID === item.itemBarcodeID &&
@@ -574,6 +586,8 @@ const handleSelectChange = (selectedOption) => {
     setSelectedItems(updatedItems);
   };
 
+
+  
   const handleQuantityChange = (index, quantity) => {
     const updatedItems = [...selectedItems];
     const existingItem = updatedItems[index];
@@ -626,12 +640,21 @@ const handleSelectChange = (selectedOption) => {
       const discountedPrice = item.price * (1 - discount / 100);
       if(item.itemStatus==="NEW")
       {
-      total += discountedPrice * item.quantity;
+        if(item.itemType==='CLOTH')
+        {
+          total += discountedPrice * item.size;
+        }else{
+          total += discountedPrice * item.quantity;
+        }
+
+
       }else{
         total += (discountedPrice * item.quantity)*-1;
         
       }
     });
+
+    
     
     // Round total to the nearest 5 or 10
     const remainder = total % 10;
@@ -642,6 +665,33 @@ const handleSelectChange = (selectedOption) => {
     }
     return total;
   };
+
+const handleSizeChange = (rowIndex, newSize) => {
+  // Ensure newSize is a positive number with one decimal place
+  let formattedSize = parseFloat(newSize);
+  if (isNaN(formattedSize) || formattedSize <= 0) {
+    formattedSize = 1.0; // Default to 1.0 if invalid
+  }
+  formattedSize = parseFloat(formattedSize.toFixed(1));
+
+  // Update the item in the selectedItems array
+  setSelectedItems((prevItems) => {
+    const updatedItems = [...prevItems];
+    const item = { ...updatedItems[rowIndex] };
+
+    // Calculate the new amount
+    const newAmount = Math.round(formattedSize * item.price);
+
+    // Update size and amount
+    item.size = formattedSize;
+    item.itemSize=formattedSize+'';
+    item.amount = newAmount;
+
+    updatedItems[rowIndex] = item;
+    return updatedItems;
+  });
+};
+
 
   const calculateTotalQuantity = () => {
     let total_quantity = 0; // Use let for reassignment
@@ -735,7 +785,15 @@ const handleSelectChange = (selectedOption) => {
       const adjustedQuantity = (item.itemStatus === 'EXCHANGE' || item.itemStatus === 'RETURN')
         ? item.quantity * -1
         : item.quantity;
-      const amount = adjustedQuantity * discountedPrice;
+
+        let amount=item.size * discountedPrice;
+
+        if(item.itemType==='CLOTH')
+        {
+           amount = item.size * discountedPrice;   
+        }else{
+          amount = adjustedQuantity * discountedPrice;
+        }
     
       return {
         ...item,
@@ -760,6 +818,7 @@ const handleSelectChange = (selectedOption) => {
         itemColor: item.itemColor,
         itemSize: item.itemSize,
         itemStatus:item.itemStatus,
+        size:item.size,
         itemCategory: item.itemCategory,
         sellPrice: item.discountAmount ? item.discountedPrice : item.price,
         quantity: item.quantity,
@@ -942,7 +1001,12 @@ const handleSelectChange = (selectedOption) => {
       const updatedItems = [...prevItems];
       const item = updatedItems[index];
       item.discountAmount = discountValue; // Apply discount amount only if discount is "Yes"
+      if(item.itemType==='CLOTH')
+      {
+         item.amount = item.price * (1 - discountValue / 100) * item.size;
+      }else{
       item.amount = item.price * (1 - discountValue / 100) * item.quantity;
+      }
       return updatedItems;
     });
   };
@@ -1017,6 +1081,32 @@ const handleSelectChange = (selectedOption) => {
     // Close the modal
     setShowCustomItemModal(false);
   };
+
+    const handleAddCustomItemCloth = (description, itemCategory,itemColor, size, price) => {
+      const parsedSize = parseFloat(size) || 0;
+      const parsedPrice = parseInt(price) || 0;
+      const quantity = 1;
+      const amount = Math.round(parsedSize * parsedPrice); // Ensures integer amount
+
+      const newItem = {
+        itemBarcodeID: customCloth.itemBarcodeID,
+        itemCode: customCloth.itemBarcodeID,
+        itemType: 'CLOTH',
+        itemSize:size,
+        itemColor: itemColor,
+        itemCategory: itemCategory,
+        itemStatus: 'NEW',
+        size: parsedSize,
+        itemName: description,
+        quantity: quantity,
+        price: parsedPrice,
+        amount: amount,
+      };
+
+      setSelectedItems([...selectedItems, newItem]);
+      setShowCustomItemModal(false);
+    };
+
   
   const toggleBarcodeMode = (manualMode = null) => {
     setIsBarcodeMode((prevMode) => {
@@ -1139,33 +1229,24 @@ const handleSelectChange = (selectedOption) => {
         </div>
       )}
   
-      
-  
       <div className="billing-container">
+        <div className="button-container">
 
-      <div className="button-container">
+          <button 
+          className={isBarcodeMode ? "barcode-mode" : "search-mode"}
+          onClick={() => toggleBarcodeMode(!isBarcodeMode)}
+          >
+          {isBarcodeMode ? "Barcode Mode" : "Search Mode"}
+          </button>
 
-      <button 
-    className={isBarcodeMode ? "barcode-mode" : "search-mode"}
-    onClick={() => toggleBarcodeMode(!isBarcodeMode)}
-  >
-    {isBarcodeMode ? "Barcode Mode" : "Search Mode"}
-  </button>
+          <button onClick={() => openExchangeModal()}>
+            Return/Exchange (without Bill)
+          </button>
 
-  <button onClick={() => openExchangeModal()}>
-    Return/Exchange (without Bill)
-  </button>
- 
-
-  <button onClick={() => handleOpenExchangeBillModal()}>
-    Return/Exchange
-  </button>
-  
-  
- 
-  
-</div>
-
+          <button onClick={() => handleOpenExchangeBillModal()}>
+            Return/Exchange
+          </button>
+        </div>
 
         <div className="billing-head">
           <div className='billing-heading'>          
@@ -1270,20 +1351,20 @@ const handleSelectChange = (selectedOption) => {
             <label>
               School Name:
               <Select
-              className='school-select-container'
-    options={allSchools}
-    onFocus={handleSelectFocus}
-    onBlur={handleSelectBlur}
-    ref={selectedSchoolRef}
-    value={allSchools.find((school) => school.schoolName === schoolName) || null}
-    onChange={handleSelectChange}
-    placeholder="Select a school"
-    styles={{ control: (base) => ({ ...base, width: '200px' }) }}
-    filterOption={(option, inputValue) => 
-        option.data.schoolName.toLowerCase().includes(inputValue.toLowerCase()) || 
-        option.data.schoolCode.toLowerCase().includes(inputValue.toLowerCase())
-    }
-/>
+                className='school-select-container'
+                options={allSchools}
+                onFocus={handleSelectFocus}
+                onBlur={handleSelectBlur}
+                ref={selectedSchoolRef}
+                value={allSchools.find((school) => school.schoolName === schoolName) || null}
+                onChange={handleSelectChange}
+                placeholder="Select a school"
+                styles={{ control: (base) => ({ ...base, width: '200px' }) }}
+                filterOption={(option, inputValue) => 
+                    option.data.schoolName.toLowerCase().includes(inputValue.toLowerCase()) || 
+                    option.data.schoolCode.toLowerCase().includes(inputValue.toLowerCase())
+                }
+              />
             </label>
           </div>
         </div>
@@ -1310,7 +1391,6 @@ const handleSelectChange = (selectedOption) => {
                 <th>Quantity</th>                
                 <th>Amount</th>
                 <th>Status</th>
-
                 <th>Actions</th>
               </tr>
             </thead>
@@ -1333,102 +1413,161 @@ const handleSelectChange = (selectedOption) => {
 
                   <td>{item.price}</td>
                 
-                  <td className="item-table-quantity-td">
-                  <div className="item-table-quantity-container">
-                    {/* Decrease Button */}
-                    <button
-                      type="button"
-                      className="item-table-quantity-btn item-table-quantity-btn-decrease"
-                      onClick={() => {
-                        let currentValue = parseInt(inputRefs.current[rowItemTableIndex][4].value, 10) || 0;
-                        let newValue;
+               <td className="item-table-quantity-td">
+  {item.itemType === 'CLOTH' ? (
+    // Size input field for CLOTH items
+     <div className="item-table-quantity-container">
+    {/* Decrease Size Button */}
+    <button
+      type="button"
+      className="item-table-quantity-btn item-table-quantity-btn-decrease"
+      onClick={() => {
+        let currentValue = parseFloat(inputRefs.current[rowItemTableIndex][4].value) || 1.0;
+        let newValue = Math.max(1.0, parseFloat((currentValue - 0.1).toFixed(1)));
+        handleSizeChange(rowItemTableIndex, newValue);
+      }}
+    >
+      -
+    </button>
 
-                        if (
-                          item.itemStatus === 'EXCHANGE' ||
-                          item.itemStatus === 'RETURN' ||
-                          item.itemStatus === 'exchange'
-                        ) {
-                          newValue = currentValue + 1; // Less negative (e.g., -3 → -2)
-                          newValue = -Math.abs(newValue);
-                          if (newValue === 0) newValue = -1; // Prevent zero
-                        } else {
-                          newValue = currentValue - 1;
-                          newValue = Math.max(1, Math.abs(newValue)); // Ensure minimum 1
-                        }
+    {/* Size Input */}
+    <input
+      type="number"
+      step="0.1"
+      min="1.0"
+      max="5.0"
+      className="item-table-quantity-input"
+      value={item.size || 1.0}
+      onChange={(e) => {
+        let value = parseFloat(e.target.value);
+        if (isNaN(value) || value < 1.0) value = 1.0;
+        if (value > 5.0) value = 5.0;
+        handleSizeChange(rowItemTableIndex, parseFloat(value.toFixed(1)));
+      }}
+      onKeyDown={(e) => {
+        handleItemTableKeyDown(e, rowItemTableIndex, 4);
+        if (e.key === 'ArrowUp' || e.key === 'ArrowDown') {
+          e.preventDefault();
+        }
+      }}
+      ref={(el) => {
+        if (!inputRefs.current[rowItemTableIndex]) inputRefs.current[rowItemTableIndex] = [];
+        inputRefs.current[rowItemTableIndex][4] = el;
+      }}
+    />
 
-                        handleQuantityChange(rowItemTableIndex, newValue);
-                      }}
-                    >
-                      -
-                    </button>
+    {/* Increase Size Button */}
+    <button
+      type="button"
+      className="item-table-quantity-btn item-table-quantity-btn-increase"
+      onClick={() => {
+        let currentValue = parseFloat(inputRefs.current[rowItemTableIndex][4].value) || 1.0;
+        let newValue = Math.min(5.0, parseFloat((currentValue + 0.1).toFixed(1)));
+        handleSizeChange(rowItemTableIndex, newValue);
+      }}
+    >
+      +
+    </button>
+  </div>
 
-                    {/* Quantity Input */}
-                    <input
-                      type="number"
-                      className="item-table-quantity-input"
-                      value={
-                        item.itemStatus === 'EXCHANGE' ||
-                        item.itemStatus === 'RETURN' ||
-                        item.itemStatus === 'exchange'
-                          ? -Math.abs(item.quantity)
-                          : item.quantity
-                      }
-                      ref={(el) => {
-                        if (!inputRefs.current[rowItemTableIndex]) inputRefs.current[rowItemTableIndex] = [];
-                        inputRefs.current[rowItemTableIndex][4] = el; // 4 corresponds to the "Quantity" column
-                      }}
-                      onChange={(e) => {
-                        let value = parseInt(e.target.value, 10) || 0;
+  ) : (
+    // Quantity controls for non-CLOTH items
+    <div className="item-table-quantity-container">
+      {/* Decrease Button */}
+      <button
+        type="button"
+        className="item-table-quantity-btn item-table-quantity-btn-decrease"
+        onClick={() => {
+          let currentValue = parseInt(inputRefs.current[rowItemTableIndex][4].value, 10) || 0;
+          let newValue;
 
-                        if (
-                          item.itemStatus === 'EXCHANGE' ||
-                          item.itemStatus === 'RETURN' ||
-                          item.itemStatus === 'exchange'
-                        ) {
-                          value = -Math.abs(value); // Force negative
-                        } else {
-                          value = Math.abs(value); // Ensure positive
-                          if (value < 1) value = 1; // Enforce minimum value
-                        }
+          if (
+            item.itemStatus === 'EXCHANGE' ||
+            item.itemStatus === 'RETURN' ||
+            item.itemStatus === 'exchange'
+          ) {
+            newValue = currentValue + 1; // Less negative (e.g., -3 → -2)
+            newValue = -Math.abs(newValue);
+            if (newValue === 0) newValue = -1; // Prevent zero
+          } else {
+            newValue = currentValue - 1;
+            newValue = Math.max(1, Math.abs(newValue)); // Ensure minimum 1
+          }
 
-                        handleQuantityChange(rowItemTableIndex, value);
-                      }}
-                      onKeyDown={(e) => {
-                        handleItemTableKeyDown(e, rowItemTableIndex, 4);
-                        if (e.key === 'ArrowUp' || e.key === 'ArrowDown') {
-                          e.preventDefault(); // Prevent default input behavior
-                        }
-                      }}
-                    />
+          handleQuantityChange(rowItemTableIndex, newValue);
+        }}
+      >
+        -
+      </button>
 
-                    {/* Increase Button */}
-                    <button
-                      type="button"
-                      className="item-table-quantity-btn item-table-quantity-btn-increase"
-                      onClick={() => {
-                        let currentValue = parseInt(inputRefs.current[rowItemTableIndex][4].value, 10) || 0;
-                        let newValue;
+      {/* Quantity Input */}
+      <input
+        type="number"
+        className="item-table-quantity-input"
+        value={
+          item.itemStatus === 'EXCHANGE' ||
+          item.itemStatus === 'RETURN' ||
+          item.itemStatus === 'exchange'
+            ? -Math.abs(item.quantity)
+            : item.quantity
+        }
+        ref={(el) => {
+          if (!inputRefs.current[rowItemTableIndex]) inputRefs.current[rowItemTableIndex] = [];
+          inputRefs.current[rowItemTableIndex][4] = el; // 4 corresponds to the "Quantity" column
+        }}
+        onChange={(e) => {
+          let value = parseInt(e.target.value, 10) || 0;
 
-                        if (
-                          item.itemStatus === 'EXCHANGE' ||
-                          item.itemStatus === 'RETURN' ||
-                          item.itemStatus === 'exchange'
-                        ) {
-                          newValue = currentValue - 1; // More negative (e.g., -2 → -3)
-                          newValue = -Math.abs(newValue);
-                          if (newValue === 0) newValue = -1; // Prevent zero
-                        } else {
-                          newValue = currentValue + 1;
-                          newValue = Math.abs(newValue); // Ensure positive
-                        }
+          if (
+            item.itemStatus === 'EXCHANGE' ||
+            item.itemStatus === 'RETURN' ||
+            item.itemStatus === 'exchange'
+          ) {
+            value = -Math.abs(value); // Force negative
+          } else {
+            value = Math.abs(value); // Ensure positive
+            if (value < 1) value = 1; // Enforce minimum value
+          }
 
-                        handleQuantityChange(rowItemTableIndex, newValue);
-                      }}
-                    >
-                      +
-                    </button>
-                  </div>
-                </td>
+          handleQuantityChange(rowItemTableIndex, value);
+        }}
+        onKeyDown={(e) => {
+          handleItemTableKeyDown(e, rowItemTableIndex, 4);
+          if (e.key === 'ArrowUp' || e.key === 'ArrowDown') {
+            e.preventDefault(); // Prevent default input behavior
+          }
+        }}
+      />
+
+      {/* Increase Button */}
+      <button
+        type="button"
+        className="item-table-quantity-btn item-table-quantity-btn-increase"
+        onClick={() => {
+          let currentValue = parseInt(inputRefs.current[rowItemTableIndex][4].value, 10) || 0;
+          let newValue;
+
+          if (
+            item.itemStatus === 'EXCHANGE' ||
+            item.itemStatus === 'RETURN' ||
+            item.itemStatus === 'exchange'
+          ) {
+            newValue = currentValue - 1; // More negative (e.g., -2 → -3)
+            newValue = -Math.abs(newValue);
+            if (newValue === 0) newValue = -1; // Prevent zero
+          } else {
+            newValue = currentValue + 1;
+            newValue = Math.abs(newValue); // Ensure positive
+          }
+
+          handleQuantityChange(rowItemTableIndex, newValue);
+        }}
+      >
+        +
+      </button>
+    </div>
+  )}
+</td>
 
                   <td>{item.amount.toFixed(2)}</td>
                   <td>{item.itemStatus}</td>
@@ -1446,8 +1585,9 @@ const handleSelectChange = (selectedOption) => {
       <div className="summary">
         <div className="custom-btn">
           <button onClick={() => setShowCustomItemModal(true)}>Custom Item</button>
-          
+            <button onClick={() => setShowCustomClothModal(true)}>Custom Cloth</button>
         </div>
+      
         <div className="item-summary">
           <h3>Total Amount: {calculateTotalAmount().toFixed(2)} Rs</h3>
           <h4>Item Count: {selectedItems.length}</h4>
@@ -1488,23 +1628,23 @@ const handleSelectChange = (selectedOption) => {
       </div>
 
       <div className="hold-bill-section">
-  <button className="hold-bill-button" onClick={handleHoldBill}>Hold Bill</button>
-  <div className="continue-bills-container">
-    {heldBills.map((bill, index) => (
-      <div key={index} className="continue-bill-wrapper">
-        <button className="continue-bill-button" onClick={() => handleLoadBill(index)}>
-          Continue Bill-{index + 1} - {bill.schoolName || `Unnamed (${index + 1})`}
-        </button>
-        <span
-          className="discard-bill"
-          onClick={(e) => { e.stopPropagation(); handleDiscardBill(index); }}
-        >
-          ×
-        </span>
-      </div>
-    ))}
-  </div>
-</div>
+       <button className="hold-bill-button" onClick={handleHoldBill}>Hold Bill</button>
+        <div className="continue-bills-container">
+          {heldBills.map((bill, index) => (
+            <div key={index} className="continue-bill-wrapper">
+              <button className="continue-bill-button" onClick={() => handleLoadBill(index)}>
+                Continue Bill-{index + 1} - {bill.schoolName || `Unnamed (${index + 1})`}
+              </button>
+              <span
+                className="discard-bill"
+                onClick={(e) => { e.stopPropagation(); handleDiscardBill(index); }}
+              >
+                ×
+              </span>
+            </div>
+          ))}
+        </div>
+    </div>
 
       {showTransactionPopup && (
         <div className="transaction-popup">
@@ -1592,6 +1732,13 @@ const handleSelectChange = (selectedOption) => {
          onClose={handleCloseExchangBillModal}
          userData={userData}
        />
+      )}
+
+       {showCustomClothModal && (
+        <CustomClothModal
+          onAddCloth={handleAddCustomItemCloth}
+          onClose={() => setShowCustomClothModal(false)}
+        />
       )}
       
       <Modal show={showPdfModal} onHide={handleClosePdfModal} size="lg">
