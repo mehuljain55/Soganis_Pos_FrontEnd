@@ -1585,7 +1585,7 @@ const handleSizeChange = (rowIndex, newSize) => {
       <div className="summary">
         <div className="custom-btn">
           <button onClick={() => setShowCustomItemModal(true)}>Custom Item</button>
-            <button onClick={() => setShowCustomClothModal(true)}>Custom Cloth</button>
+            {/* <button onClick={() => setShowCustomClothModal(true)}> Cloth</button> */}
         </div>
       
         <div className="item-summary">
