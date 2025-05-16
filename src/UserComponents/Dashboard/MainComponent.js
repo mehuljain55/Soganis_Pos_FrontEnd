@@ -62,7 +62,7 @@ const MainComponent = ({ userData }) => {
 
 const reboot = async () => {
   try {
-    const response = await axios.get(`${API_BASE_URL}/user/restart`);
+    const response = await axios.get(`${API_BASE_URL}/server/restart`);
     // Reload the page correctly
     alert(response.data);
     window.location.reload();
