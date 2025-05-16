@@ -151,10 +151,10 @@ const reboot = async () => {
               <FontAwesomeIcon icon={faCloudUploadAlt} className="backup-icon" /> Backup
               </button>
 
-              <button className="dashboard-reload-button" onClick={() => setShowConfirm(true)}>
+              {/* <button className="dashboard-reload-button" onClick={() => setShowConfirm(true)}>
               <FontAwesomeIcon icon={faRotateRight} className="reload-icon" />
               Restart Server
-              </button>
+              </button> */}
 
 
 
