@@ -130,7 +130,6 @@ const TransactionModal = ({ handleClose, billNo, totalAmount }) => {
           <table className="transaction-modal-table">
             <thead>
               <tr>
-                <th>Transaction Id</th>
                 <th>Payment Mode</th>
                 <th>Amount</th>
               </tr>
@@ -138,7 +137,6 @@ const TransactionModal = ({ handleClose, billNo, totalAmount }) => {
             <tbody>
               {editedTransactions.map((txn, index) => (
                 <tr key={txn.transactionId || `new-${index}`}>
-                  <td>{txn.transactionId ? txn.transactionId : 'New'}</td>
                   <td>
                     <select
                       value={txn.mode}
