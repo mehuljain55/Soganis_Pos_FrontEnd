@@ -2,12 +2,15 @@ import React, { useState, useEffect } from 'react';
 import { API_BASE_URL } from '../Config.js';
 import axios from 'axios';
 import './CustomerDueList.css';
+import BillViewPopup from './BillViewPopup.js';
 
 const CustomerDueList = () => {
   const [customerDueList, setCustomerDueList] = useState([]);
   const [filteredList, setFilteredList] = useState([]);
   const [error, setError] = useState('');
   const [filter, setFilter] = useState('');
+  const [showBillPopup, setShowBillPopup] = useState(false);
+  const [selectedBillNo,setSelectedBillNo]=useState('');
 
   // Fetch the customer due list
   const fetchCustomerList = async () => {
@@ -95,6 +98,16 @@ const CustomerDueList = () => {
     }
   };
 
+    const handleViewBill = (billNo) => {
+    setSelectedBillNo(billNo);
+    setShowBillPopup(true);
+  };
+
+  const handleCloseBillPopup = () => {
+    setShowBillPopup(false);
+    setSelectedBillNo(null);
+  };
+
   return (
     <div className="customer-due-list">
       <h1>Customer Due List</h1>
@@ -151,12 +164,24 @@ const CustomerDueList = () => {
                     <button onClick={() => handlePayment(dues.sno)}>
                       Pay
                     </button>
+
+                     <button onClick={() => handleViewBill(dues.billNo)}>
+                      View
+                    </button>
                   </td>
                 </tr>
               ))}
             </tbody>
           </table>
         </div>
+      )}
+
+      {showBillPopup && (
+        <BillViewPopup 
+          show={showBillPopup}
+          onHide={handleCloseBillPopup}
+          billNo={selectedBillNo}
+        />
       )}
     </div>
   );
