@@ -18,6 +18,7 @@ import Invoice from './UserComponents/Invoice/Invoice';
 import SchoolSalesReport from './UserComponents/SalesReport/SchoolSalesReport'; 
 import SalesReportGraph from './UserComponents/SalesReport/SalesReportGraph'; 
 import ExchangeBill from './UserComponents/Billing/ExchangeBill.js';
+import ServerUpdate from './UserComponents/Dashboard/ServerUpdate.js';
 
 import './App.css'; 
 
@@ -97,6 +98,7 @@ function App() {
           ) : (
             <>
               <Route path="/" element={<MainComponent userData={userData} />} />
+              <Route path="/server/update" element={<ServerUpdate />} />
               <Route path="/barcode" element={<BarcodePrintPage />} />
             </>
           )}
