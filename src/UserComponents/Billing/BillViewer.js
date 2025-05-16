@@ -3,6 +3,7 @@ import axios from 'axios';
 import { format } from 'date-fns';
 import './BillViewer.css';
 import { CUSTOMER_DETAILED_INVOICE, INVOICE_LIST_BY_DATE, DELETE_BILL_URL } from '../Api/ApiConstants.js';
+import TransactionModal from './TransactionModal.js';
 
 
 const BillViewer = () => {
@@ -15,6 +16,9 @@ const BillViewer = () => {
   const [activeFilter, setActiveFilter] = useState('Today');
   const [sortOrder, setSortOrder] = useState('Recent');
   const pdfIframeRef = useRef(null);
+  const [showTransactionModal, setShowTransactionModal] = useState(false);
+  const [selectedBillNo, setSelectedBillNo] = useState(null);
+  const [totalAmount,setTotalAmount]=useState(null);
 
 
   const fetchBills = async () => {
@@ -168,6 +172,19 @@ const BillViewer = () => {
     setPdfData(null);
   };
 
+  const openModal = (billNo,totalAmount) => {
+    setSelectedBillNo(billNo);
+    setTotalAmount(totalAmount);
+    setShowTransactionModal(true)
+    
+  };
+
+  const closeModal = () => {
+    setShowTransactionModal(false);
+    setTotalAmount(null);
+    setSelectedBillNo(null);
+  };
+
   const handleDeleteBill = async (billNo) => {
     try {
       const user = JSON.parse(sessionStorage.getItem('user'));
@@ -305,9 +322,18 @@ const BillViewer = () => {
                   <td className="action-buttons">
                     <button onClick={() => handleViewDetails(bill)}>View</button>
                     <button onClick={() => handlePrintBill(bill.billNo)}>Print</button>
+
+                    {bill.status === 'FRESH' && isToday(bill.bill_date) && (
+                      <button onClick={() => openModal(bill.billNo,bill.final_amount)}>Update Transaction</button>
+                    )}
+
                     {bill.status === 'FRESH' && isToday(bill.bill_date) && (
                       <button onClick={() => handleDeleteBill(bill.billNo)}>Delete</button>
                     )}
+
+                   
+
+                    
                   </td>
                 </tr>
               ))}
@@ -395,6 +421,14 @@ const BillViewer = () => {
             </div>
           </div>
         </div>
+      )}
+
+      {showTransactionModal && (
+        <TransactionModal
+          billNo={selectedBillNo}
+          totalAmount={totalAmount}
+          handleClose={closeModal}
+        />
       )}
     </div>
   );
