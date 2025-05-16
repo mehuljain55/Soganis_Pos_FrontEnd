@@ -1,5 +1,4 @@
 import React, { useState, useRef, useEffect } from 'react';
-import axios from 'axios';
 import './ServerUpdate.css';
 import { API_BASE_URL } from '../Config';
 
@@ -9,32 +8,22 @@ const ServerUpdate = () => {
   const logBoxRef = useRef(null);
   const eventSourceRef = useRef(null);
 
-  const startDeployment = async () => {
+  const startDeployment = () => {
     setLogs('');
     setRunning(true);
 
-    try {
-      // 1. Call backend to trigger deployment start
-      await axios.post(`${API_BASE_URL}/server/start`);
+    const es = new EventSource(`${API_BASE_URL}/server/update`);
+    eventSourceRef.current = es;
 
-      // 2. Start SSE connection for live logs
-      const es = new EventSource(`${API_BASE_URL}/server/update`);
-      eventSourceRef.current = es;
+    es.onmessage = (event) => {
+      setLogs((prev) => prev + event.data);
+    };
 
-      es.onmessage = (event) => {
-        setLogs((prev) => prev + event.data);
-      };
-
-      es.onerror = (err) => {
-        console.error('SSE error:', err);
-        setLogs((prev) => prev + '\n[Connection error or closed]');
-        es.close();
-        setRunning(false);
-      };
-    } catch (error) {
-      setLogs((prev) => prev + '\n[Error starting deployment: ' + error.message + ']');
+    es.onerror = (err) => {
+      setLogs((prev) => prev + '\n[Connection closed or error occurred]');
+      es.close();
       setRunning(false);
-    }
+    };
   };
 
   const stopDeployment = () => {
@@ -61,7 +50,7 @@ const ServerUpdate = () => {
 
   return (
     <div className="deploy-container">
-      <h2>Server Update </h2>
+      <h2>Server Update</h2>
       <div className="button-group">
         <button onClick={startDeployment} disabled={running} className="btn btn-start">
           {running ? 'Deploying...' : 'Start Update'}
@@ -74,7 +63,7 @@ const ServerUpdate = () => {
       </div>
 
       <pre className="log-box" ref={logBoxRef}>
-        {logs || 'Click "Start Deployment" to begin...'}
+        {logs || 'Click "Start Update" to begin...'}
       </pre>
     </div>
   );
