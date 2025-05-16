@@ -1,0 +1,80 @@
+.transaction-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 999;
+}
+
+.transaction-modal-container {
+  background: white;
+  padding: 20px;
+  width: 90%;
+  max-width: 800px;
+  border-radius: 8px;
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+}
+
+.transaction-modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.transaction-modal-close-button {
+  background: transparent;
+  border: none;
+  font-size: 24px;
+  cursor: pointer;
+}
+
+.transaction-modal-body {
+  margin-top: 20px;
+  overflow-x: auto;
+}
+
+.transaction-modal-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.transaction-modal-table th,
+.transaction-modal-table td {
+  border: 1px solid #ccc;
+  padding: 10px;
+  text-align: left;
+}
+
+.transaction-modal-table input,
+.transaction-modal-table select {
+  width: 100%;
+  padding: 6px;
+  box-sizing: border-box;
+}
+
+.transaction-modal-footer {
+  margin-top: 20px;
+  text-align: right;
+}
+
+.transaction-modal-btn {
+  padding: 8px 16px;
+  margin-left: 10px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.transaction-modal-btn.cancel {
+  background-color: #ccc;
+}
+
+.transaction-modal-btn.save {
+  background-color: #4CAF50;
+  color: white;
+}
