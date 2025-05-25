@@ -24,6 +24,7 @@ export const FETCH_STORE_USER_URL= `${API_BASE_URL}/user/getUserByStore`;
 export const CREATE_TRANSACTION_URL = `${API_BASE_URL}/user/daily/create`;
 export const FETCH_CASH_BALANCE_URL = `${API_BASE_URL}/user/daily/balance`;
 
+
 // Custom Cloth 
 export const CUSTOM_CLOTH_CATEGORY = `${API_BASE_URL}/user/item/findClothCategory`;
 export const CUSTOM_CLOTH_TYPE = `${API_BASE_URL}/user/item/findClothType`;
@@ -32,3 +33,5 @@ export const CUSTOM_CLOTH_PRICE = `${API_BASE_URL}/user/item/findPrice`;
 
 export const FIND_TRANSACTION_BILL_NO = `${API_BASE_URL}/user/transaction/findTransactionByBillNo`;
 export const UPDATE_TRANSACTION_BILL_NO = `${API_BASE_URL}/user/transaction/updateBillTransaction`;
+
+export const FETCH_TRANSACTION_BY_DATE_URL = `${API_BASE_URL}/user/transaction/viewTransactionList`;

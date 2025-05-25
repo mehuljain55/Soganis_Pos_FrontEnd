@@ -1,0 +1,30 @@
+.transaction-container {
+  max-width: 100%;
+  border-radius: 12px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  background-color: #f9fcff;
+}
+
+.toggle-button {
+  background-color: #007bff;
+  color: white;
+  padding: 10px 18px;
+  margin-left: 5px !important;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 16px;
+  transition: background-color 0.3s ease;
+}
+
+.toggle-button:hover {
+  background-color: #0056b3;
+}
+
+.view-container {
+  margin-top: 20px;
+}
+
+.trasaction-btn{
+    margin-left: 10px;
+}
