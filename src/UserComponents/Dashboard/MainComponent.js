@@ -27,6 +27,7 @@ import ItemCodeFetcher from '../Billing/ItemCodeFetcher.js';
 import CustomerDueList from '../Billing/CustomerDueList.js';
 import Dashboard from './Dashboard.js';
 import DailyTransactionForm from '../Transactions/DailyTransactionForm.js';
+import Transaction from '../Transactions/Transaction.js';
 
 const MainComponent = ({ userData }) => {
   const [selectedMenuItem, setSelectedMenuItem] = useState('Dashboard');
@@ -207,7 +208,7 @@ const reboot = async () => {
           {selectedMenuItem === 'Add New Item' && <InventoryAdd />}
           {selectedMenuItem === 'Recent Bills' && <BillViewer />}
           {selectedMenuItem === 'Customer Due List' && <CustomerDueList />}
-          {selectedMenuItem === 'Daily Cash' && <DailyTransactionForm />}
+          {selectedMenuItem === 'Daily Cash' && <Transaction />}
           
         </main>
 

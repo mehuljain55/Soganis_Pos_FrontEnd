@@ -1,0 +1,390 @@
+/* TransactionView.css */
+
+.transaction-view-container {
+    padding: 20px;
+    background-color: #f5f5f5;
+    min-height: 100vh;
+    font-family: Arial, sans-serif;
+}
+
+.tv-main-content {
+    max-width: 1400px;
+    margin: 0 auto;
+    background: white;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Header Styles */
+.tv-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 20px;
+    padding-bottom: 15px;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+.tv-title {
+    font-size: 24px;
+    font-weight: bold;
+    color: #333;
+    margin: 0;
+}
+
+.tv-date-display {
+    background: #f8f9fa;
+    padding: 10px 15px;
+    border-radius: 6px;
+    border: 1px solid #e9ecef;
+}
+
+.tv-date-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 5px;
+}
+
+.tv-date-item:last-child {
+    margin-bottom: 0;
+}
+
+.tv-date-label {
+    font-weight: 600;
+    color: #555;
+    margin-right: 15px;
+}
+
+.tv-date-value {
+    color: #333;
+    font-weight: 500;
+}
+
+/* Error Message */
+.tv-error-message {
+    background-color: #f8d7da;
+    color: #721c24;
+    padding: 12px 16px;
+    border: 1px solid #f5c6cb;
+    border-radius: 4px;
+    margin-bottom: 20px;
+    font-size: 14px;
+}
+
+/* Filter Section */
+.tv-filter-section {
+    margin-bottom: 20px;
+}
+
+.tv-filter-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 15px;
+}
+
+.tv-filter-btn {
+    background-color: #2196f3;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 500;
+    transition: background-color 0.3s ease;
+}
+
+.tv-filter-btn:hover {
+    background-color: #1976d2;
+}
+
+.tv-filter-btn-active {
+    background-color: #1565c0 !important;
+}
+
+.tv-filter-btn:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+}
+
+/* Custom Date Picker */
+.tv-custom-date {
+    background: #f8f9fa;
+    padding: 15px;
+    border-radius: 6px;
+    border: 1px solid #e9ecef;
+    margin-top: 10px;
+}
+
+.tv-date-inputs {
+    display: flex;
+    gap: 15px;
+    align-items: end;
+    flex-wrap: wrap;
+}
+
+.tv-date-input-group {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.tv-date-input-group label {
+    font-size: 12px;
+    font-weight: 600;
+    color: #555;
+}
+
+.tv-date-input {
+    padding: 8px 12px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 14px;
+}
+
+.tv-apply-btn {
+    background-color: #28a745;
+    color: white;
+    border: none;
+    padding: 8px 20px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 500;
+    height: fit-content;
+}
+
+.tv-apply-btn:hover {
+    background-color: #218838;
+}
+
+.tv-apply-btn:disabled {
+    background-color: #6c757d;
+    cursor: not-allowed;
+}
+
+/* Sort Section */
+.tv-sort-section {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 20px;
+    padding: 10px 0;
+}
+
+.tv-sort-label {
+    font-weight: 600;
+    color: #555;
+}
+
+.tv-radio-label {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.tv-radio-label input[type="radio"] {
+    margin: 0;
+}
+
+/* Table Styles */
+.tv-table-container {
+    overflow-x: auto;
+    border: 1px solid #e0e0e0;
+    border-radius: 6px;
+}
+
+.tv-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+}
+
+.tv-table thead {
+    background-color: #37474f;
+    color: white;
+}
+
+.tv-table th {
+    padding: 12px 8px;
+    text-align: left;
+    font-weight: 600;
+    font-size: 13px;
+    border-right: 1px solid #546e7a;
+}
+
+.tv-table th:last-child {
+    border-right: none;
+}
+
+.tv-table tbody tr {
+    border-bottom: 1px solid #e0e0e0;
+}
+
+.tv-table tbody tr:hover {
+    background-color: #f5f5f5;
+}
+
+.tv-table tbody tr:nth-child(even) {
+    background-color: #fafafa;
+}
+
+.tv-table tbody tr:nth-child(even):hover {
+    background-color: #f0f0f0;
+}
+
+.tv-table td {
+    padding: 10px 8px;
+    border-right: 1px solid #e0e0e0;
+    vertical-align: middle;
+}
+
+.tv-table td:last-child {
+    border-right: none;
+}
+
+/* Action Buttons */
+.tv-action-buttons {
+    display: flex;
+    gap: 6px;
+}
+
+.tv-action-btn {
+    padding: 6px 12px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 12px;
+    font-weight: 500;
+    min-width: 50px;
+    transition: background-color 0.3s ease;
+}
+
+.tv-view-btn {
+    background-color: #87ceeb;
+    color: #333;
+}
+
+.tv-view-btn:hover {
+    background-color: #5bb9e0;
+}
+
+.tv-print-btn {
+    background-color: #90ee90;
+    color: #333;
+}
+
+.tv-print-btn:hover {
+    background-color: #7ad87a;
+}
+
+/* Loading and No Data */
+.tv-loading {
+    text-align: center;
+    padding: 40px;
+    color: #666;
+    font-size: 16px;
+}
+
+.tv-no-data {
+    text-align: center;
+    padding: 40px;
+    color: #666;
+    font-style: italic;
+}
+
+/* Responsive Design */
+@media (max-width: 1200px) {
+    .tv-table-container {
+        font-size: 13px;
+    }
+    
+    .tv-table th,
+    .tv-table td {
+        padding: 8px 6px;
+    }
+}
+
+@media (max-width: 768px) {
+    .transaction-view-container {
+        padding: 10px;
+    }
+    
+    .tv-main-content {
+        padding: 15px;
+    }
+    
+    .tv-header {
+        flex-direction: column;
+        gap: 15px;
+        align-items: flex-start;
+    }
+    
+    .tv-filter-buttons {
+        grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    }
+    
+    .tv-filter-btn {
+        padding: 10px 12px;
+        font-size: 12px;
+    }
+    
+    .tv-date-inputs {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    
+    .tv-date-input {
+        width: 100%;
+    }
+    
+    .tv-sort-section {
+        flex-wrap: wrap;
+    }
+    
+    .tv-table-container {
+        overflow-x: scroll;
+    }
+    
+    .tv-table {
+        min-width: 800px;
+    }
+    
+    .tv-action-buttons {
+        flex-direction: column;
+        gap: 4px;
+    }
+    
+    .tv-action-btn {
+        font-size: 10px;
+        padding: 4px 8px;
+    }
+}
+
+@media (max-width: 480px) {
+    .tv-title {
+        font-size: 20px;
+    }
+    
+    .tv-date-display {
+        width: 100%;
+    }
+    
+    .tv-filter-buttons {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    .tv-table {
+        font-size: 12px;
+    }
+    
+    .tv-table th,
+    .tv-table td {
+        padding: 6px 4px;
+    }
+}

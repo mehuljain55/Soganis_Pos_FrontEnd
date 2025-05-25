@@ -19,6 +19,8 @@ import SchoolSalesReport from './UserComponents/SalesReport/SchoolSalesReport';
 import SalesReportGraph from './UserComponents/SalesReport/SalesReportGraph'; 
 import ExchangeBill from './UserComponents/Billing/ExchangeBill.js';
 import './App.css'; 
+import TransactionView from './UserComponents/Transactions/TransactionView.js';
+import Transaction from './UserComponents/Transactions/Transaction.js';
 
 
 function App() {
@@ -97,6 +99,7 @@ function App() {
             <>
               <Route path="/" element={<MainComponent userData={userData} />} />
               <Route path="/barcode" element={<BarcodePrintPage />} />
+                <Route path="/transaction" element={<Transaction />} />
             </>
           )}
         </Routes>
