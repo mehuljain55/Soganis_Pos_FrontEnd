@@ -52,6 +52,15 @@ const MainComponent = ({ userData }) => {
     }
   };
 
+  useEffect(() => {
+      fetchTodayCashCollection();
+      const intervalId = setInterval(() => {
+      fetchTodayCashCollection();
+      }, 15000);
+
+      return () => clearInterval(intervalId);
+  }, []);
+
   const handleBackup = async () => {
     try {
       const response = await axios.get(`${API_BASE_URL}/user/backup`);
