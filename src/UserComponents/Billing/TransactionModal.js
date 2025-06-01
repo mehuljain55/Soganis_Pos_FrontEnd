@@ -19,6 +19,7 @@ const TransactionModal = ({ handleClose, billNo, totalAmount }) => {
             billNo,
             storeId,
             user,
+            token,
           });
 
           if (response.data.status === 'success') {
