@@ -22,6 +22,7 @@ import './App.css';
 import TransactionView from './UserComponents/Transactions/TransactionView.js';
 import Transaction from './UserComponents/Transactions/Transaction.js';
 import ExcelDownloader from './UserComponents/Billing/ExcelDownloader.js';
+import UpdateItems from './UserComponents/Inventory/UpdateItems.js';
 
 
 function App() {
@@ -92,6 +93,7 @@ function App() {
           <Route path="/invoice" element={<Invoice />} />
           <Route path="/exchange" element={<ExchangeBill />} />
           <Route path="/download" element={<ExcelDownloader />} />
+          <Route path="/update" element={<UpdateItems />} />
           
 
       
