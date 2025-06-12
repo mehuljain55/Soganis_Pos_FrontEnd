@@ -511,13 +511,22 @@ const handleSelectChange = (selectedOption) => {
 
       setSelectedItems(updatedItems);
     } else {
-      const newItem = {
-        ...item,
-        quantity: 1,
-        amount: item.price * 1, // Default amount without discount
-        itemStatus:'NEW',
-        discountAmount: item.discountAmount || 0, // Preserve the discount value from the item
-      };
+
+      const discountPercentage = item.discount === 'Yes' ? item.discount_percentage || 0 : 0;
+let amount = item.price * 1; // Default quantity is 1
+
+if (discountPercentage > 0) {
+  amount = amount - (amount * discountPercentage / 100);
+}
+
+const newItem = {
+  ...item,
+  quantity: 1,
+  amount: amount,
+  itemStatus: 'NEW',
+  discountAmount: discountPercentage,
+};
+
       setSelectedItems([...selectedItems, newItem]);
     }
   
@@ -546,6 +555,14 @@ const handleSelectChange = (selectedOption) => {
 
   
   const addItemToBillExchange = (item,quantity,status) => {
+
+        if (!schoolName) { // Check if schoolName is empty or null
+      const matchedSchool = allSchools.find(school => school.schoolName === item.itemCategory);
+      
+      if (matchedSchool) {
+          setSchoolName(matchedSchool.schoolName);
+      }
+  }
 
         const newItem = {
           ...item,
