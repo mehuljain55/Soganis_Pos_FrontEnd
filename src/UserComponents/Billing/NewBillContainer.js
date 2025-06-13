@@ -1798,7 +1798,7 @@ const handleDiscountChange = (rowIndex, newDiscount) => {
 
        {showCustomClothModal && (
         <CustomClothModal
-          onAddCloth={handleAddCustomItemCloth}
+          onAddItem={handleAddCustomItemCloth}
           onClose={() => setShowCustomClothModal(false)}
         />
 

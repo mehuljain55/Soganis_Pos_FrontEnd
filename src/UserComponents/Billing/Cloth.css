@@ -1,0 +1,377 @@
+/* Additional CSS for Excel upload and review functionality */
+
+.mode-selector {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+  border-bottom: 1px solid #e0e0e0;
+  padding-bottom: 15px;
+}
+
+.mode-btn {
+  padding: 10px 20px;
+  border: 2px solid #ddd;
+  background: white;
+  cursor: pointer;
+  border-radius: 5px;
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
+
+.mode-btn.active {
+  background: #007bff;
+  color: white;
+  border-color: #007bff;
+}
+
+.mode-btn:hover {
+  border-color: #007bff;
+}
+
+/* Excel Upload Section */
+.excel-upload-section {
+  padding: 20px;
+  border: 2px dashed #ddd;
+  border-radius: 8px;
+  text-align: center;
+}
+
+.upload-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.upload-header h3 {
+  margin: 0;
+  color: #333;
+}
+
+.template-btn {
+  background: #28a745;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background 0.3s ease;
+}
+
+.template-btn:hover {
+  background: #218838;
+}
+
+.file-upload-container {
+  margin: 20px 0;
+}
+
+.file-input {
+  display: none;
+}
+
+.file-label {
+  display: inline-block;
+  padding: 12px 24px;
+  background: #007bff;
+  color: white;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: background 0.3s ease;
+}
+
+.file-label:hover {
+  background: #0056b3;
+}
+
+.upload-summary {
+  margin-top: 20px;
+  padding: 15px;
+  background: #f8f9fa;
+  border-radius: 6px;
+  text-align: left;
+}
+
+.upload-summary p {
+  margin: 5px 0;
+  font-size: 14px;
+}
+
+.upload-actions {
+  margin-top: 15px;
+}
+
+.review-btn {
+  background: #17a2b8;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: background 0.3s ease;
+}
+
+.review-btn:hover {
+  background: #138496;
+}
+
+/* Review Screen */
+.review-card {
+  min-width: 95vw;
+  max-width: none;
+}
+
+.review-screen {
+  width: 100%;
+}
+
+.review-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  padding-bottom: 15px;
+  border-bottom: 2px solid #e0e0e0;
+}
+
+.review-header h3 {
+  margin: 0;
+  color: #333;
+}
+
+.review-stats {
+  display: flex;
+  gap: 15px;
+}
+
+.stat {
+  padding: 5px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+  background: #f8f9fa;
+  color: #333;
+}
+
+.stat.success {
+  background: #d4edda;
+  color: #155724;
+}
+
+.stat.error {
+  background: #f8d7da;
+  color: #721c24;
+}
+
+.review-table-container {
+  max-height: 60vh;
+  overflow: auto;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  margin-bottom: 20px;
+}
+
+.review-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12px;
+}
+
+.review-table th {
+  background: #f8f9fa;
+  padding: 12px 8px;
+  text-align: left;
+  font-weight: 600;
+  border-bottom: 2px solid #dee2e6;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.review-table td {
+  padding: 8px;
+  border-bottom: 1px solid #dee2e6;
+  vertical-align: middle;
+}
+
+.review-row.mapped {
+  background: #f8fff8;
+}
+
+.review-row.error {
+  background: #fff5f5;
+}
+
+.review-input, .review-select {
+  width: 100%;
+  padding: 4px 6px;
+  border: 1px solid #ddd;
+  border-radius: 3px;
+  font-size: 11px;
+}
+
+.review-input:focus, .review-select:focus {
+  outline: none;
+  border-color: #007bff;
+}
+
+.original-category {
+  font-size: 11px;
+  color: #666;
+  max-width: 120px;
+  word-break: break-word;
+}
+
+.mapped-school {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.school-name {
+  font-size: 11px;
+  font-weight: 500;
+  color: #28a745;
+}
+
+.school-select {
+  font-size: 10px;
+  padding: 2px 4px;
+  border: 1px solid #ccc;
+  border-radius: 3px;
+}
+
+.mapping-error {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.error-text {
+  font-size: 10px;
+  color: #dc3545;
+  font-style: italic;
+}
+
+.status-badge {
+  font-size: 16px;
+}
+
+.status-badge.mapped {
+  color: #28a745;
+}
+
+.status-badge.error {
+  color: #dc3545;
+}
+
+.auto-map-btn {
+  background: #ffc107;
+  color: #212529;
+  border: none;
+  padding: 4px 8px;
+  border-radius: 3px;
+  cursor: pointer;
+  font-size: 10px;
+  font-weight: 500;
+  transition: background 0.3s ease;
+}
+
+.auto-map-btn:hover {
+  background: #ffcd39;
+}
+
+.review-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 20px;
+  border-top: 2px solid #e0e0e0;
+}
+
+.back-btn {
+  background: #6c757d;
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: background 0.3s ease;
+}
+
+.back-btn:hover {
+  background: #545b62;
+}
+
+.submit-bulk-btn {
+  background: #28a745;
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-weight: 500;
+  font-size: 16px;
+  transition: background 0.3s ease;
+}
+
+.submit-bulk-btn:hover {
+  background: #218838;
+}
+
+.submit-bulk-btn:disabled {
+  background: #6c757d;
+  cursor: not-allowed;
+}
+
+/* Responsive adjustments */
+@media (max-width: 1200px) {
+  .review-table {
+    font-size: 11px;
+  }
+  
+  .review-table th,
+  .review-table td {
+    padding: 6px 4px;
+  }
+}
+
+@media (max-width: 768px) {
+  .review-card {
+    min-width: 98vw;
+    margin: 10px;
+  }
+  
+  .review-header {
+    flex-direction: column;
+    gap: 10px;
+    align-items: flex-start;
+  }
+  
+  .review-stats {
+    width: 100%;
+    justify-content: space-around;
+  }
+  
+  .review-table-container {
+    max-height: 50vh;
+  }
+  
+  .review-table {
+    font-size: 10px;
+  }
+  
+  .review-actions {
+    flex-direction: column;
+    gap: 10px;
+  }
+  
+  .back-btn,
+  .submit-bulk-btn {
+    width: 100%;
+  }
+}
