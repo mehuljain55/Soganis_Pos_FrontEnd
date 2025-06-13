@@ -135,7 +135,7 @@ const CustomClothModal = ({ onAddItem, onClose }) => {
           </div>
 
           <div className="custom-item-cloth-popup__field">
-            <label>Panna Size</label>
+            <label>Panna</label>
             <select
               className="custom-item-cloth-popup__select"
               value={pannaSize}
@@ -182,17 +182,40 @@ const CustomClothModal = ({ onAddItem, onClose }) => {
                 placeholder="Auto filled from cloth"
               />
             </div>
-            <div className="custom-item-cloth-popup__field">
-              <label>Size</label>
-              <input
-                type="number"
-                className="custom-item-cloth-popup__input"
-                value={size}
-                onChange={(e) => setSize(e.target.value)}
-                placeholder="Enter size"
-                step="0.01"
-              />
-            </div>
+<div className="custom-item-cloth-popup__field">
+  <label>Quantity</label>
+  <input
+    type="text"
+    className="custom-item-cloth-popup__input"
+    value={size}
+    onChange={(e) => {
+      let value = e.target.value;
+      
+      // Only allow digits and one decimal point
+      value = value.replace(/[^\d.]/g, '');
+      
+      // If user types just digits without decimal, auto-format
+      if (!value.includes('.') && value.length > 0) {
+        // Add decimal point after first digit
+        if (value.length === 1) {
+          value = value + '.';
+        } else if (value.length > 1) {
+          value = value.charAt(0) + '.' + value.slice(1);
+        }
+      }
+      
+      // Prevent multiple decimal points
+      const parts = value.split('.');
+      if (parts.length > 2) {
+        value = parts[0] + '.' + parts.slice(1).join('');
+      }
+      
+      setSize(value);
+    }}
+    placeholder="Enter size"
+  />
+</div>
+
           </div>
 
           <div className="custom-item-cloth-popup__field">
