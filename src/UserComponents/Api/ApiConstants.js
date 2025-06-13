@@ -26,10 +26,8 @@ export const FETCH_CASH_BALANCE_URL = `${API_BASE_URL}/user/daily/balance`;
 
 
 // Custom Cloth 
-export const CUSTOM_CLOTH_CATEGORY = `${API_BASE_URL}/user/item/findClothCategory`;
-export const CUSTOM_CLOTH_TYPE = `${API_BASE_URL}/user/item/findClothType`;
-export const CUSTOM_CLOTH_COLOR = `${API_BASE_URL}/user/item/findClothColor`;
-export const CUSTOM_CLOTH_PRICE = `${API_BASE_URL}/user/item/findPrice`;
+export const CUSTOM_CLOTH_PANA_SIZE = `${API_BASE_URL}/user/item/cloth/distinctPanaSize`;
+export const FIND_CLOTH = `${API_BASE_URL}/user/item/cloth/findCloth`;
 
 export const FIND_TRANSACTION_BILL_NO = `${API_BASE_URL}/user/transaction/findTransactionByBillNo`;
 export const UPDATE_TRANSACTION_BILL_NO = `${API_BASE_URL}/user/transaction/updateBillTransaction`;

@@ -23,6 +23,7 @@ import TransactionView from './UserComponents/Transactions/TransactionView.js';
 import Transaction from './UserComponents/Transactions/Transaction.js';
 import ExcelDownloader from './UserComponents/Billing/ExcelDownloader.js';
 import UpdateItems from './UserComponents/Inventory/UpdateItems.js';
+import Cloth from './UserComponents/Billing/Cloth.js';
 
 
 function App() {
@@ -104,6 +105,8 @@ function App() {
               <Route path="/" element={<MainComponent userData={userData} />} />
               <Route path="/barcode" element={<BarcodePrintPage />} />
                 <Route path="/transaction" element={<Transaction />} />
+                 <Route path="/cloth/add" element={<Cloth />} />
+
             </>
           )}
         </Routes>
