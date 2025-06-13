@@ -1,19 +1,16 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import './CustomClothModal.css';
-import { CUSTOM_CLOTH_CATEGORY, CUSTOM_CLOTH_TYPE, CUSTOM_CLOTH_COLOR, CUSTOM_CLOTH_PRICE } from '../Api/ApiConstants';
+import { CUSTOM_CLOTH_PANA_SIZE, FIND_CLOTH } from '../Api/ApiConstants';
 
-const CustomClothModal = ({ onAddCloth, onClose }) => {
-  const [description, setDescription] = useState('');
-  const [itemCategory, setItemCategory] = useState('');
-  const [itemType, setItemType] = useState('');
-  const [itemColor, setItemColor] = useState('');
-  const [price, setPrice] = useState('');
-  const [size, setSize] = useState(1.0);
-
-  const [categoryOptions, setCategoryOptions] = useState([]);
-  const [typeOptions, setTypeOptions] = useState([]);
-  const [colorOptions, setColorOptions] = useState([]);
+const CustomClothModal = ({ onAddItem, onClose }) => {
+  const [clothType, setClothType] = useState('SHIRTING');
+  const [pannaSize, setPannaSize] = useState('');
+  const [selectedCloth, setSelectedCloth] = useState(null);
+  const [size, setSize] = useState('');
+  const [pannaSizeList, setPannaSizeList] = useState([]);
+  const [clothList, setClothList] = useState([]);
+  const [loading, setLoading] = useState(false);
 
   const getUserData = () => {
     const user = sessionStorage.getItem('user');
@@ -25,177 +22,197 @@ const CustomClothModal = ({ onAddCloth, onClose }) => {
     };
   };
 
-  // L1: Fetch Cloth Categories
+  // Fetch panna sizes when cloth type changes
   useEffect(() => {
-    const fetchCategories = async () => {
-      try {
-        const { user, token } = getUserData();
-        const requestBody = {
-          user,
-          token,
-          storeId: user.storeId
-        };
-        const response = await axios.post(CUSTOM_CLOTH_CATEGORY, requestBody);
-        if (response.data.status === 'success') {
-          setCategoryOptions(response.data.payload);
-        } else {
-          console.error('Failed to fetch categories');
-        }
-      } catch (error) {
-        console.error('Error fetching cloth categories:', error);
-      }
-    };
+    if (clothType) {
+      fetchPannaSizes();
+    }
+  }, [clothType]);
 
-    fetchCategories();
-  }, []);
-
-  // L2: Fetch Cloth Types based on category
+  // Fetch cloth items when panna size changes
   useEffect(() => {
-    const fetchTypes = async () => {
-      if (!itemCategory) return;
-      try {
-        const { user, token } = getUserData();
-        const requestBody = {
-          user,
-          token,
-          itemCategory,
-        };
-        const response = await axios.post(CUSTOM_CLOTH_TYPE, requestBody);
-        if (response.data.status === 'success') {
-          setTypeOptions(response.data.payload);
-          setItemType('');
-          setItemColor('');
-          setColorOptions([]);
-          setDescription('');
-          setPrice('');
-        } else {
-          console.error('Failed to fetch types');
+    if (pannaSize && clothType) {
+      fetchClothItems();
+    }
+  }, [pannaSize, clothType]);
+
+  const fetchPannaSizes = async () => {
+    try {
+      setLoading(true);
+      const userData = getUserData();
+      
+      const response = await axios.post(CUSTOM_CLOTH_PANA_SIZE, {
+        user: userData.user,
+        token: userData.token,
+        clothType: clothType
+      }, {
+        headers: {
+          'Content-Type': 'application/json',
         }
-      } catch (error) {
-        console.error('Error fetching cloth types:', error);
+      });
+
+      if (response.data.status === 'success') {
+        setPannaSizeList(response.data.payload || []);
       }
-    };
-
-    fetchTypes();
-  }, [itemCategory]);
-
-  // L3: Fetch Colors based on category and type
-  useEffect(() => {
-    const fetchColors = async () => {
-      if (!itemCategory || !itemType) return;
-      try {
-        const { user, token } = getUserData();
-        const requestBody = {
-          user,
-          token,
-          storeId: user.storeId, // Use the actual store ID from user
-          itemCategory,
-          clothType: itemType,
-        };
-        const response = await axios.post(CUSTOM_CLOTH_COLOR, requestBody);
-        if (response.data.status === 'success') {
-          setColorOptions(response.data.payload);
-          setItemColor('');
-          setDescription('');
-          setPrice('');
-        } else {
-          console.error('Failed to fetch colors');
-        }
-      } catch (error) {
-        console.error('Error fetching colors:', error);
-      }
-    };
-
-    fetchColors();
-  }, [itemType]);
-
-  // L4: Fetch Description and Price
-  useEffect(() => {
-    const fetchPrice = async () => {
-      if (!itemCategory || !itemType || !itemColor) return;
-      try {
-        const { user, token } = getUserData();
-        const requestBody = {
-          user,
-          token,
-          storeId: user.storeId, // Use the actual store ID from user
-          itemCategory,
-          clothType: itemType,
-          itemColor,
-        };
-        const response = await axios.post(CUSTOM_CLOTH_PRICE, requestBody);
-        if (response.data.status === 'success') {
-          setDescription(response.data.payload.description);
-          setPrice(response.data.payload.price);
-        } else {
-          console.error('Failed to fetch price/description');
-        }
-      } catch (error) {
-        console.error('Error fetching price:', error);
-      }
-    };
-
-    fetchPrice();
-  }, [itemColor]);
-
-  const handleSubmit = () => {
-    onAddCloth(description, itemCategory, itemColor, size.toFixed(1), price);
-    onClose();
+    } catch (error) {
+      console.error('Error fetching panna sizes:', error);
+    } finally {
+      setLoading(false);
+    }
   };
 
-  // Stop propagation on modal click to prevent closing when clicking inside
-  const handleModalClick = (e) => {
-    e.stopPropagation();
+  const fetchClothItems = async () => {
+    try {
+      setLoading(true);
+      const userData = getUserData();
+      
+      const response = await axios.post(FIND_CLOTH, {
+        user: userData.user,
+        token: userData.token,
+        pannaType: pannaSize,
+        clothType: clothType
+      }, {
+        headers: {
+          'Content-Type': 'application/json',
+        }
+      });
+
+      if (response.data.status === 'success') {
+        setClothList(response.data.payload || []);
+      }
+    } catch (error) {
+      console.error('Error fetching cloth items:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleAdd = () => {
+    if (selectedCloth && size) {
+      const parsedSize = parseFloat(size) || 0;
+      const amount = Math.round(parsedSize * selectedCloth.price);
+      
+      onAddItem(
+        selectedCloth.itemBarcodeID,
+        selectedCloth.description,
+        selectedCloth.itemCategory,
+        size,
+        selectedCloth.price
+      );
+    }
+  };
+
+  const calculateAmount = () => {
+    if (selectedCloth && size) {
+      const parsedSize = parseFloat(size) || 0;
+      return Math.round(parsedSize * selectedCloth.price);
+    }
+    return 0;
   };
 
   return (
-    <div className="modal-overlay" onClick={onClose}>
-      <div className="custom-cloth-modal" onClick={handleModalClick}>
-        <h5>Add Custom Cloth</h5>
+    <div className="custom-item-cloth-popup">
+      <div className="custom-item-cloth-popup__overlay" onClick={onClose}>
+        <div className="custom-item-cloth-popup__content" onClick={(e) => e.stopPropagation()}>
+          <div className="custom-item-cloth-popup__header">
+            <h3>Cloth Type</h3>
+            <button className="custom-item-cloth-popup__close" onClick={onClose}>×</button>
+          </div>
 
-        <label>Category</label>
-        <select value={itemCategory} onChange={(e) => setItemCategory(e.target.value)}>
-          <option value="">Select</option>
-          {categoryOptions.map((cat, idx) => (
-            <option key={idx} value={cat}>{cat}</option>
-          ))}
-        </select>
+          <div className="custom-item-cloth-popup__cloth-types">
+            <button
+              className={`custom-item-cloth-popup__cloth-btn ${clothType === 'SHIRTING' ? 'active' : ''}`}
+              onClick={() => setClothType('SHIRTING')}
+            >
+              SHIRTING
+            </button>
+            <button
+              className={`custom-item-cloth-popup__cloth-btn ${clothType === 'SUITING' ? 'active' : ''}`}
+              onClick={() => setClothType('SUITING')}
+            >
+              SUITING
+            </button>
+          </div>
 
-        <label>Type</label>
-        <select value={itemType} onChange={(e) => setItemType(e.target.value)} disabled={!itemCategory}>
-          <option value="">Select</option>
-          {typeOptions.map((type, idx) => (
-            <option key={idx} value={type}>{type}</option>
-          ))}
-        </select>
+          <div className="custom-item-cloth-popup__field">
+            <label>Panna Size</label>
+            <select
+              className="custom-item-cloth-popup__select"
+              value={pannaSize}
+              onChange={(e) => setPannaSize(e.target.value)}
+              disabled={loading}
+            >
+              <option value="">Select Panna Size</option>
+              {pannaSizeList.map((size, index) => (
+                <option key={index} value={size}>
+                  {size}
+                </option>
+              ))}
+            </select>
+          </div>
 
-        <label>Color</label>
-        <select value={itemColor} onChange={(e) => setItemColor(e.target.value)} disabled={!itemType}>
-          <option value="">Select</option>
-          {colorOptions.map((col, idx) => (
-            <option key={idx} value={col}>{col}</option>
-          ))}
-        </select>
+          <div className="custom-item-cloth-popup__field">
+            <label>Select Cloth</label>
+            <select
+              className="custom-item-cloth-popup__select"
+              value={selectedCloth?.sno || ''}
+              onChange={(e) => {
+                const cloth = clothList.find(c => c.sno === parseInt(e.target.value));
+                setSelectedCloth(cloth);
+              }}
+              disabled={loading || !pannaSize}
+            >
+              <option value="">Select Cloth</option>
+              {clothList.map((cloth) => (
+                <option key={cloth.sno} value={cloth.sno}>
+                  {cloth.itemCategory}- {cloth.description}
+                </option>
+              ))}
+            </select>
+          </div>
 
-        <label>Size</label>
-        <input
-          type="number"
-          step="0.1"
-          min="0"
-          value={size}
-          onChange={(e) => setSize(parseFloat(e.target.value) || 0)}
-          className="number-field"
-        />
+          <div className="custom-item-cloth-popup__row">
+            <div className="custom-item-cloth-popup__field">
+              <label>Price</label>
+              <input
+                type="text"
+                className="custom-item-cloth-popup__input"
+                value={selectedCloth ? selectedCloth.price : ''}
+                readOnly
+                placeholder="Auto filled from cloth"
+              />
+            </div>
+            <div className="custom-item-cloth-popup__field">
+              <label>Size</label>
+              <input
+                type="number"
+                className="custom-item-cloth-popup__input"
+                value={size}
+                onChange={(e) => setSize(e.target.value)}
+                placeholder="Enter size"
+                step="0.01"
+              />
+            </div>
+          </div>
 
-        <label>Price</label>
-        <div className="info-field">₹{price || '0'}</div>
-        
-        <label>Description</label>
-        <div className="info-field">{description || 'No description available'}</div>
+          <div className="custom-item-cloth-popup__field">
+            <label>Amount</label>
+            <input
+              type="text"
+              className="custom-item-cloth-popup__input"
+              value={calculateAmount()}
+              readOnly
+              placeholder="Price * quantity"
+            />
+          </div>
 
-        <div className="modal-actions">
-          <button onClick={handleSubmit} disabled={!price}>Add</button>
-          <button onClick={onClose}>Cancel</button>
+          <button
+            className="custom-item-cloth-popup__add-btn"
+            onClick={handleAdd}
+            disabled={!selectedCloth || !size}
+          >
+            Add
+          </button>
         </div>
       </div>
     </div>

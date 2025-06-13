@@ -1010,23 +1010,21 @@ const handleSizeChange = (rowIndex, newSize) => {
    
   };
   
-  const handleDiscountChange = (index, discountValue) => {
-    if (discountPercentage > 0) {
-      setDiscountPercentage(0);  // Clear global discount if an item discount is set
-    }
-    setSelectedItems((prevItems) => {
-      const updatedItems = [...prevItems];
-      const item = updatedItems[index];
-      item.discountAmount = discountValue; // Apply discount amount only if discount is "Yes"
-      if(item.itemType==='CLOTH')
-      {
-         item.amount = item.price * (1 - discountValue / 100) * item.size;
-      }else{
-      item.amount = item.price * (1 - discountValue / 100) * item.quantity;
-      }
-      return updatedItems;
-    });
-  };
+const handleDiscountChange = (rowIndex, newDiscount) => {
+  // Update the discount amount for the selected item
+  const updatedItems = [...selectedItems];
+  const item = updatedItems[rowIndex];
+
+  item.discountAmount = newDiscount;
+
+  // Recalculate amount after applying discount
+  const originalAmount = item.price * item.quantity;
+  const discountValue = (newDiscount / 100) * originalAmount;
+  item.amount = parseFloat((originalAmount - discountValue).toFixed(2));
+
+  setSelectedItems(updatedItems);
+};
+
   
   const handleGlobalDiscountChange = (value) => {
     const discount = parseFloat(value) >= 0 ? parseFloat(value) : 0;
@@ -1099,22 +1097,22 @@ const handleSizeChange = (rowIndex, newSize) => {
     setShowCustomItemModal(false);
   };
 
-    const handleAddCustomItemCloth = (description, itemCategory,itemColor, size, price) => {
+    const handleAddCustomItemCloth = (itemBarcodeID,description, itemCategory, size, price) => {
       const parsedSize = parseFloat(size) || 0;
       const parsedPrice = parseInt(price) || 0;
       const quantity = 1;
       const amount = Math.round(parsedSize * parsedPrice); // Ensures integer amount
 
       const newItem = {
-        itemBarcodeID: customCloth.itemBarcodeID,
-        itemCode: customCloth.itemBarcodeID,
+        itemBarcodeID:itemBarcodeID,
+        itemCode: "CLOTH",
         itemType: 'CLOTH',
         itemSize:size,
-        itemColor: itemColor,
         itemCategory: itemCategory,
         itemStatus: 'NEW',
         size: parsedSize,
         itemName: description,
+        description:description,
         quantity: quantity,
         price: parsedPrice,
         amount: amount,
@@ -1419,32 +1417,79 @@ const handleSizeChange = (rowIndex, newSize) => {
                   <td>{item.itemColor}</td>
                   <td>{item.itemSize}</td>
                   
-                  <td>
-                    <input
-                     type="number"
-                     value={item.discountAmount || ''}
-                     onChange={(e) => handleDiscountChange(rowItemTableIndex, parseFloat(e.target.value) || 0)}
-                     disabled={item.discount !== 'Yes'}
-                    />
-                  </td>
+<td className="item-table-quantity-td">
+  <div className="item-table-quantity-container">
+    {/* Decrease Button */}
+    <button
+      type="button"
+      className="item-table-quantity-btn item-table-quantity-btn-decrease"
+      disabled={item.discount !== 'Yes'}
+      onClick={() => {
+        const currentValue = parseFloat(item.discountAmount || 0);
+        const newValue = Math.max(0, parseFloat((currentValue - 1).toFixed(1)));
+        handleDiscountChange(rowItemTableIndex, newValue);
+      }}
+    >
+      -
+    </button>
+
+    {/* Discount Input */}
+    <input
+      type="number"
+      step="0.1"
+      min="0"
+      className="item-table-quantity-input"
+      value={item.discountAmount || 0}
+      onChange={(e) =>
+        handleDiscountChange(rowItemTableIndex, parseFloat(e.target.value) || 0)
+      }
+      disabled={item.discount !== 'Yes'}
+      onKeyDown={(e) => {
+        handleItemTableKeyDown(e, rowItemTableIndex, 5); // Adjust index if needed
+        if (e.key === 'ArrowUp' || e.key === 'ArrowDown') {
+          e.preventDefault();
+        }
+      }}
+      ref={(el) => {
+        if (!inputRefs.current[rowItemTableIndex]) inputRefs.current[rowItemTableIndex] = [];
+        inputRefs.current[rowItemTableIndex][5] = el; // Use column index for discount
+      }}
+    />
+
+    {/* Increase Button */}
+    <button
+      type="button"
+      className="item-table-quantity-btn item-table-quantity-btn-increase"
+      disabled={item.discount !== 'Yes'}
+      onClick={() => {
+        const currentValue = parseFloat(item.discountAmount || 0);
+        const newValue = parseFloat((currentValue + 1).toFixed(1));
+        handleDiscountChange(rowItemTableIndex, newValue);
+      }}
+    >
+      +
+    </button>
+  </div>
+</td>
+
 
                   <td>{item.price}</td>
                 
                <td className="item-table-quantity-td">
-  {item.itemType === 'CLOTH' ? (
-    // Size input field for CLOTH items
-     <div className="item-table-quantity-container">
-    {/* Decrease Size Button */}
-    <button
-      type="button"
-      className="item-table-quantity-btn item-table-quantity-btn-decrease"
-      onClick={() => {
-        let currentValue = parseFloat(inputRefs.current[rowItemTableIndex][4].value) || 1.0;
-        let newValue = Math.max(1.0, parseFloat((currentValue - 0.1).toFixed(1)));
-        handleSizeChange(rowItemTableIndex, newValue);
-      }}
-    >
-      -
+    {item.itemType === 'CLOTH' ? (
+      // Size input field for CLOTH items
+      <div className="item-table-quantity-container">
+      {/* Decrease Size Button */}
+      <button
+        type="button"
+        className="item-table-quantity-btn item-table-quantity-btn-decrease"
+        onClick={() => {
+          let currentValue = parseFloat(inputRefs.current[rowItemTableIndex][4].value) || 1.0;
+          let newValue = Math.max(1.0, parseFloat((currentValue - 0.1).toFixed(1)));
+          handleSizeChange(rowItemTableIndex, newValue);
+        }}
+      >
+        -
     </button>
 
     {/* Size Input */}
@@ -1602,7 +1647,7 @@ const handleSizeChange = (rowIndex, newSize) => {
       <div className="summary">
         <div className="custom-btn">
           <button onClick={() => setShowCustomItemModal(true)}>Custom Item</button>
-            {/* <button onClick={() => setShowCustomClothModal(true)}> Cloth</button> */}
+            <button onClick={() => setShowCustomClothModal(true)}> Cloth</button>
         </div>
       
         <div className="item-summary">
@@ -1756,6 +1801,8 @@ const handleSizeChange = (rowIndex, newSize) => {
           onAddCloth={handleAddCustomItemCloth}
           onClose={() => setShowCustomClothModal(false)}
         />
+
+
       )}
       
       <Modal show={showPdfModal} onHide={handleClosePdfModal} size="lg">
