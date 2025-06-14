@@ -24,6 +24,7 @@ import Transaction from './UserComponents/Transactions/Transaction.js';
 import ExcelDownloader from './UserComponents/Billing/ExcelDownloader.js';
 import UpdateItems from './UserComponents/Inventory/UpdateItems.js';
 import Cloth from './UserComponents/Billing/Cloth.js';
+import InfoPage from './UserComponents/InfoPage/InfoPage.js';
 
 
 function App() {
@@ -95,6 +96,7 @@ function App() {
           <Route path="/exchange" element={<ExchangeBill />} />
           <Route path="/download" element={<ExcelDownloader />} />
           <Route path="/update" element={<UpdateItems />} />
+          <Route path="/info" element={<InfoPage />} />
           
 
       
