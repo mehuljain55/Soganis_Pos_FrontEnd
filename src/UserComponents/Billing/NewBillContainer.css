@@ -541,6 +541,7 @@ h2 {
   padding: 10px 20px;
   margin: 0 5px;
 }
+
 .customer-details {
   padding-left: 40px !important;
   display: flex;
@@ -623,6 +624,48 @@ h2 {
 .school-select-container input {
   width: 300px !important;
 }
+
+.bill-type-options {
+  display: flex;
+  flex-direction: row;
+  margin-left: -60px !important;
+  margin-top: 15px;
+  padding: 15px;
+  background: rgba(0, 123, 255, 0.05);
+  border-radius: 8px;
+  border: 1px solid rgba(0, 123, 255, 0.1);
+}
+
+.bill-type-option {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  border-radius: 6px;
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+
+.bill-type-option:hover {
+  background: rgba(0, 123, 255, 0.1);
+  transform: scale(1.02);
+}
+
+.bill-type-option label {
+  cursor: pointer;
+  font-weight: 500;
+  color: #495057;
+  font-size: 16px;
+}
+
+input[type="radio"] {
+  accent-color: #007bff;
+  cursor: pointer;
+  width: 18px;
+  height: 18px;
+  margin: 0;
+}
+
 
 
 /* Styles for the PDF modal */
