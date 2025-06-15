@@ -43,6 +43,7 @@ const NewBillContainer = ({ userData }) => {
   const[isExchangeModelOpen,setIsExchangeModelOpen]=useState(false);
   const [isExchangeModelBillOpen, setIsExchangeModelBillOpen] = useState(false);
   const [showCustomClothModal, setShowCustomClothModal] = useState(false);
+  const[sendBillType,setSendBillType]=useState('print');
   
   const [transactionalModel, setTransactionalModel] = useState({
     cash: 0,
@@ -733,7 +734,7 @@ const handleSizeChange = (rowIndex, newSize) => {
     }
   };
 
-  const handleSubmit = async () => {
+const handleSubmit = async () => {
 
     const{user,token} = getUserData();
 
@@ -751,6 +752,18 @@ const handleSizeChange = (rowIndex, newSize) => {
       alert("Customer mobile number must be exactly 10 digits");
       return;
     }
+
+
+      if (sendBillType === 'whatsapp') {
+       const isValidMobile = /^[6-9]\d{9}$/.test(customerMobileNo);
+
+        if (!customerMobileNo || !isValidMobile) {
+          alert("Please enter a valid 10-digit mobile number to send via WhatsApp.");
+          return;
+        }
+  }
+
+
   
     if (paymentMode === "Partial") {
       const total = calculateTotalAmount();
@@ -828,6 +841,7 @@ const handleSizeChange = (rowIndex, newSize) => {
       paymentMode: paymentMode,
       schoolName: schoolName,
       discount: discountPercentage,
+      sendType: sendBillType,
       item_count: updatedItems.length,
       bill: updatedItems.map((item) => ({
         itemBarcodeID: item.itemBarcodeID,
@@ -1009,6 +1023,14 @@ const handleSizeChange = (rowIndex, newSize) => {
     setShowTransactionPopup(false);
    
   };
+
+  
+  const handleBillType = (type) => {
+    setSendBillType(type);
+    console.log("Bill send type changed to:", type);
+  };
+
+
   
 const handleDiscountChange = (rowIndex, newDiscount) => {
   // Update the discount amount for the selected item
@@ -1383,6 +1405,32 @@ const handleDiscountChange = (rowIndex, newDiscount) => {
             </label>
           </div>
         </div>
+
+          <div className="bill-type-options">
+      <div className="bill-type-option">
+        <input
+          type="radio"
+          id="bill-send-print"
+          name="billSendType"
+          value="print"
+          checked={sendBillType === 'print'}
+          onChange={() => handleBillType('print')}
+        />
+        <label htmlFor="bill-send-print">Print</label>
+      </div>
+      <div className="bill-type-option">
+        <input
+          type="radio"
+          id="bill-send-whatsapp"
+          name="billSendType"
+          value="whatsapp"
+          checked={sendBillType === 'whatsapp'}
+          onChange={() => handleBillType('whatsapp')}
+        />
+        <label htmlFor="bill-send-whatsapp">WhatsApp</label>
+      </div>
+    </div>
+
 
       </div>
 
