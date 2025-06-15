@@ -558,6 +558,7 @@ h2 {
 .customer-details-box {
   border-radius: 10px;
   margin: 10px;
+  margin-left: -50px !important;
   padding: 10px;
   display: flex;
   gap: 20px;
@@ -629,7 +630,8 @@ h2 {
 .bill-type-options {
   display: flex;
   flex-direction: row;
-  margin-left: -90px !important;
+  margin-right: 20px !important;
+  margin-left: -50px !important;
   margin-top: 15px;
   padding: 15px;
   background: rgba(0, 123, 255, 0.05);
