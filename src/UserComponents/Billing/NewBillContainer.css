@@ -544,6 +544,7 @@ h2 {
 
 .customer-details {
   padding-left: 40px !important;
+  width: 80% !important;
   display: flex;
   flex-direction: column;
   font-size: 18px;
@@ -628,7 +629,7 @@ h2 {
 .bill-type-options {
   display: flex;
   flex-direction: row;
-  margin-left: -60px !important;
+  margin-left: -90px !important;
   margin-top: 15px;
   padding: 15px;
   background: rgba(0, 123, 255, 0.05);
