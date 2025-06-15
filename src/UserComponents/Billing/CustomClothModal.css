@@ -125,6 +125,91 @@
   cursor: not-allowed;
 }
 
+/* React Select Custom Styling */
+.custom-item-cloth-popup__react-select {
+  width: 100%;
+}
+
+.custom-react-select__control {
+  border: 2px solid #e5e5e5 !important;
+  border-radius: 6px !important;
+  min-height: 48px !important;
+  box-shadow: none !important;
+  font-size: 14px !important;
+}
+
+.custom-react-select__control:hover {
+  border-color: #e5e5e5 !important;
+}
+
+.custom-react-select__control--is-focused {
+  border-color: #007bff !important;
+  box-shadow: none !important;
+}
+
+.custom-react-select__control--is-disabled {
+  background-color: #f8f9fa !important;
+  color: #666 !important;
+  cursor: not-allowed !important;
+}
+
+.custom-react-select__value-container {
+  padding: 0 12px !important;
+}
+
+.custom-react-select__placeholder {
+  color: #999 !important;
+  font-size: 14px !important;
+}
+
+.custom-react-select__single-value {
+  color: #333 !important;
+  font-size: 14px !important;
+}
+
+.custom-react-select__indicator-separator {
+  display: none !important;
+}
+
+.custom-react-select__dropdown-indicator {
+  color: #666 !important;
+  padding: 0 12px !important;
+}
+
+.custom-react-select__menu {
+  left: 0 !important;
+  right: auto !important;
+  z-index: 9999 !important;
+  border: 2px solid #e5e5e5 !important;
+  border-radius: 6px !important;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1) !important;
+}
+
+.custom-react-select__menu-list {
+  max-height: 200px !important;
+  padding: 0 !important;
+}
+
+.custom-react-select__option {
+  padding: 12px !important;
+  font-size: 14px !important;
+  cursor: pointer !important;
+}
+
+.custom-react-select__option:hover {
+  background-color: #f8f9fa !important;
+}
+
+.custom-react-select__option--is-selected {
+  background-color: #007bff !important;
+  color: white !important;
+}
+
+.custom-react-select__option--is-focused {
+  background-color: #f8f9fa !important;
+  color: #333 !important;
+}
+
 .custom-item-cloth-popup__row {
   display: flex;
   gap: 16px;
