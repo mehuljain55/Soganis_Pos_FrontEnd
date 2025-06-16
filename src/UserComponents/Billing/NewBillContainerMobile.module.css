@@ -1,0 +1,1210 @@
+/* Mobile Billing Component Styles */
+.billingContainer {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #f8f9fa;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+  overflow: hidden;
+}
+
+.loadingOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.7);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+  color: white;
+}
+
+.spinner {
+  margin-bottom: 1rem;
+}
+
+.spinnerCircle {
+  width: 2rem;
+  height: 2rem;
+  border: 0.25em solid rgba(255, 255, 255, 0.25);
+  border-top-color: #007bff;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.mainContent {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+/* Button Container */
+.buttonContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding: 1rem 1rem 0.5rem 1rem;
+  flex-shrink: 0;
+}
+
+.returnButton {
+  width: 100%;
+  padding: 0.75rem;
+  background-color: #6c757d;
+  color: white;
+  border: none;
+  border-radius: 0.375rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.15s ease-in-out;
+}
+
+.returnButton:hover {
+  background-color: #5a6268;
+}
+
+.returnButton:active {
+  transform: translateY(1px);
+}
+
+/* Billing Header */
+.billingHead {
+  text-align: center;
+  padding: 0.5rem 1rem;
+  flex-shrink: 0;
+}
+
+.billingHead h2 {
+  margin: 0;
+  color: #212529;
+  font-size: 1.5rem;
+  font-weight: 600;
+}
+
+/* Search Bar */
+.searchBarContainer {
+  position: relative;
+  padding: 0 1rem 0.5rem 1rem;
+  flex-shrink: 0;
+}
+
+.searchBar {
+  position: relative;
+}
+
+.searchInput {
+  width: 100%;
+  padding: 0.75rem;
+  border: 1px solid #ced4da;
+  border-radius: 0.375rem;
+  font-size: 1rem;
+  background-color: white;
+  transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+}
+
+.searchInput:focus {
+  outline: none;
+  border-color: #86b7fe;
+  box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+}
+
+.dropdown {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background-color: white;
+  border: 1px solid #ced4da;
+  border-top: none;
+  border-radius: 0 0 0.375rem 0.375rem;
+  max-height: 300px;
+  overflow-y: auto;
+  z-index: 1000;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.dropdownTable {
+  width: 100%;
+}
+
+.dropdownHeader {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr;
+  gap: 0.5rem;
+  padding: 0.5rem;
+  background-color: #f8f9fa;
+  font-weight: 600;
+  border-bottom: 1px solid #dee2e6;
+  font-size: 0.75rem;
+}
+
+.dropdownBody {
+  max-height: 250px;
+  overflow-y: auto;
+}
+
+.dropdownRow {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr;
+  gap: 0.5rem;
+  padding: 0.5rem;
+  border-bottom: 1px solid #dee2e6;
+  cursor: pointer;
+  font-size: 0.75rem;
+  transition: background-color 0.15s ease-in-out;
+}
+
+.dropdownRow:hover,
+.activeRow {
+  background-color: #e9ecef;
+}
+
+/* Customer Details */
+.customerDetails {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  padding: 0 1rem 0.5rem 1rem;
+  flex-shrink: 0;
+}
+
+.customerInput,
+.customerSelect {
+  width: 100%;
+  padding: 0.75rem;
+  border: 1px solid #ced4da;
+  border-radius: 0.375rem;
+  font-size: 1rem;
+  background-color: white;
+  transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+}
+
+.customerInput:focus,
+.customerSelect:focus {
+  outline: none;
+  border-color: #86b7fe;
+  box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+}
+
+/* Items Table - Now always in table format */
+.itemsTableContainer {
+  flex: 1;
+  overflow: hidden;
+  padding: 0 1rem;
+  display: flex;
+  flex-direction: column;
+  min-height: 300px;
+}
+
+.itemsTable {
+  width: 100%;
+  background-color: white;
+  border-radius: 0.5rem;
+  border: 1px solid #dee2e6;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow: hidden;
+}
+
+/* Fixed Table Header and Row Grid Alignment */
+.tableHeader {
+  display: grid;
+  /* Updated grid template to match 9 columns: Code, Name, Color, Size, Discount, Price, Qty, Amount, Actions */
+  grid-template-columns: 0.8fr 1fr 0.6fr 0.6fr 0.8fr 0.7fr 0.6fr 0.8fr 0.8fr;
+  gap: 0.5rem;
+  padding: 0.75rem;
+  background-color: #f8f9fa;
+  border-bottom: 2px solid #dee2e6;
+  font-weight: 600;
+  font-size: 0.75rem;
+  color: #495057;
+  text-align: center;
+  flex-shrink: 0;
+}
+
+.tableRow {
+  display: grid;
+  /* Updated grid template to match 9 columns: Code, Name, Color, Size, Discount, Price, Qty, Amount, Actions */
+  grid-template-columns: 0.8fr 1fr 0.6fr 0.6fr 0.8fr 0.7fr 0.6fr 0.8fr 0.8fr;
+  gap: 0.5rem;
+  padding: 0.75rem;
+  border-bottom: 1px solid #dee2e6;
+  align-items: center;
+  min-height: 60px;
+  font-size: 0.75rem;
+}
+
+/* Alternative grid layout with more balanced column widths */
+.tableHeader.balanced {
+  grid-template-columns: 1fr 1.2fr 0.8fr 0.8fr 1fr 0.8fr 0.8fr 1fr 1fr;
+}
+
+.tableRow.balanced {
+  grid-template-columns: 1fr 1.2fr 0.8fr 0.8fr 1fr 0.8fr 0.8fr 1fr 1fr;
+}
+
+/* If you need more precise control, use fixed widths */
+.tableHeader.fixed {
+  grid-template-columns: 80px 120px 80px 60px 100px 70px 60px 80px 80px;
+}
+
+.tableRow.fixed {
+  grid-template-columns: 80px 120px 80px 60px 100px 70px 60px 80px 80px;
+}
+
+/* Responsive adjustments */
+@media (min-width: 576px) {
+  .tableHeader,
+  .tableRow {
+    font-size: 0.875rem;
+    grid-template-columns: 0.8fr 1.2fr 0.7fr 0.7fr 0.9fr 0.7fr 0.7fr 0.8fr 0.8fr;
+  }
+}
+
+@media (min-width: 768px) {
+  .tableHeader,
+  .tableRow {
+    font-size: 0.9rem;
+    padding: 1rem 0.75rem;
+    grid-template-columns: 0.8fr 1.3fr 0.8fr 0.8fr 1fr 0.8fr 0.8fr 0.9fr 0.9fr;
+  }
+}
+
+.tableRow:hover {
+  background-color: #f8f9fa;
+}
+
+.tableRow:last-child {
+  border-bottom: none;
+}
+
+/* Table Cell Styles */
+.tableRow > div {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 0.25rem;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+}
+
+.tableRow > div:first-child,
+.tableRow > div:nth-child(2) {
+  justify-content: flex-start;
+  text-align: left;
+}
+
+/* Control Buttons in Table */
+.inputGroup {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  max-width: 100px;
+}
+
+.controlButton {
+  width: 1.5rem;
+  height: 1.5rem;
+  border: 1px solid #ced4da;
+  background-color: #f8f9fa;
+  color: #495057;
+  border-radius: 0.25rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s ease-in-out;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.controlButton:hover {
+  background-color: #e9ecef;
+}
+
+.controlButton:active {
+  transform: translateY(1px);
+}
+
+.controlButton:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.controlInput {
+  width: 2.5rem;
+  height: 1.5rem;
+  border: 1px solid #ced4da;
+  border-left: none;
+  border-right: none;
+  background-color: white;
+  text-align: center;
+  font-size: 0.75rem;
+  margin: 0;
+  padding: 0.25rem;
+}
+
+.controlInput:focus {
+  outline: none;
+  border-color: #86b7fe;
+  box-shadow: 0 0 0 0.1rem rgba(13, 110, 253, 0.25);
+}
+
+.removeButton {
+  padding: 0.25rem 0.5rem;
+  background-color: #dc3545;
+  color: white;
+  border: none;
+  border-radius: 0.25rem;
+  font-size: 0.65rem;
+  cursor: pointer;
+  transition: background-color 0.15s ease-in-out;
+}
+
+.removeButton:hover {
+  background-color: #c82333;
+}
+
+/* Summary Section */
+.summary {
+  background-color: white;
+  padding: 1rem;
+  border-radius: 0.5rem;
+  border: 1px solid #dee2e6;
+  margin: 0.5rem 1rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  flex-shrink: 0;
+}
+
+.summaryButtons {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.customButton {
+  flex: 1;
+  padding: 8px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 0.375rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.15s ease-in-out;
+}
+
+.customButton:hover {
+  background-color: #0056b3;
+}
+
+.summaryDetails {
+  margin-bottom: 1rem;
+  text-align: center;
+}
+
+.summaryDetails h3 {
+  margin: 0 0 0.5rem 0;
+  color: #28a745;
+  font-size: 1.25rem;
+  font-weight: 600;
+}
+
+.summaryInfo {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.9rem;
+  color: #6c757d;
+}
+
+.summaryControls {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+
+.discountContainer,
+.paymentContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.discountContainer label,
+.paymentContainer label {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #495057;
+}
+
+.discountInput,
+.paymentSelect {
+  width: 100%;
+  padding: 0.75rem;
+  border: 1px solid #ced4da;
+  border-radius: 0.375rem;
+  font-size: 1rem;
+  background-color: white;
+}
+
+.discountInput:focus,
+.paymentSelect:focus {
+  outline: none;
+  border-color: #86b7fe;
+  box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+}
+
+.actionButtons {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.billButton {
+  flex: 1;
+  padding: 0.75rem;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 0.375rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.15s ease-in-out;
+}
+
+.billButton:hover {
+  background-color: #0056b3;
+}
+
+.whatsappButton {
+  flex: 1;
+  padding: 0.75rem;
+  background-color: #28a745;
+  color: white;
+  border: none;
+  border-radius: 0.375rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.15s ease-in-out;
+}
+
+.whatsappButton:hover {
+  background-color: #1e7e34;
+}
+
+/* Hold Bill Section */
+.holdBillSection {
+  background-color: white;
+  padding: 1rem;
+  border-radius: 0.5rem;
+  border: 1px solid #dee2e6;
+  margin: 0.5rem 1rem 1rem 1rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  flex-shrink: 0;
+}
+
+.holdButton {
+  width: 100%;
+  padding: 0.75rem;
+  background-color: #ffc107;
+  color: #212529;
+  border: none;
+  border-radius: 0.375rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.15s ease-in-out;
+  margin-bottom: 1rem;
+}
+
+.holdButton:hover {
+  background-color: #e0a800;
+}
+
+.continueBillsContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.continueBillWrapper {
+  display: flex;
+  align-items: center;
+  background-color: #f8f9fa;
+  border: 1px solid #dee2e6;
+  border-radius: 0.375rem;
+  overflow: hidden;
+}
+
+.continueButton {
+  flex: 1;
+  padding: 0.75rem;
+  background-color: #17a2b8;
+  color: white;
+  border: none;
+  font-size: 0.875rem;
+  cursor: pointer;
+  transition: background-color 0.15s ease-in-out;
+}
+
+.continueButton:hover {
+  background-color: #138496;
+}
+
+.discardBill {
+  padding: 0.75rem;
+  background-color: #dc3545;
+  color: white;
+  font-size: 1.2rem;
+  font-weight: bold;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 3rem;
+  transition: background-color 0.15s ease-in-out;
+}
+
+.discardBill:hover {
+  background-color: #c82333;
+}
+
+/* Modal Styles */
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1050;
+  padding: 1rem;
+}
+
+.modalContent {
+  background-color: white;
+  border-radius: 0.5rem;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+  width: 100%;
+  max-width: 500px;
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+.modalHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem;
+  border-bottom: 1px solid #dee2e6;
+}
+
+.modalHeader h5 {
+  margin: 0;
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: #212529;
+}
+
+.closeButton {
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  color: #6c757d;
+  cursor: pointer;
+  padding: 0;
+  width: 2rem;
+  height: 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.closeButton:hover {
+  color: #000;
+}
+
+.modalBody {
+  padding: 1rem;
+}
+
+.modalBody h3 {
+  margin: 0 0 1rem 0;
+  color: #28a745;
+  font-size: 1.125rem;
+}
+
+.modalBody p {
+  margin: 0;
+  color: #6c757d;
+}
+
+.errorAlert {
+  background-color: #f8d7da;
+  color: #721c24;
+  padding: 0.75rem;
+  border: 1px solid #f5c6cb;
+  border-radius: 0.375rem;
+  margin-bottom: 1rem;
+  font-size: 0.875rem;
+}
+
+.paymentTable {
+  width: 100%;
+  border: 1px solid #dee2e6;
+  border-radius: 0.375rem;
+  overflow: hidden;
+}
+
+.paymentHeader {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  background-color: #f8f9fa;
+  padding: 0.75rem;
+  border-bottom: 1px solid #dee2e6;
+  font-weight: 600;
+  font-size: 0.875rem;
+  color: #495057;
+}
+
+.paymentBody {
+  display: flex;
+  flex-direction: column;
+}
+
+.paymentRow {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 0.5rem;
+  padding: 0.75rem;
+  border-bottom: 1px solid #dee2e6;
+}
+
+.paymentRow:last-child {
+  border-bottom: none;
+}
+
+.paymentInput,
+.paymentSelect {
+  width: 100%;
+  padding: 0.5rem;
+  border: 1px solid #ced4da;
+  border-radius: 0.375rem;
+  font-size: 0.875rem;
+  background-color: white;
+}
+
+.paymentInput:focus,
+.paymentSelect:focus {
+  outline: none;
+  border-color: #86b7fe;
+  box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+}
+
+.inputError {
+  border-color: #dc3545;
+}
+
+.inputError:focus {
+  border-color: #dc3545;
+  box-shadow: 0 0 0 0.25rem rgba(220, 53, 69, 0.25);
+}
+
+.errorText {
+  color: #dc3545;
+  font-size: 0.75rem;
+  margin-top: 0.25rem;
+}
+
+.removeRowButton {
+  padding: 0.375rem 0.75rem;
+  background-color: #dc3545;
+  color: white;
+  border: none;
+  border-radius: 0.375rem;
+  font-size: 0.75rem;
+  cursor: pointer;
+  transition: background-color 0.15s ease-in-out;
+}
+
+.removeRowButton:hover {
+  background-color: #c82333;
+}
+
+.modalFooter {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  padding: 1rem;
+  border-top: 1px solid #dee2e6;
+}
+
+.addRowButton,
+.submitButton,
+.cancelButton {
+  flex: 1;
+  min-width: 120px;
+  padding: 0.75rem;
+  border: none;
+  border-radius: 0.375rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.15s ease-in-out;
+}
+
+.addRowButton {
+  background-color: #6c757d;
+  color: white;
+}
+
+.addRowButton:hover {
+  background-color: #5a6268;
+}
+
+.submitButton {
+  background-color: #007bff;
+  color: white;
+}
+
+.submitButton:hover {
+  background-color: #0056b3;
+}
+
+.cancelButton {
+  background-color: #6c757d;
+  color: white;
+}
+
+.cancelButton:hover {
+  background-color: #5a6268;
+}
+
+/* Custom Item Modal */
+.customItemModal {
+  /* Custom styles for custom item modal if needed */
+}
+
+/* Responsive adjustments for larger screens */
+@media (min-width: 576px) {
+  .buttonContainer {
+    flex-direction: row;
+    padding: 1rem;
+  }
+  
+  .customerDetails {
+    flex-direction: row;
+    gap: 1rem;
+    padding: 0 1rem 0.5rem 1rem;
+  }
+  
+  .customerInput,
+  .customerSelect {
+    flex: 1;
+  }
+  
+  .summaryControls {
+    flex-direction: row;
+    gap: 1rem;
+  }
+  
+  .discountContainer,
+  .paymentContainer {
+    flex: 1;
+  }
+  
+  .modalContent {
+    max-width: 600px;
+  }
+  
+  .tableHeader,
+  .tableRow {
+    font-size: 0.875rem;
+  }
+  
+  .controlButton {
+    width: 1.75rem;
+    height: 1.75rem;
+    font-size: 0.875rem;
+  }
+  
+  .controlInput {
+    width: 3rem;
+    height: 1.75rem;
+    font-size: 0.875rem;
+  }
+  
+  .inputGroup {
+    max-width: 120px;
+  }
+}
+
+@media (min-width: 768px) {
+  .dropdownHeader,
+  .dropdownRow {
+    font-size: 0.875rem;
+  }
+  
+  .tableHeader,
+  .tableRow {
+    font-size: 0.9rem;
+    padding: 1rem 0.75rem;
+  }
+  
+  .controlButton {
+    width: 2rem;
+    height: 2rem;
+    font-size: 1rem;
+  }
+  
+  .controlInput {
+    width: 3.5rem;
+    height: 2rem;
+    font-size: 0.9rem;
+  }
+  
+  .inputGroup {
+    max-width: 140px;
+  }
+  
+  .removeButton {
+    padding: 0.375rem 0.75rem;
+    font-size: 0.75rem;
+  }
+}
+
+/* Generate Bill Button Styles */
+.generateBillButton {
+  width: 100%;
+  padding: 15px 20px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+}
+
+.generateBillButton:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+}
+
+.generateBillButton:active {
+  transform: translateY(0);
+}
+
+/* Bill Modal Styles */
+.billSummary {
+  background: #f8f9fa;
+  padding: 20px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+  border-left: 4px solid #667eea;
+}
+
+.billSummary h4 {
+  margin: 0 0 15px 0;
+  color: #333;
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.summaryRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 0;
+  border-bottom: 1px solid #e9ecef;
+}
+
+.summaryRow:last-child {
+  border-bottom: none;
+}
+
+.summaryRow span:first-child {
+  color: #666;
+  font-weight: 500;
+}
+
+.summaryRow .amount {
+  color: #28a745;
+  font-weight: 700;
+  font-size: 18px;
+}
+
+/* Customer Details in Modal */
+.customerDetailsModal {
+  background: #fff;
+  padding: 20px;
+  border: 1px solid #e9ecef;
+  border-radius: 8px;
+  margin-bottom: 20px;
+}
+
+.customerDetailsModal h4 {
+  margin: 0 0 15px 0;
+  color: #333;
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.customerDetailsModal .customerInput,
+.customerDetailsModal .customerSelect {
+  width: 100%;
+  padding: 12px 15px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  font-size: 14px;
+  margin-bottom: 15px;
+  transition: border-color 0.3s ease;
+}
+
+.customerDetailsModal .customerInput:focus,
+.customerDetailsModal .customerSelect:focus {
+  outline: none;
+  border-color: #667eea;
+  box-shadow: 0 0 0 2px rgba(102, 126, 234, 0.1);
+}
+
+/* Modal Footer Button Improvements */
+.modalFooter {
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+  padding: 20px;
+  border-top: 1px solid #e9ecef;
+  background: #f8f9fa;
+}
+
+.modalFooter .cancelButton {
+  padding: 10px 20px;
+  background: #6c757d;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  transition: background-color 0.3s ease;
+}
+
+.modalFooter .cancelButton:hover {
+  background: #5a6268;
+}
+
+.modalFooter .billButton {
+  padding: 10px 20px;
+  background: #28a745;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  transition: background-color 0.3s ease;
+}
+
+.modalFooter .billButton:hover {
+  background: #218838;
+}
+
+.modalFooter .whatsappButton {
+  padding: 10px 20px;
+  background: #25d366;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  transition: background-color 0.3s ease;
+}
+
+.modalFooter .whatsappButton:hover {
+  background: #1ea952;
+}
+
+/* Responsive Design for Modal */
+@media (max-width: 768px) {
+  .modalContent {
+    width: 95%;
+    max-width: none;
+    margin: 20px auto;
+  }
+  
+  .modalFooter {
+    flex-direction: column;
+    gap: 10px;
+  }
+  
+  .modalFooter button {
+    width: 100%;
+    padding: 12px;
+  }
+  
+  .billSummary,
+  .customerDetailsModal {
+    padding: 15px;
+  }
+  
+  .summaryRow .amount {
+    font-size: 16px;
+  }
+}
+
+/* Existing styles for other components remain the same */
+.billingContainer {
+  position: relative;
+  padding: 20px;
+  background: #f5f5f5;
+  min-height: 100vh;
+}
+
+.loadingOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+}
+
+.spinner {
+  width: 50px;
+  height: 50px;
+  margin-bottom: 20px;
+}
+
+.spinnerCircle {
+  width: 100%;
+  height: 100%;
+  border: 4px solid #f3f3f3;
+  border-top: 4px solid #3498db;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.mainContent {
+  max-width: 1200px;
+  margin: 0 auto;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+}
+
+.billingHead {
+  background: #0b9aed;
+  color: white;
+  padding: 10px;
+  text-align: center;
+  margin-bottom: 5px;
+}
+
+.billingHead h2 {
+  margin: 0;
+  font-size: 20;
+  font-weight: 700;
+}
+
+/* Existing styles continue... */
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modalContent {
+  background: white;
+  border-radius: 12px;
+  width: 90%;
+  max-width: 600px;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+}
+
+.modalHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px;
+  border-bottom: 1px solid #e9ecef;
+  background: #f8f9fa;
+}
+
+.modalHeader h5 {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 600;
+  color: #333;
+}
+
+.closeButton {
+  background: none;
+  border: none;
+  font-size: 24px;
+  cursor: pointer;
+  color: #666;
+  padding: 0;
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  transition: background-color 0.3s ease;
+}
+
+.closeButton:hover {
+  background: #e9ecef;
+}
+
+.modalBody {
+  padding: 20px;
+}
