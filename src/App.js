@@ -25,6 +25,7 @@ import ExcelDownloader from './UserComponents/Billing/ExcelDownloader.js';
 import UpdateItems from './UserComponents/Inventory/UpdateItems.js';
 import Cloth from './UserComponents/Billing/Cloth.js';
 import InfoPage from './UserComponents/InfoPage/InfoPage.js';
+import NewBillContainerMobile from './UserComponents/Billing/NewBillContainerMobile.js';
 
 
 function App() {
@@ -106,6 +107,7 @@ function App() {
             <>
               <Route path="/" element={<MainComponent userData={userData} />} />
               <Route path="/barcode" element={<BarcodePrintPage />} />
+               <Route path="/mobile/bill" element={<NewBillContainerMobile />} />
                 <Route path="/transaction" element={<Transaction />} />
                  <Route path="/cloth/add" element={<Cloth />} />
 
