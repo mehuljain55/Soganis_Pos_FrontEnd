@@ -44,6 +44,7 @@ const NewBillContainer = ({ userData }) => {
   const [isExchangeModelBillOpen, setIsExchangeModelBillOpen] = useState(false);
   const [showCustomClothModal, setShowCustomClothModal] = useState(false);
   const[sendBillType,setSendBillType]=useState('print');
+  const [pendingSubmit, setPendingSubmit] = useState(false);
   
   const [transactionalModel, setTransactionalModel] = useState({
     cash: 0,
@@ -422,7 +423,7 @@ const handleSelectChange = (selectedOption) => {
 
   const handlePopupConfirm = () => {
     setShowPopup(false);
-    handleSubmit(); 
+    setPendingSubmit(true);
   };
 
   const handlePopupCancel = () => {
@@ -735,17 +736,22 @@ const handleSizeChange = (rowIndex, newSize) => {
   };
 
 
-  const sendBillToWhatsapp =()=>{
-
-    setSendBillType('whatsapp');
+ useEffect(() => {
+  if (pendingSubmit) {
     handleSubmit();
-  };
+    setPendingSubmit(false); // reset flag
+  }
+}, [pendingSubmit]);
 
-    const printBill =()=>{
+const sendBillToWhatsapp = () => {
+  setSendBillType('whatsapp');
+  setPendingSubmit(true);
+};
 
-    setSendBillType('print');
-    handleSubmit();
-  };
+const printBill = () => {
+  setSendBillType('print');
+  setPendingSubmit(true);
+};
 
 const handleSubmit = async () => {
 
