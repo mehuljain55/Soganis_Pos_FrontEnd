@@ -918,6 +918,10 @@ const handleSubmit = async () => {
       });
       const pdfBlob = new Blob([response.data], { type: "application/pdf" });
       const pdfUrl = URL.createObjectURL(pdfBlob);
+
+        if (response?.data?.byteLength > 0) {
+         alert("Bill generated successfully!");
+        }
   
       printJS({
         printable: pdfUrl,
@@ -1545,18 +1549,24 @@ return (
                   value={customerMobileNo}
                   onChange={handleMobileNoChange}
                 />
-                <select
-                  className={styles.customerSelect}
-                  value={schoolName}
-                  onChange={handleSelectChange}
-                >
-                  <option value="">Select a school</option>
-                  {allSchools.map(school => (
-                    <option key={school.schoolName} value={school.schoolName}>
-                      {school.schoolName}
-                    </option>
-                  ))}
-                </select>
+            <label>
+              School Name:
+              <Select
+                className='school-select-container'
+                options={allSchools}
+                onFocus={handleSelectFocus}
+                onBlur={handleSelectBlur}
+                ref={selectedSchoolRef}
+                value={allSchools.find((school) => school.schoolName === schoolName) || null}
+                onChange={handleSelectChange}
+                placeholder="Select a school"
+                styles={{ control: (base) => ({ ...base, width: '200px' }) }}
+                filterOption={(option, inputValue) => 
+                    option.data.schoolName.toLowerCase().includes(inputValue.toLowerCase()) || 
+                    option.data.schoolCode.toLowerCase().includes(inputValue.toLowerCase())
+                }
+              />
+            </label>
 
  <div className={styles.discountContainer}>
             <label>Discount (%):</label>
