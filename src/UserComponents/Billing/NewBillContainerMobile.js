@@ -84,6 +84,7 @@ const NewBillContainerMobile = ({ userData }) => {
   });
 
   const [showBillModal, setShowBillModal] = useState(false);
+  const [pendingSubmit, setPendingSubmit] = useState(false);
 
 // Modal control functions - add these to your component
 
