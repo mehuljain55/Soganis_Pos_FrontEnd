@@ -1,0 +1,338 @@
+/* CustomItemMobilePopup.module.css */
+
+.customItemMobilePopupOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1050;
+  padding: 10px;
+  box-sizing: border-box;
+}
+
+.customItemMobilePopupModal {
+  width: 100%;
+  max-width: 500px;
+  max-height: 95vh;
+  z-index: 1060;
+  display: flex;
+  flex-direction: column;
+}
+
+.customItemMobilePopupContent {
+  padding: 0;
+  border-radius: 12px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+  background-color: white;
+  animation: customItemMobilePopupFadeIn 0.3s ease;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  max-height: 100%;
+}
+
+@keyframes customItemMobilePopupFadeIn {
+  from { 
+    opacity: 0; 
+    transform: translateY(-20px) scale(0.95); 
+  }
+  to { 
+    opacity: 1; 
+    transform: translateY(0) scale(1); 
+  }
+}
+
+.customItemMobilePopupHeader {
+  padding: 16px 20px;
+  border-bottom: 1px solid #e9ecef;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-top-left-radius: 12px;
+  border-top-right-radius: 12px;
+}
+
+.customItemMobilePopupTitle {
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: white;
+  margin: 0;
+}
+
+.customItemMobilePopupCloseButton {
+  background: rgba(255, 255, 255, 0.2);
+  border: none;
+  font-size: 1.8rem;
+  line-height: 1;
+  color: white;
+  cursor: pointer;
+  padding: 8px;
+  margin: 0;
+  border-radius: 50%;
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+}
+
+.customItemMobilePopupCloseButton:hover {
+  background: rgba(255, 255, 255, 0.3);
+  transform: rotate(90deg);
+}
+
+.customItemMobilePopupBody {
+  padding: 20px;
+  overflow-y: auto;
+  flex: 1;
+  scrollbar-width: thin;
+  scrollbar-color: #cbd5e0 #f7fafc;
+}
+
+.customItemMobilePopupBody::-webkit-scrollbar {
+  width: 6px;
+}
+
+.customItemMobilePopupBody::-webkit-scrollbar-track {
+  background: #f7fafc;
+}
+
+.customItemMobilePopupBody::-webkit-scrollbar-thumb {
+  background: #cbd5e0;
+  border-radius: 3px;
+}
+
+.customItemMobilePopupFormRow {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  margin-bottom: 16px;
+}
+
+.customItemMobilePopupFormGroup {
+  width: 100%;
+}
+
+.customItemMobilePopupLabel {
+  font-size: 0.9rem;
+  color: #374151;
+  font-weight: 600;
+  margin-bottom: 6px;
+  display: block;
+}
+
+.customItemMobilePopupInput {
+  padding: 12px 16px;
+  border: 2px solid #e5e7eb;
+  border-radius: 8px;
+  font-size: 1rem;
+  width: 100%;
+  box-sizing: border-box;
+  transition: all 0.3s ease;
+  background-color: #fafafa;
+}
+
+.customItemMobilePopupInput:focus {
+  outline: none;
+  border-color: black;
+  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+  background-color: white;
+  transform: translateY(-1px);
+}
+
+.customItemMobilePopupInput[readonly] {
+  background-color: #f3f4f6;
+  color: #6b7280;
+  cursor: not-allowed;
+  border-color: #d1d5db;
+}
+
+.customItemMobilePopupFooter {
+  padding: 20px;
+  border-top: 1px solid #e9ecef;
+  background-color: #f8f9fa;
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  border-bottom-left-radius: 12px;
+  border-bottom-right-radius: 12px;
+}
+
+.customItemMobilePopupBtn {
+  padding: 12px 24px;
+  font-size: 1rem;
+  border-radius: 8px;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  cursor: pointer;
+  border: none;
+  flex: 1;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.customItemMobilePopupBtnSecondary {
+  background-color: #6c757d;
+  color: white;
+  border: 2px solid #6c757d;
+}
+
+.customItemMobilePopupBtnSecondary:hover {
+  background-color: #5a6268;
+  border-color: #5a6268;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(108, 117, 125, 0.3);
+}
+
+.customItemMobilePopupBtnPrimary {
+  background: green;
+  color: white;
+  border: 2px solid transparent;
+}
+
+.customItemMobilePopupBtnPrimary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+}
+
+.customItemMobilePopupBtnPrimary:active {
+  transform: translateY(0);
+}
+
+/* Mobile Responsive Styles */
+@media (max-width: 768px) {
+  .customItemMobilePopupOverlay {
+    padding: 5px;
+  }
+  
+  .customItemMobilePopupModal {
+    max-width: 100%;
+    max-height: 98vh;
+  }
+  
+  .customItemMobilePopupContent {
+    border-radius: 8px;
+  }
+  
+  .customItemMobilePopupHeader {
+    padding: 14px 16px;
+    border-top-left-radius: 8px;
+    border-top-right-radius: 8px;
+  }
+  
+  .customItemMobilePopupTitle {
+    font-size: 1.1rem;
+  }
+  
+  .customItemMobilePopupCloseButton {
+    width: 32px;
+    height: 32px;
+    font-size: 1.6rem;
+  }
+  
+  .customItemMobilePopupBody {
+    padding: 16px;
+  }
+  
+  .customItemMobilePopupFormRow {
+    margin-bottom: 14px;
+  }
+  
+  .customItemMobilePopupInput {
+    padding: 14px 16px;
+    font-size: 1.1rem;
+  }
+  
+  .customItemMobilePopupFooter {
+    padding: 16px;
+    flex-direction: column;
+  }
+  
+  .customItemMobilePopupBtn {
+    padding: 14px 20px;
+    font-size: 1.1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .customItemMobilePopupOverlay {
+    padding: 0;
+  }
+  
+  .customItemMobilePopupModal {
+    max-height: 100vh;
+  }
+  
+  .customItemMobilePopupContent {
+    border-radius: 0;
+    height: 100vh;
+  }
+  
+  .customItemMobilePopupHeader {
+    border-radius: 0;
+  }
+  
+  .customItemMobilePopupBody {
+    padding: 12px;
+  }
+  
+  .customItemMobilePopupFormRow {
+    margin-bottom: 12px;
+  }
+  
+  .customItemMobilePopupInput {
+    padding: 16px;
+    font-size: 1.2rem;
+  }
+  
+  .customItemMobilePopupFooter {
+    padding: 12px;
+    border-radius: 0;
+  }
+  
+  .customItemMobilePopupBtn {
+    padding: 16px;
+    font-size: 1.2rem;
+    border-radius: 6px;
+  }
+}
+
+/* Landscape mobile orientation */
+@media (max-width: 768px) and (orientation: landscape) {
+  .customItemMobilePopupModal {
+    max-height: 95vh;
+  }
+  
+  .customItemMobilePopupContent {
+    border-radius: 8px;
+    height: auto;
+    max-height: 95vh;
+  }
+  
+  .customItemMobilePopupBody {
+    max-height: 60vh;
+  }
+}
+
+/* Touch-friendly improvements */
+@media (hover: none) and (pointer: coarse) {
+  .customItemMobilePopupInput {
+    min-height: 44px;
+  }
+  
+  .customItemMobilePopupBtn {
+    min-height: 44px;
+  }
+  
+  .customItemMobilePopupCloseButton {
+    min-width: 44px;
+    min-height: 44px;
+  }
+}
