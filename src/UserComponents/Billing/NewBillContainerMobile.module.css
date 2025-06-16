@@ -804,10 +804,7 @@
   background-color: #5a6268;
 }
 
-/* Custom Item Modal */
-.customItemModal {
-  /* Custom styles for custom item modal if needed */
-}
+
 
 /* Responsive adjustments for larger screens */
 @media (min-width: 576px) {

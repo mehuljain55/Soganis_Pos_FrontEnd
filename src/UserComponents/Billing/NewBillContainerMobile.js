@@ -7,11 +7,11 @@ import Button from 'react-bootstrap/Button';
 import Select from 'react-select';
 import BillPopup from './BillPopup'; 
 import printJS from "print-js";
-import CustomItemPopup from './CustomItemPopup.js';
 import ExchangeModalDirect from './ExchangeModalDirect.js';
 import ReturnExchangePop from './ReturnExchangePop.js';
 import CustomClothModal from './CustomClothModal.js';
 import { NEW_BILL_GENERATE_URL } from '../Api/ApiConstants.js';
+import CustomItemMobilePopup from './CustomItemPopupMobile.js';
 
 const NewBillContainerMobile = ({ userData }) => {
   const [selectedItems, setSelectedItems] = useState([]);
@@ -1755,15 +1755,20 @@ return (
         </div>
       )}
 
-      <div className={styles.customItemModal}>
-        <CustomItemPopup
-          showCustomItemModal={showCustomItemModal}
-          setShowCustomItemModal={setShowCustomItemModal}
-          customItem={customItem}
-          handleCustomItemChange={handleCustomItemChange}
-          handleAddCustomItem={handleAddCustomItem}
-        />
-      </div>
+<div className={styles.customItemModal}>
+  <div className={styles.modalWrapper}>
+    <div className={styles.modalContent}>
+      <CustomItemMobilePopup
+        showCustomItemModal={showCustomItemModal}
+        setShowCustomItemModal={setShowCustomItemModal}
+        customItem={customItem}
+        handleCustomItemChange={handleCustomItemChange}
+        handleAddCustomItem={handleAddCustomItem}
+      />
+    </div>
+  </div>
+</div>
+
     </div>
   </div>
 );
