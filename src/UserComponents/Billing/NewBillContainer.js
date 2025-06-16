@@ -734,6 +734,19 @@ const handleSizeChange = (rowIndex, newSize) => {
     }
   };
 
+
+  const sendBillToWhatsapp =()=>{
+
+    setSendBillType('whatsapp');
+    handleSubmit();
+  };
+
+    const printBill =()=>{
+
+    setSendBillType('print');
+    handleSubmit();
+  };
+
 const handleSubmit = async () => {
 
     const{user,token} = getUserData();
@@ -1405,33 +1418,6 @@ const handleDiscountChange = (rowIndex, newDiscount) => {
             </label>
           </div>
         </div>
-
-          <div className="bill-type-options">
-      <div className="bill-type-option">
-        <input
-          type="radio"
-          id="bill-send-print"
-          name="billSendType"
-          value="print"
-          checked={sendBillType === 'print'}
-          onChange={() => handleBillType('print')}
-        />
-        <label htmlFor="bill-send-print">Print</label>
-      </div>
-      <div className="bill-type-option">
-        <input
-          type="radio"
-          id="bill-send-whatsapp"
-          name="billSendType"
-          value="whatsapp"
-          checked={sendBillType === 'whatsapp'}
-          onChange={() => handleBillType('whatsapp')}
-        />
-        <label htmlFor="bill-send-whatsapp">WhatsApp</label>
-      </div>
-    </div>
-
-
       </div>
 
       {/* Billing Items Table */}
@@ -1731,7 +1717,8 @@ const handleDiscountChange = (rowIndex, newDiscount) => {
                 
               </select>
             </label>
-            <button id='submit-btn' onClick={handleSubmit}>Bill</button>
+            <button id='bill-submit-btn' onClick={printBill}>Bill</button>
+            <button id='submit-btn-whatsapp' onClick={sendBillToWhatsapp}>WhatsApp Bill</button>
           </div>
         </div>
 

@@ -465,9 +465,10 @@ h2 {
 }
 
 /* Optional: Improve submit button styling */
-#submit-btn {
+#bill-submit-btn {
   padding: 5px 30px;
-  background-color: #28a745;
+  background-color: #0646f7 !important;
+ margin-left: 5px;
   color: white;
   border: none;
   border-radius: 5px;
@@ -475,7 +476,22 @@ h2 {
   transition: background-color 0.3s ease;
 }
 
-.submit-button button:hover {
+.bill-submit-button button:hover {
+  background-color: #00f2ff;
+}
+
+
+#submit-btn-whatsapp {
+  padding: 5px 30px;
+  background-color: #28a73d !important;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.submit-btn-whatsapp button:hover {
   background-color: #218838;
 }
 
@@ -544,7 +560,7 @@ h2 {
 
 .customer-details {
   padding-left: 40px !important;
-  width: 80% !important;
+  width: 95% !important;
   display: flex;
   flex-direction: column;
   font-size: 18px;
@@ -558,7 +574,6 @@ h2 {
 .customer-details-box {
   border-radius: 10px;
   margin: 10px;
-  margin-left: -50px !important;
   padding: 10px;
   display: flex;
   gap: 20px;
@@ -626,50 +641,6 @@ h2 {
 .school-select-container input {
   width: 300px !important;
 }
-
-.bill-type-options {
-  display: flex;
-  flex-direction: row;
-  margin-right: 20px !important;
-  margin-left: -50px !important;
-  margin-top: 15px;
-  padding: 15px;
-  background: rgba(0, 123, 255, 0.05);
-  border-radius: 8px;
-  border: 1px solid rgba(0, 123, 255, 0.1);
-}
-
-.bill-type-option {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 8px 12px;
-  border-radius: 6px;
-  transition: all 0.3s ease;
-  cursor: pointer;
-}
-
-.bill-type-option:hover {
-  background: rgba(0, 123, 255, 0.1);
-  transform: scale(1.02);
-}
-
-.bill-type-option label {
-  cursor: pointer;
-  font-weight: 500;
-  color: #495057;
-  font-size: 16px;
-}
-
-input[type="radio"] {
-  accent-color: #007bff;
-  cursor: pointer;
-  width: 18px;
-  height: 18px;
-  margin: 0;
-}
-
-
 
 /* Styles for the PDF modal */
 .pdf-modal {
