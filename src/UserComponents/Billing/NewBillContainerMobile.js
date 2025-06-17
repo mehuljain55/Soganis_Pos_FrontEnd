@@ -43,7 +43,7 @@ const NewBillContainerMobile = ({ userData }) => {
   const[isExchangeModelOpen,setIsExchangeModelOpen]=useState(false);
   const [isExchangeModelBillOpen, setIsExchangeModelBillOpen] = useState(false);
   const [showCustomClothModal, setShowCustomClothModal] = useState(false);
-  const[sendBillType,setSendBillType]=useState('print');
+  const[sendBillType,setSendBillType]=useState('whatsapp');
   
   const [transactionalModel, setTransactionalModel] = useState({
     cash: 0,
@@ -1603,12 +1603,6 @@ return (
                 onClick={() => setShowBillModal(false)}
               >
                 Cancel
-              </button>
-              <button 
-                className={styles.billButton} 
-                onClick={printBill}
-              >
-                Print Bill
               </button>
               <button 
                 className={styles.whatsappButton} 
