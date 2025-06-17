@@ -67,7 +67,7 @@ const CustomItemMobilePopup = ({
       <div className={styles.customItemMobilePopupModal} ref={popupRef}>
         <div className={styles.customItemMobilePopupContent}>
           <div className={styles.customItemMobilePopupHeader}>
-            <h2 className={styles.customItemMobilePopupTitle}>Add Custom Item</h2>
+            <h4 className={styles.customItemMobilePopupTitle}> Custom Item</h4>
             <button 
               className={styles.customItemMobilePopupCloseButton} 
               onClick={() => setShowCustomItemModal(false)}
@@ -213,12 +213,7 @@ const CustomItemMobilePopup = ({
             </form>
           </div>
           <div className={styles.customItemMobilePopupFooter}>
-            <button 
-              className={`${styles.customItemMobilePopupBtn} ${styles.customItemMobilePopupBtnSecondary}`} 
-              onClick={() => setShowCustomItemModal(false)}
-            >
-              Cancel
-            </button>
+
             <button 
               className={`${styles.customItemMobilePopupBtn} ${styles.customItemMobilePopupBtnPrimary}`} 
               onClick={() => {
@@ -229,6 +224,14 @@ const CustomItemMobilePopup = ({
             >
               Add Item
             </button>
+
+            <button 
+              className={`${styles.customItemMobilePopupBtn} ${styles.customItemMobilePopupBtnSecondary}`} 
+              onClick={() => setShowCustomItemModal(false)}
+            >
+              Cancel
+            </button>
+
           </div>
         </div>
       </div>
