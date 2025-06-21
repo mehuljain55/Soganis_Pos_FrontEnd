@@ -1424,6 +1424,7 @@ const handleDiscountChange = (rowIndex, newDiscount) => {
             </label>
           </div>
         </div>
+        
       </div>
 
       {/* Billing Items Table */}
