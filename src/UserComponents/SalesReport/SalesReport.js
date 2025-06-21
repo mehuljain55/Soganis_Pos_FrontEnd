@@ -50,11 +50,14 @@ const SalesReport = ({ data }) => {
   return (
     <div className="sales-report">
   
+{filteredData.length > 0 && (
   <div className="export-button-container">
-  <button className="sales-export-button" onClick={handleExport}>
-    Export
-  </button>
-</div>
+    <button className="sales-export-button" onClick={handleExport}>
+      Export
+    </button>
+  </div>
+)}
+
 
 
       <div className="table-container">
