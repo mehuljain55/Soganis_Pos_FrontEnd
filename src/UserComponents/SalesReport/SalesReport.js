@@ -56,8 +56,8 @@ const SalesReport = ({ data }) => {
         <label htmlFor="billTypeFilter">Bill Type: </label>
         <select id="billTypeFilter" value={billTypeFilter} onChange={handleFilterChange}>
           <option value="Both">Both</option>
-          <option value="Wholesale">Wholesale</option>
-          <option value="Retail">Retail</option>
+          <option value="WHOLESALE">Wholesale</option>
+          <option value="RETAIL">Retail</option>
         </select>
       </div>
 
