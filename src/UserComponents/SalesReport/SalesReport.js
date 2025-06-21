@@ -50,6 +50,13 @@ const SalesReport = ({ data }) => {
   return (
     <div className="sales-report">
   
+  <div className="export-button-container">
+  <button className="sales-export-button" onClick={handleExport}>
+    Export
+  </button>
+</div>
+
+
       <div className="table-container">
         {filteredData.length > 0 ? (
           <table>
@@ -96,9 +103,7 @@ const SalesReport = ({ data }) => {
         <strong>Total Amount : </strong> {totalAmountSum}
       </div>
 
-      <button className="export-button" onClick={handleExport}>
-        Export
-      </button>
+
     </div>
   );
 };

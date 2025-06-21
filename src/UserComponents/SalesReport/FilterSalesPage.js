@@ -23,11 +23,11 @@ const FilterSalesPage = () => {
   const [salesData, setSalesData] = useState([]);
   const [errorMessage, setErrorMessage] = useState('');
   const [loading, setLoading] = useState(false);
-  const [showFilterModal, setShowFilterModal] = useState(false);
+  const [showFilterModal, setShowFilterModal] = useState(true);
 
   const handleApplyFilters = () => {
+  setSalesData([]);
   fetchSalesData();
-  setShowFilterModal(false);
 };
 
 const clearFilter = (filterType) => {
@@ -259,6 +259,11 @@ useEffect(() => {
         .then(response => {
           setSalesData(response.data);
           setLoading(false); 
+
+              if (response.data.length > 0) {
+      setShowFilterModal(false);
+    }
+
         })
         .catch(error => {
           console.error('Error fetching sales data:', error);
@@ -271,6 +276,11 @@ useEffect(() => {
       axios.get(url)
         .then(response => {
           setSalesData(response.data);
+
+              if (response.data.length > 0) {
+              setShowFilterModal(false);
+             }
+
           setLoading(false); // Re-enable button after response
         })
         .catch(error => {
@@ -280,6 +290,7 @@ useEffect(() => {
           setLoading(false); // Re-enable button after response
         });
     }
+
   };
 
   

@@ -8,7 +8,7 @@
 .salesReportPageHeader {
   background: rgba(255, 255, 255, 0.95);
   backdrop-filter: blur(10px);
-  padding: 2rem;
+  margin-top: -10px;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -52,7 +52,6 @@
 .salesReportBtnFilter {
   background: linear-gradient(135deg, #3498db, #2980b9);
   color: white;
-  box-shadow: 0 4px 15px rgba(52, 152, 219, 0.3);
 }
 
 .salesReportBtnFilter:hover {
@@ -83,7 +82,6 @@
   display: flex;
   justify-content: flex-start;
   align-items: center;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
   border-top: 1px solid rgba(0, 0, 0, 0.1);
 }
 
@@ -146,7 +144,6 @@
   justify-content: center;
   align-items: center;
   padding: 1rem;
-  border-bottom: 1px solid #ecf0f1;
   color: black;
   border-radius: 20px 20px 0 0;
 }
@@ -181,7 +178,6 @@
   font-size: 1.2rem;
   font-weight: 600;
   margin-bottom: 1.5rem;
-  border-bottom: 2px solid #3498db;
   padding-bottom: 0.5rem;
 }
 

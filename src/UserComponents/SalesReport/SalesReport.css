@@ -3,7 +3,7 @@
 }
 
 .table-container {
-  max-height: 300px; /* Set the fixed height for the table container */
+  max-height: 420px; /* Set the fixed height for the table container */
   overflow-y: auto; /* Enables vertical scroll for the table */
   overflow-x: auto; /* Enables horizontal scroll for the table */
   border: 1px solid #ddd; /* Optional: add a border to the scrollable container */
@@ -86,4 +86,28 @@
 .total-amount-sum {
   margin-top: 10px;
   font-size: 16px;
+}
+
+.export-button-container {
+  display: flex;
+  justify-content: flex-end; /* Aligns content (button) to the right */
+  margin-top: -50px ;
+  margin-bottom: 10px;
+}
+
+.sales-export-button {
+  background-color: #4CAF50;
+  color: white;
+  padding: 8px 16px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.sales-export-button:hover {
+  background-color: #45a049;
 }
