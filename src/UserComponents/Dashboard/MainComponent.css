@@ -23,6 +23,7 @@
 
 .dashboard-user-info {
   display: flex;
+  color: white;
   align-items: center;
   gap: 15px;
 }
