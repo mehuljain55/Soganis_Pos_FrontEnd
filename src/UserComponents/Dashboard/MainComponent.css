@@ -8,7 +8,7 @@
 /* Top bar styles with renamed class */
 .dashboard-top-bar {
   background-color: #0b9aed;
-  color: white;
+  color: black;
   padding: 10px 20px;
   display: flex;
   justify-content: space-between;
@@ -85,9 +85,9 @@
 /* Sidebar styles with renamed class */
 .dashboard-sidebar {
   position: fixed;
-  top: 80px;
+  top: 60px;
   left: -250px;
-  width: 200px;
+  width: 220px;
   height: calc(100% - 90px);
   background-color: #f8f9fa;
   padding: 10px;
