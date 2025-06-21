@@ -1,10 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import './FilterSalesPage.css'; 
+import styles from './FilterSalesPage.module.css'; 
 import axios from 'axios';
 import { API_BASE_URL } from '../Config.js';
 import SalesReport from './SalesReport'; 
-
-import { Button, Form, Spinner, Container, Row, Col, Card } from "react-bootstrap";
 
 const FilterSalesPage = () => {
   const [filters, setFilters] = useState({
@@ -25,6 +23,65 @@ const FilterSalesPage = () => {
   const [salesData, setSalesData] = useState([]);
   const [errorMessage, setErrorMessage] = useState('');
   const [loading, setLoading] = useState(false);
+  const [showFilterModal, setShowFilterModal] = useState(false);
+
+  const handleApplyFilters = () => {
+  fetchSalesData();
+  setShowFilterModal(false);
+};
+
+const clearFilter = (filterType) => {
+  setFilters(prev => ({
+    ...prev,
+    [filterType]: false
+  }));
+  
+  if (filterType === 'dateRange') {
+    setSelectedFilters(prev => ({
+      ...prev,
+      dateRange: { startDate: '', endDate: '' }
+    }));
+  } else {
+    setSelectedFilters(prev => ({
+      ...prev,
+      [filterType]: ''
+    }));
+  }
+  
+  // Clear error message when filters are cleared
+  setErrorMessage('');
+};
+
+const clearAllFilters = () => {
+  setFilters({
+    dateRange: false,
+    item: false,
+    school: false
+  });
+  
+  setSelectedFilters({
+    dateRange: { startDate: '', endDate: '' },
+    item: '',
+    school: ''
+  });
+  
+  setSalesData([]);
+  setErrorMessage('');
+};
+
+// Add this useEffect for keyboard event handling (after your existing useEffects)
+useEffect(() => {
+  const handleKeyDown = (event) => {
+    if (event.key === 'Escape' && showFilterModal) {
+      setShowFilterModal(false);
+    }
+  };
+
+  document.addEventListener('keydown', handleKeyDown);
+  return () => {
+    document.removeEventListener('keydown', handleKeyDown);
+  };
+}, [showFilterModal]);
 
   const handleCheckboxChange = (event) => {
     const { name, checked } = event.target;
@@ -46,6 +103,15 @@ const FilterSalesPage = () => {
         item: '',
       }));
     }
+  };
+
+  const formatDateForDisplay = (dateString) => {
+    if (!dateString) return '';
+    const date = new Date(dateString);
+    const day = date.getDate().toString().padStart(2, '0');
+    const month = (date.getMonth() + 1).toString().padStart(2, '0');
+    const year = date.getFullYear();
+    return `${day}-${month}-${year}`;
   };
 
   const handleDropdownChange = (event) => {
@@ -216,84 +282,197 @@ const FilterSalesPage = () => {
     }
   };
 
-  return (
-    <Container className="filter-sales-page mt-4">
-      <Card className="p-4 shadow-sm">
-        <h3 className="text-center mb-4">View Sales</h3>
-        
-        <div className="checkbox-group d-flex justify-content-center gap-3 mb-3">
-          {['dateRange', 'item', 'school'].map((filter) => (
-            <Form.Check 
-              key={filter}
-              type="checkbox"
-              label={filter.charAt(0).toUpperCase() + filter.slice(1).replace(/([A-Z])/g, ' $1')}
-              name={filter}
-              checked={filters[filter]}
-              onChange={handleCheckboxChange}
-            />
-          ))}
+  
+   return (
+    <>
+      {/* Filter Modal */}
+      {showFilterModal && (
+        <div className={styles.salesReportModalOverlay} onClick={() => setShowFilterModal(false)}>
+          <div className={styles.salesReportModalContent} onClick={(e) => e.stopPropagation()}>
+            <div className={styles.salesReportModalHeader}>
+              <h3>Filter Sales Report</h3>
+              <button 
+                className={styles.salesReportCloseBtn} 
+                onClick={() => setShowFilterModal(false)}
+              >
+                ×
+              </button>
+            </div>
+            
+            <div className={styles.salesReportModalBody}>
+              <div className={styles.salesReportFilterSection}>
+                <h4>Select Filters</h4>
+                <div className={styles.salesReportCheckboxGrid}>
+                  {[
+                    { key: 'dateRange', label: 'Date Range' },
+                    { key: 'school', label: 'School' },
+                    { key: 'item', label: 'Item' }
+                  ].map((filter) => (
+                    <label key={filter.key} className={styles.salesReportCheckboxLabel}>
+                      <input
+                        type="checkbox"
+                        name={filter.key}
+                        checked={filters[filter.key]}
+                        onChange={handleCheckboxChange}
+                      />
+                      <span className={styles.salesReportCheckmark}></span>
+                      {filter.label}
+                    </label>
+                  ))}
+                </div>
+              </div>
+
+              <div className={styles.salesReportFilterInputs}>
+                {filters.dateRange && (
+                  <div className={styles.salesReportInputRow}>
+                    <div className={styles.salesReportInputField}>
+                      <label>Start Date</label>
+                      <input
+                        type="date"
+                        name="startDate"
+                        value={selectedFilters.dateRange.startDate}
+                        onChange={handleDateChange}
+                      />
+                    </div>
+                    <div className={styles.salesReportInputField}>
+                      <label>End Date</label>
+                      <input
+                        type="date"
+                        name="endDate"
+                        value={selectedFilters.dateRange.endDate}
+                        onChange={handleDateChange}
+                      />
+                    </div>
+                  </div>
+                )}
+                
+                {filters.school && (
+                  <div className={styles.salesReportInputRow}>
+                    <div className={`${styles.salesReportInputField} ${styles.salesReportFullWidth}`}>
+                      <label>School Code</label>
+                      <select
+                        name="school"
+                        value={selectedFilters.school}
+                        onChange={handleDropdownChange}
+                      >
+                        <option value="">Select School</option>
+                        {schools.map((school, index) => (
+                          <option key={index} value={school}>{school}</option>
+                        ))}
+                      </select>
+                    </div>
+                  </div>
+                )}
+                
+                {filters.item && (
+                  <div className={styles.salesReportInputRow}>
+                    <div className={`${styles.salesReportInputField} ${styles.salesReportFullWidth}`}>
+                      <label>Item Code</label>
+                      <select
+                        name="item"
+                        value={selectedFilters.item}
+                        onChange={handleDropdownChange}
+                      >
+                        <option value="">Select Item</option>
+                        {(selectedFilters.school ? filteredItems : items).map((item, index) => (
+                          <option key={index} value={item}>{item}</option>
+                        ))}
+                      </select>
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              {errorMessage && (
+                <div className={styles.salesReportErrorMessage}>
+                  <i className={styles.salesReportErrorIcon}>⚠</i>
+                  {errorMessage}
+                </div>
+              )}
+            </div>
+
+            <div className={styles.salesReportModalFooter}>
+              <button 
+                className={styles.salesReportBtnCancel} 
+                onClick={() => setShowFilterModal(false)}
+              >
+                Cancel
+              </button>
+              <button 
+                className={styles.salesReportBtnApply} 
+                onClick={handleApplyFilters}
+                disabled={loading}
+              >
+                {loading ? (
+                  <>
+                    <span className={styles.salesReportSpinner}></span>
+                    Generating...
+                  </>
+                ) : (
+                  'Apply Filters'
+                )}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Main Content */}
+      <div className={styles.salesReportViewContainer}>
+        <div className={styles.salesReportPageHeader}>
+          <div className={styles.salesReportHeaderContent}>
+            <h1>Sales Report</h1>
+          </div>
+          <div className={styles.salesReportHeaderActions}>
+            <button 
+              className={styles.salesReportBtnFilter} 
+              onClick={() => setShowFilterModal(true)}
+            >
+              <i className={styles.salesReportFilterIcon}>🔍</i>
+              Filters
+            </button>
+            {salesData.length > 0 && (
+              <button className={styles.salesReportBtnRefresh} onClick={() => fetchSalesData()}>
+                <i className={styles.salesReportRefreshIcon}>🔄</i>
+                Refresh
+              </button>
+            )}
+          </div>
         </div>
 
-        <Row className="dropdown-group d-flex justify-content-center gap-2 mb-3">
-          {filters.dateRange && (
-            <>
-              <Col xs="auto">
-                <Form.Label>Start Date:</Form.Label>
-                <Form.Control type="date" name="startDate" value={selectedFilters.dateRange.startDate} onChange={handleDateChange} />
-              </Col>
-              <Col xs="auto">
-                <Form.Label>End Date:</Form.Label>
-                <Form.Control type="date" name="endDate" value={selectedFilters.dateRange.endDate} onChange={handleDateChange} />
-              </Col>
-            </>
-          )}
-          
-          {filters.school && (
-            <Col xs="auto">
-              <Form.Label>Select School Code:</Form.Label>
-              <Form.Select name="school" value={selectedFilters.school} onChange={handleDropdownChange}>
-                <option value="">--Select--</option>
-                {schools.map((school, index) => (
-                  <option key={index} value={school}>{school}</option>
-                ))}
-              </Form.Select>
-            </Col>
-          )}
-          
-          {filters.item && (
-            <Col xs="auto">
-              <Form.Label>Select Item Code:</Form.Label>
-              <Form.Select name="item" value={selectedFilters.item} onChange={handleDropdownChange}>
-                <option value="">--Select--</option>
-                {(selectedFilters.school ? filteredItems : items).map((item, index) => (
-                  <option key={index} value={item}>{item}</option>
-                ))}
-              </Form.Select>
-            </Col>
-          )}
-        </Row>
+        {/* Active Filters Display */}
+        {(filters.dateRange || filters.school || filters.item) && (
+          <div className={styles.salesReportActiveFilters}>
+            <div className={styles.salesReportFilterTags}>
+              <span className={styles.salesReportFilterTitle}>Active Filters:</span>
+              {filters.dateRange && selectedFilters.dateRange.startDate && (
+                <span className={styles.salesReportFilterTag}>
+                  Date: {formatDateForDisplay(selectedFilters.dateRange.startDate)} to {formatDateForDisplay(selectedFilters.dateRange.endDate)}
+                </span>
+              )}
+              {filters.school && selectedFilters.school && (
+                <span className={styles.salesReportFilterTag}>
+                  School: {selectedFilters.school}
+                </span>
+              )}
+              {filters.item && selectedFilters.item && (
+                <span className={styles.salesReportFilterTag}>
+                  Item: {selectedFilters.item}
+                </span>
+              )}
+            </div>
+          </div>
+        )}
 
-        <div className="text-center">
-  <button onClick={fetchSalesData} disabled={loading} className="search-button">
-    {loading ? (
-      <>
-        <span className="custom-spinner"></span> Generating Report
-      </>
-    ) : (
-      "View"
-    )}
-  </button>
-</div>
-
-
-        {errorMessage && <p className="text-danger text-center mt-3">{errorMessage}</p>}
-      </Card>
-
-      <div className="sales-report-container mt-4">
-        <SalesReport data={salesData} />
+        {/* Sales Report Container */}
+        <div className={styles.salesReportReportContainer}>
+          <SalesReport data={salesData} />
+        </div>
       </div>
-    </Container>
+    </>
   );
+
+
 };
 
 export default FilterSalesPage;

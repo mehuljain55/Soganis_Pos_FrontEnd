@@ -1,0 +1,419 @@
+/* Main Sales Page Styles */
+.salesReportViewContainer {
+  min-height: 100vh;
+  padding: 0;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.salesReportPageHeader {
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
+  padding: 2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.salesReportHeaderContent {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+}
+
+.salesReportHeaderContent h1 {
+  color: black;
+  font-size: 1.5em;
+  font-weight: 700;
+  margin: 0;
+}
+
+.salesReportHeaderActions {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+}
+
+/* Button Styles */
+.salesReportBtnFilter, .salesReportBtnRefresh {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.5rem;
+  border: none;
+  border-radius: 10px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.salesReportBtnFilter {
+  background: linear-gradient(135deg, #3498db, #2980b9);
+  color: white;
+  box-shadow: 0 4px 15px rgba(52, 152, 219, 0.3);
+}
+
+.salesReportBtnFilter:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(52, 152, 219, 0.4);
+}
+
+.salesReportBtnRefresh {
+  background: linear-gradient(135deg, #27ae60, #229954);
+  color: white;
+  box-shadow: 0 4px 15px rgba(39, 174, 96, 0.3);
+}
+
+.salesReportBtnRefresh:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(39, 174, 96, 0.4);
+}
+
+.salesReportFilterIcon, .salesReportRefreshIcon {
+  font-size: 1.2rem;
+}
+
+/* Active Filters Section */
+.salesReportActiveFilters {
+  background: rgba(255, 255, 255, 0.9);
+  margin: 0;
+  padding: 1.5rem 2rem;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+  border-top: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.salesReportFilterTags {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.salesReportFilterTitle {
+  font-weight: 600;
+  color: #2c3e50;
+  font-size: 1rem;
+  margin-right: 0.5rem;
+}
+
+.salesReportFilterTag {
+  background: linear-gradient(135deg, #6c5ce7, #5a4fcf);
+  color: white;
+  padding: 0.5rem 1rem;
+  border-radius: 25px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  box-shadow: 0 2px 10px rgba(108, 92, 231, 0.3);
+}
+
+/* Modal Styles */
+.salesReportModalOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(5px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  animation: salesReportFadeIn 0.3s ease;
+}
+
+.salesReportModalContent {
+  background: white;
+  border-radius: 20px;
+  width: 90%;
+  max-width: 1000px;
+  max-height: 100vh;
+  overflow-y: auto;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  animation: salesReportSlideIn 0.3s ease;
+}
+
+.salesReportModalHeader {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 1rem;
+  border-bottom: 1px solid #ecf0f1;
+  color: black;
+  border-radius: 20px 20px 0 0;
+}
+
+.salesReportModalHeader h3 {
+  margin: 0;
+  font-size: 1.5rem;
+  font-weight: 700;
+}
+
+.salesReportCloseBtn {
+  background: none;
+  border: none;
+  font-size: 2rem;
+  color: white;
+  cursor: pointer;
+  padding: 0;
+  line-height: 1;
+  transition: transform 0.2s ease;
+}
+
+.salesReportCloseBtn:hover {
+  transform: rotate(90deg);
+}
+
+.salesReportModalBody {
+  padding: 2rem;
+}
+
+.salesReportFilterSection h4 {
+  color: #2c3e50;
+  font-size: 1.2rem;
+  font-weight: 600;
+  margin-bottom: 1.5rem;
+  border-bottom: 2px solid #3498db;
+  padding-bottom: 0.5rem;
+}
+
+/* Professional Checkbox Grid */
+.salesReportCheckboxGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+  margin-bottom: 2rem;
+  padding: 1rem;
+  background: #f8f9fa;
+  border-radius: 12px;
+  border: 1px solid #e9ecef;
+}
+
+.salesReportCheckboxLabel {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  font-size: 1rem;
+  font-weight: 500;
+  color: #2c3e50;
+  padding: 0.75rem 1rem;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+  position: relative;
+  background: white;
+  border: 2px solid #e9ecef;
+}
+
+.salesReportCheckboxLabel:hover {
+  background-color: #f1f3f4;
+  border-color: #3498db;
+}
+
+.salesReportCheckboxLabel input[type="checkbox"] {
+  position: absolute;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.salesReportCheckmark {
+  height: 20px;
+  width: 20px;
+  background-color: #ecf0f1;
+  border-radius: 5px;
+  margin-right: 0.75rem;
+  position: relative;
+  transition: all 0.3s ease;
+  border: 2px solid #bdc3c7;
+}
+
+.salesReportCheckboxLabel input:checked ~ .salesReportCheckmark {
+  background: linear-gradient(135deg, #3498db, #2980b9);
+  border-color: #2980b9;
+}
+
+.salesReportCheckmark:after {
+  content: "";
+  position: absolute;
+  display: none;
+  left: 6px;
+  top: 2px;
+  width: 5px;
+  height: 10px;
+  border: solid white;
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg);
+}
+
+.salesReportCheckboxLabel input:checked ~ .salesReportCheckmark:after {
+  display: block;
+}
+
+/* Form Input Styles */
+.salesReportFilterInputs {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.salesReportInputRow {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+  align-items: end;
+}
+
+.salesReportInputField {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.salesReportInputField.salesReportFullWidth {
+  grid-column: 1 / -1;
+}
+
+.salesReportInputField label {
+  font-weight: 600;
+  color: #2c3e50;
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.salesReportInputField input,
+.salesReportInputField select {
+  padding: 0.75rem 1rem;
+  border: 2px solid #ecf0f1;
+  border-radius: 10px;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+  background: white;
+  font-family: inherit;
+}
+
+.salesReportInputField input:focus,
+.salesReportInputField select:focus {
+  outline: none;
+  border-color: #3498db;
+  box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
+}
+
+/* Error Message */
+.salesReportErrorMessage {
+  background: linear-gradient(135deg, #e74c3c, #c0392b);
+  color: white;
+  padding: 1rem;
+  border-radius: 10px;
+  margin-top: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-weight: 500;
+}
+
+.salesReportErrorIcon {
+  font-size: 1.2rem;
+}
+
+/* Modal Footer */
+.salesReportModalFooter {
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
+  padding: 2rem;
+  border-top: 1px solid #ecf0f1;
+  background: #f8f9fa;
+  border-radius: 0 0 20px 20px;
+}
+
+.salesReportBtnCancel,
+.salesReportBtnApply {
+  padding: 0.75rem 1.5rem;
+  border: none;
+  border-radius: 10px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.salesReportBtnCancel {
+  background: linear-gradient(135deg, #95a5a6, #7f8c8d);
+  color: white;
+}
+
+.salesReportBtnApply {
+  background: linear-gradient(135deg, #27ae60, #229954);
+  color: white;
+}
+
+.salesReportBtnCancel:hover,
+.salesReportBtnApply:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+.salesReportBtnApply:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+/* Spinner */
+.salesReportSpinner {
+  display: inline-block;
+  width: 1rem;
+  height: 1rem;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  border-top-color: white;
+  animation: salesReportSpin 1s ease-in-out infinite;
+}
+
+/* Report Container */
+.salesReportReportContainer {
+  background: rgba(255, 255, 255, 0.95);
+  margin: 0;
+  padding: 2rem;
+  backdrop-filter: blur(10px);
+  min-height: calc(100vh - 200px);
+}
+
+/* Animations */
+@keyframes salesReportFadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes salesReportSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-50px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes salesReportSpin {
+  to {
+    transform: rotate(360deg);
+  }
+}

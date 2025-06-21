@@ -3,7 +3,7 @@ import './SalesReport.css';
 import { API_BASE_URL } from "../Config.js";
 
 const SalesReport = ({ data }) => {
-  const [billTypeFilter, setBillTypeFilter] = useState('Both');
+  const [billTypeFilter, setBillTypeFilter] = useState('RETAIL');
 
   const handleFilterChange = (event) => {
     setBillTypeFilter(event.target.value);
@@ -49,18 +49,7 @@ const SalesReport = ({ data }) => {
 
   return (
     <div className="sales-report">
-    
-      
-      {/* Bill Type Filter Dropdown */}
-      <div className="filter-container">
-        <label htmlFor="billTypeFilter">Bill Type: </label>
-        <select id="billTypeFilter" value={billTypeFilter} onChange={handleFilterChange}>
-          <option value="Both">Both</option>
-          <option value="WHOLESALE">Wholesale</option>
-          <option value="RETAIL">Retail</option>
-        </select>
-      </div>
-
+  
       <div className="table-container">
         {filteredData.length > 0 ? (
           <table>
