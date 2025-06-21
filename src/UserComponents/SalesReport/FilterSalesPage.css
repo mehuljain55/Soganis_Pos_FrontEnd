@@ -1,100 +1,419 @@
-.filter-container {
-  padding: 20px;
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  background-color: #f5f5f5;
-  max-width: 100%;
+/* Main Sales Page Styles */
+.sales-report-view-container {
+  min-height: 100vh;
+  padding: 0;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
-h1 {
-  font-size: 24px;
-  margin-bottom: 20px;
-  color: #333;
-}
-
-.filter-group {
+.sales-report-page-header {
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
+  padding: 2rem;
   display: flex;
-  flex-wrap: wrap;
+  justify-content: space-between;
   align-items: center;
-  gap: 20px;
-  margin-bottom: 15px;
 }
 
-.filter-group label {
-  font-size: 16px;
-  margin-right: 10px;
-  color: #555;
+.sales-report-header-content {
+  flex: 1;
+  display: flex;
+  justify-content: center;
 }
 
-.filter-group input[type="checkbox"] {
-  margin-right: 5px;
+.sales-report-header-content h1 {
+  color: black;
+  font-size: 1.5em;
+  font-weight: 700;
+  margin: 0;
 }
 
-.filter-group input[type="date"],
-.filter-group select {
-  padding: 8px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  font-size: 14px;
-  width: 200px;
+.sales-report-header-actions {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
 }
 
-.error-message {
-  color: red;
-  margin-top: 10px;
-}
-
-.search-button {
-  padding: 10px 20px;
-  background-color: #007bff;
+/* Button Styles */
+.sales-report-btn-filter, .sales-report-btn-refresh {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.5rem;
   border: none;
-  border-radius: 4px;
-  color: white;
-  font-size: 16px;
+  border-radius: 10px;
+  font-size: 1rem;
+  font-weight: 600;
   cursor: pointer;
-  transition: background-color 0.3s;
+  transition: all 0.3s ease;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
 }
 
-.search-button:hover {
-  background-color: #0056b3;
+.sales-report-btn-filter {
+  background: linear-gradient(135deg, #3498db, #2980b9);
+  color: white;
+  box-shadow: 0 4px 15px rgba(52, 152, 219, 0.3);
 }
 
-.sales-report-container {
-  margin-top: 20px;
+.sales-report-btn-filter:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(52, 152, 219, 0.4);
 }
 
-.checkbox-group{
+.sales-report-btn-refresh {
+  background: linear-gradient(135deg, #27ae60, #229954);
+  color: white;
+  box-shadow: 0 4px 15px rgba(39, 174, 96, 0.3);
+}
+
+.sales-report-btn-refresh:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(39, 174, 96, 0.4);
+}
+
+.sales-report-filter-icon, .sales-report-refresh-icon {
+  font-size: 1.2rem;
+}
+
+/* Active Filters Section */
+.sales-report-active-filters {
+  background: rgba(255, 255, 255, 0.9);
+  margin: 0;
+  padding: 1.5rem 2rem;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+  border-top: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.sales-report-filter-tags {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.sales-report-filter-title {
+  font-weight: 600;
+  color: #2c3e50;
+  font-size: 1rem;
+  margin-right: 0.5rem;
+}
+
+.sales-report-filter-tag {
+  background: linear-gradient(135deg, #6c5ce7, #5a4fcf);
+  color: white;
+  padding: 0.5rem 1rem;
+  border-radius: 25px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  box-shadow: 0 2px 10px rgba(108, 92, 231, 0.3);
+}
+
+/* Modal Styles */
+.sales-report-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(5px);
   display: flex;
   justify-content: center;
   align-items: center;
-  gap: 10px;
-  font-size: 18px;
-  margin: 20px 0;
+  z-index: 1000;
+  animation: sales-report-fadeIn 0.3s ease;
 }
 
-.dropdown-group{
+.sales-report-modal-content {
+  background: white;
+  border-radius: 20px;
+  width: 90%;
+  max-width: 1000px;
+  max-height: 100vh;
+  overflow-y: auto;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  animation: sales-report-slideIn 0.3s ease;
+}
+
+.sales-report-modal-header {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 1rem;
+  border-bottom: 1px solid #ecf0f1;
+  color: black;
+  border-radius: 20px 20px 0 0;
+}
+
+.sales-report-modal-header h3 {
+  margin: 0;
+  font-size: 1.5rem;
+  font-weight: 700;
+}
+
+.sales-report-close-btn {
+  background: none;
+  border: none;
+  font-size: 2rem;
+  color: white;
+  cursor: pointer;
+  padding: 0;
+  line-height: 1;
+  transition: transform 0.2s ease;
+}
+
+.sales-report-close-btn:hover {
+  transform: rotate(90deg);
+}
+
+.sales-report-modal-body {
+  padding: 2rem;
+}
+
+.sales-report-filter-section h4 {
+  color: #2c3e50;
+  font-size: 1.2rem;
+  font-weight: 600;
+  margin-bottom: 1.5rem;
+  border-bottom: 2px solid #3498db;
+  padding-bottom: 0.5rem;
+}
+
+/* Professional Checkbox Grid */
+.sales-report-checkbox-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+  margin-bottom: 2rem;
+  padding: 1rem;
+  background: #f8f9fa;
+  border-radius: 12px;
+  border: 1px solid #e9ecef;
+}
+
+.sales-report-checkbox-label {
   display: flex;
   align-items: center;
-  justify-content: center;
-  gap: 10px;
-  font-size: 18px;
-  margin: 10px 0;
+  cursor: pointer;
+  font-size: 1rem;
+  font-weight: 500;
+  color: #2c3e50;
+  padding: 0.75rem 1rem;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+  position: relative;
+  background: white;
+  border: 2px solid #e9ecef;
 }
 
-@keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+.sales-report-checkbox-label:hover {
+  background-color: #f1f3f4;
+  border-color: #3498db;
 }
 
-.custom-spinner {
+.sales-report-checkbox-label input[type="checkbox"] {
+  position: absolute;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.sales-report-checkmark {
+  height: 20px;
+  width: 20px;
+  background-color: #ecf0f1;
+  border-radius: 5px;
+  margin-right: 0.75rem;
+  position: relative;
+  transition: all 0.3s ease;
+  border: 2px solid #bdc3c7;
+}
+
+.sales-report-checkbox-label input:checked ~ .sales-report-checkmark {
+  background: linear-gradient(135deg, #3498db, #2980b9);
+  border-color: #2980b9;
+}
+
+.sales-report-checkmark:after {
+  content: "";
+  position: absolute;
+  display: none;
+  left: 6px;
+  top: 2px;
+  width: 5px;
+  height: 10px;
+  border: solid white;
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg);
+}
+
+.sales-report-checkbox-label input:checked ~ .sales-report-checkmark:after {
+  display: block;
+}
+
+/* Form Input Styles */
+.sales-report-filter-inputs {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.sales-report-input-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+  align-items: end;
+}
+
+.sales-report-input-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.sales-report-input-field.sales-report-full-width {
+  grid-column: 1 / -1;
+}
+
+.sales-report-input-field label {
+  font-weight: 600;
+  color: #2c3e50;
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.sales-report-input-field input,
+.sales-report-input-field select {
+  padding: 0.75rem 1rem;
+  border: 2px solid #ecf0f1;
+  border-radius: 10px;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+  background: white;
+  font-family: inherit;
+}
+
+.sales-report-input-field input:focus,
+.sales-report-input-field select:focus {
+  outline: none;
+  border-color: #3498db;
+  box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
+}
+
+/* Error Message */
+.sales-report-error-message {
+  background: linear-gradient(135deg, #e74c3c, #c0392b);
+  color: white;
+  padding: 1rem;
+  border-radius: 10px;
+  margin-top: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-weight: 500;
+}
+
+.sales-report-error-icon {
+  font-size: 1.2rem;
+}
+
+/* Modal Footer */
+.sales-report-modal-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
+  padding: 2rem;
+  border-top: 1px solid #ecf0f1;
+  background: #f8f9fa;
+  border-radius: 0 0 20px 20px;
+}
+
+.sales-report-btn-cancel,
+.sales-report-btn-apply {
+  padding: 0.75rem 1.5rem;
+  border: none;
+  border-radius: 10px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.sales-report-btn-cancel {
+  background: linear-gradient(135deg, #95a5a6, #7f8c8d);
+  color: white;
+}
+
+.sales-report-btn-apply {
+  background: linear-gradient(135deg, #27ae60, #229954);
+  color: white;
+}
+
+.sales-report-btn-cancel:hover,
+.sales-report-btn-apply:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+.sales-report-btn-apply:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+/* Spinner */
+.sales-report-spinner {
   display: inline-block;
   width: 1rem;
   height: 1rem;
-  border: 2px solid rgba(0, 0, 0, 0.2);
-  border-left-color: #f7f7f7; /* Change color as needed */
+  border: 2px solid rgba(255, 255, 255, 0.3);
   border-radius: 50%;
-  animation: spin 0.8s linear infinite;
-  margin-right: 8px;
+  border-top-color: white;
+  animation: sales-report-spin 1s ease-in-out infinite;
 }
 
+/* Report Container */
+.sales-report-report-container {
+  background: rgba(255, 255, 255, 0.95);
+  margin: 0;
+  padding: 2rem;
+  backdrop-filter: blur(10px);
+  min-height: calc(100vh - 200px);
+}
 
+/* Animations */
+@keyframes sales-report-fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes sales-report-slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-50px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes sales-report-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
