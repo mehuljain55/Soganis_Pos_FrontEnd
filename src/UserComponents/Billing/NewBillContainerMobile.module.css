@@ -200,14 +200,14 @@
   box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
 }
 
-/* Items Table - Now always in table format */
 .itemsTableContainer {
   flex: 1;
-  overflow: hidden;
   padding: 0 1rem;
   display: flex;
   flex-direction: column;
-  min-height: 300px;
+  height: 90%;
+  max-height: 90vh; /* Ensure it doesn't exceed viewport */
+  overflow: hidden; /* Prevent container overflow */
 }
 
 .itemsTable {
@@ -218,14 +218,13 @@
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   display: flex;
   flex-direction: column;
-  height: 100%;
-  overflow: hidden;
+  height: 90%;
+  overflow: hidden; /* Prevent table overflow */
 }
 
-/* Fixed Table Header and Row Grid Alignment */
+/* Fixed Table Header - This stays at the top */
 .tableHeader {
   display: grid;
-  /* Updated grid template to match 9 columns: Code, Name, Color, Size, Discount, Price, Qty, Amount, Actions */
   grid-template-columns: 0.8fr 1fr 0.6fr 0.6fr 0.8fr 0.7fr 0.6fr 0.8fr 0.8fr;
   gap: 0.5rem;
   padding: 0.75rem;
@@ -235,12 +234,23 @@
   font-size: 0.75rem;
   color: #495057;
   text-align: center;
-  flex-shrink: 0;
+  flex-shrink: 0; /* Prevent header from shrinking */
+  position: sticky;
+  top: 0;
+  z-index: 10;
 }
 
+/* Scrollable Table Body */
+.tableBody {
+  flex: 1;
+  overflow-y: auto; /* Enable vertical scrolling */
+  overflow-x: hidden; /* Prevent horizontal scrolling */
+  max-height: calc(100% - 60px); /* Account for header height */
+}
+
+/* Table Rows */
 .tableRow {
   display: grid;
-  /* Updated grid template to match 9 columns: Code, Name, Color, Size, Discount, Price, Qty, Amount, Actions */
   grid-template-columns: 0.8fr 1fr 0.6fr 0.6fr 0.8fr 0.7fr 0.6fr 0.8fr 0.8fr;
   gap: 0.5rem;
   padding: 0.75rem;
@@ -250,24 +260,29 @@
   font-size: 0.75rem;
 }
 
-/* Alternative grid layout with more balanced column widths */
-.tableHeader.balanced {
-  grid-template-columns: 1fr 1.2fr 0.8fr 0.8fr 1fr 0.8fr 0.8fr 1fr 1fr;
+/* Hover effect for better UX */
+.tableRow:hover {
+  background-color: #f8f9fa;
 }
 
-.tableRow.balanced {
-  grid-template-columns: 1fr 1.2fr 0.8fr 0.8fr 1fr 0.8fr 0.8fr 1fr 1fr;
+/* Custom scrollbar styling (optional) */
+.tableBody::-webkit-scrollbar {
+  width: 6px;
 }
 
-/* If you need more precise control, use fixed widths */
-.tableHeader.fixed {
-  grid-template-columns: 80px 120px 80px 60px 100px 70px 60px 80px 80px;
+.tableBody::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 3px;
 }
 
-.tableRow.fixed {
-  grid-template-columns: 80px 120px 80px 60px 100px 70px 60px 80px 80px;
+.tableBody::-webkit-scrollbar-thumb {
+  background: #c1c1c1;
+  border-radius: 3px;
 }
 
+.tableBody::-webkit-scrollbar-thumb:hover {
+  background: #a8a8a8;
+}
 /* Responsive adjustments */
 @media (min-width: 576px) {
   .tableHeader,
@@ -392,6 +407,7 @@
   margin: 0.5rem 1rem;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   flex-shrink: 0;
+  margin-top: -20px;
 }
 
 .summaryButtons {
@@ -898,11 +914,10 @@
 .generateBillButton {
   width: 100%;
   padding: 15px 20px;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background:#28a73d;
   color: white;
   border: none;
-  border-radius: 8px;
-  font-size: 16px;
+  font-size: 14px;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.3s ease;
