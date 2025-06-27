@@ -1391,47 +1391,47 @@ return (
                 <div>{item.itemColor}</div>
                 <div>{item.itemSize}</div>
                 <div>
-<div className={styles.inputGroup}>
-  {item.discount === 'Yes' ? (
-    <>
-      <button
-        className={styles.controlButton}
-        onClick={() =>
-          handleDiscountChange(
-            rowItemTableIndex,
-            Math.max(0, (parseFloat(item.discountAmount || 0) - 1).toFixed(1))
-          )
-        }
-      >
-        -
-      </button>
-      <input
-        type="number"
-        className={styles.controlInput}
-        value={item.discountAmount || 0}
-        onChange={(e) =>
-          handleDiscountChange(
-            rowItemTableIndex,
-            parseFloat(e.target.value) || 0
-          )
-        }
-      />
-      <button
-        className={styles.controlButton}
-        onClick={() =>
-          handleDiscountChange(
-            rowItemTableIndex,
-            (parseFloat(item.discountAmount || 0) + 1).toFixed(1)
-          )
-        }
-      >
-        +
-      </button>
-    </>
-  ) : (
-   <p>NA</p>
-  )}
-</div>
+                <div className={styles.inputGroup}>
+                  {item.discount === 'Yes' ? (
+                    <>
+                      <button
+                        className={styles.controlButton}
+                        onClick={() =>
+                          handleDiscountChange(
+                            rowItemTableIndex,
+                            Math.max(0, (parseFloat(item.discountAmount || 0) - 1).toFixed(1))
+                          )
+                        }
+                      >
+                        -
+                      </button>
+                      <input
+                        type="number"
+                        className={styles.controlInput}
+                        value={item.discountAmount || 0}
+                        onChange={(e) =>
+                          handleDiscountChange(
+                            rowItemTableIndex,
+                            parseFloat(e.target.value) || 0
+                          )
+                        }
+                      />
+                      <button
+                        className={styles.controlButton}
+                        onClick={() =>
+                          handleDiscountChange(
+                            rowItemTableIndex,
+                            (parseFloat(item.discountAmount || 0) + 1).toFixed(1)
+                          )
+                        }
+                      >
+                        +
+                      </button>
+                    </>
+                  ) : (
+                  <p>NA</p>
+                  )}
+                </div>
 
                 </div>
                 <div>{item.price}</div>
