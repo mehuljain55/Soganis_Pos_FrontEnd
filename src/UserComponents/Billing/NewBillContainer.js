@@ -12,6 +12,7 @@ import ExchangeModalDirect from './ExchangeModalDirect.js';
 import ReturnExchangePop from './ReturnExchangePop.js';
 import CustomClothModal from './CustomClothModal.js';
 import { NEW_BILL_GENERATE_URL } from '../Api/ApiConstants.js';
+import BillViewerPopUp from './BillViewerPopup.js'
 
 const NewBillContainer = ({ userData }) => {
   const [selectedItems, setSelectedItems] = useState([]);
@@ -40,11 +41,13 @@ const NewBillContainer = ({ userData }) => {
   const [loading, setLoading] = useState(false);
   const [discountPercentage, setDiscountPercentage] = useState(0);
   const [showTransactionPopup, setShowTransactionPopup] = useState(false);
-  const[isExchangeModelOpen,setIsExchangeModelOpen]=useState(false);
+  const [isExchangeModelOpen,setIsExchangeModelOpen]=useState(false);
   const [isExchangeModelBillOpen, setIsExchangeModelBillOpen] = useState(false);
   const [showCustomClothModal, setShowCustomClothModal] = useState(false);
-  const[sendBillType,setSendBillType]=useState('print');
+  const [sendBillType,setSendBillType]=useState('print');
   const [pendingSubmit, setPendingSubmit] = useState(false);
+  const [showBillViewer, setShowBillViewer] = useState(false);
+
   
   const [transactionalModel, setTransactionalModel] = useState({
     cash: 0,
@@ -202,9 +205,18 @@ const handleSelectChange = (selectedOption) => {
 };
 
 
+  const handleOpenBillViewer = () => {
+    setShowBillViewer(true);
+  };
+
+  const handleCloseBillViewer = () => {
+    setShowBillViewer(false);
+  };
+
   useEffect(() => {
     fetchAllSchools();
   }, []);
+
 
  
   // Fetch items based on search term (for manual search)
@@ -1302,6 +1314,11 @@ const handleDiscountChange = (rowIndex, newDiscount) => {
           <button onClick={() => handleOpenExchangeBillModal()}>
             Return/Exchange
           </button>
+
+          <button  onClick={handleOpenBillViewer}>
+            Recent Bills
+          </button>
+
         </div>
 
         <div className="billing-head">
@@ -1814,6 +1831,13 @@ const handleDiscountChange = (rowIndex, newDiscount) => {
             </div>
           </div>
         </div>
+      )}
+
+
+            {showBillViewer && (
+        <BillViewerPopUp 
+          onClose={handleCloseBillViewer}
+        />
       )}
 
       {showPopup && (
