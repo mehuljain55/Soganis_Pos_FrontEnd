@@ -245,6 +245,12 @@
   z-index: 10;
 }
 
+.billViewerTable th:nth-child(2), 
+.billViewerTable td:nth-child(2) {
+  min-width: 100px;
+  white-space: nowrap;
+}
+
 .billViewerTable tbody tr:nth-child(odd) {
   background-color: #f9f9f9;
 }
@@ -771,90 +777,4 @@
 
 .billDetailsTable tbody::-webkit-scrollbar-thumb:hover {
   background: #94a3b8;
-}
-
-/* Responsive Design */
-@media (max-width: 768px) {
-  .billDetailsModal {
-    padding: 10px;
-  }
-  
-  .billDetailsModalContent {
-    width: 100%;
-    max-height: 95vh;
-  }
-  
-  .billDetailsHeader {
-    padding: 16px 20px;
-  }
-  
-  .billDetailsTitle {
-    font-size: 1.25rem;
-  }
-  
-  .billDetailsCloseBtn {
-    padding: 6px 12px;
-    font-size: 12px;
-  }
-  
-  .billDetailsInfo {
-    padding: 20px;
-  }
-  
-  .billDetailsInfoGrid {
-    grid-template-columns: 1fr;
-    gap: 12px;
-  }
-  
-  .billDetailsItemsTitle {
-    padding: 16px 20px 8px;
-    font-size: 1.125rem;
-  }
-  
-  .billDetailsTableContainer {
-    margin: 0 20px;
-  }
-  
-  .billDetailsTable {
-    font-size: 0.75rem;
-  }
-  
-  .billDetailsTable th,
-  .billDetailsTable td {
-    padding: 8px 6px;
-  }
-  
-  .billDetailsTable th {
-    font-size: 0.75rem;
-  }
-  
-  .billDetailsCloseContainer {
-    padding: 16px 20px;
-  }
-}
-
-@media (max-width: 480px) {
-  .billDetailsTable {
-    font-size: 0.6875rem;
-  }
-  
-  .billDetailsTable th,
-  .billDetailsTable td {
-    padding: 6px 4px;
-  }
-  
-  .billDetailsInfoItem {
-    text-align: center;
-  }
-  
-  /* Horizontal scroll for small screens */
-  .billDetailsTableWrapper {
-    overflow-x: auto;
-  }
-  
-  .billDetailsTable thead tr,
-  .billDetailsTable tbody tr,
-  .billDetailsTable tfoot tr {
-    min-width: 700px; /* Minimum width to prevent column collapse */
-  }
 }
