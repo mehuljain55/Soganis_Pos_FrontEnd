@@ -1703,10 +1703,10 @@ const handleDiscountChange = (rowIndex, newDiscount) => {
   
       {/* Summary */}
       <div className="summary">
-        <div className="custom-btn">
-          <button onClick={() => setShowCustomItemModal(true)}>Custom Item</button>
-            <button onClick={() => setShowCustomClothModal(true)}> Cloth</button>
-        </div>
+<div className="custom-btn">
+    <button onClick={() => setShowCustomItemModal(true)}>Custom Item</button>
+    <button onClick={() => setShowCustomClothModal(true)}> Cloth</button>
+</div>
       
         <div className="item-summary">
           <h3>Total Amount: {calculateTotalAmount().toFixed(2)} Rs</h3>
