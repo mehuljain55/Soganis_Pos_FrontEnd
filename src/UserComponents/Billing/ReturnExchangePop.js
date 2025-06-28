@@ -233,6 +233,21 @@ const ReturnExchangePop = ({ onClose, userData }) => {
     setShowPopup(false);
   };
 
+  const handleDeselectItem = (item) => {
+  setSelectedItems(prevSelected => 
+    prevSelected.filter(selectedItem => selectedItem.sno !== item.sno)
+  );
+  
+  setReturnQuantities(prevQuantities => {
+    const newQuantities = { ...prevQuantities };
+    delete newQuantities[item.sno];
+    return newQuantities;
+  });
+  
+  // Optional: Add success notification
+  // showNotification(`Item ${item.description} deselected`, 'info');
+};
+
   const handleExchange = () => {
     if (selectedItems.length > 0) {
       setBillType(selectedItems[0].billCategory);
@@ -396,73 +411,148 @@ const ReturnExchangePop = ({ onClose, userData }) => {
                   </tbody>
                 </table>
               </div>
-              <div className="bill-detail-wrapper">
-                <table className="bill-detail-table">
-                  <thead>
-                    <tr>
-                      <th>Sno</th>
-                      <th>Barcode ID</th>
-                      <th>Description</th>
-                      <th>Item Type</th>
-                      <th>Color</th>
-                      <th>Size</th>
-                      <th>Item Category</th>
-                      <th>Quantity</th>
-                      <th>Sell Price</th>
-                      <th>Amount</th>
-                      <th>Action</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {billData.bill.map((item) => (
-                      <tr key={item.sno}>
-                        <td>{item.sno}</td>
-                        <td>{item.itemBarcodeID}</td>
-                        <td>{item.description}</td>
-                        <td>{item.itemType}</td>
-                        <td>{item.itemColor}</td>
-                        <td>{item.itemSize}</td>
-                        <td>{item.itemCategory}</td>
-                        <td>{item.quantity}</td>
-                        <td>{item.sellPrice}</td>
-                        <td>{item.total_amount}</td>
-                        <td>
-                          {returnedItems[item.sno] ? (
-                            <button disabled>Item Returned</button>
-                          ) : selectedItems.find(selectedItem => selectedItem.sno === item.sno) ? (
-                            <span style={{ color: 'green' }}>Item Selected</span>
-                          ) : (
-                            <>
-                              {item.status === "RETURN" ? (
-                                <span>Item Returned</span>
-                              ) : item.status === "EXCHANGE" ? (
-                                <span>Item Exchanged</span>
-                              ) : item.status === "DEFECT" ? (
-                                <span>Defected Item Returned</span>
-                              ) : item.quantity <= 0 ? (
-                                <span>Item Exchanged or returned</span>
-                              ) : returnedItems[item.sno] ? (
-                                <button disabled>Item Returned</button>
-                              ) : selectedItems.find(selectedItem => selectedItem.sno === item.sno) ? (
-                                <span style={{ color: 'green' }}>Item Selected</span>
-                              ) : (
-                                <>
-                                  <button onClick={() => handleSelectItem(item)}>Select</button>
-                                  <button className='bill-detail-defet-btn' onClick={() => handleDefectItem(item)}>Defect</button>
-                                </>
-                              )}
-                            </>
-                          )}
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
+<div className="bill-detail-wrapper">
+  <table className="bill-detail-table">
+    <thead>
+      <tr>
+        <th>Sno</th>
+        <th>Barcode ID</th>
+        <th>Description</th>
+        <th>Item Type</th>
+        <th>Color</th>
+        <th>Size</th>
+        <th>Item Category</th>
+        <th>Available Quantity</th>
+        <th>Return Quantity</th>
+        <th>Sell Price</th>
+        <th>Amount</th>
+        <th>Action</th>
+      </tr>
+    </thead>
+    <tbody>
+      {billData.bill.map((item) => (
+        <tr 
+          key={item.sno}
+          style={{
+            backgroundColor: selectedItems.find(selectedItem => selectedItem.sno === item.sno) ? '#d4edda' : 'transparent'
+          }}
+        >
+          <td>{item.sno}</td>
+          <td>{item.itemBarcodeID}</td>
+          <td>{item.description}</td>
+          <td>{item.itemType}</td>
+          <td>{item.itemColor}</td>
+          <td>{item.itemSize}</td>
+          <td>{item.itemCategory}</td>
+          <td>{item.quantity}</td>
+          <td>
+            {selectedItems.find(selectedItem => selectedItem.sno === item.sno) ? (
+              <div className="item-table-quantity-container">
+                {/* Decrease Button */}
+                <button
+                  type="button"
+                  className="item-table-quantity-btn item-table-quantity-btn-decrease"
+                  onClick={() => {
+                    let currentValue = returnQuantities[item.sno] || 1;
+                    let newValue = Math.max(1, currentValue - 1);
+                    handleQuantityChange(item.sno, newValue);
+                  }}
+                >
+                  -
+                </button>
+
+                {/* Quantity Input */}
+                <input
+                  type="number"
+                  className="item-table-quantity-input"
+                  min="1"
+                  max={item.quantity}
+                  value={returnQuantities[item.sno] || 1}
+                  onChange={(e) => {
+                    let value = parseInt(e.target.value, 10) || 1;
+                    value = Math.max(1, Math.min(item.quantity, value));
+                    handleQuantityChange(item.sno, value);
+                  }}
+                />
+
+                {/* Increase Button */}
+                <button
+                  type="button"
+                  className="item-table-quantity-btn item-table-quantity-btn-increase"
+                  onClick={() => {
+                    let currentValue = returnQuantities[item.sno] || 1;
+                    let newValue = Math.min(item.quantity, currentValue + 1);
+                    handleQuantityChange(item.sno, newValue);
+                  }}
+                >
+                  +
+                </button>
               </div>
-              <div className="bill-actions">
-                {selectedItems.length > 0 && (
-                  <button className="bill-detail-exchange-btn" onClick={() => setIsModalOpen(true)}>Return / Exchange</button>
+            ) : (
+              '-'
+            )}
+          </td>
+          <td>{item.sellPrice}</td>
+          <td>{item.total_amount}</td>
+          <td>
+            {returnedItems[item.sno] ? (
+              <button disabled>Item Returned</button>
+            ) : (
+              <>
+                {item.status === "RETURN" ? (
+                  <span>Item Returned</span>
+                ) : item.status === "EXCHANGE" ? (
+                  <span>Item Exchanged</span>
+                ) : item.status === "DEFECT" ? (
+                  <span>Defected Item Returned</span>
+                ) : item.quantity <= 0 ? (
+                  <span>Item Exchanged or returned</span>
+                ) : (
+                  <div style={{ display: 'flex', gap: '5px', alignItems: 'center' }}>
+                    <input
+                      type="checkbox"
+                      checked={selectedItems.find(selectedItem => selectedItem.sno === item.sno) ? true : false}
+                      onChange={(e) => {
+                        if (e.target.checked) {
+                          handleSelectItem(item);
+                        } else {
+                          handleDeselectItem(item);
+                        }
+                      }}
+                    />
+                    <button 
+                      className='bill-detail-defet-btn' 
+                      onClick={() => handleDefectItem(item)}
+                    >
+                      Defect
+                    </button>
+                  </div>
                 )}
+              </>
+            )}
+          </td>
+        </tr>
+      ))}
+    </tbody>
+  </table>
+  
+  {selectedItems.length > 0 && (
+    <div style={{ marginTop: '20px', padding: '15px', border: '1px solid #ddd', borderRadius: '5px' }}>
+      <p><strong>Total Return Amount:</strong> {calculateTotalAmount()}</p>
+      <div style={{ display: 'flex', gap: '10px' }}>
+        <button onClick={confirmReturn}>Return</button>
+        <button onClick={handleExchange}>Exchange </button>
+        <button 
+          className='bill-detail-return-items-btn' 
+          onClick={() => setSelectedItems([])}
+        >
+          Clear Selection
+        </button>
+      </div>
+    </div>
+  )}
+</div>
+              <div className="bill-actions">
                 
                 {billData.status === 'FRESH' && 
                 billData.final_amount > 0 && 
@@ -482,50 +572,7 @@ const ReturnExchangePop = ({ onClose, userData }) => {
        <button onClick={onClose}> Close </button>
       </div>
 
-          {isModalOpen && (
-            <div className="bill-detail-return-modal">
-              <div className="bill-detail-return-modal-content">
-                <h2>Return Items</h2>
-                <table className="bill-detail-return-items-table">
-                  <thead>
-                    <tr>
-                      <th>Barcode ID</th>
-                      <th>Bill Type</th>
-                      <th>Name</th>
-                      <th>Category</th>
-                      <th>Price</th>
-                      <th>Return Quantity</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {selectedItems.map((item) => (
-                      <tr key={item.sno}>
-                        <td>{item.itemBarcodeID}</td>
-                        <td>{item.billCategory}</td>
-                        <td>{item.itemType}</td>
-                        <td>{item.itemCategory}</td>
-                        <td>{item.sellPrice}</td>
-                        <td>
-                          <input
-                            type="number"
-                            value={returnQuantities[item.sno] > 0 ? returnQuantities[item.sno] : 1}
-                            onChange={(e) => handleQuantityChange(item.sno, e.target.value)}
-                          />
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-                <p><strong>Total Return Amount:</strong> {calculateTotalAmount()}</p>
-                <div>
-                  <button onClick={confirmReturn}>Return</button>
-                  <button onClick={handleExchange}>Exchange</button>
-                  <button className='bill-detail-return-items-btn' onClick={() => setIsModalOpen(false)}>Cancel</button>
-                </div>
-              </div>
-            </div>
-          )}
-
+         
           {isDefectModalOpen && (
             <div className="unique-defect-modal">
               <div className="unique-defect-modal-content">
