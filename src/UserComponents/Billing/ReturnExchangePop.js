@@ -508,7 +508,7 @@ const ReturnExchangePop = ({ onClose, userData }) => {
                 ) : item.quantity <= 0 ? (
                   <span>Item Exchanged or returned</span>
                 ) : (
-                  <div style={{ display: 'flex', gap: '5px', alignItems: 'center' }}>
+                     <div className="return-exchange-checkbox">
                     <input
                       type="checkbox"
                       checked={selectedItems.find(selectedItem => selectedItem.sno === item.sno) ? true : false}
@@ -520,12 +520,6 @@ const ReturnExchangePop = ({ onClose, userData }) => {
                         }
                       }}
                     />
-                    <button 
-                      className='bill-detail-defet-btn' 
-                      onClick={() => handleDefectItem(item)}
-                    >
-                      Defect
-                    </button>
                   </div>
                 )}
               </>
