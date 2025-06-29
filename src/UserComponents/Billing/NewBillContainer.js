@@ -256,12 +256,21 @@ const handleSelectChange = (selectedOption) => {
       prevItems.map((item) => {
         const itemDiscount = item.discount === 'Yes' ? item.discountAmount || 0 : 0;
         const effectiveDiscount = discountPercentage > 0 ? discountPercentage : itemDiscount;
+      
         const discountedPrice = item.price * (1 - effectiveDiscount / 100);
-        const amount = discountedPrice * item.quantity;
+       
+      let amount = 0;
+      if (item.itemType?.toLowerCase() === 'cloth') {
+        const itemSizeMultiplier = parseFloat(item.itemSize) || 1;
+        amount = discountedPrice * item.quantity * itemSizeMultiplier;
+      } else {
+        amount = discountedPrice * item.quantity;
+      }
+
   
         return {
           ...item,
-          amount, // Update amount with the recalculated value
+          amount: Math.round(amount), // Update amount with the recalculated value
         };
       })
     );
@@ -1080,6 +1089,7 @@ const handleDiscountChange = (rowIndex, newDiscount) => {
 
   
   const handleGlobalDiscountChange = (value) => {
+    console.log("Global change");
     const discount = parseFloat(value) >= 0 ? parseFloat(value) : 0;
     setDiscountPercentage(discount);
     setSelectedItems((prevItems) =>
@@ -1703,11 +1713,11 @@ const handleDiscountChange = (rowIndex, newDiscount) => {
   
       {/* Summary */}
       <div className="summary">
-<div className="custom-btn">
-    <button onClick={() => setShowCustomItemModal(true)}>Custom Item</button>
-    <button onClick={() => setShowCustomClothModal(true)}> Cloth</button>
-</div>
-      
+        <div className="custom-btn">
+            <button onClick={() => setShowCustomItemModal(true)}>Custom Item</button>
+            <button onClick={() => setShowCustomClothModal(true)}> Cloth</button>
+        </div>
+        
         <div className="item-summary">
           <h3>Total Amount: {calculateTotalAmount().toFixed(2)} Rs</h3>
           <h4>Item Count: {selectedItems.length}</h4>
