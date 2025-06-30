@@ -441,6 +441,7 @@ console.log(requestData);
       setCustomerMobileNo('');
       setPaymentMode('Cash');
       setSchoolName('');
+      onClose();
 
     } catch (error) {
       console.error('Error generating bill:', error);
