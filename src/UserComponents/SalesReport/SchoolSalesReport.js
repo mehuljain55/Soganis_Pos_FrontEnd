@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
+import axios from 'axios';
 import { API_BASE_URL } from '../Config.js';
 import './SchoolSalesReport.css';
 import Select from "react-select";
@@ -15,8 +16,44 @@ const SalesSchoolReport = () => {
     const [error, setError] = useState(null);
     const [popupData, setPopupData] = useState(null); // State for popup data
     const [popupVisible, setPopupVisible] = useState(false); // State for popup visibility
-    const[userList,setUserList]=useState([]);
-    const[userId,setUserId]=useState('ALL');
+    const [userList,setUserList]=useState([]);
+    const [userId,setUserId]=useState('ALL');
+    const [allSchools, setAllSchools] = useState([]);
+    const [selectedSchool, setSelectedSchool] = useState('');
+    const selectedSchoolRef = useRef(null); 
+
+    
+  const fetchAllSchools = async () => {
+    try {
+        const user = JSON.parse(sessionStorage.getItem('user'));
+        const storeId = user?.storeId;
+        const response = await axios.get(`${API_BASE_URL}/user/filter/getSchoolNameandCode`, {
+            params: {
+                storeId: storeId,
+            },
+        });
+
+        if (Array.isArray(response.data)) {
+            const schoolOptions = response.data.map((school) => ({
+                value: `${school.schoolName} (${school.schoolCode})`, // Combined for display
+                label: `${school.schoolName} (${school.schoolCode})`, // Combined for display
+                schoolName: school.schoolName, // Separate property for easy access
+                schoolCode: school.schoolCode,
+            }));
+            setAllSchools(schoolOptions);
+        } else {
+            console.error('Expected an array of schools, but got:', response.data);
+        }
+    } catch (error) {
+        console.error('Error fetching school names:', error);
+    }
+};
+
+
+     useEffect(() => {
+     fetchAllSchools();
+    }, []);
+
     
 
     const fetchSalesReport = async () => {
@@ -24,7 +61,23 @@ const SalesSchoolReport = () => {
             setLoading(true);
             setError(null);
 
-            const response = await fetch(`${API_BASE_URL}/sales/report/school_name?startDate=${startDate}&endDate=${endDate}&storeId=${storeId}&userId=${userId}`);
+
+
+            let apiUrl;
+
+
+        if (selectedSchool != null && selectedSchool.trim() !== '') {
+            // Fetch from school-specific endpoint
+            apiUrl = `${API_BASE_URL}/sales/report/date/schoolList?startDate=${startDate}&endDate=${endDate}&school=${encodeURIComponent(selectedSchool.trim())}&userId=${userId}&storeId=${storeId}`;
+        } else {
+            // Fetch from default endpoint (school_name)
+            apiUrl = `${API_BASE_URL}/sales/report/school_name?startDate=${startDate}&endDate=${endDate}&storeId=${storeId}&userId=${userId}`;
+        }
+
+        
+        const response = await fetch(apiUrl); 
+            
+          
             if (!response.ok) {
                 throw new Error('Failed to fetch data');
             }
@@ -33,10 +86,6 @@ const SalesSchoolReport = () => {
             console.log(response)
             const sortedData = data.sort((a, b) => b.sales - a.sales);
             setReportData(sortedData);
-
-       
-
-
         } catch (err) {
             console.log(err.message);
             
@@ -112,6 +161,13 @@ const SalesSchoolReport = () => {
         }
     };
 
+    const handleSelectChange = (selectedOption) => {
+  // Set only the school name without the code
+  setSelectedSchool(selectedOption ? selectedOption.schoolName : '');
+};
+
+
+
     useEffect(() => {
         const fetchUser = async () => {
             try {
@@ -127,8 +183,6 @@ const SalesSchoolReport = () => {
     
         fetchUser();
     }, [API_BASE_URL, storeId]);
-    
-    
     
 
     const handleView = (schoolName) => {
@@ -158,27 +212,37 @@ const SalesSchoolReport = () => {
                     className="sales-input-date"
                 />
 
-<div>
-        
-            <Select
-                options={userList}
-                value={userList.find(option => option.value === userId)}
-                onChange={(selectedOption) => setUserId(selectedOption.value)}
-                placeholder="Select a user..."
-                isSearchable
-            />
+ 
+                        <div className="school-report-input">
+                         
+                            <Select
+                                className='school-report-select-container'
+                                options={allSchools}
+                                ref={selectedSchoolRef}
+                                value={allSchools.find((school) => school.schoolName === selectedSchool) || null}
+                                onChange={handleSelectChange}
+                                placeholder="Select a school"
+                                styles={{ control: (base) => ({ ...base, width: '200px' }) }}
+                                filterOption={(option, inputValue) => 
+                                    option.data.schoolName.toLowerCase().includes(inputValue.toLowerCase()) || 
+                                    option.data.schoolCode.toLowerCase().includes(inputValue.toLowerCase())
+                                }
+                            />
+                        </div>
 
-            
-        </div>
+            <div>
+                <Select
+                    options={userList}
+                    value={userList.find(option => option.value === userId)}
+                    onChange={(selectedOption) => setUserId(selectedOption.value)}
+                    placeholder="Select a user..."
+                    isSearchable
+                /> 
+            </div>
                 <button onClick={handleFetch} className="sales-fetch-btn">Fetch Report</button>
-
-              
-
             </div>
 
          
-
-
             {loading && <p className="sales-loading-message">Loading...</p>}
             {error && <p className="sales-error-message">{error}</p>}
             {!loading && reportData.length > 0 && (
