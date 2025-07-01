@@ -162,10 +162,15 @@ const SalesSchoolReport = () => {
     };
 
     const handleSelectChange = (selectedOption) => {
-  // Set only the school name without the code
-  setSelectedSchool(selectedOption ? selectedOption.schoolName : '');
-};
+     setSelectedSchool(selectedOption ? selectedOption.schoolName : '');
+    };
 
+    const handleClearSchool = () => {
+     setSelectedSchool('');
+    };
+
+    
+ 
 
 
     useEffect(() => {
@@ -228,6 +233,8 @@ const SalesSchoolReport = () => {
                                     option.data.schoolCode.toLowerCase().includes(inputValue.toLowerCase())
                                 }
                             />
+
+
                         </div>
 
             <div>
@@ -240,6 +247,15 @@ const SalesSchoolReport = () => {
                 /> 
             </div>
                 <button onClick={handleFetch} className="sales-fetch-btn">Fetch Report</button>
+                                            {selectedSchool && (
+                            <button 
+                                onClick={handleClearSchool}
+                                className="school-report-clear-btn"
+                            >
+                                Clear School
+                            </button>
+                            )}
+
             </div>
 
          
@@ -265,23 +281,16 @@ const SalesSchoolReport = () => {
                                     <td>{report.otherSales}</td>
                                     <td>{report.sales}</td>
                                     <td>
-                                    <button
-    className="sales-view-btn"
-    onClick={() => handleView(report.schoolName)}>
-    View
-</button>
-
+                                        <button
+                                            className="sales-view-btn"
+                                            onClick={() => handleView(report.schoolName)}>
+                                            View
+                                        </button>
                                     </td>
                                 </tr>
                             ))}
-
-
-
                         </tbody>
-                       
                     </table>
-
-                   
                 </div>
                 
             )}
@@ -299,9 +308,6 @@ const SalesSchoolReport = () => {
                 </>
                )}
 
-          
-
-          
 {popupVisible && popupData && (
     <div className="sales-school-report-popup-overlay">
         <div className="sales-school-report-popup-content">

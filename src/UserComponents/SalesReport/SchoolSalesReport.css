@@ -268,3 +268,17 @@ button {
 button:hover {
     background-color: #138496;
 }
+
+
+.school-report-clear-btn {
+  background-color: red;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.school-report-clear-btn:hover {
+  background-color: darkred;
+}
