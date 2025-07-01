@@ -25,6 +25,64 @@
     border-radius: 4px;
 }
 
+/* Fix for dropdown hiding behind table */
+.school-report-input {
+    position: relative;
+    z-index: 1000;
+}
+
+.school-report-select-container {
+    position: relative;
+    z-index: 1001;
+}
+
+/* Ensure the dropdown menu appears above other elements */
+.school-report-select-container .css-26l3qy-menu,
+.school-report-select-container .css-1pahdxg-control,
+.school-report-select-container [class*="-menu"],
+.school-report-select-container [class*="-MenuList"] {
+    z-index: 1002 !important;
+}
+
+/* Alternative approach - target all react-select dropdown menus */
+.school-report-select-container .Select__menu,
+.school-report-select-container .Select__menu-list {
+    z-index: 1002 !important;
+}
+
+/* Ensure table doesn't create stacking context issues */
+.sales-report-table-wrapper {
+    position: relative;
+    z-index: 1;
+}
+
+.sales-report-table {
+    position: relative;
+    z-index: 1;
+}
+
+/* Additional fix for react-select specific classes */
+.school-report-select-container > div > div[class*="menu"] {
+    z-index: 1002 !important;
+}
+
+/* Make sure the select container has proper stacking */
+.sales-date-inputs {
+    position: relative;
+    z-index: 999;
+}
+
+/* Override any potential conflicting z-index from react-select */
+.school-report-select-container .css-1dimb5e-singleValue,
+.school-report-select-container .css-1uccc91-singleValue {
+    z-index: 1001;
+}
+
+/* Ensure dropdown portal renders above everything */
+.school-report-select-container [class*="MenuPortal"] {
+    z-index: 1003 !important;
+}
+
 .sales-fetch-btn {
     padding: 8px 16px;
     font-size: 14px;
@@ -209,4 +267,18 @@ button {
 
 button:hover {
     background-color: #138496;
+}
+
+
+.school-report-clear-btn {
+  background-color: red;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.school-report-clear-btn:hover {
+  background-color: darkred;
 }
