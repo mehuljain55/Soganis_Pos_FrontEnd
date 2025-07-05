@@ -148,6 +148,22 @@ const reboot = async () => {
             <span>Shop: {userData.storeId}</span>
             <span className="dashboard-cash-collection">
               <span>Cash Collection: {todayCashCollection}</span>
+
+<span style={{
+  backgroundColor: 'red',
+  color: 'white',
+  padding: '4px 10px',
+  borderRadius: '6px',
+  fontWeight: 'bold',
+  marginLeft: '10px',
+  marginRight: '10px',
+  display: 'inline-block'
+}}>
+  Quality
+</span>
+
+
+
               <button className="dashboard-refresh-button" onClick={fetchTodayCashCollection}>
                 <FontAwesomeIcon icon={faSyncAlt} />
               </button>
