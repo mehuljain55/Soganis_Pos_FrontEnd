@@ -305,6 +305,7 @@ const BillViewer = () => {
                 <th>Customer Mobile</th>
                 <th>Bill Type</th>
                 <th>School</th>
+                <th>Payment Mode</th>
                 <th>Amount</th>
                 <th>Action</th>
               </tr>
@@ -318,6 +319,7 @@ const BillViewer = () => {
                   <td>{bill.customerMobileNo}</td>
                   <td>{bill.billType}</td>
                   <td>{bill.schoolName}</td>
+                  <td>{bill.paymentMode}</td>
                   <td>{bill.final_amount}</td>
                   <td className="action-buttons">
                     <button onClick={() => handleViewDetails(bill)}>View</button>
@@ -327,7 +329,7 @@ const BillViewer = () => {
                       <button onClick={() => openModal(bill.billNo,bill.final_amount)}>Update Transaction</button>
                     )}
 
-                    {bill.status === 'FRESH' && isToday(bill.bill_date) && (
+                    {bill.status === 'FRESH' && (
                       <button onClick={() => handleDeleteBill(bill.billNo)}>Delete</button>
                     )}
 
