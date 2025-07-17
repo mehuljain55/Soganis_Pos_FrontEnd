@@ -159,7 +159,7 @@ const reboot = async () => {
   marginRight: '10px',
   display: 'inline-block'
 }}>
-  Quality
+  POS
 </span>
 
 
