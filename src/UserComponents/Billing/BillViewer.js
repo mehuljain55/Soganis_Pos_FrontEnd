@@ -10,30 +10,16 @@ const BillViewer = () => {
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
   const [bills, setBills] = useState([]);
-  const [filteredBills, setFilteredBills] = useState([]);
   const [error, setError] = useState('');
   const [selectedBill, setSelectedBill] = useState(null);
   const [pdfData, setPdfData] = useState(null);
   const [activeFilter, setActiveFilter] = useState('Today');
   const [sortOrder, setSortOrder] = useState('Recent');
-  const [paymentModeFilter, setPaymentModeFilter] = useState('All');
   const pdfIframeRef = useRef(null);
   const [showTransactionModal, setShowTransactionModal] = useState(false);
   const [selectedBillNo, setSelectedBillNo] = useState(null);
   const [totalAmount,setTotalAmount]=useState(null);
 
-  // Function to filter bills by payment mode
-  const filterBillsByPaymentMode = (billsToFilter, paymentMode) => {
-    if (paymentMode === 'All') {
-      return billsToFilter;
-    }
-    
-    return billsToFilter.filter(bill => {
-      const billPaymentMode = bill.paymentMode?.toLowerCase();
-      const selectedPaymentMode = paymentMode.toLowerCase();
-      return billPaymentMode === selectedPaymentMode;
-    });
-  };
 
   const fetchBills = async () => {
     if (activeFilter === 'Custom Date') {
@@ -59,11 +45,6 @@ const BillViewer = () => {
       });
       
       setBills(sortedBills);
-      
-      // Apply payment mode filter
-      const filtered = filterBillsByPaymentMode(sortedBills, paymentModeFilter);
-      setFilteredBills(filtered);
-      
       setError('');
     } catch (error) {
       if (error.response && error.response.status === 404) {
@@ -74,16 +55,9 @@ const BillViewer = () => {
     }
   };
 
-  // Handle payment mode filter change
-  const handlePaymentModeFilter = (paymentMode) => {
-    setPaymentModeFilter(paymentMode);
-    const filtered = filterBillsByPaymentMode(bills, paymentMode);
-    setFilteredBills(filtered);
-  };
 
   useEffect(() => {
     setBills([]);
-    setFilteredBills([]);
     if (startDate && endDate) {
       fetchBills();
     }
@@ -92,12 +66,6 @@ const BillViewer = () => {
   useEffect(() => {
     handleDateFilter('Today');
   }, []); 
-
-  // Update filtered bills when payment mode filter changes
-  useEffect(() => {
-    const filtered = filterBillsByPaymentMode(bills, paymentModeFilter);
-    setFilteredBills(filtered);
-  }, [paymentModeFilter, bills]);
 
   const handleDateFilter = async (filter) => {
     const today = new Date();
@@ -286,21 +254,6 @@ const BillViewer = () => {
           </div>
         </div>
 
-        {/* Payment Mode Filter */}
-        <div className="payment-mode-filter-container">
-          <span className="filter-label">Payment Mode:</span>
-          <select
-            value={paymentModeFilter}
-            onChange={(e) => handlePaymentModeFilter(e.target.value)}
-            className="payment-mode-dropdown"
-          >
-            <option value="All">All</option>
-            <option value="cash">Cash</option>
-            <option value="upi">UPI</option>
-            <option value="card">Card</option>
-          </select>
-        </div>
-
         {/* Date display - Now on the right */}
         <div className="date-display-container">
           {activeFilter === 'Custom Date' ? (
@@ -339,7 +292,9 @@ const BillViewer = () => {
         </div>
       </div>
 
-      {filteredBills.length > 0 && (
+    
+
+      {bills.length > 0 && (
         <div className="bill-viewer-table-container">
           <table className="bill-viewer-table">
             <thead>
@@ -350,13 +305,12 @@ const BillViewer = () => {
                 <th>Customer Mobile</th>
                 <th>Bill Type</th>
                 <th>School</th>
-                <th>Payment Mode</th>
                 <th>Amount</th>
                 <th>Action</th>
               </tr>
             </thead>
             <tbody>
-              {filteredBills.map((bill) => (
+              {bills.map((bill) => (
                 <tr key={bill.billNo}>
                   <td>{bill.billNo}</td>
                   <td>{format(new Date(bill.bill_date), 'dd MMM yyyy')}</td>
@@ -364,7 +318,6 @@ const BillViewer = () => {
                   <td>{bill.customerMobileNo}</td>
                   <td>{bill.billType}</td>
                   <td>{bill.schoolName}</td>
-                  <td>{bill.paymentMode}</td>
                   <td>{bill.final_amount}</td>
                   <td className="action-buttons">
                     <button onClick={() => handleViewDetails(bill)}>View</button>
@@ -374,9 +327,13 @@ const BillViewer = () => {
                       <button onClick={() => openModal(bill.billNo,bill.final_amount)}>Update Transaction</button>
                     )}
 
-                    {bill.status === 'FRESH' && (
+                    {bill.status === 'FRESH' && isToday(bill.bill_date) && (
                       <button onClick={() => handleDeleteBill(bill.billNo)}>Delete</button>
                     )}
+
+                   
+
+                    
                   </td>
                 </tr>
               ))}
