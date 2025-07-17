@@ -65,10 +65,7 @@ useEffect(() => {
     }
   };
 
-  // ✅ Show loading until visibility check completes
-  if (serverVisible === null) {
-    return <div className="loading">Checking server visibility...</div>;
-  }
+
 
   // ✅ If server says "Hide" → show 404 style page
   if (!serverVisible) {
