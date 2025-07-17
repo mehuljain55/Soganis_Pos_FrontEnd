@@ -21,16 +21,17 @@ useEffect(() => {
       if (response.data === "Show") {
         setServerVisible(true);
       } else {
-        setServerVisible(false);
+        // Redirect if not visible
+        window.location.href = "https://www.pos.soganiuniforms.shop/";
       }
     } catch (err) {
-      setServerVisible(false);
+      // Redirect on error as well
+      window.location.href = "https://www.pos.soganiuniforms.shop/";
     }
   };
 
   checkVisibility();
 }, []);
-
 
   // ✅ Handle login
   const handleLogin = async (e) => {
