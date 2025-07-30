@@ -4,7 +4,6 @@ import './login.css';
 import logo from '../Icon/Logo.png';
 import {API_BASE_URL, USER_LOGIN_URL } from '../Api/ApiConstants.js';
 
-const SERVER_VISIBILITY_URL = "/check/visibility"; // update with full URL if needed
 
 const Login = ({ setUserData }) => {
   const [userId, setUserId] = useState('');
@@ -12,28 +11,8 @@ const Login = ({ setUserData }) => {
   const [error, setError] = useState('');
   const [serverVisible, setServerVisible] = useState(null); // null until checked
 
-  
-useEffect(() => {
-  const checkVisibility = async () => {
-    try {
-      const response = await axios.get(`${API_BASE_URL}/user/check/visibility`);
 
-      if (response.data === "Show") {
-        setServerVisible(true);
-      } else {
-        // Redirect if not visible
-        window.location.href = "https://www.pos.soganiuniforms.shop/";
-      }
-    } catch (err) {
-      // Redirect on error as well
-      window.location.href = "https://www.pos.soganiuniforms.shop/";
-    }
-  };
 
-  checkVisibility();
-}, []);
-
-  // ✅ Handle login
   const handleLogin = async (e) => {
     e.preventDefault();
 
@@ -67,18 +46,6 @@ useEffect(() => {
   };
 
 
-
-  // ✅ If server says "Hide" → show 404 style page
-  if (!serverVisible) {
-    return (
-      <div className="error-404-container">
-        <h1>Error 404</h1>
-        <p>Server Not Found</p>
-      </div>
-    );
-  }
-
-  // ✅ Otherwise show login form
   return (
     <div className='loginContainer'>
       <header className="site-header">
