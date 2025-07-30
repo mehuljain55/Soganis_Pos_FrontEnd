@@ -250,10 +250,10 @@ function AddInventoryItem() {
     document.getElementById('fileInput').value = null;
   };
 
-  const handleUpdateInventory = async () => {
+  const handleAddInventory = async () => {
     try {
       // Make the POST request to get the text file as a response
-      const response = await axios.post(`${API_BASE_URL}/inventory/upload`, items, {
+      const response = await axios.post(`${API_BASE_URL}/inventory/add/upload`, items, {
         headers: {
           "Content-Type": "application/json",
         },
@@ -282,6 +282,40 @@ function AddInventoryItem() {
       alert('Failed to update inventory');
     }
   };
+
+    const handleUpdateInventory = async () => {
+    try {
+      // Make the POST request to get the text file as a response
+      const response = await axios.post(`${API_BASE_URL}/inventory/update/upload`, items, {
+        headers: {
+          "Content-Type": "application/json",
+        },
+        responseType: 'blob',  // Important to set response type as 'blob' to handle file download
+      });
+  
+      const url = window.URL.createObjectURL(new Blob([response.data]));
+  
+      const link = document.createElement('a');
+      link.href = url;
+  
+      link.setAttribute('download', 'inventory_update_status.txt');
+  
+      // Append the anchor to the document body
+      document.body.appendChild(link);
+  
+      link.click();
+  
+      // Remove the anchor from the document
+      link.parentNode.removeChild(link);
+  
+      alert('Inventory updated successfully');
+      handleClearFile();
+    } catch (err) {
+      console.error(err);
+      alert('Failed to update inventory');
+    }
+  };
+  
   
   const handleFileDrop = (e) => {
     e.preventDefault();
@@ -470,7 +504,22 @@ function AddInventoryItem() {
         cursor: "pointer"
       }}
     >
-      Submit Updated Inventory
+       Updated Inventory Quantity
+    </button>
+
+        <button 
+      onClick={handleAddInventory} 
+      style={{ 
+        marginTop: "15px",
+        padding: "8px 12px",
+        backgroundColor: "#e87d02ff",
+        color: "white",
+        border: "none",
+        borderRadius: "4px",
+        cursor: "pointer"
+      }}
+    >
+       Add Inventory Quantity
     </button>
   </div>
 )}
