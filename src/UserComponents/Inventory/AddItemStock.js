@@ -268,7 +268,6 @@ const AddItemStock = () => {
                 price: toTrimmedString(row[6]),
                 wholeSalePrice: toTrimmedString(row[7]),
                 quantity: parseFloat(row[8]) || 0,
-                groupId: toTrimmedString(row[9])
             };
         });
 
@@ -338,7 +337,6 @@ const AddItemStock = () => {
               <th>Price</th>
               <th>Wholesale Price</th>
               <th>Quantity</th>
-              <th>Group ID</th>
               <th>Action</th>
             </tr>
           </thead>
@@ -506,15 +504,7 @@ const AddItemStock = () => {
                   </div>
                 </td>
 
-                <td>
-                  <input
-                    value={item.groupId}
-                    onChange={(e) => handleInputChange(e, rowIndex, 'groupId')}
-                    onKeyDown={(e) => handleKeyDown(e, rowIndex, 10)}
-                    placeholder="Group Id"
-                    disabled={isSubmitting}
-                  />
-                </td>
+   
                 
                 <td>
                   <button 

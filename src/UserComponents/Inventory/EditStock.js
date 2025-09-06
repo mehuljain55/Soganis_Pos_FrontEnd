@@ -141,11 +141,11 @@ const EditStock = ({ data, resetFilters  }) => {
                 <tr>
                   <th>S.No</th>
                   <th>Item Code</th>
-                  <th>Item Name</th>
+                  <th>Item Description</th>
                   <th>Item Type</th>
                   <th>Item Color</th>
                   <th>Item Size</th>
-                  <th>Item Category</th>
+                  <th>School Name</th>
                   <th>Price</th>
                   <th>Wholesale Price</th>
                   <th>Available Quantity</th>

@@ -97,11 +97,6 @@
   }
   
 
-  .item-stock-table th:nth-child(12),
-  .item-stock-table td:nth-child(12) {
-    width: 15%; /* Width for Group Id */
-  }
-
   .item-stock-table th {
     background-color: #707070;
     color: white;
