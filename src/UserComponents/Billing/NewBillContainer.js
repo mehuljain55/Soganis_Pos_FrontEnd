@@ -1751,7 +1751,7 @@ const handleDiscountChange = (rowIndex, newDiscount) => {
               </select>
             </label>
             <button id='bill-submit-btn' onClick={printBill}>Bill</button>
-            <button id='submit-btn-whatsapp' onClick={sendBillToWhatsapp}>WhatsApp Bill</button>
+            {/* <button id='submit-btn-whatsapp' onClick={sendBillToWhatsapp}>WhatsApp Bill</button> */}
           </div>
         </div>
 

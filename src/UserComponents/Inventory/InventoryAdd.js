@@ -13,7 +13,7 @@ const InventoryAdd = () => {
       <div className="menu-bar">
         <button className={view === 'Add New Item' ? 'active' : ''} onClick={() => setView('Add New Item')}>Add New Stock</button>
         <button className={view === 'Edit Item' ? 'active' : ''} onClick={() => setView('Edit Item')}>Edit Stock</button>
-        <button className={view === 'Upload Excel' ? 'active' : ''} onClick={() => setView('Upload Excel')}>Upload Excel</button>
+        <button className={view === 'Upload Excel' ? 'active' : ''} onClick={() => setView('Upload Excel')}>Mass Update (Excel)</button>
       
       </div>
       
