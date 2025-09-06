@@ -168,8 +168,8 @@ const EditStock = ({ data, resetFilters  }) => {
                     <td>
                       <input
                         type="text"
-                        value={editableData[rowIndex]?.itemName || item.itemName}
-                        onChange={(e) => handleFieldChange(rowIndex, 'itemName', e.target.value)}
+                        value={editableData[rowIndex]?.description || item.description}
+                        onChange={(e) => handleFieldChange(rowIndex, 'description', e.target.value)}
                         className="edit-stock-container-input"
                       />
                     </td>
