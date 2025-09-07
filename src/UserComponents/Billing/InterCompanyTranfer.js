@@ -21,6 +21,7 @@ const InterCompanyTranfer = ({ userData }) => {
   const [schoolName, setSchoolName] = useState('');
   const [selectedIndex, setSelectedIndex] = useState(-1);
   const [shiftPressTime, setShiftPressTime] = useState(null); 
+  const [companyId, setSelectedCompanyId]=useState(null);
     
   
   const [isBarcodeMode, setIsBarcodeMode] = useState(false);
@@ -441,6 +442,7 @@ const handleSelectChange = (selectedOption) => {
 
     const billData = {
       userId: userData.userId,
+      companyId: companyId,
       customerName: customerName,
       paymentMode: paymentMode,
       schoolName: schoolName,
@@ -481,6 +483,12 @@ console.log(billData);
       console.error('Error generating bill:', error);
     }finally{
       setLoading(false); // Show loading animation
+      setSelectedItems([]);
+      setCustomerName('');
+      setCustomerMobileNo('');
+      setPaymentMode('Due');
+      setSchoolName('');
+      setSelectedCompanyId(null);
     }
   };
 
@@ -497,11 +505,17 @@ console.log(billData);
     setPdfData(null);
   };
 
-  const handleNameChange = (e) => {
-    setCustomerName(e.target.value);
-  };
-
   
+const handleNameChange = (e) => {
+  const selectedStoreId = e.target.value;
+  const selectedStore = storeList.find(store => store.storeId === selectedStoreId);
+
+  if (selectedStore) {
+    setCustomerName(selectedStore.storeName);   // store name
+    setSelectedCompanyId(selectedStore.storeId); // store ID
+  }
+};
+
 
 
   const handleMobileNoChange = (e) => {
@@ -742,23 +756,25 @@ onClick={() => toggleBarcodeMode(!isBarcodeMode)}
         {/* Customer Details */}
         <div className="intercompany-customer-details">
          <div className="intercompany-customer-details-box">
+
           <label>
-      Company Name:
-      <select
-        name="customerName"
-        value={customerName}
-        onChange={handleNameChange}
-        onKeyDown={(e) => handleArrowKeyCustomerDetail(e, 'customerName')}
-        required
-      >
-        <option value="">Select Company</option>
-        {storeList.map((store) => (
-          <option key={store.storeId} value={store.storeId}>
-            {store.storeName}-{store.address}
-          </option>
-        ))}
-      </select>
-    </label>
+  Company Name:
+  <select
+    name="companyId"
+    value={companyId ?? ""}   // show "Select Company" when null
+    onChange={handleNameChange}
+    onKeyDown={(e) => handleArrowKeyCustomerDetail(e, 'customerName')}
+    required
+  >
+    <option value="">Select Company</option>
+    {storeList.map((store) => (
+      <option key={store.storeId} value={store.storeId}>
+        {store.storeName} - {store.address}
+      </option>
+    ))}
+  </select>
+</label>
+
   
          
           </div>

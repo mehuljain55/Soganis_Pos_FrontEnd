@@ -17,7 +17,10 @@ function AddInventoryItem() {
   const [selectGroupData, setSelectedGroupData] = useState("");
   const [status,setStatus]=useState("");
   const [showHistory, setShowHistory] = useState(false); // State to toggle history popup
-
+  const [isLoading, setIsLoading] = useState(false); // Loading state
+  const [showModal, setShowModal] = useState(false); // Modal visibility state
+  const [modalContent, setModalContent] = useState(''); // Modal content
+  const [modalTitle, setModalTitle] = useState(''); // Modal title
 
   const handleFileChange = (e) => {
     const file = e.target.files[0];
@@ -37,8 +40,6 @@ function AddInventoryItem() {
     updatedItems[index].quantity = newQuantity; // Update the quantity for the specific item
     setItems(updatedItems);
   };
-
-  
 
   const handleKeyDown = (e, index) => {
     if (e.key === 'ArrowUp') {
@@ -103,7 +104,6 @@ function AddInventoryItem() {
       setError(err.response?.data?.message || "Failed to upload file. Please try again.");
     }
   };
-  
 
   useEffect(() => {
     const fetchGroupList = async () => {
@@ -129,7 +129,6 @@ function AddInventoryItem() {
     fetchGroupDataList();
   }, []);
 
- 
   const handleDownloadGroupWiseData = async () => {
     if (!selectedGroup) {
       alert("Please select a group before downloading!");
@@ -209,7 +208,6 @@ function AddInventoryItem() {
     }
   };
   
-  
   const handleDownloadGroupData = async () => {
     if (!selectGroupData) {
       alert("Please select a group before downloading!");
@@ -250,36 +248,57 @@ function AddInventoryItem() {
     document.getElementById('fileInput').value = null;
   };
 
-  const handleUpdateInventory = async () => {
+  const handleAddInventory = async () => {
+    setIsLoading(true);
     try {
-      // Make the POST request to get the text file as a response
-      const response = await axios.post(`${API_BASE_URL}/inventory/upload`, items, {
+      // Make the POST request to get the text response
+      const response = await axios.post(`${API_BASE_URL}/inventory/add/upload`, items, {
         headers: {
           "Content-Type": "application/json",
         },
-        responseType: 'blob',  // Important to set response type as 'blob' to handle file download
+        responseType: 'text', // Get response as text instead of blob
       });
-  
-      const url = window.URL.createObjectURL(new Blob([response.data]));
-  
-      const link = document.createElement('a');
-      link.href = url;
-  
-      link.setAttribute('download', 'inventory_update_status.txt');
-  
-      // Append the anchor to the document body
-      document.body.appendChild(link);
-  
-      link.click();
-  
-      // Remove the anchor from the document
-      link.parentNode.removeChild(link);
-  
-      alert('Inventory updated successfully');
+
+      // Show content in modal instead of downloading
+      setModalTitle('Add Inventory Status');
+      setModalContent(response.data);
+      setShowModal(true);
+      
       handleClearFile();
     } catch (err) {
       console.error(err);
-      alert('Failed to update inventory');
+      setModalTitle('Error');
+      setModalContent('Failed to add inventory. Please try again.');
+      setShowModal(true);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleUpdateInventory = async () => {
+    setIsLoading(true);
+    try {
+      // Make the POST request to get the text response
+      const response = await axios.post(`${API_BASE_URL}/inventory/update/upload`, items, {
+        headers: {
+          "Content-Type": "application/json",
+        },
+        responseType: 'text', // Get response as text instead of blob
+      });
+
+      // Show content in modal instead of downloading
+      setModalTitle('Update Inventory Status');
+      setModalContent(response.data);
+      setShowModal(true);
+      
+      handleClearFile();
+    } catch (err) {
+      console.error(err);
+      setModalTitle('Error');
+      setModalContent('Failed to update inventory. Please try again.');
+      setShowModal(true);
+    } finally {
+      setIsLoading(false);
     }
   };
   
@@ -291,12 +310,47 @@ function AddInventoryItem() {
     }
   };
 
+  const closeModal = () => {
+    setShowModal(false);
+    setModalContent('');
+    setModalTitle('');
+  };
+
   return (
     <div className="inventory-qty-container" style={{ position: "relative" }}>
+      {/* Loading Overlay */}
+      {isLoading && (
+        <div className="inventory-qty-loading-overlay">
+          <div className="inventory-qty-loading-spinner">
+            <div className="inventory-qty-spinner"></div>
+            <p>Processing...</p>
+          </div>
+        </div>
+      )}
+
+      {/* Modal */}
+      {showModal && (
+        <div className="inventory-qty-modal-overlay" onClick={closeModal}>
+          <div className="inventory-qty-modal-content" onClick={(e) => e.stopPropagation()}>
+            <div className="inventory-qty-modal-header">
+              <h3>{modalTitle}</h3>
+              <button className="inventory-qty-modal-close" onClick={closeModal}>×</button>
+            </div>
+            <div className="inventory-qty-modal-body">
+              <pre>{modalContent}</pre>
+            </div>
+            <div className="inventory-qty-modal-footer">
+              <button onClick={closeModal}>Close</button>
+            </div>
+          </div>
+        </div>
+      )}
+
       <h1 style={{ textAlign: "center", marginBottom: "30px" }}>Inventory Management</h1>
       <button
         className="inventory-qty-view-history-button"
         onClick={() => setShowHistory(true)}
+        disabled={isLoading}
       >
         View Update History
       </button>
@@ -315,10 +369,10 @@ function AddInventoryItem() {
                 />
                 <span>{file.name}</span>
               </div>
-              <button onClick={handleClearFile} style={{ backgroundColor: "#f44336" }}>
+              <button onClick={handleClearFile} style={{ backgroundColor: "#f44336" }} disabled={isLoading}>
                 Clear
               </button>
-              <button onClick={handleSubmit}>Show</button>
+              <button onClick={handleSubmit} disabled={isLoading}>Show</button>
             </div>
           ) : (
             <div>
@@ -326,7 +380,7 @@ function AddInventoryItem() {
                 className="inventory-qty-drag-area"
                 onDrop={handleFileDrop}
                 onDragOver={(e) => e.preventDefault()}
-                onClick={() => document.getElementById("fileInput").click()}
+                onClick={() => !isLoading && document.getElementById("fileInput").click()}
               >
                 Drag & Drop File Here or Click to Upload
               </div>
@@ -336,6 +390,7 @@ function AddInventoryItem() {
                 onChange={handleFileChange}
                 accept=".xlsx"
                 style={{ display: "none" }}
+                disabled={isLoading}
               />
             </div>
           )}
@@ -349,6 +404,7 @@ function AddInventoryItem() {
             id="itemDropdown"
             value={selectedGroup}
             onChange={(e) => setSelectedGroup(e.target.value)}
+            disabled={isLoading}
           >
             <option value="">-- Select Item --</option>
             {groupList.map((group) => {
@@ -370,7 +426,7 @@ function AddInventoryItem() {
               );
             })}
           </select>
-          <button onClick={handleDownloadGroupWiseData}>Download</button>
+          <button onClick={handleDownloadGroupWiseData} disabled={isLoading}>Download</button>
         </div>
   
         {/* Section 3: Download Group Data */}
@@ -381,6 +437,7 @@ function AddInventoryItem() {
             id="groupDropdown"
             value={selectGroupData}
             onChange={(e) => setSelectedGroupData(e.target.value)}
+            disabled={isLoading}
           >
             <option value="">-- Select Group --</option>
             {groupDataList.map((group, index) => (
@@ -389,7 +446,7 @@ function AddInventoryItem() {
               </option>
             ))}
           </select>
-          <button onClick={handleDownloadGroupData}>Download</button>
+          <button onClick={handleDownloadGroupData} disabled={isLoading}>Download</button>
         </div>
         
         {/* Section 4: Group Data Status */}
@@ -404,82 +461,101 @@ function AddInventoryItem() {
       </div>
   
       {/* Table Section */}
-      {/* Table Section */}
-{items.length > 0 && (
-  <div>
-    <h3 style={{ textAlign: "center", marginTop: "20px", marginBottom: "10px" }}>Item Data</h3>
-    <div className="inventory-qty-table-container">
-      <table className="inventory-qty-styled-table">
-        <thead>
-          <tr>
-            <th>School Code</th>
-            <th>Item Code</th>
-            <th>Size</th>
-            <th>Color</th>
-            <th>Current Quantity</th>
-            <th>Quantity</th>
-            <th>Store ID</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          {items.map((item, index) => (
-            <tr key={index}>
-              <td>{item.schoolCode}</td>
-              <td>{item.itemCode}</td>
-              <td>{item.size}</td>
-              <td>{item.itemColor}</td>
-              <td>{item.currentQuantity}</td>
-              <td>
-                <input
-                  id={`quantityInput-${index}`}
-                  type="number"
-                  value={item.quantity}
-                  onChange={(e) => handleQuantityChange(index, e.target.value)}
-                  onKeyDown={(e) => handleKeyDown(e, index)}
-                  style={{ width: "50px", height: "20px" }}
-                />
-              </td>
-              <td>{storeId}</td>
-              <td>
-                <button 
-                  onClick={() => handleDeleteItem(index)}
-                  style={{ 
-                    padding: "2px 8px", 
-                    fontSize: "11px", 
-                    height: "22px" 
-                  }}
-                >
-                  Delete
-                </button>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-    </div>
-    <button 
-      onClick={handleUpdateInventory} 
-      style={{ 
-        marginTop: "15px",
-        padding: "8px 12px",
-        backgroundColor: "#28a745",
-        color: "white",
-        border: "none",
-        borderRadius: "4px",
-        cursor: "pointer"
-      }}
-    >
-      Submit Updated Inventory
-    </button>
-  </div>
-)}
+      {items.length > 0 && (
+        <div>
+          <h3 style={{ textAlign: "center", marginTop: "20px", marginBottom: "10px" }}>Item Data</h3>
+          <div className="inventory-qty-table-container">
+            <table className="inventory-qty-styled-table">
+              <thead>
+                <tr>
+                  <th>School Code</th>
+                  <th>Item Code</th>
+                  <th>Size</th>
+                  <th>Color</th>
+                  <th>Current Quantity</th>
+                  <th>Quantity</th>
+                  <th>Store ID</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                {items.map((item, index) => (
+                  <tr key={index}>
+                    <td>{item.schoolCode}</td>
+                    <td>{item.itemCode}</td>
+                    <td>{item.size}</td>
+                    <td>{item.itemColor}</td>
+                    <td>{item.currentQuantity}</td>
+                    <td>
+                      <input
+                        id={`quantityInput-${index}`}
+                        type="number"
+                        value={item.quantity}
+                        onChange={(e) => handleQuantityChange(index, e.target.value)}
+                        onKeyDown={(e) => handleKeyDown(e, index)}
+                        style={{ width: "50px", height: "20px" }}
+                        disabled={isLoading}
+                      />
+                    </td>
+                    <td>{storeId}</td>
+                    <td>
+                      <button 
+                        onClick={() => handleDeleteItem(index)}
+                        style={{ 
+                          padding: "2px 8px", 
+                          fontSize: "11px", 
+                          height: "22px" 
+                        }}
+                        disabled={isLoading}
+                      >
+                        Delete
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+          <button 
+            onClick={handleUpdateInventory} 
+            style={{ 
+              marginTop: "15px",
+              padding: "8px 12px",
+              backgroundColor: isLoading ? "#6c757d" : "#28a745",
+              color: "white",
+              border: "none",
+              borderRadius: "4px",
+              cursor: isLoading ? "not-allowed" : "pointer"
+            }}
+            disabled={isLoading}
+          >
+             {isLoading ? "Processing..." : "Update Inventory Quantity"}
+          </button>
+
+          <button 
+            onClick={handleAddInventory} 
+            style={{ 
+              marginTop: "15px",
+              marginLeft: "10px",
+              padding: "8px 12px",
+              backgroundColor: isLoading ? "#6c757d" : "#e87d02ff",
+              color: "white",
+              border: "none",
+              borderRadius: "4px",
+              cursor: isLoading ? "not-allowed" : "pointer"
+            }}
+            disabled={isLoading}
+          >
+             {isLoading ? "Processing..." : "Add Inventory Quantity"}
+          </button>
+        </div>
+      )}
       
       {showHistory && (
         <InventoryUpdateHistory onClose={() => setShowHistory(false)} />
       )}
     </div>
   );
-  }
+}
 
-  export default AddInventoryItem;
+export default AddInventoryItem;

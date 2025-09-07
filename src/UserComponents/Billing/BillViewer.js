@@ -19,7 +19,9 @@ const BillViewer = () => {
   const [showTransactionModal, setShowTransactionModal] = useState(false);
   const [selectedBillNo, setSelectedBillNo] = useState(null);
   const [totalAmount,setTotalAmount]=useState(null);
-
+  const [quarters,setQuarter] =useState(null);
+  const [selectedQuarter, setSelectedQuarter] = useState('');
+    
 
   const fetchBills = async () => {
     if (activeFilter === 'Custom Date') {
@@ -55,6 +57,49 @@ const BillViewer = () => {
     }
   };
 
+const handleQuarterChange = (quarterKey) => {
+  if (!quarters || !quarterKey) {
+    // Reset quarter selection
+    setSelectedQuarter('');
+    return;
+  }
+
+  const selected = quarters[quarterKey];
+  if (selected) {
+    setStartDate(selected.start);
+    setEndDate(selected.end);
+    setActiveFilter('Quarter'); // Set a special filter for quarter
+    setSelectedQuarter(quarterKey);
+  }
+};
+
+  const getIndianFYQuarters = () => {
+  const today = new Date();
+  const fyStartYear = today.getMonth() < 3 ? today.getFullYear() - 1 : today.getFullYear(); // FY starts in April
+
+  return {
+    Q1: {
+      label: `Q1: 1 Apr ${fyStartYear} - 30 Jun ${fyStartYear}`,
+      start: `${fyStartYear}-04-01`,
+      end: `${fyStartYear}-06-30`,
+    },
+    Q2: {
+      label: `Q2: 1 Jul ${fyStartYear} - 30 Sep ${fyStartYear}`,
+      start: `${fyStartYear}-07-01`,
+      end: `${fyStartYear}-09-30`,
+    },
+    Q3: {
+      label: `Q3: 1 Oct ${fyStartYear} - 31 Dec ${fyStartYear}`,
+      start: `${fyStartYear}-10-01`,
+      end: `${fyStartYear}-12-31`,
+    },
+    Q4: {
+      label: `Q4: 1 Jan ${fyStartYear + 1} - 31 Mar ${fyStartYear + 1}`,
+      start: `${fyStartYear + 1}-01-01`,
+      end: `${fyStartYear + 1}-03-31`,
+    },
+  };
+};
 
   useEffect(() => {
     setBills([]);
@@ -63,15 +108,21 @@ const BillViewer = () => {
     }
   }, [startDate, endDate, sortOrder]);
 
-  useEffect(() => {
-    handleDateFilter('Today');
-  }, []); 
+useEffect(() => {
+  const quarters = getIndianFYQuarters();
+  setQuarter(quarters);
+  handleDateFilter('Today');
+}, []);
+
 
   const handleDateFilter = async (filter) => {
     const today = new Date();
     let calculatedStartDate = '';
     let calculatedEndDate = format(today, 'yyyy-MM-dd');
   
+    // Reset quarter selection when filter button is clicked
+    setSelectedQuarter('');
+    
     switch (filter) {
       case 'Today':
         calculatedStartDate = calculatedEndDate;
@@ -212,87 +263,93 @@ const BillViewer = () => {
       <h1>Recent Bills</h1>
       
       {error && <p className="bill-viewer-error">{error}</p>}
+   
       <div className="bill-viewer-top-container">
+        {/* First Row: Filter Buttons */}
         <div className="bill-viewer-filters">
-          {['Today', 'This Week', 'This Month', 'Previous Month', 'This Quarter', 'This FY', 'Custom Date'].map(
-            (filter) => (
-              <button
-                key={filter}
-                className={`bill-viewer-filter-button ${activeFilter === filter ? 'active' : ''}`}
-                onClick={() => handleDateFilter(filter)}
-              >
-                {filter}
-              </button>
-            )
-          )}
-        </div>
+          {['Today', 'This Week', 'This Month', 'Previous Month', 'This FY', 'Custom Date'].map(filter => (
+            <button
+              key={filter}
+              className={`bill-viewer-filter-button ${activeFilter === filter ? 'active' : ''}`}
+              onClick={() => handleDateFilter(filter)}
+            >
+              {filter}
+            </button>
+          ))}
+
+                    {quarters && (
+            <div className="quarter-dropdown">
         
-        {/* Sort Order - Now centered above table */}
-        <div className="sort-order-container">
-          <span className="sort-label">Sort By:</span>
-          <div className="radio-container">
-            <label className="radio-label">
-              <input
-                type="radio"
-                name="sortOrder"
-                value="Recent"
-                checked={sortOrder === 'Recent'}
-                onChange={() => handleSortOrderChange('Recent')}
-              />
-              <span className="radio-text">Recent</span>
-            </label>
-            <label className="radio-label">
-              <input
-                type="radio"
-                name="sortOrder"
-                value="Oldest"
-                checked={sortOrder === 'Oldest'}
-                onChange={() => handleSortOrderChange('Oldest')}
-              />
-              <span className="radio-text">Oldest</span>
-            </label>
-          </div>
+              <select 
+                value={selectedQuarter} 
+                onChange={(e) => handleQuarterChange(e.target.value)}
+              >
+                <option value="">Select Quarter</option>
+                {Object.entries(quarters).map(([key, { label }]) => (
+                  <option key={key} value={key}>{label}</option>
+                ))}
+              </select>
+            </div>
+          )}
         </div>
 
-        {/* Date display - Now on the right */}
-        <div className="date-display-container">
-          {activeFilter === 'Custom Date' ? (
-            <div className="custom-date-picker">
-              <div className="date-inputs">
-                <label>
-                  Start Date:
-                  <input
-                    type="date"
-                    value={startDate}
-                    onChange={(e) => setStartDate(e.target.value)}
-                  />
-                </label>
-                <label>
-                  End Date:
-                  <input
-                    type="date"
-                    value={endDate}
-                    onChange={(e) => setEndDate(e.target.value)}
-                  />
-                </label>
-              </div>
+        {/* Second Row: Quarter Dropdown, Sort Order, and Date Display */}
+        <div className="bill-viewer-controls-row">
+
+
+          <div className="sort-order-container">
+            <span className="sort-label">Sort By:</span>
+            <div className="radio-container">
+              <label>
+                <input 
+                  type="radio" 
+                  checked={sortOrder === 'Recent'} 
+                  onChange={() => handleSortOrderChange('Recent')} 
+                /> Recent
+              </label>
+              <label>
+                <input 
+                  type="radio" 
+                  checked={sortOrder === 'Oldest'} 
+                  onChange={() => handleSortOrderChange('Oldest')} 
+                /> Oldest
+              </label>
             </div>
-          ) : (
-            <div className="date-display">
-              <div className="date-item">
-                <span className="date-label">Start Date:</span>
-                <span className="date-value">{startDate ? format(new Date(startDate), 'dd MMM yyyy') : 'Invalid Date'}</span>
+          </div>
+
+          <div className="date-display-container">
+            {activeFilter === 'Custom Date' ? (
+              <div className="custom-date-picker">
+                <div className="date-inputs">
+                  <label>Start Date: 
+                    <input 
+                      type="date" 
+                      value={startDate} 
+                      onChange={(e) => setStartDate(e.target.value)} 
+                    />
+                  </label>
+                  <label>End Date: 
+                    <input 
+                      type="date" 
+                      value={endDate} 
+                      onChange={(e) => setEndDate(e.target.value)} 
+                    />
+                  </label>
+                </div>
               </div>
-              <div className="date-item">
-                <span className="date-label">End Date:</span>
-                <span className="date-value">{endDate ? format(new Date(endDate), 'dd MMM yyyy') : 'Invalid Date'}</span>
-              </div>
-            </div>
-          )}
+            ) : (
+              startDate && endDate && (
+       <div className="date-display">
+  <div>Start Date: {format(new Date(startDate), 'dd MMM yyyy')}</div>
+  <div>End Date: {format(new Date(endDate), 'dd MMM yyyy')}</div>
+</div>
+              )
+            )}
+          </div>
+
+
         </div>
       </div>
-
-    
 
       {bills.length > 0 && (
         <div className="bill-viewer-table-container">
@@ -330,10 +387,6 @@ const BillViewer = () => {
                     {bill.status === 'FRESH' && isToday(bill.bill_date) && (
                       <button onClick={() => handleDeleteBill(bill.billNo)}>Delete</button>
                     )}
-
-                   
-
-                    
                   </td>
                 </tr>
               ))}

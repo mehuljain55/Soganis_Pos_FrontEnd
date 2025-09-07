@@ -244,7 +244,7 @@ const View = ({ data, onUpdateSuccess }) => {
                 <th>Item Type</th>
                 <th>Item Color</th>
                 <th>Item Size</th>
-                <th>Item Category</th>
+                <th>School Name</th>
                 <th>Price</th>
                 <th>Wholesale Price</th>
                 <th>Available Quantity</th>

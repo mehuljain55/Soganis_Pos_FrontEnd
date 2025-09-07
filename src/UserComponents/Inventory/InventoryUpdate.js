@@ -9,14 +9,12 @@ const InventoryUpdate = () => {
   const [file, setFile] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
-  const [downloadUrl, setDownloadUrl] = useState('');
   const [fileContent, setFileContent] = useState('');
   const[showItemModal,setShowItemModal]= useState(false);
   const[itemUpdateList,setItemUpdateList]=useState(null);
 
   const handleFileChange = (e) => {
     setFile(e.target.files[0]);
-    setDownloadUrl(''); 
     setFileContent(''); 
   };
 
@@ -30,7 +28,6 @@ const InventoryUpdate = () => {
     e.currentTarget.classList.remove('dragover'); 
     const droppedFile = e.dataTransfer.files[0];
     setFile(droppedFile);
-    setDownloadUrl('');
     setFileContent('');
   };
 
@@ -69,7 +66,6 @@ const InventoryUpdate = () => {
 
   const handleClear = () => {
     setFile(null);
-    setDownloadUrl('');
     setFileContent(''); 
   };
 
@@ -117,11 +113,7 @@ const InventoryUpdate = () => {
           </div>
         )}
 
-        {downloadUrl && (
-          <a href={downloadUrl} download="InventoryUpdate.txt">
-            Download Inventory Edit Status
-          </a>
-        )}
+
       </div>
 
       {/* Right half - Inventory Manager */}

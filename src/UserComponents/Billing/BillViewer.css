@@ -1,29 +1,28 @@
 .bill-viewer {
   padding: 20px;
-  max-width: 1200px;
+  /* max-width: 1200px; */
   margin: auto;
   font-family: Arial, sans-serif;
 }
 
-/* New top container for improved layout */
+/* Updated top container for improved layout */
 .bill-viewer-top-container {
   display: flex;
   flex-direction: column;
-  align-items: center;
-  gap: 20px;
+  gap: 15px;
+  margin-top: 10px;
   margin-bottom: 30px;
 }
 
 .bill-viewer-filters {
   display: flex;
   flex-wrap: wrap;
-  justify-content: left;
+  justify-content: flex-start;
   gap: 8px;
   width: 100%;
 }
 
 .bill-viewer-filter-button {
-  padding: 10px 16px;
   background-color: #007bff;
   color: white;
   border: none;
@@ -32,6 +31,7 @@
   cursor: pointer;
   transition: all 0.3s ease;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  height: 40px !important;
 }
 
 .bill-viewer-filter-button.active {
@@ -45,18 +45,49 @@
   transform: translateY(-1px);
 }
 
-/* Sort order container - now centered */
+/* New controls row - everything in one line */
+.bill-viewer-controls-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+/* Quarter dropdown */
+.quarter-dropdown {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-shrink: 0;
+}
+
+.quarter-dropdown label {
+  font-weight: bold;
+  white-space: nowrap;
+}
+
+.quarter-dropdown select {
+  padding: 6px 12px;
+  font-size: 14px;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+  min-width: 200px;
+}
+
+/* Sort order container */
 .sort-order-container {
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: center !important;
+  justify-items: center;
   background-color: #f5f5f5;
   padding: 12px 20px;
   border-radius: 8px;
   border: 1px solid #ddd;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-  width: fit-content;
-  margin-top: -5px;
+  flex-shrink: 0;
+margin-left: 40%;
 }
 
 .sort-label {
@@ -64,6 +95,7 @@
   margin-right: 15px;
   color: #333;
   font-size: 15px;
+  white-space: nowrap;
 }
 
 .radio-container {
@@ -71,13 +103,13 @@
   gap: 20px;
 }
 
-.radio-label {
+.radio-container label {
   display: flex;
   align-items: center;
   cursor: pointer;
 }
 
-.radio-label input[type="radio"] {
+.radio-container input[type="radio"] {
   margin-right: 8px;
   cursor: pointer;
   accent-color: #007bff;
@@ -85,94 +117,104 @@
   height: 16px;
 }
 
-.radio-text {
-  font-size: 15px;
-}
 
-/* Date display container - now on the right */
 .date-display-container {
-  align-self: flex-end;
-  margin-top: -200px;
+  flex-shrink: 0;
+  margin-left: auto;
+  margin-top: -150px;
 }
 
 .date-display {
-  background-color: #f9f9f9;
-  border: 1px solid #e0e0e0;
-  border-radius: 8px;
-  padding: 12px 20px;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
-}
-
-.date-item {
-  display: flex;
-  align-items: center;
-  margin-bottom: 8px;
-}
-
-.date-item:last-child {
-  margin-bottom: 0;
-}
-
-.date-label {
-  font-weight: bold;
-  color: #333;
-  width: 100px;
-  margin-right: 12px;
-}
-
-.date-value {
-  color: #007bff;
+  background-color: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  padding: 16px 24px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.08);
   font-weight: 500;
+  color: #374151;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 200px;
 }
 
 .custom-date-picker {
-  background-color: #f9f9f9;
-  border: 1px solid #e0e0e0;
-  border-radius: 8px;
-  padding: 15px;
-  min-width: 200px !important;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+  background-color: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.08);
+  margin-top: -30px;
+  margin-right: -25px;
 }
 
-/* Change the date inputs from column to row */
+/* Date inputs in row */
 .date-inputs {
   display: flex;
-  flex-direction: row; /* Change from column to row */
-  gap: 12px;
+  gap: 24px;
+  align-items: center;
 }
 
-/* Make each label take only the space it needs */
 .date-inputs label {
   display: flex;
   flex-direction: column;
-  gap: 5px;
-  font-weight: bold;
-  width: auto; /* Allow labels to size naturally */
-}
-.date-inputs input[type="date"] {
-  padding: 8px 12px;
-  border: 1px solid #ddd;
-  border-radius: 4px;
+  gap: 8px;
+  font-weight: 600;
+  color: #374151;
   font-size: 14px;
+}
+
+.date-inputs input[type="date"] {
+  padding: 12px 16px;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  font-size: 14px;
+  background-color: #ffffff;
+  color: #374151;
+  min-width: 140px;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.date-inputs input[type="date"]:focus {
+  outline: none;
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.date-inputs input[type="date"]::-webkit-calendar-picker-indicator {
+  padding: 4px;
+  cursor: pointer;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .date-inputs {
+    flex-direction: column;
+    gap: 16px;
+    align-items: stretch;
+  }
+  
+  .date-inputs input[type="date"] {
+    min-width: 100%;
+  }
 }
 
 .bill-viewer-error {
   color: #dc3545;
   font-weight: bold;
-  margin-top: -30px;
+  margin-bottom: 20px;
   text-align: left;
-  max-width: 30%;
+  max-width: 50%;
   padding: 10px;
   background-color: #f8d7da;
   border-radius: 4px;
   border: 1px solid #f5c6cb;
-  z-index: 10000 !important;
 }
 
 .bill-viewer-table-container {
   overflow-x: auto;
   max-height: 400px;
-  margin-top: 110px;
+  margin-top: 20px;
   border: 1px solid #ddd;
   border-radius: 8px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
@@ -360,14 +402,33 @@
 }
 
 /* Responsive adjustments */
-@media (max-width: 992px) {
-  .bill-viewer-top-container {
-    flex-direction: column;
+@media (max-width: 1200px) {
+  .bill-viewer-controls-row {
+    flex-wrap: wrap;
+    gap: 15px;
   }
   
   .date-display-container {
-    align-self: center;
-    margin-top: 0;
+    margin-left: 0;
+  }
+}
+
+@media (max-width: 992px) {
+  .bill-viewer-controls-row {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  
+  .quarter-dropdown,
+  .sort-order-container,
+  .date-display-container {
+    width: 100%;
+    justify-content: center;
+  }
+  
+  .quarter-dropdown select {
+    min-width: auto;
+    width: 100%;
   }
 }
 
@@ -377,25 +438,19 @@
     align-items: center;
   }
   
-  .sort-order-container {
-    flex-direction: column;
-    align-items: center;
-    width: 100%;
-    padding: 12px;
-  }
-  
-  .sort-label {
-    margin-right: 0;
-    margin-bottom: 10px;
-  }
-  
-  .date-display {
-    width: 100%;
-  }
-  
   .bill-viewer-filter-button {
     width: 100%;
     text-align: center;
+  }
+  
+  .date-inputs {
+    flex-direction: column;
+    gap: 8px;
+  }
+  
+  .date-inputs label {
+    flex-direction: column;
+    align-items: flex-start;
   }
   
   .bill-viewer-popup-content {

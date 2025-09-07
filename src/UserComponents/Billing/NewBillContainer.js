@@ -1174,7 +1174,6 @@ const handleDiscountChange = (rowIndex, newDiscount) => {
         itemCategory: itemCategory,
         itemStatus: 'NEW',
         size: parsedSize,
-        itemName: description,
         description:description,
         quantity: quantity,
         price: parsedPrice,
@@ -1391,7 +1390,7 @@ const handleDiscountChange = (rowIndex, newDiscount) => {
                       }}
                     >
                       <td>{item.itemCode}</td>
-                      <td>{item.itemName}</td>
+                      <td>{item.description}</td>
                       <td>{item.itemType}</td>
                       <td>{item.itemColor}</td>
                       <td>{item.itemSize}</td>
@@ -1481,7 +1480,7 @@ const handleDiscountChange = (rowIndex, newDiscount) => {
               {selectedItems.map((item, rowItemTableIndex) => (
                 <tr key={rowItemTableIndex}>
                   <td>{item.itemCode}</td>
-                  <td>{item.itemName}</td>
+                  <td>{item.description}</td>
                   <td>{item.itemColor}</td>
                   <td>{item.itemSize}</td>
                   
@@ -1752,7 +1751,7 @@ const handleDiscountChange = (rowIndex, newDiscount) => {
               </select>
             </label>
             <button id='bill-submit-btn' onClick={printBill}>Bill</button>
-            <button id='submit-btn-whatsapp' onClick={sendBillToWhatsapp}>WhatsApp Bill</button>
+            {/* <button id='submit-btn-whatsapp' onClick={sendBillToWhatsapp}>WhatsApp Bill</button> */}
           </div>
         </div>
 

@@ -91,3 +91,35 @@
 .export-button:hover {
   background-color: #45a049;
 }
+
+.quarter-dropdown {
+  margin-top: 10px;
+  margin-bottom: 15px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.quarter-dropdown label {
+  font-weight: bold;
+  font-size: 14px;
+}
+
+.quarter-dropdown select {
+  padding: 6px 12px;
+  font-size: 14px;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+  outline: none;
+  background-color: #f9f9f9;
+  transition: border 0.3s, background-color 0.3s;
+}
+
+.quarter-dropdown select:hover {
+  border-color: #007bff;
+}
+
+.quarter-dropdown select:focus {
+  border-color: #007bff;
+  background-color: #fff;
+}

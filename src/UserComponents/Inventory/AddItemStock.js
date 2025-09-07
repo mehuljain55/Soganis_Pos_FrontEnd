@@ -268,7 +268,6 @@ const AddItemStock = () => {
                 price: toTrimmedString(row[6]),
                 wholeSalePrice: toTrimmedString(row[7]),
                 quantity: parseFloat(row[8]) || 0,
-                groupId: toTrimmedString(row[9])
             };
         });
 
@@ -332,13 +331,12 @@ const AddItemStock = () => {
               <th>Item Code</th>
               <th>Barcode Description</th>
               <th>Item Type</th>
-              <th>Item Size</th>
               <th>Item Color</th>
+              <th>Item Size</th>
               <th>School Name</th>
               <th>Price</th>
               <th>Wholesale Price</th>
               <th>Quantity</th>
-              <th>Group ID</th>
               <th>Action</th>
             </tr>
           </thead>
@@ -386,6 +384,16 @@ const AddItemStock = () => {
                     <span className="error-message">{validationErrors[`itemType${rowIndex}`]}</span>
                   )}
                 </td>
+
+                <td>
+                  <input
+                    value={item.itemColor}
+                    onChange={(e) => handleInputChange(e, rowIndex, 'itemColor')}
+                    onKeyDown={(e) => handleKeyDown(e, rowIndex, 4)}
+                    placeholder="Item Color"
+                    disabled={isSubmitting}
+                  />
+                </td>
                 
                 <td>
                   <input
@@ -393,16 +401,6 @@ const AddItemStock = () => {
                     onChange={(e) => handleInputChange(e, rowIndex, 'itemSize')}
                     onKeyDown={(e) => handleKeyDown(e, rowIndex, 3)}
                     placeholder="Item Size"
-                    disabled={isSubmitting}
-                  />
-                </td>
-                
-                <td>
-                  <input
-                    value={item.itemColor}
-                    onChange={(e) => handleInputChange(e, rowIndex, 'itemColor')}
-                    onKeyDown={(e) => handleKeyDown(e, rowIndex, 4)}
-                    placeholder="Item Color"
                     disabled={isSubmitting}
                   />
                 </td>
@@ -506,15 +504,7 @@ const AddItemStock = () => {
                   </div>
                 </td>
 
-                <td>
-                  <input
-                    value={item.groupId}
-                    onChange={(e) => handleInputChange(e, rowIndex, 'groupId')}
-                    onKeyDown={(e) => handleKeyDown(e, rowIndex, 10)}
-                    placeholder="Group Id"
-                    disabled={isSubmitting}
-                  />
-                </td>
+   
                 
                 <td>
                   <button 
