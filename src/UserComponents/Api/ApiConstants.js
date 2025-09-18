@@ -16,6 +16,9 @@ export const CUSTOMER_DETAILED_INVOICE = `${API_BASE_URL}/invoice/getBill`;
 export const INVOICE_LIST_BY_DATE = `${API_BASE_URL}/invoice/getBillByDate`;
 
 
+export const FIND_ITEM_UPDATE_HISTORT_URL= `${API_BASE_URL}/inventory/view/updateHistory`;
+
+
 // Store URL
 export const FETCH_STORES_URL = `${API_BASE_URL}/store/getAllStores`;
 export const FETCH_STORE_USER_URL= `${API_BASE_URL}/user/getUserByStore`;

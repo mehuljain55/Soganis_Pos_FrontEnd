@@ -26,6 +26,7 @@ import UpdateItems from './UserComponents/Inventory/UpdateItems.js';
 import Cloth from './UserComponents/Billing/Cloth.js';
 import InfoPage from './UserComponents/InfoPage/InfoPage.js';
 import NewBillContainerMobile from './UserComponents/Billing/NewBillContainerMobile.js';
+import ItemUpdateHistory from './UserComponents/Inventory/ItemUpdateHistory.js';
 
 
 function App() {
@@ -110,6 +111,7 @@ function App() {
                <Route path="/mobile/bill" element={<NewBillContainerMobile />} />
                 <Route path="/transaction" element={<Transaction />} />
                  <Route path="/cloth/add" element={<Cloth />} />
+                 <Route path="/view/itemUpdateHistory" element={<ItemUpdateHistory />} />
 
             </>
           )}
